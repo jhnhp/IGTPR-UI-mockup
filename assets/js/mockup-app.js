@@ -1015,6 +1015,9 @@ function setDashboardYear(year) {
     if ($('#modal-usulan-tahun').val() !== currentDashboardYear) {
         $('#modal-usulan-tahun').val(currentDashboardYear);
     }
+    if ($('#modal-kompilasi-tahun-select').val() !== currentDashboardYear) {
+        $('#modal-kompilasi-tahun-select').val(currentDashboardYear);
+    }
 
     // 2. Filter chips tema pada kartu Detail Informasi di dekat peta
     renderDetailChips();
@@ -1026,6 +1029,9 @@ function setDashboardYear(year) {
     if ($('#modal-usulan-data').is(':visible')) {
         usulanModalState.currentPage = 1;
         renderUsulanModalContent();
+    }
+    if ($('#modal-kompilasi-data').is(':visible')) {
+        renderKompilasiModalContent();
     }
 }
 
@@ -1185,7 +1191,7 @@ function renderUsulanModalContent() {
 
 function initUsulanModalEvents() {
     // 0. Filter Tahun Sinkronisasi Terpusat (Usulan Data, Kompilasi Integrasi, Leader Board, Modal)
-    $(document).on('change', '#status-data-tahun, #integrasi-kompilasi-tahun, #leader-board-tahun, #modal-usulan-tahun', function() {
+    $(document).on('change', '#status-data-tahun, #integrasi-kompilasi-tahun, #leader-board-tahun, #modal-usulan-tahun, #modal-kompilasi-tahun-select', function() {
         var thn = $(this).val() || 'all';
         setDashboardYear(thn);
     });
@@ -1270,14 +1276,267 @@ function initUsulanModalEvents() {
             closeUsulanModal();
         }
     });
+
+    // ----------------------------------------------------
+    // Event Handlers for Kompilasi Integrasi Clickable Elements
+    // ----------------------------------------------------
+    // A. Click on metric number (e.g. 14 / Layer IGT)
+    $(document).on('click', '#integrasi-kompilasi-klik-angka, #integrasi-kompilasi-terkompilasi', function(e) {
+        e.preventDefault();
+        openKompilasiModal('all', 'all');
+    });
+
+    // B. Click on bar segments (Terkompilasi / Terintegrasi)
+    $(document).on('click', '#integrasi-kompilasi-grafik .igt-tumpuk__ruas.is-clickable', function(e) {
+        e.stopPropagation();
+        var status = $(this).data('status');
+        var bulanIdx = $(this).data('bulan-idx');
+        openKompilasiModal(status, bulanIdx);
+    });
+
+    // C. Click on monthly bar columns (outside specific bar ruas)
+    $(document).on('click', '#integrasi-kompilasi-grafik .igt-tumpuk__kolom', function() {
+        var bulanIdx = $(this).data('bulan-idx');
+        openKompilasiModal('all', bulanIdx);
+    });
+
+    // D. Click on month labels (JAN..DES)
+    $(document).on('click', '#integrasi-kompilasi-bulan .igt-bulan-btn', function() {
+        var bulanIdx = $(this).data('bulan-idx');
+        openKompilasiModal('all', bulanIdx);
+    });
+
+    // E. Click on legend items
+    $(document).on('click', '#integrasi-kompilasi .igt-batang__legenda span', function() {
+        var text = $(this).text().toLowerCase();
+        if (text.indexOf('terintegrasi') !== -1) {
+            openKompilasiModal('terintegrasi', 'all');
+        } else if (text.indexOf('terkompilasi') !== -1) {
+            openKompilasiModal('terkompilasi', 'all');
+        }
+    });
+
+    // F. Modal Kompilasi Internal Events
+    $(document).on('click', '#modal-kompilasi-tabs .igt-modal-tab', function() {
+        var status = $(this).data('status');
+        kompilasiModalState.currentStatus = status;
+        renderKompilasiModalContent();
+    });
+
+    $(document).on('change', '#modal-kompilasi-bulan-select', function() {
+        kompilasiModalState.currentBulan = $(this).val();
+        renderKompilasiModalContent();
+    });
+
+    $(document).on('change', '#modal-kompilasi-tahun-select', function() {
+        var thn = $(this).val() || 'all';
+        setDashboardYear(thn);
+    });
+
+    $(document).on('input', '#modal-kompilasi-search', function() {
+        kompilasiModalState.searchQuery = $(this).val();
+        renderKompilasiModalContent();
+    });
+
+    $(document).on('click', '#modal-kompilasi-accordion .igt-acc-header', function() {
+        var item = $(this).closest('.igt-acc-item');
+        var id = item.data('id');
+        if (kompilasiModalState.expandedId === id) {
+            kompilasiModalState.expandedId = null;
+            item.removeClass('is-expanded');
+        } else {
+            kompilasiModalState.expandedId = id;
+            $('#modal-kompilasi-accordion .igt-acc-item').removeClass('is-expanded');
+            item.addClass('is-expanded');
+        }
+    });
+
+    $(document).on('click', '#modal-kompilasi-close', function() {
+        closeKompilasiModal();
+    });
+
+    $(document).on('click', '#modal-kompilasi-data', function(e) {
+        if ($(e.target).is('#modal-kompilasi-data')) {
+            closeKompilasiModal();
+        }
+    });
+
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && $('#modal-kompilasi-data').is(':visible')) {
+            closeKompilasiModal();
+        }
+    });
+}
+
+/* ----------------------------------------------------
+   Modal Kompilasi & Integrasi State & Functions
+---------------------------------------------------- */
+var kompilasiModalState = {
+    currentStatus: 'all',
+    currentBulan: 'all',
+    searchQuery: '',
+    expandedId: null
+};
+
+function openKompilasiModal(statusFilter, bulanFilter) {
+    kompilasiModalState.currentStatus = statusFilter || 'all';
+    kompilasiModalState.currentBulan = (bulanFilter !== undefined && bulanFilter !== null) ? bulanFilter : 'all';
+    kompilasiModalState.searchQuery = '';
+    kompilasiModalState.expandedId = null;
+
+    $('#modal-kompilasi-search').val('');
+    $('#modal-kompilasi-bulan-select').val(kompilasiModalState.currentBulan);
+    $('#modal-kompilasi-tahun-select').val(currentDashboardYear);
+
+    renderKompilasiModalContent();
+    $('#modal-kompilasi-data').fadeIn(200);
+    $('body').css('overflow', 'hidden');
+}
+
+function closeKompilasiModal() {
+    $('#modal-kompilasi-data').fadeOut(200);
+    if (!$('#modal-usulan-data').is(':visible')) {
+        $('body').css('overflow', '');
+    }
+}
+
+function renderKompilasiModalContent() {
+    var status = kompilasiModalState.currentStatus;
+    var bulan = kompilasiModalState.currentBulan;
+    var query = (kompilasiModalState.searchQuery || '').toLowerCase().trim();
+
+    var detail = window.MOCKUP_DATA.getKompilasiDetailList
+        ? window.MOCKUP_DATA.getKompilasiDetailList(status, bulan, currentProvince, currentKabupaten, currentDashboardYear)
+        : { items: [], counts: { all: 0, terintegrasi: 0, terkompilasi: 0 }, labelPeriode: 'Semua Bulan', wilayah: 'Seluruh Indonesia' };
+
+    // Update Header Badges
+    $('#modal-kompilasi-wilayah').text(detail.wilayah);
+    var labelTahun = currentDashboardYear === 'all' ? 'Semua Tahun' : ('Tahun ' + currentDashboardYear);
+    $('#modal-kompilasi-tahun-badge').text(labelTahun);
+    $('#modal-kompilasi-periode-badge').text(detail.labelPeriode);
+
+    // Update Tabs
+    $('#modal-kompilasi-count-all').text(detail.counts.all);
+    $('#modal-kompilasi-count-terintegrasi').text(detail.counts.terintegrasi);
+    $('#modal-kompilasi-count-terkompilasi').text(detail.counts.terkompilasi);
+
+    $('#modal-kompilasi-tabs .igt-modal-tab').removeClass('is-active');
+    $('#modal-kompilasi-tabs .igt-modal-tab[data-status="' + status + '"]').addClass('is-active');
+
+    // Update Selects in Toolbar
+    $('#modal-kompilasi-bulan-select').val(bulan);
+    $('#modal-kompilasi-tahun-select').val(currentDashboardYear);
+
+    // Filter by search query
+    var items = detail.items;
+    if (query) {
+        items = items.filter(function(item) {
+            return (item.nama_igt && item.nama_igt.toLowerCase().indexOf(query) !== -1) ||
+                   (item.satuan && item.satuan.toLowerCase().indexOf(query) !== -1);
+        });
+    }
+
+    // Render Accordion Items
+    if (!items || items.length === 0) {
+        $('#modal-kompilasi-accordion').html('<div class="igt-acc-empty">Tidak ada data IGT yang sesuai dengan kriteria filter.</div>');
+        $('#modal-kompilasi-info').text('Menampilkan 0 Layer IGT');
+        return;
+    }
+
+    var html = '';
+    items.forEach(function(item, idx) {
+        // Auto expand first item if none expanded
+        if (kompilasiModalState.expandedId === null && idx === 0) {
+            kompilasiModalState.expandedId = item.id;
+        }
+        var isExpanded = kompilasiModalState.expandedId === item.id;
+        var expandedClass = isExpanded ? ' is-expanded' : '';
+
+        // Table Rows
+        var rowsHtml = '';
+        if (item.datasets && item.datasets.length > 0) {
+            item.datasets.forEach(function(ds) {
+                var badgeClass = ds.statusKey === 'terintegrasi' ? 'igt-status-badge--terintegrasi' : 'igt-status-badge--terkompilasi';
+                var downloadBtn = ds.hasDownload
+                    ? '<a href="#" class="igt-download-btn igt-download-btn--shp" title="Download SHP"><img src="assets/img/icons/download-simple.svg" width="12" height="12"> SHP</a>'
+                    : '<span class="text-muted" style="font-size: 11px;">-</span>';
+
+                rowsHtml += '<tr>'
+                    + '<td>' + ds.direktorat + '</td>'
+                    + '<td><span class="badge bg-light text-dark" style="font-size: 11px;">' + ds.jenisData + '</span></td>'
+                    + '<td>' + ds.tglUpload + '</td>'
+                    + '<td>' + (ds.tglIntegrasi || '-') + '</td>'
+                    + '<td>' + (ds.keterangan || '-') + '</td>'
+                    + '<td><span class="igt-status-badge ' + badgeClass + '">' + ds.status + '</span></td>'
+                    + '<td>'
+                        + '<div class="igt-aksi-group">'
+                            + '<button type="button" class="igt-aksi-btn igt-aksi-btn--view" title="Lihat"><img src="assets/img/icons/magnifying-glass.svg" width="12" height="12"></button>'
+                            + '<button type="button" class="igt-aksi-btn igt-aksi-btn--history" title="Riwayat"><img src="assets/img/icons/clock-counter-clockwise.svg" width="12" height="12"></button>'
+                            + '<button type="button" class="igt-aksi-btn igt-aksi-btn--cloud" title="Metadata Cloud"><img src="assets/img/icons/cloud-arrow-up.svg" width="12" height="12"></button>'
+                        + '</div>'
+                    + '</td>'
+                    + '<td>' + downloadBtn + '</td>'
+                    + '</tr>';
+            });
+        } else {
+            rowsHtml = '<tr><td colspan="8" class="text-center text-muted" style="padding: 18px;">Belum ada berkas data yang terunggah untuk tema ini.</td></tr>';
+        }
+
+        html += '<div class="igt-acc-item' + expandedClass + '" data-id="' + item.id + '">'
+            + '<div class="igt-acc-header">'
+                + '<div class="igt-acc-left">'
+                    + '<div class="igt-acc-name">' + item.nama_igt + '</div>'
+                    + '<div class="igt-acc-meta">'
+                        + '<span class="text-danger">Data Belum Diproses: <b>' + item.total_upload + '</b></span> | '
+                        + '<span class="text-primary">Target: <b>' + item.total_target + '</b></span> | '
+                        + '<span class="text-success">Realisasi: <b>' + item.jumlah_realisasi + '</b></span> | '
+                        + '<span class="text-dark">Satuan: <b>' + (item.satuan || '-') + '</b></span>'
+                    + '</div>'
+                + '</div>'
+                + '<div class="igt-acc-right">'
+                    + '<div class="igt-acc-progress-wrap">'
+                        + '<div class="igt-acc-pct">Persentase: ' + item.persen.toFixed(2) + '%</div>'
+                        + '<div class="igt-acc-bar-track">'
+                            + '<div class="igt-acc-bar-fill bg-' + item.color + '" style="width: ' + Math.min(100, item.persen) + '%;"></div>'
+                        + '</div>'
+                    + '</div>'
+                    + '<div class="igt-acc-chevron">'
+                        + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'
+                    + '</div>'
+                + '</div>'
+            + '</div>'
+            + '<div class="igt-acc-body">'
+                + '<table class="igt-modal-table">'
+                    + '<thead>'
+                        + '<tr>'
+                            + '<th>Nama Direktorat</th>'
+                            + '<th>Jenis Data</th>'
+                            + '<th>Tanggal Upload</th>'
+                            + '<th>Tanggal ' + (item.statusKey === 'terintegrasi' ? 'Terintegrasi' : 'Kompilasi') + '</th>'
+                            + '<th>Keterangan</th>'
+                            + '<th>Status</th>'
+                            + '<th>Aksi</th>'
+                            + '<th>Download</th>'
+                        + '</tr>'
+                    + '</thead>'
+                    + '<tbody>' + rowsHtml + '</tbody>'
+                + '</table>'
+            + '</div>'
+            + '</div>';
+    });
+
+    $('#modal-kompilasi-accordion').html(html);
+
+    var infoText = 'Menampilkan ' + items.length + ' dari ' + detail.items.length + ' Layer IGT (' + detail.labelPeriode + ')';
+    $('#modal-kompilasi-info').text(infoText);
 }
 
 function renderKompilasiIntegrasi(kompilasi) {
     $('#integrasi-kompilasi-terkompilasi').text(kompilasi.totalLayer);
 
     var bulanLabels = ['JAN', 'FEB', 'MAR', 'APR', 'MEI', 'JUN', 'JUL', 'AGT', 'SEP', 'OKT', 'NOV', 'DES'];
-    $('#integrasi-kompilasi-bulan').html(bulanLabels.map(function(m) {
-        return '<span>' + m + '</span>';
+    $('#integrasi-kompilasi-bulan').html(bulanLabels.map(function(m, idx) {
+        return '<span class="igt-bulan-btn" data-bulan="' + m + '" data-bulan-idx="' + (idx + 1) + '" title="Klik untuk filter kumulatif s.d. ' + m + '">' + m + '</span>';
     }).join(''));
 
     var maks = 0;
@@ -1289,19 +1548,20 @@ function renderKompilasiIntegrasi(kompilasi) {
 
     var TINGGI_GRAFIK = 95;
     var chartHtml = '';
-    kompilasi.bulanan.forEach(function(b) {
+    kompilasi.bulanan.forEach(function(b, idx) {
         var total = (b.terkompilasi || 0) + (b.terintegrasi || 0);
-        chartHtml += '<div class="igt-tumpuk__kolom" title="' + b.bulan + ': ' + (b.terkompilasi || 0) + ' Terkompilasi, ' + (b.terintegrasi || 0) + ' Terintegrasi">';
+        var bIdx = idx + 1;
+        chartHtml += '<div class="igt-tumpuk__kolom" data-bulan="' + b.bulan + '" data-bulan-idx="' + bIdx + '" title="' + b.bulan + ': ' + (b.terkompilasi || 0) + ' Terkompilasi, ' + (b.terintegrasi || 0) + ' Terintegrasi">';
         
         if (total > 0) {
             var hKomp = Math.round(((b.terkompilasi || 0) / maks) * TINGGI_GRAFIK);
             var hInteg = Math.round(((b.terintegrasi || 0) / maks) * TINGGI_GRAFIK);
 
             if (hKomp > 0) {
-                chartHtml += '<div class="igt-tumpuk__ruas" style="height: ' + hKomp + 'px"></div>';
+                chartHtml += '<div class="igt-tumpuk__ruas is-clickable" data-status="terkompilasi" data-bulan="' + b.bulan + '" data-bulan-idx="' + bIdx + '" style="height: ' + hKomp + 'px" title="' + b.bulan + ': ' + (b.terkompilasi || 0) + ' Layer Terkompilasi (Klik untuk filter kumulatif Jan - ' + b.bulan + ')"></div>';
             }
             if (hInteg > 0) {
-                chartHtml += '<div class="igt-tumpuk__ruas igt-tumpuk__ruas--integrasi" style="height: ' + hInteg + 'px"></div>';
+                chartHtml += '<div class="igt-tumpuk__ruas igt-tumpuk__ruas--integrasi is-clickable" data-status="terintegrasi" data-bulan="' + b.bulan + '" data-bulan-idx="' + bIdx + '" style="height: ' + hInteg + 'px" title="' + b.bulan + ': ' + (b.terintegrasi || 0) + ' Layer Terintegrasi (Klik untuk filter kumulatif Jan - ' + b.bulan + ')"></div>';
             }
         }
         chartHtml += '</div>';

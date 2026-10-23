@@ -1159,5 +1159,426 @@ window.MOCKUP_DATA = {
             wilayah: (namaKabupaten ? (namaKabupaten + ', ' + namaProvinsi) : (namaProvinsi || 'Seluruh Indonesia')),
             tahun: (tahunFilter && tahunFilter !== 'all') ? String(tahunFilter) : 'all'
         };
+    },
+
+    getKompilasiDetailList: function(statusFilter, bulanFilter, namaProvinsi, namaKabupaten, tahunFilter) {
+        var t = (tahunFilter && tahunFilter !== 'all') ? String(tahunFilter) : 'all';
+        var factor = t === '2026' || t === 'all' ? 1.0 : (t === '2025' ? 0.72 : (t === '2024' ? 0.43 : 0.22));
+
+        var bulanNames = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        var bulanShort = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+
+        var bCutoff = 12;
+        if (bulanFilter !== undefined && bulanFilter !== null && bulanFilter !== 'all') {
+            if (typeof bulanFilter === 'string' && isNaN(Number(bulanFilter))) {
+                var mapBulan = { 'JAN': 1, 'FEB': 2, 'MAR': 3, 'APR': 4, 'MEI': 5, 'JUN': 6, 'JUL': 7, 'AGT': 8, 'SEP': 9, 'OKT': 10, 'NOV': 11, 'DES': 12 };
+                bCutoff = mapBulan[bulanFilter.toUpperCase()] || 12;
+            } else {
+                bCutoff = parseInt(bulanFilter, 10) || 12;
+            }
+        }
+
+        var master14 = [
+            {
+                id: 'igt-1',
+                nama_igt: 'Bidang Tanah',
+                total_upload: 2,
+                total_target: Math.max(10, Math.round(138 * factor)),
+                jumlah_realisasi: Math.max(10, Math.round(138 * factor)),
+                satuan: 'Bidang',
+                statusKey: 'terintegrasi',
+                status: 'Terintegrasi',
+                bulanIndex: 1,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal',
+                        igt: 'Bidang Tanah',
+                        jenisData: 'SHP',
+                        tglUpload: '12/01/2026',
+                        tglIntegrasi: '12/01/2026',
+                        keterangan: 'Validasi topologi zero gap/overlap batas persil',
+                        status: 'Terintegrasi',
+                        statusKey: 'terintegrasi',
+                        hasDownload: true
+                    },
+                    {
+                        direktorat: 'Kantor Wilayah BPN Provinsi D.I. Yogyakarta',
+                        igt: 'Bidang Tanah',
+                        jenisData: 'SHP',
+                        tglUpload: '18/02/2026',
+                        tglIntegrasi: '20/02/2026',
+                        keterangan: 'Penyelarasan batas administrasi spasial persil DIY',
+                        status: 'Terintegrasi',
+                        statusKey: 'terintegrasi',
+                        hasDownload: true
+                    },
+                    {
+                        direktorat: 'Direktorat Perencanaan Tata Ruang',
+                        igt: 'Bidang Tanah',
+                        jenisData: 'SHP',
+                        tglUpload: '14/03/2026',
+                        tglIntegrasi: '15/03/2026',
+                        keterangan: 'Sinkronisasi peta persil tematik',
+                        status: 'Terintegrasi',
+                        statusKey: 'terintegrasi',
+                        hasDownload: true
+                    }
+                ]
+            },
+            {
+                id: 'igt-2',
+                nama_igt: 'Hak Atas Tanah',
+                total_upload: 1,
+                total_target: Math.max(2, Math.round(10 * factor)),
+                jumlah_realisasi: Math.max(2, Math.round(10 * factor)),
+                satuan: 'Bidang',
+                statusKey: 'terintegrasi',
+                status: 'Terintegrasi',
+                bulanIndex: 1,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal',
+                        igt: 'Hak Atas Tanah',
+                        jenisData: 'SHP',
+                        tglUpload: '15/01/2026',
+                        tglIntegrasi: '18/01/2026',
+                        keterangan: 'Kompilasi hak pakai dan HPL',
+                        status: 'Terintegrasi',
+                        statusKey: 'terintegrasi',
+                        hasDownload: true
+                    }
+                ]
+            },
+            {
+                id: 'igt-3',
+                nama_igt: 'Zona Nilai Tanah',
+                total_upload: 1,
+                total_target: Math.max(1, Math.round(5 * factor)),
+                jumlah_realisasi: Math.max(1, Math.round(5 * factor)),
+                satuan: 'Kabupaten/Kota',
+                statusKey: 'terintegrasi',
+                status: 'Terintegrasi',
+                bulanIndex: 2,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Penilaian Tanah dan Ekonomi Pertanahan',
+                        igt: 'Zona Nilai Tanah',
+                        jenisData: 'SHP',
+                        tglUpload: '10/02/2026',
+                        tglIntegrasi: '14/02/2026',
+                        keterangan: 'Pembaruan peta zona nilai ekonomi wilayah',
+                        status: 'Terintegrasi',
+                        statusKey: 'terintegrasi',
+                        hasDownload: true
+                    }
+                ]
+            },
+            {
+                id: 'igt-4',
+                nama_igt: 'RDTR Kabupaten/ Kota',
+                total_upload: 1,
+                total_target: Math.max(3, Math.round(11 * factor)),
+                jumlah_realisasi: Math.max(1, Math.round(3 * factor)),
+                satuan: 'Kawasan',
+                statusKey: 'terkompilasi',
+                status: 'Terkompilasi',
+                bulanIndex: 1,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
+                        igt: 'RDTR Kabupaten/ Kota',
+                        jenisData: 'SHP',
+                        tglUpload: '20/01/2026',
+                        tglIntegrasi: '25/01/2026',
+                        keterangan: 'Kompilasi pola ruang RDTR kawasan perkotaan',
+                        status: 'Terkompilasi',
+                        statusKey: 'terkompilasi',
+                        hasDownload: false
+                    }
+                ]
+            },
+            {
+                id: 'igt-5',
+                nama_igt: 'Inventarisasi Tanah Kritis',
+                total_upload: 0,
+                total_target: Math.max(1, Math.round(4 * factor)),
+                jumlah_realisasi: Math.max(1, Math.round(3 * factor)),
+                satuan: 'Lokasi',
+                statusKey: 'terintegrasi',
+                status: 'Terintegrasi',
+                bulanIndex: 8,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Penatagunaan Tanah',
+                        igt: 'Inventarisasi Tanah Kritis',
+                        jenisData: 'SHP',
+                        tglUpload: '12/08/2026',
+                        tglIntegrasi: '15/08/2026',
+                        keterangan: 'Pemetaan lahan kritis sub-DAS',
+                        status: 'Terintegrasi',
+                        statusKey: 'terintegrasi',
+                        hasDownload: true
+                    }
+                ]
+            },
+            {
+                id: 'igt-6',
+                nama_igt: 'RDTR Kawasan Perbatasan Negara',
+                total_upload: 0,
+                total_target: Math.max(1, Math.round(5 * factor)),
+                jumlah_realisasi: Math.max(1, Math.round(3 * factor)),
+                satuan: 'Lokasi',
+                statusKey: 'terintegrasi',
+                status: 'Terintegrasi',
+                bulanIndex: 10,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
+                        igt: 'RDTR Kawasan Perbatasan Negara',
+                        jenisData: 'SHP',
+                        tglUpload: '18/10/2026',
+                        tglIntegrasi: '21/10/2026',
+                        keterangan: 'Integrasi batas kawasan perbatasan strategis',
+                        status: 'Terintegrasi',
+                        statusKey: 'terintegrasi',
+                        hasDownload: true
+                    }
+                ]
+            },
+            {
+                id: 'igt-7',
+                nama_igt: 'Lahan Baku Sawah Nasional',
+                total_upload: 0,
+                total_target: Math.max(1, Math.round(5 * factor)),
+                jumlah_realisasi: Math.max(1, Math.round(1 * factor)),
+                satuan: 'Kawasan',
+                statusKey: 'terkompilasi',
+                status: 'Terkompilasi',
+                bulanIndex: 5,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu',
+                        igt: 'Lahan Baku Sawah Nasional',
+                        jenisData: 'GeoJSON',
+                        tglUpload: '14/05/2026',
+                        tglIntegrasi: '18/05/2026',
+                        keterangan: 'Verifikasi luasan lahan baku sawah',
+                        status: 'Terkompilasi',
+                        statusKey: 'terkompilasi',
+                        hasDownload: false
+                    }
+                ]
+            },
+            {
+                id: 'igt-8',
+                nama_igt: 'Penggunaan Tanah',
+                total_upload: 1,
+                total_target: Math.max(2, Math.round(7 * factor)),
+                jumlah_realisasi: Math.max(1, Math.round(1 * factor)),
+                satuan: 'Lokasi',
+                statusKey: 'terkompilasi',
+                status: 'Terkompilasi',
+                bulanIndex: 6,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Penatagunaan Tanah',
+                        igt: 'Penggunaan Tanah',
+                        jenisData: 'SHP',
+                        tglUpload: '08/06/2026',
+                        tglIntegrasi: '12/06/2026',
+                        keterangan: 'Kompilasi data tutupan lahan eksisting',
+                        status: 'Terkompilasi',
+                        statusKey: 'terkompilasi',
+                        hasDownload: false
+                    }
+                ]
+            },
+            {
+                id: 'igt-9',
+                nama_igt: 'Neraca Penatagunaan Tanah',
+                total_upload: 1,
+                total_target: Math.max(2, Math.round(10 * factor)),
+                jumlah_realisasi: Math.max(1, Math.round(1 * factor)),
+                satuan: 'Lokasi',
+                statusKey: 'terintegrasi',
+                status: 'Terintegrasi',
+                bulanIndex: 10,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Penatagunaan Tanah',
+                        igt: 'Neraca Penatagunaan Tanah',
+                        jenisData: 'SHP',
+                        tglUpload: '05/10/2026',
+                        tglIntegrasi: '09/10/2026',
+                        keterangan: 'Penyusunan neraca perubahan fungsi tanah',
+                        status: 'Terintegrasi',
+                        statusKey: 'terintegrasi',
+                        hasDownload: true
+                    }
+                ]
+            },
+            {
+                id: 'igt-10',
+                nama_igt: 'Kemampuan Tanah',
+                total_upload: 0,
+                total_target: Math.max(1, Math.round(5 * factor)),
+                jumlah_realisasi: Math.max(1, Math.round(4 * factor)),
+                satuan: 'Lokasi',
+                statusKey: 'terintegrasi',
+                status: 'Terintegrasi',
+                bulanIndex: 10,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Penatagunaan Tanah',
+                        igt: 'Kemampuan Tanah',
+                        jenisData: 'SHP',
+                        tglUpload: '10/10/2026',
+                        tglIntegrasi: '14/10/2026',
+                        keterangan: 'Kesesuaian kelas kemampuan tanah kawasan lindung',
+                        status: 'Terintegrasi',
+                        statusKey: 'terintegrasi',
+                        hasDownload: true
+                    }
+                ]
+            },
+            {
+                id: 'igt-11',
+                nama_igt: 'Lahan Sawah Dilindungi',
+                total_upload: 0,
+                total_target: Math.max(1, Math.round(6 * factor)),
+                jumlah_realisasi: Math.max(1, Math.round(6 * factor)),
+                satuan: 'Kawasan',
+                statusKey: 'terintegrasi',
+                status: 'Terintegrasi',
+                bulanIndex: 10,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu',
+                        igt: 'Lahan Sawah Dilindungi',
+                        jenisData: 'SHP',
+                        tglUpload: '12/10/2026',
+                        tglIntegrasi: '16/10/2026',
+                        keterangan: 'Integrasi penetapan LSD nasional',
+                        status: 'Terintegrasi',
+                        statusKey: 'terintegrasi',
+                        hasDownload: true
+                    }
+                ]
+            },
+            {
+                id: 'igt-12',
+                nama_igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat',
+                total_upload: 1,
+                total_target: Math.max(1, Math.round(5 * factor)),
+                jumlah_realisasi: Math.max(1, Math.round(2 * factor)),
+                satuan: 'Lokasi',
+                statusKey: 'terintegrasi',
+                status: 'Terintegrasi',
+                bulanIndex: 10,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Pemberdayaan Tanah Masyarakat',
+                        igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat',
+                        jenisData: 'SHP',
+                        tglUpload: '15/10/2026',
+                        tglIntegrasi: '19/10/2026',
+                        keterangan: 'Pemetaan klaster pemberdayaan masyarakat',
+                        status: 'Terintegrasi',
+                        statusKey: 'terintegrasi',
+                        hasDownload: true
+                    }
+                ]
+            },
+            {
+                id: 'igt-13',
+                nama_igt: 'RTRW Provinsi',
+                total_upload: 0,
+                total_target: Math.max(1, Math.round(2 * factor)),
+                jumlah_realisasi: Math.max(1, Math.round(2 * factor)),
+                satuan: 'Provinsi',
+                statusKey: 'terintegrasi',
+                status: 'Terintegrasi',
+                bulanIndex: 10,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
+                        igt: 'RTRW Provinsi',
+                        jenisData: 'SHP',
+                        tglUpload: '02/10/2026',
+                        tglIntegrasi: '05/10/2026',
+                        keterangan: 'Integrasi perda rencana tata ruang wilayah provinsi',
+                        status: 'Terintegrasi',
+                        statusKey: 'terintegrasi',
+                        hasDownload: true
+                    }
+                ]
+            },
+            {
+                id: 'igt-14',
+                nama_igt: 'RTRW Kabupaten',
+                total_upload: 0,
+                total_target: Math.max(2, Math.round(10 * factor)),
+                jumlah_realisasi: 0,
+                satuan: 'Kabupaten/Kota',
+                statusKey: 'terkompilasi',
+                status: 'Terkompilasi',
+                bulanIndex: 10,
+                datasets: [
+                    {
+                        direktorat: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
+                        igt: 'RTRW Kabupaten',
+                        jenisData: 'SHP',
+                        tglUpload: '11/10/2026',
+                        tglIntegrasi: '-',
+                        keterangan: 'Menunggu rekomendasi perbaikan peta struktur ruang',
+                        status: 'Terkompilasi',
+                        statusKey: 'terkompilasi',
+                        hasDownload: false
+                    }
+                ]
+            }
+        ];
+
+        // Hitung persentase dan warna progres tiap item
+        master14.forEach(function(item) {
+            var pct = 0;
+            if (item.total_target > 0) {
+                pct = parseFloat(((item.jumlah_realisasi / item.total_target) * 100).toFixed(2));
+            }
+            item.persen = pct;
+            item.color = pct <= 30 ? 'danger' : (pct <= 75 ? 'warning' : 'success');
+        });
+
+        // Hitung ketersediaan berdasar filter bulan (kumulatif s.d. bCutoff)
+        var cumulativeAvailable = master14.filter(function(item) {
+            if (bCutoff >= 12) return true;
+            return item.bulanIndex <= bCutoff;
+        });
+
+        var countAll = cumulativeAvailable.length;
+        var countTerintegrasi = cumulativeAvailable.filter(function(i) { return i.statusKey === 'terintegrasi'; }).length;
+        var countTerkompilasi = cumulativeAvailable.filter(function(i) { return i.statusKey === 'terkompilasi'; }).length;
+
+        var filteredItems = cumulativeAvailable;
+        if (statusFilter && statusFilter !== 'all') {
+            filteredItems = cumulativeAvailable.filter(function(item) {
+                return item.statusKey === statusFilter;
+            });
+        }
+
+        var labelPeriode = bCutoff >= 12 ? 'Semua Bulan' : ('Kumulatif Jan - ' + bulanShort[bCutoff]);
+
+        return {
+            items: filteredItems,
+            counts: {
+                all: countAll,
+                terintegrasi: countTerintegrasi,
+                terkompilasi: countTerkompilasi
+            },
+            bCutoff: bCutoff,
+            labelPeriode: labelPeriode,
+            wilayah: (namaKabupaten ? (namaKabupaten + ', ' + namaProvinsi) : (namaProvinsi || 'Seluruh Indonesia')),
+            tahun: t
+        };
     }
 };

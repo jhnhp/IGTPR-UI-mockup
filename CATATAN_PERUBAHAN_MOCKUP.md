@@ -29,6 +29,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 19 | **Filter Tahun Responsif pada Usulan Input Data** | Dropdown filter tahun (`#status-data-tahun`) bersifat statis tanpa logika responsif; pergantian tahun tidak mengubah metrik kartu maupun data tabel. | Filter tahun kini **sepenuhnya responsif secara fungsional dan visual**: <br>• **Fungsional**: Memilih tahun (2026, 2025, 2024, 2023, atau Semua Tahun) secara instan memperbarui metrik data & layer, proporsi bar progres, dan rincian status. Modal pop-up tabel usulan data ikut tersinkronisasi dua arah (*two-way sync*) memfilter data sesuai tahun aktif.<br>• **Visual (CSS Responsive)**: Header kartu menggunakan `flex-wrap: wrap; row-gap: 10px;` dan penyesuaian media queries (mobile/tablet) sehingga angka metrik dan filter tahun tetap proporsional dan rapi tanpa terpotong atau tumpang tindih. |
 | 20 | **Sinkronisasi Terpusat Filter Tahun Renaksi (Dekat Peta ke Seluruh Komponen Bawah)** | Filter tahun di dekat peta (`#beranda-detail-tahun`) hanya memfilter daftar chip tema geospasial pada popup info, terisolasi dari komponen dashboard di bawahnya. | Filter tahun di dekat peta kini menjadi **pengendali terpusat (*central controller*)** yang terhubung langsung ke **seluruh komponen data di bawah peta**: <br>1. *Usulan Input Data* (angka, layer, progress bar, rincian)<br>2. *Kompilasi Integrasi* (angka layer & diagram batang bulanan)<br>3. *Statistik IGT* (penyaringan entri tabular & luas)<br>4. *Leader Board* (peringkat & capaian tema per tahun)<br>5. *Capaian Renaksi* (target & realisasi persentase per tahun)<br>6. *Aktivitas Terkini* (log tanggal sesuai tahun renaksi)<br>7. *Modal Pop-up Usulan Data* (otomatis terfilter tahun aktif).<br>Dilengkapi pula mekanisme **sinkronisasi dua arah** (*bidirectional sync*), sehingga jika pengguna mengubah tahun di kartu manapun, kontrol utama di dekat peta ikut tersinkronisasi. |
 | 21 | **Penyelarasan Warna Status Usulan Input Data (Terupload 30% Saturation & Revisi 10% Saturation)** | Warna status *Terupload* sebelumnya hijau pastel (`#86efac`) dan *Revisi Perbaikan* merah pastel (`#fca5a5`). | Diperbarui sesuai permintaan: <br>• **Terupload**: Mengikuti rumpun warna biru yang sama dengan *Terintegrasi* & *Terkompilasi* (hue ~217°) namun dengan **saturasi 30%** dan **warna solid polos** (`hsl(217, 30%, 75%)` / `#adc0d6`, titik `#7b94b7`).<br>• **Revisi Perbaikan**: Menggunakan warna merah terang dengan **saturasi 10%** (`hsl(0, 10%, 80%)` / `#d1c7c7`, penanda bar nol tipis 4px `#aba4a4`, dan titik `#a38f8f`). Menghasilkan harmoni warna yang serasi, bersih, dan profesional. |
+| 22 | **Interaktivitas Modal & Bar Chart Kompilasi Integrasi (Clickable Metric & Monthly Bars)** | Angka total layer (14) dan bilah grafik bulanan (JAN-DES) bersifat statis tanpa aksi interaktif. | Menjadikan angka metrik utama (**14 Layer IGT**) dan bilah grafik bulanan **sepenuhnya interaktif (*clickable*)**: <br>• **Klik Angka 14**: Membuka modal pop-up menampilkan seluruh 14 Layer IGT yang terkompilasi maupun terintegrasi.<br>• **Klik Ruas Bar Spesifik (misal: Terintegrasi bulan April)**: Membuka modal terfilter khusus menampilkan layer IGT yang sudah terintegrasi secara **kumulatif dari bulan Januari hingga April** (3 layer: *Bidang Tanah*, *Hak Atas Tanah*, *Zona Nilai Tanah*). Begitu pula untuk *Terkompilasi* (1 layer: *RDTR Kabupaten/Kota*) dan bulan-bulan lainnya.<br>• **Tampilan Accordion IGT**: Modal menyajikan daftar IGT dalam format akordion interaktif (menampilkan status target, realisasi, persentase berwarna, dan rincian tabel dataset tiap IGT saat diperluas) sesuai standar UI Geoportal IGT. |
 
 ---
 
@@ -262,6 +263,26 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
     - Badge Status Modal: `hsl(0, 10%, 88%)` dengan warna teks `hsl(0, 15%, 28%)`.
     - Tab Modal Aktif: `#857272` dengan teks putih.
 - **Konsistensi Visual**: Menjaga hirarki visual dashboard tetap tenang, elegan, dan profesional, di mana status *Terupload* menyatu dalam spektrum biru data terinput, sementara status *Revisi* tampil lembut tanpa menimbulkan kesan alarmist yang mencolok.
+
+### 19. Interaktivitas Kompilasi Integrasi & Modal Akordion IGT (Clickable Metric & Monthly Bars)
+- **Elemen Pemicu Klik (*Click Triggers*)**:
+  - **Angka Metrik Utama (`#integrasi-kompilasi-klik-angka`)**: Mengklik angka 14 atau teks *"Layer IGT"* membuka modal pop-up yang menyajikan seluruh 14 Layer IGT (status *all* / Semua Bulan).
+  - **Ruas Bar Grafik Bulanan (`.igt-tumpuk__ruas.is-clickable`)**:
+    - **Terintegrasi (Royal Blue)**: Mengklik ruas bar *Terintegrasi* pada bulan tertentu (misal: **April**) membuka modal yang terfilter khusus menampilkan layer IGT yang sudah terintegrasi secara **kumulatif dari bulan Januari hingga April** (3 layer: *Bidang Tanah*, *Hak Atas Tanah*, *Zona Nilai Tanah*).
+    - **Terkompilasi (Soft Blue)**: Mengklik ruas bar *Terkompilasi* pada bulan tertentu (misal: **April**) membuka modal yang terfilter khusus menampilkan layer IGT yang sudah terkompilasi dari bulan Januari hingga April (1 layer: *RDTR Kabupaten/Kota*).
+    - Bulan-bulan lainnya (misal: Agustus menambah *Inventarisasi Tanah Kritis*, Oktober mencapai 11 layer terintegrasi) bereaksi secara kumulatif persis sesuai visualisasi bar chart.
+  - **Kolom & Label Bulan (JAN–DES)**: Mengklik kolom maupun teks singkatan bulan membuka modal kumulatif s.d. bulan tersebut.
+  - **Item Legenda**: Mengklik legenda *"Layer Terintegrasi"* atau *"Layer Terkompilasi"* membuka modal terfilter status terkait secara menyeluruh.
+- **Tampilan Antarmuka Modal Akordion IGT (`#modal-kompilasi-data`)**:
+  - Didesain secara presisi mengikuti referensi modul Kompilasi & Integrasi Data Geoportal:
+    - **Header Akordion**: Memuat nama IGT (tebal), baris metadata (`Data Belum Diproses: X` [merah], `Target: Y` [biru], `Realisasi: Z` [hijau], `Satuan: ...`), indikator persentase ketercapaian, bilah kemajuan (*progress bar*) dengan pewarnaan dinamis (merah $\le 30\%$, kuning/oranye $\le 75\%$, hijau $> 75\%$), serta ikon panah (*chevron*).
+    - **Efek Aktif (*Focus Border*)**: Item yang sedang dibuka/diperluas diberi highlight bingkai biru lembut (`border: 1px solid #93c5fd; box-shadow: 0 0 0 2px rgba(147, 197, 253, 0.35);`).
+    - **Badan Akordion (*Expandable Subtable*)**: Saat baris akordion diklik, terbuka tabel rincian data spasial untuk tema tersebut (Nama Direktorat, Jenis Data, Tanggal Upload, Tanggal Integrasi/Kompilasi, Keterangan, Status badge, Tombol Aksi Lihat/Riwayat/Cloud, dan Tombol Download SHP).
+  - **Alat Kontrol Modal**:
+    - Filter Periode Bulan (*select dropdown*: Jan s.d. Des atau Semua Bulan).
+    - Filter Tahun Renaksi (tersinkronisasi dua arah dengan dashboard).
+    - Pencarian teks instan (*live search*) terhadap nama tema IGT.
+    - Tab navigasi filter (*Semua*, *Terintegrasi*, *Terkompilasi*).
 
 ---
 

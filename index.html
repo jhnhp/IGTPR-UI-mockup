@@ -900,7 +900,7 @@
                             <img class="igt-panel__info" id="integrasi-kompilasi-info" src="assets/img/icons/info.svg" alt="Info" title="Akumulasi Layer IGT terkompilasi dan terintegrasi">
                         </div>
                         <div class="igt-panel__angka">
-                            <div class="igt-panel__nilai igt-panel__nilai--kecil"><strong id="integrasi-kompilasi-terkompilasi">14</strong><span>Layer IGT</span></div>
+                            <div class="igt-panel__nilai igt-panel__nilai--kecil" id="integrasi-kompilasi-klik-angka" role="button" tabindex="0" title="Klik untuk melihat semua data kompilasi & integrasi"><strong id="integrasi-kompilasi-terkompilasi">14</strong><span>Layer IGT</span></div>
                             <label class="igt-btn igt-pilih">
                                 <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
                                 <select id="integrasi-kompilasi-tahun" aria-label="Tahun Kompilasi Integrasi">
@@ -1452,6 +1452,81 @@
                 <div class="igt-modal-footer">
                     <div class="igt-modal-info" id="modal-usulan-info">Showing 1 to 10 of 98 entries</div>
                     <div class="igt-modal-pagination" id="modal-usulan-pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================
+         MODAL DETAIL KOMPILASI & INTEGRASI (POPUP ACCORDION)
+         ============================================== -->
+    <div class="igt-modal-backdrop" id="modal-kompilasi-data" style="display: none;">
+        <div class="igt-modal-dialog">
+            <div class="igt-modal-content">
+                <!-- Header -->
+                <div class="igt-modal-header">
+                    <div class="igt-modal-header__left">
+                        <div class="igt-modal-header__title-row">
+                            <h5 class="igt-modal-title">Daftar Layer Kompilasi & Integrasi</h5>
+                            <span class="igt-modal-badge-wilayah" id="modal-kompilasi-wilayah">Seluruh Indonesia</span>
+                            <span class="igt-modal-badge-tahun" id="modal-kompilasi-tahun-badge">Semua Tahun</span>
+                            <span class="igt-modal-badge-periode" id="modal-kompilasi-periode-badge">Semua Bulan</span>
+                        </div>
+                    </div>
+                    <div class="igt-modal-tabs" id="modal-kompilasi-tabs">
+                        <button type="button" class="igt-modal-tab is-active" data-status="all">Semua (<span id="modal-kompilasi-count-all">14</span>)</button>
+                        <button type="button" class="igt-modal-tab is-terintegrasi" data-status="terintegrasi">Terintegrasi (<span id="modal-kompilasi-count-terintegrasi">11</span>)</button>
+                        <button type="button" class="igt-modal-tab is-terkompilasi" data-status="terkompilasi">Terkompilasi (<span id="modal-kompilasi-count-terkompilasi">3</span>)</button>
+                    </div>
+                    <button type="button" class="igt-modal-close" id="modal-kompilasi-close" aria-label="Tutup modal">&times;</button>
+                </div>
+
+                <!-- Toolbar (Filter Periode Bulan, Filter Tahun, & Search) -->
+                <div class="igt-modal-toolbar">
+                    <div class="igt-modal-toolbar__left">
+                        <div class="igt-modal-toolbar__filter-tahun">
+                            <label for="modal-kompilasi-bulan-select" class="igt-modal-filter-label">Periode Bulan:</label>
+                            <select id="modal-kompilasi-bulan-select" class="igt-modal-tahun-select" aria-label="Filter Periode Bulan Kompilasi">
+                                <option value="all" selected>Semua Bulan (Jan - Des)</option>
+                                <option value="1">Januari</option>
+                                <option value="2">s.d. Februari</option>
+                                <option value="3">s.d. Maret</option>
+                                <option value="4">s.d. April</option>
+                                <option value="5">s.d. Mei</option>
+                                <option value="6">s.d. Juni</option>
+                                <option value="7">s.d. Juli</option>
+                                <option value="8">s.d. Agustus</option>
+                                <option value="9">s.d. September</option>
+                                <option value="10">s.d. Oktober</option>
+                                <option value="11">s.d. November</option>
+                                <option value="12">s.d. Desember</option>
+                            </select>
+                        </div>
+                        <div class="igt-modal-toolbar__filter-tahun">
+                            <label for="modal-kompilasi-tahun-select" class="igt-modal-filter-label">Tahun Renaksi:</label>
+                            <select id="modal-kompilasi-tahun-select" class="igt-modal-tahun-select" aria-label="Filter Tahun Kompilasi">
+                                <option value="all">Semua Tahun</option>
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="igt-modal-toolbar__right">
+                        <label class="igt-modal-search-label">
+                            Search:
+                            <input type="search" id="modal-kompilasi-search" class="igt-modal-search-input" placeholder="Cari Nama IGT...">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Accordion List Body -->
+                <div class="igt-acc-list" id="modal-kompilasi-accordion"></div>
+
+                <!-- Footer -->
+                <div class="igt-modal-footer">
+                    <div class="igt-modal-info" id="modal-kompilasi-info">Menampilkan 14 dari 14 Layer IGT</div>
                 </div>
             </div>
         </div>

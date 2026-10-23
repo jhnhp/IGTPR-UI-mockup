@@ -2687,3 +2687,240 @@ a.igt-stat:hover {
         width: 100%;
     }
 }
+
+/* ====================================================
+   Kompilasi Integrasi Interactive Clickable Elements
+==================================================== */
+#integrasi-kompilasi-klik-angka {
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+    border-radius: 6px;
+    padding: 2px 6px;
+    margin-left: -6px;
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+#integrasi-kompilasi-klik-angka:hover {
+    background-color: #f1f5f9;
+    opacity: 0.9;
+}
+
+.igt-tumpuk__ruas.is-clickable {
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.igt-tumpuk__ruas.is-clickable:hover {
+    filter: brightness(1.2);
+    transform: scaleY(1.05);
+    transform-origin: bottom;
+}
+
+.igt-tumpuk__kolom {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.igt-tumpuk__kolom:hover {
+    background-color: rgba(226, 232, 240, 0.4);
+    border-radius: 4px;
+}
+
+.igt-bulan-btn {
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: background-color 0.15s, color 0.15s, font-weight 0.15s;
+}
+
+.igt-bulan-btn:hover {
+    background-color: #e2e8f0;
+    color: #1d4ed8;
+    font-weight: 700;
+}
+
+.igt-batang__legenda span {
+    cursor: pointer;
+    transition: opacity 0.15s, color 0.15s;
+}
+
+.igt-batang__legenda span:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* ====================================================
+   Modal Kompilasi & Integrasi (Accordion View)
+==================================================== */
+.igt-modal-badge-periode {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.igt-acc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 20px 24px;
+    max-height: calc(85vh - 210px);
+    overflow-y: auto;
+}
+
+.igt-acc-item {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #ffffff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.igt-acc-item:hover {
+    border-color: #cbd5e1;
+}
+
+.igt-acc-item.is-expanded {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 2px rgba(147, 197, 253, 0.35);
+}
+
+.igt-acc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    cursor: pointer;
+    background: #ffffff;
+    user-select: none;
+    transition: background-color 0.15s ease;
+}
+
+.igt-acc-header:hover {
+    background: #f8fafc;
+}
+
+.igt-acc-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.igt-acc-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.igt-acc-meta {
+    font-size: 11px;
+    color: #64748b;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.igt-acc-meta .text-danger { color: #dc2626 !important; }
+.igt-acc-meta .text-primary { color: #2563eb !important; }
+.igt-acc-meta .text-success { color: #16a34a !important; }
+.igt-acc-meta .text-dark { color: #1e293b !important; }
+
+.igt-acc-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 0 0 auto;
+}
+
+.igt-acc-progress-wrap {
+    width: 175px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.igt-acc-pct {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1e293b;
+    text-align: right;
+}
+
+.igt-acc-bar-track {
+    width: 100%;
+    height: 10px;
+    border-radius: 9999px;
+    background: #f1f5f9;
+    overflow: hidden;
+}
+
+.igt-acc-bar-fill {
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 0.3s ease;
+}
+
+.igt-acc-bar-fill.bg-danger { background-color: #ef4444; }
+.igt-acc-bar-fill.bg-warning { background-color: #f59e0b; }
+.igt-acc-bar-fill.bg-success { background-color: #10b981; }
+
+.igt-acc-chevron {
+    width: 18px;
+    height: 18px;
+    color: #94a3b8;
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.igt-acc-item.is-expanded .igt-acc-chevron {
+    transform: rotate(180deg);
+}
+
+.igt-acc-body {
+    display: none;
+    padding: 12px 18px 18px;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+}
+
+.igt-acc-item.is-expanded .igt-acc-body {
+    display: block;
+}
+
+.igt-acc-body .igt-modal-table {
+    margin: 0;
+    background: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.igt-acc-body .igt-modal-table th {
+    background: #f1f5f9;
+    font-size: 11px;
+}
+
+.igt-acc-body .igt-modal-table td {
+    font-size: 12px;
+    padding: 8px 10px;
+}
+
+.igt-acc-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+}
