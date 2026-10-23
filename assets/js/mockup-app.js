@@ -268,9 +268,11 @@ function initHeroMap() {
 
             // 2. Click Province (Level 1 -> Level 2)
             mapInstance.on('click', 'provinsi-isi', function(e) {
-                if (currentProvince) return;
                 if (!e.features || e.features.length === 0) return;
                 var f = e.features[0];
+                if (currentProvince && currentProvince.toLowerCase() === f.properties.nama.toLowerCase()) {
+                    return;
+                }
                 popup.remove();
                 zoomKeProvinsi(f, f.properties.nama);
             });
@@ -328,6 +330,48 @@ function initHeroMap() {
                 $('#beranda-filter').fadeOut(150);
             });
 
+            // 7. Detail Card Event Handlers
+            $('#beranda-detail-tutup').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                resetKeSeluruhIndonesia();
+            });
+
+            $('#beranda-detail-kembali').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                kembaliKeProvinsi();
+            });
+
+            $('#beranda-detail-cari').on('input', renderDetailChips);
+            $('#beranda-detail-jenis, #beranda-detail-igt, #beranda-detail-tahun').on('change', renderDetailChips);
+
+            // Shortcut Cmd+K / Ctrl+K to search & Esc to close
+            $(document).on('keydown', function(e) {
+                if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+                    if (detailState.isOpen) {
+                        e.preventDefault();
+                        $('#beranda-detail-cari').focus().select();
+                    }
+                } else if (e.key === 'Escape') {
+                    if (detailState.isOpen && !$(e.target).is('input:focus')) {
+                        resetKeSeluruhIndonesia();
+                    }
+                }
+            });
+
+            // Map canvas background click (outside polygons) to reset
+            mapInstance.on('click', function(e) {
+                if (detailState.isOpen) {
+                    var features = mapInstance.queryRenderedFeatures(e.point, {
+                        layers: currentProvince ? ['kabupaten-isi', 'provinsi-isi'] : ['provinsi-isi']
+                    });
+                    if (!features.length) {
+                        resetKeSeluruhIndonesia();
+                    }
+                }
+            });
+
             return;
         } catch (err) {
             console.warn('MapLibre multi-level init error:', err);
@@ -338,8 +382,132 @@ function initHeroMap() {
 }
 
 /* ----------------------------------------------------
+   Detail Informasi Popup State & Functions
+----------------------------------------------------- */
+var detailState = {
+    wilayah: null,
+    jenisWilayah: null, // 'provinsi' or 'kabupaten'
+    indukProvinsi: null,
+    themes: [],
+    isOpen: false
+};
+
+function getFitBoundsPaddingDetail() {
+    var containerWidth = mapInstance ? mapInstance.getContainer().clientWidth : 1200;
+    var isDesktop = window.matchMedia('(min-width: 992px)').matches;
+    if (!isDesktop) {
+        return { top: 40, bottom: 40, left: 30, right: 30 };
+    }
+    var detailEl = document.getElementById('beranda-detail');
+    var detailOffset = detailEl ? detailEl.offsetLeft : 56;
+    var detailWidth = detailEl && detailEl.offsetWidth > 0 ? detailEl.offsetWidth : 610;
+    var leftPadding = Math.min(detailOffset + detailWidth + 40, containerWidth * 0.70);
+    return {
+        top: 60,
+        bottom: 60,
+        left: leftPadding,
+        right: 40
+    };
+}
+
+function bukaDetailInformasi(namaWilayah, jenisWilayah, indukProvinsi) {
+    detailState.wilayah = namaWilayah;
+    detailState.jenisWilayah = jenisWilayah;
+    detailState.indukProvinsi = indukProvinsi || null;
+    detailState.isOpen = true;
+
+    // Format display title
+    var displayTitle = '';
+    if (jenisWilayah === 'provinsi') {
+        displayTitle = /^provinsi\s/i.test(namaWilayah) ? namaWilayah : 'Provinsi ' + namaWilayah;
+        $('#beranda-detail-kembali').hide();
+    } else {
+        displayTitle = formatNamaKabupaten(namaWilayah);
+        $('#beranda-detail-kembali-nama').text(indukProvinsi || 'Provinsi');
+        $('#beranda-detail-kembali').show();
+    }
+    $('#beranda-detail-nama').text(displayTitle).attr('title', displayTitle);
+
+    // Fetch themes for this region
+    detailState.themes = (window.MOCKUP_DATA && window.MOCKUP_DATA.getDetailThemes)
+        ? window.MOCKUP_DATA.getDetailThemes(indukProvinsi || namaWilayah, jenisWilayah === 'kabupaten' ? namaWilayah : null)
+        : [];
+
+    // Populate IGT dropdown options
+    var igtSelect = $('#beranda-detail-igt');
+    var igtHtml = '<option value="">Pilih IGT</option>';
+    var distinctNames = [];
+    detailState.themes.forEach(function(item) {
+        if (distinctNames.indexOf(item.nama) === -1) {
+            distinctNames.push(item.nama);
+            igtHtml += '<option value="' + item.nama + '">' + item.nama + '</option>';
+        }
+    });
+    igtSelect.html(igtHtml);
+    igtSelect.val('');
+    $('#beranda-detail-jenis').val('');
+    $('#beranda-detail-cari').val('');
+    $('#beranda-detail-tahun').val('all');
+
+    // Render chips and badge counter
+    renderDetailChips();
+
+    // Reveal the popup card
+    $('#beranda-detail').addClass('is-buka').attr('aria-hidden', 'false');
+    $('#beranda').addClass('is-rinci');
+    $('#map-wilayah-indicator').hide(); // Hide floating breadcrumb to avoid UI clutter
+}
+
+function tutupDetailInformasi() {
+    detailState.isOpen = false;
+    $('#beranda-detail').removeClass('is-buka').attr('aria-hidden', 'true');
+    $('#beranda').removeClass('is-rinci');
+}
+
+function renderDetailChips() {
+    var q = $.trim($('#beranda-detail-cari').val()).toLowerCase();
+    var jenis = $('#beranda-detail-jenis').val();
+    var igt = $('#beranda-detail-igt').val();
+    var tahun = $('#beranda-detail-tahun').val();
+
+    var filtered = detailState.themes.filter(function(item) {
+        var matchQ = !q || item.nama.toLowerCase().indexOf(q) !== -1;
+        var matchJenis = !jenis || item.basis === jenis;
+        var matchIgt = !igt || item.nama === igt;
+        var matchTahun = !tahun || tahun === 'all' || item.tahun === tahun;
+        return matchQ && matchJenis && matchIgt && matchTahun;
+    });
+
+    $('#beranda-detail-tema').text(filtered.length);
+
+    var container = $('#beranda-detail-daftar');
+    if (!filtered.length) {
+        container.html('<p class="igt-detail__kosong text-muted small my-2">Tidak ada IGT yang cocok dengan filter.</p>');
+        return;
+    }
+
+    var html = '<div class="igt-detail__kolom">' +
+        '<div class="igt-detail__baris-label">' +
+        '    <div class="igt-detail__legenda">' +
+        '        <span class="igt-detail__legenda-item"><span class="igt-detail__legenda-titik igt-detail__legenda-titik--bidang"></span> IGT Berbasis Bidang</span>' +
+        '        <span class="igt-detail__legenda-item"><span class="igt-detail__legenda-titik igt-detail__legenda-titik--kawasan"></span> IGT Berbasis Kawasan</span>' +
+        '    </div>' +
+        '</div>' +
+        '<div class="igt-detail__chips">';
+
+    filtered.forEach(function(item) {
+        var cls = item.basis === 'kawasan' ? 'igt-tag--kawasan' : '';
+        var tooltip = item.basis === 'kawasan' ? 'IGT Berbasis Kawasan' : 'IGT Berbasis Bidang';
+        html += '<span class="igt-tag ' + cls + '" title="' + tooltip + '">' + item.nama + '</span>';
+    });
+
+    html += '</div></div>';
+    container.html(html);
+}
+
+/* ----------------------------------------------------
    Level Transitions
----------------------------------------------------- */
+----------------------------------------------------- */
 
 // Transition to Province View (Level 2)
 function zoomKeProvinsi(feature, namaProvinsi) {
@@ -352,7 +520,7 @@ function zoomKeProvinsi(feature, namaProvinsi) {
     if (mapInstance) {
         mapInstance.dragPan.enable();
         mapInstance.fitBounds(bbox, {
-            padding: { top: 60, bottom: 60, left: 60, right: 60 },
+            padding: getFitBoundsPaddingDetail(),
             maxZoom: 8.5,
             duration: 1000
         });
@@ -392,13 +560,9 @@ function zoomKeProvinsi(feature, namaProvinsi) {
         mapInstance.setFilter('kabupaten-sorot', ['==', 'kabupaten', '']);
     }
 
-    // Update Floating Breadcrumb on Map
-    $('#map-breadcrumb-text').text(namaProvinsi);
-    $('#btn-back-to-province').hide();
-    $('#map-wilayah-indicator').fadeIn(200);
-
-    // Update Header Badge
-    $('#hero-wilayah-badge').html('<i class="ri-map-pin-2-line"></i> Provinsi ' + namaProvinsi).fadeIn(200);
+    // Open Detail Informasi popup
+    bukaDetailInformasi(namaProvinsi, 'provinsi', null);
+    $('#hero-wilayah-badge').hide();
 
     // Update Dashboard Data
     applyDataFilter(namaProvinsi, null);
@@ -413,7 +577,7 @@ function zoomKeKabupaten(feature, namaKabupaten) {
 
     if (mapInstance) {
         mapInstance.fitBounds(bbox, {
-            padding: { top: 70, bottom: 70, left: 70, right: 70 },
+            padding: getFitBoundsPaddingDetail(),
             maxZoom: 10.5,
             duration: 900
         });
@@ -444,14 +608,9 @@ function zoomKeKabupaten(feature, namaKabupaten) {
         mapInstance.setFilter('kabupaten-sorot', ['==', 'kabupaten', '']);
     }
 
-    // Update Floating Breadcrumb on Map
-    $('#map-breadcrumb-text').html(currentProvince + ' &rsaquo; <strong>' + kabDisplay + '</strong>');
-    $('#btn-back-province-name').text(currentProvince);
-    $('#btn-back-to-province').show();
-    $('#map-wilayah-indicator').fadeIn(200);
-
-    // Update Header Badge
-    $('#hero-wilayah-badge').html('<i class="ri-building-line"></i> ' + kabDisplay + ' (' + currentProvince + ')').fadeIn(200);
+    // Open Detail Informasi for Kabupaten
+    bukaDetailInformasi(namaKabupaten, 'kabupaten', currentProvince);
+    $('#hero-wilayah-badge').hide();
 
     // Update Dashboard Data for this Kabupaten
     applyDataFilter(currentProvince, namaKabupaten);
@@ -465,7 +624,7 @@ function kembaliKeProvinsi() {
 
         if (mapInstance) {
             mapInstance.fitBounds(bbox, {
-                padding: { top: 60, bottom: 60, left: 60, right: 60 },
+                padding: getFitBoundsPaddingDetail(),
                 maxZoom: 8.5,
                 duration: 900
             });
@@ -482,10 +641,9 @@ function kembaliKeProvinsi() {
             mapInstance.setFilter('kabupaten-sorot', ['==', 'kabupaten', '']);
         }
 
-        // Update Breadcrumb & Badge back to province
-        $('#map-breadcrumb-text').text(currentProvince);
-        $('#btn-back-to-province').hide();
-        $('#hero-wilayah-badge').html('<i class="ri-map-pin-2-line"></i> Provinsi ' + currentProvince);
+        // Open Detail Informasi for Province
+        bukaDetailInformasi(currentProvince, 'provinsi', null);
+        $('#hero-wilayah-badge').hide();
 
         // Update Dashboard Data back to province level
         applyDataFilter(currentProvince, null);
@@ -499,6 +657,8 @@ function resetKeSeluruhIndonesia() {
     currentProvince = null;
     currentProvinceFeature = null;
     currentKabupaten = null;
+
+    tutupDetailInformasi();
 
     if (mapInstance) {
         mapInstance.dragPan.disable();

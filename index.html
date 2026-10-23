@@ -83,6 +83,271 @@
             z-index: 10;
         }
 
+        /* Detail Informasi Popup Card */
+        .igt-detail {
+            position: absolute;
+            top: 64px;
+            left: clamp(20px, 4%, 56px);
+            z-index: 25;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: min(610px, calc(100% - 320px));
+            min-width: 440px;
+            max-height: calc(100% - 72px);
+            padding: 18px 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.05);
+            border: 1px solid #e2e8f0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px);
+            transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+            pointer-events: none;
+        }
+
+        .igt-detail.is-buka {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s;
+        }
+
+        .igt-detail__head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .igt-detail__judul {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: #0f172a;
+        }
+
+        .igt-detail__panel {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 0;
+            padding: 12px;
+            background-color: #f8fafc;
+            border: 1px solid #edf2f7;
+            border-radius: 10px;
+        }
+
+        .igt-detail__baris {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            white-space: nowrap;
+        }
+
+        .igt-detail__wilayah {
+            overflow: hidden;
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.25;
+            letter-spacing: -0.3px;
+            color: #0f172a;
+            text-overflow: ellipsis;
+        }
+
+        .igt-detail__tema {
+            display: flex;
+            align-items: baseline;
+            gap: 3px;
+            font-size: 12px;
+            line-height: 1.2;
+            color: #64748b;
+        }
+
+        .igt-detail__tema strong {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .igt-detail__alat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: nowrap;
+        }
+
+        .igt-detail__alat .igt-searchbar {
+            flex: 1 1 140px !important;
+            min-width: 110px !important;
+            max-width: 170px !important;
+            height: 34px;
+            padding: 2px 6px;
+        }
+
+        .igt-detail__alat .igt-searchbar input {
+            font-size: 11px;
+            min-width: 0;
+            width: 100%;
+        }
+
+        .igt-detail__alat .igt-searchbar__icon {
+            width: 22px;
+            height: 22px;
+        }
+
+        .igt-detail__alat .igt-searchbar__icon img {
+            width: 14px;
+            height: 14px;
+        }
+
+        .igt-detail__alat .igt-pilih {
+            flex: 0 0 112px !important;
+            width: 112px !important;
+            max-width: 112px !important;
+            height: 34px;
+            padding: 0 6px !important;
+            overflow: hidden;
+        }
+
+        .igt-detail__alat .igt-pilih select {
+            width: 100% !important;
+            max-width: 100% !important;
+            font-size: 11px;
+            height: 34px;
+            padding: 0 14px 0 0 !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .igt-detail__alat .igt-pilih__caret {
+            right: 4px;
+            width: 9px;
+            height: 9px;
+        }
+
+        .igt-detail__alat .igt-detail__pilih--tahun {
+            flex: 0 0 125px !important;
+            width: 125px !important;
+            max-width: 125px !important;
+            padding-left: 4px !important;
+        }
+
+        .igt-detail__alat .igt-detail__pilih--tahun select {
+            padding-left: 2px !important;
+        }
+
+        .igt-detail__daftar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 0;
+            max-height: 200px;
+            padding: 14px 16px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .igt-detail__legenda {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+
+        .igt-detail__legenda-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .igt-detail__legenda-titik {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .igt-detail__legenda-titik--bidang {
+            background-color: #2563eb;
+            border: none;
+        }
+
+        .igt-detail__legenda-titik--kawasan {
+            background-color: #d97706;
+            border: none;
+        }
+
+        .igt-detail__chips {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .igt-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            line-height: 1.4;
+            color: #1d4ed8;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+
+        .igt-tag:hover {
+            background-color: #dbeafe;
+            border-color: #93c5fd;
+        }
+
+        .igt-tag--kawasan {
+            background-color: #fef3c7;
+            border-color: #fde68a;
+            color: #b45309;
+        }
+
+        .igt-tag--kawasan:hover {
+            background-color: #fde68a;
+            border-color: #fcd34d;
+        }
+
+        @media (max-width: 991.98px) {
+            .igt-detail {
+                position: relative;
+                top: auto;
+                left: auto;
+                width: 100%;
+                min-width: 0;
+                max-height: none;
+                margin-top: 16px;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                display: none;
+            }
+            .igt-detail.is-buka {
+                display: flex;
+            }
+            .igt-detail__alat {
+                flex-wrap: wrap;
+            }
+        }
+
         .map-wilayah-pill {
             display: inline-flex;
             align-items: center;
@@ -453,6 +718,62 @@
                     </button>
                 </div>
             </div>
+
+            <!-- Detail Informasi Popup Card -->
+            <section class="igt-detail" id="beranda-detail" aria-label="Detail Informasi" aria-hidden="true">
+                <div class="igt-detail__head">
+                    <div class="d-flex align-items-center gap-2">
+                        <h6 class="igt-detail__judul">Detail Informasi</h6>
+                        <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 rounded-pill" id="beranda-detail-kembali" style="display: none; font-size: 11px; font-weight: 500;" title="Kembali ke Tingkat Provinsi">
+                            <i class="ri-arrow-up-s-line"></i> <span id="beranda-detail-kembali-nama">Provinsi</span>
+                        </button>
+                    </div>
+                    <button type="button" class="igt-chip__close" id="beranda-detail-tutup" title="Tutup (Esc)">
+                        <img src="assets/img/icons/x.svg" alt="Tutup">
+                    </button>
+                </div>
+                <div class="igt-detail__panel">
+                    <div class="igt-detail__baris">
+                        <span class="igt-detail__wilayah" id="beranda-detail-nama">-</span>
+                        <span class="igt-detail__tema"><strong id="beranda-detail-tema">0</strong> tema</span>
+                    </div>
+                    <div class="igt-detail__alat">
+                        <div class="igt-searchbar igt-detail__cari">
+                            <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt="Cari"></span>
+                            <input type="search" id="beranda-detail-cari" placeholder="Cari sesuatu...">
+                            <span class="igt-searchbar__shortcut">&#8984; K</span>
+                        </div>
+                        <label class="igt-btn igt-pilih igt-detail__pilih">
+                            <select id="beranda-detail-jenis" aria-label="Jenis IGT">
+                                <option value="">Pilih Jenis IGT</option>
+                                <option value="bidang">Bidang</option>
+                                <option value="kawasan">Kawasan</option>
+                            </select>
+                            <img class="igt-pilih__caret" src="assets/img/icons/arrow-down.svg" alt="">
+                        </label>
+                        <label class="igt-btn igt-pilih igt-detail__pilih">
+                            <select id="beranda-detail-igt" aria-label="IGT">
+                                <option value="">Pilih IGT</option>
+                            </select>
+                            <img class="igt-pilih__caret" src="assets/img/icons/arrow-down.svg" alt="">
+                        </label>
+                        <label class="igt-btn igt-pilih igt-detail__pilih igt-detail__pilih--tahun">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
+                            <select id="beranda-detail-tahun" aria-label="Tahun Renaksi">
+                                <option value="all">Pilih Tahun</option>
+                                <option value="2019">2019</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026" selected>2026</option>
+                                <option value="2027">2027</option>
+                            </select>
+                            <img class="igt-pilih__caret" src="assets/img/icons/caret-up-down.svg" alt="">
+                        </label>
+                    </div>
+                    <div class="igt-detail__daftar" id="beranda-detail-daftar"></div>
+                </div>
+            </section>
         </div>
 
         <!-- 2. SUMMARY CARDS: USULAN INPUT DATA & KOMPILASI INTEGRASI -->
