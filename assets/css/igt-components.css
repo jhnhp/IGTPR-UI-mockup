@@ -2135,3 +2135,453 @@ a.igt-stat:hover {
 .igt-btn.is-terpilih {
     border-color: var(--igt-primary);
 }
+
+/* ====================================================
+   MODAL DAFTAR USULAN INPUT DATA (POPUP TABEL)
+   ==================================================== */
+.igt-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: igtFadeIn 0.2s ease-out;
+}
+
+@keyframes igtFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.igt-modal-dialog {
+    width: 100%;
+    max-width: 1380px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    animation: igtSlideDown 0.25s ease-out;
+}
+
+@keyframes igtSlideDown {
+    from { transform: translateY(-16px) scale(0.98); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.igt-modal-content {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    max-height: 90vh;
+}
+
+/* Header */
+.igt-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #ffffff;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.igt-modal-header__title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.igt-modal-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+}
+
+.igt-modal-badge-wilayah {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: #2563eb;
+    background: #eff6ff;
+    padding: 2px 9px;
+    border-radius: 9999px;
+    border: 1px solid #dbeafe;
+}
+
+.igt-modal-tabs {
+    display: flex;
+    gap: 4px;
+    background: #f1f5f9;
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.igt-modal-tab {
+    border: 0;
+    background: transparent;
+    padding: 5px 11px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #64748b;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.igt-modal-tab:hover {
+    color: #0f172a;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.igt-modal-tab.is-active {
+    background: #0f172a;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+.igt-modal-tab.is-terintegrasi.is-active {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.igt-modal-tab.is-terkompilasi.is-active {
+    background: #0284c7;
+    color: #ffffff;
+}
+
+.igt-modal-tab.is-terupload.is-active {
+    background: #15803d;
+    color: #ffffff;
+}
+
+.igt-modal-tab.is-perbaikan.is-active {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+.igt-modal-close {
+    border: 0;
+    background: transparent;
+    font-size: 24px;
+    line-height: 1;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color 0.15s, background-color 0.15s;
+}
+
+.igt-modal-close:hover {
+    color: #0f172a;
+    background: #f1f5f9;
+}
+
+/* Toolbar */
+.igt-modal-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px 8px;
+    background: #ffffff;
+    font-size: 13px;
+    color: #475569;
+}
+
+.igt-modal-perpage-select {
+    padding: 3px 6px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 12.5px;
+    margin: 0 4px;
+    color: #334155;
+    background: #fff;
+}
+
+.igt-modal-search-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.igt-modal-search-input {
+    padding: 5px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 12.5px;
+    outline: none;
+    width: 200px;
+    color: #1e293b;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.igt-modal-search-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* Table Wrap */
+.igt-modal-table-wrap {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: calc(90vh - 200px);
+    padding: 0 20px;
+}
+
+.igt-modal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    text-align: left;
+    white-space: normal;
+}
+
+.igt-modal-table th {
+    padding: 10px 8px;
+    font-weight: 600;
+    color: #334155;
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+    border-top: 1px solid #e2e8f0;
+    white-space: nowrap;
+    user-select: none;
+    font-size: 12px;
+}
+
+.igt-modal-table th.is-sortable {
+    cursor: pointer;
+}
+
+.igt-modal-table th.is-sortable:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.igt-sort-caret {
+    font-size: 10px;
+    color: #94a3b8;
+    margin-left: 3px;
+}
+
+.igt-modal-table td {
+    padding: 9px 8px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+    vertical-align: middle;
+    line-height: 1.4;
+}
+
+.igt-modal-table tr:hover td {
+    background-color: #f8fafc;
+}
+
+/* Status Badges matching screenshot */
+.igt-status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.igt-status-badge--terintegrasi {
+    background-color: #10b981;
+    color: #ffffff;
+}
+
+.igt-status-badge--terkompilasi {
+    background-color: #0ea5e9;
+    color: #ffffff;
+}
+
+.igt-status-badge--terupload {
+    background-color: #86efac;
+    color: #14532d;
+}
+
+.igt-status-badge--perbaikan {
+    background-color: #fca5a5;
+    color: #7f1d1d;
+}
+
+/* Action Buttons matching screenshot */
+.igt-aksi-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+}
+
+.igt-aksi-btn {
+    width: 25px;
+    height: 25px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: transform 0.1s, opacity 0.15s;
+    background: transparent;
+    padding: 0;
+}
+
+.igt-aksi-btn:hover {
+    transform: scale(1.08);
+}
+
+.igt-aksi-btn--view {
+    border-color: #f59e0b;
+    color: #d97706;
+    background: #fffbeb;
+}
+
+.igt-aksi-btn--history {
+    border-color: #06b6d4;
+    color: #0284c7;
+    background: #f0f9ff;
+}
+
+.igt-aksi-btn--delete {
+    border-color: #f87171;
+    color: #dc2626;
+    background: #fef2f2;
+}
+
+.igt-aksi-btn--layer {
+    border-color: #34d399;
+    color: #059669;
+    background: #f0fdf4;
+}
+
+.igt-aksi-btn--edit {
+    border-color: #60a5fa;
+    color: #2563eb;
+    background: #eff6ff;
+}
+
+.igt-download-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+}
+
+.igt-download-btn {
+    width: 25px;
+    height: 25px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border: 1px solid #10b981;
+    color: #059669;
+    background: #ecfdf5;
+    font-size: 11px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.1s;
+    padding: 0;
+}
+
+.igt-download-btn:hover {
+    transform: scale(1.08);
+}
+
+/* Footer & Pagination */
+.igt-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-top: 1px solid #e2e8f0;
+    background: #ffffff;
+    font-size: 12.5px;
+    color: #64748b;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.igt-modal-pagination {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.igt-modal-page-btn {
+    padding: 3px 9px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #334155;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.igt-modal-page-btn:hover:not(:disabled) {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+.igt-modal-page-btn.is-active {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+    font-weight: 600;
+}
+
+.igt-modal-page-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* Clickable triggers in Dashboard Card */
+.igt-panel__nilai,
+#status-data-total,
+#status-data-total-layer {
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.igt-panel__nilai:hover {
+    opacity: 0.82;
+}
+
+.igt-progres__ruas {
+    cursor: pointer;
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.igt-progres__ruas:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.igt-rincian__item {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.igt-rincian__item:hover {
+    background-color: #f8fafc;
+}

@@ -1372,6 +1372,81 @@
     </div>
 
     <!-- ==============================================
+         MODAL DAFTAR USULAN INPUT DATA (POPUP)
+         ============================================== -->
+    <div class="igt-modal-backdrop" id="modal-usulan-data" style="display: none;">
+        <div class="igt-modal-dialog">
+            <div class="igt-modal-content">
+                <!-- Header -->
+                <div class="igt-modal-header">
+                    <div class="igt-modal-header__left">
+                        <div class="igt-modal-header__title-row">
+                            <h5 class="igt-modal-title">Daftar Usulan Input Data</h5>
+                            <span class="igt-modal-badge-wilayah" id="modal-usulan-wilayah">Seluruh Indonesia</span>
+                        </div>
+                    </div>
+                    <div class="igt-modal-tabs" id="modal-usulan-tabs">
+                        <button type="button" class="igt-modal-tab is-active" data-status="all">Semua (<span id="modal-count-all">98</span>)</button>
+                        <button type="button" class="igt-modal-tab is-terintegrasi" data-status="terintegrasi">Terintegrasi (<span id="modal-count-terintegrasi">26</span>)</button>
+                        <button type="button" class="igt-modal-tab is-terkompilasi" data-status="terkompilasi">Terkompilasi (<span id="modal-count-terkompilasi">7</span>)</button>
+                        <button type="button" class="igt-modal-tab is-terupload" data-status="terupload">Terupload (<span id="modal-count-terupload">65</span>)</button>
+                        <button type="button" class="igt-modal-tab is-perbaikan" data-status="perbaikan">Revisi (<span id="modal-count-perbaikan">0</span>)</button>
+                    </div>
+                    <button type="button" class="igt-modal-close" id="modal-usulan-close" aria-label="Tutup modal">&times;</button>
+                </div>
+
+                <!-- Toolbar (Show Entries & Search) -->
+                <div class="igt-modal-toolbar">
+                    <div class="igt-modal-toolbar__left">
+                        <label class="igt-modal-perpage-label">
+                            Show
+                            <select id="modal-usulan-perpage" class="igt-modal-perpage-select">
+                                <option value="10" selected>10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            entries
+                        </label>
+                    </div>
+                    <div class="igt-modal-toolbar__right">
+                        <label class="igt-modal-search-label">
+                            Search:
+                            <input type="search" id="modal-usulan-search" class="igt-modal-search-input" placeholder="">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Table Wrap -->
+                <div class="igt-modal-table-wrap">
+                    <table class="igt-modal-table" id="modal-usulan-table">
+                        <thead>
+                            <tr>
+                                <th data-sort="direktorat" class="is-sortable">Nama Direktorat <span class="igt-sort-caret">&#x25B4;&#x25BE;</span></th>
+                                <th data-sort="igt" class="is-sortable">Nama IGT <span class="igt-sort-caret">&#x25B4;&#x25BE;</span></th>
+                                <th data-sort="jenisData" class="is-sortable">Jenis Data <span class="igt-sort-caret">&#x25B4;&#x25BE;</span></th>
+                                <th data-sort="tglUpload" class="is-sortable">Tanggal Upload <span class="igt-sort-caret">&#x25B4;&#x25BE;</span></th>
+                                <th data-sort="tglIntegrasi" class="is-sortable">Tanggal Terintegrasi <span class="igt-sort-caret">&#x25B4;&#x25BE;</span></th>
+                                <th data-sort="keterangan" class="is-sortable">Keterangan <span class="igt-sort-caret">&#x25B4;&#x25BE;</span></th>
+                                <th data-sort="status" class="is-sortable">Status <span class="igt-sort-caret">&#x25B4;&#x25BE;</span></th>
+                                <th>Aksi <span class="igt-sort-caret">&#x25B4;&#x25BE;</span></th>
+                                <th>Download <span class="igt-sort-caret">&#x25B4;&#x25BE;</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="modal-usulan-tbody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Footer Pagination -->
+                <div class="igt-modal-footer">
+                    <div class="igt-modal-info" id="modal-usulan-info">Showing 1 to 10 of 98 entries</div>
+                    <div class="igt-modal-pagination" id="modal-usulan-pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================
          SCRIPTS
     =============================================== -->
     <script src="assets/js/jquery.min.js"></script>

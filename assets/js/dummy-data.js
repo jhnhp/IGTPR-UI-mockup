@@ -633,5 +633,281 @@ window.MOCKUP_DATA = {
         for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) & 0xffffffff;
         var count = 6 + (Math.abs(h) % 5);
         return masterList.slice(0, count);
+    },
+
+    getUsulanDetailList: function(statusFilter, namaProvinsi, namaKabupaten) {
+        var dataScope = this.getDataByWilayah(namaProvinsi, namaKabupaten);
+        var totalUsulan = dataScope ? dataScope.usulanInputData.total : 98;
+
+        var counts = {
+            all: totalUsulan,
+            terintegrasi: 26,
+            terkompilasi: 7,
+            terupload: 65,
+            perbaikan: 0
+        };
+
+        if (dataScope && dataScope.usulanInputData && dataScope.usulanInputData.kategori) {
+            dataScope.usulanInputData.kategori.forEach(function(k) {
+                counts[k.kunci] = k.jumlah;
+            });
+            counts.all = dataScope.usulanInputData.total;
+        }
+
+        // Base 9 records from screenshot
+        var base9 = [
+            {
+                direktorat: 'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal',
+                igt: 'Bidang Tanah',
+                jenisData: 'SHP',
+                tglUpload: '12/10/2026',
+                tglIntegrasi: '12/10/2026',
+                keterangan: '-',
+                status: 'Terintegrasi',
+                statusKey: 'terintegrasi',
+                hasDownload: true
+            },
+            {
+                direktorat: 'Direktorat Perencanaan Tata Ruang',
+                igt: 'Bidang Tanah',
+                jenisData: 'SHP',
+                tglUpload: '11/10/2026',
+                tglIntegrasi: '-',
+                keterangan: 'test beda direktorat',
+                status: 'Terkompilasi',
+                statusKey: 'terkompilasi',
+                hasDownload: false
+            },
+            {
+                direktorat: 'Direktorat Pengukuran dan Pemetaan Kadastral',
+                igt: 'Bidang Tanah',
+                jenisData: 'SHP',
+                tglUpload: '17/10/2026',
+                tglIntegrasi: '-',
+                keterangan: 'TEST NO GEOM',
+                status: 'Terkompilasi',
+                statusKey: 'terkompilasi',
+                hasDownload: false
+            },
+            {
+                direktorat: 'Direktorat Perencanaan Tata Ruang',
+                igt: 'Bidang Tanah',
+                jenisData: 'SHP',
+                tglUpload: '18/08/2026',
+                tglIntegrasi: '16/02/2024',
+                keterangan: '-',
+                status: 'Terintegrasi',
+                statusKey: 'terintegrasi',
+                hasDownload: true
+            },
+            {
+                direktorat: 'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal',
+                igt: 'Bidang Tanah',
+                jenisData: 'SHP',
+                tglUpload: '11/10/2026',
+                tglIntegrasi: '15/10/2026',
+                keterangan: 'menggunakan direktorat yang berbeda',
+                status: 'Terintegrasi',
+                statusKey: 'terintegrasi',
+                hasDownload: true
+            },
+            {
+                direktorat: 'Kantor Wilayah BPN Provinsi D.I. Yogyakarta',
+                igt: 'Bidang Tanah',
+                jenisData: 'SHP',
+                tglUpload: '21/10/2026',
+                tglIntegrasi: '20/10/2026',
+                keterangan: 'test ke 2 BIDANG_PERSIL_DIY_ATR_LKP.zip',
+                status: 'Terintegrasi',
+                statusKey: 'terintegrasi',
+                hasDownload: true
+            },
+            {
+                direktorat: 'Direktorat Perencanaan Tata Ruang',
+                igt: 'Bidang Tanah',
+                jenisData: 'SHP',
+                tglUpload: '18/08/2026',
+                tglIntegrasi: '20/08/2026',
+                keterangan: 'REVISI 1908',
+                status: 'Terintegrasi',
+                statusKey: 'terintegrasi',
+                hasDownload: true
+            },
+            {
+                direktorat: 'Direktorat Perencanaan Tata Ruang',
+                igt: 'Bidang Tanah',
+                jenisData: 'SHP',
+                tglUpload: '11/10/2026',
+                tglIntegrasi: '11/10/2026',
+                keterangan: 'Direktorat Perencanaan Tata Ruang Pusat',
+                status: 'Terintegrasi',
+                statusKey: 'terintegrasi',
+                hasDownload: true
+            },
+            {
+                direktorat: 'Direktorat Perencanaan Tata Ruang',
+                igt: 'Bidang Tanah',
+                jenisData: 'SHP',
+                tglUpload: '18/08/2026',
+                tglIntegrasi: '19/08/2026',
+                keterangan: 'contoh teknis',
+                status: 'Terintegrasi',
+                statusKey: 'terintegrasi',
+                hasDownload: true
+            }
+        ];
+
+        var direks = [
+            'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal',
+            'Direktorat Perencanaan Tata Ruang',
+            'Direktorat Pengukuran dan Pemetaan Kadastral',
+            'Direktorat Penatagunaan Tanah',
+            'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
+            'Direktorat Pemberdayaan Tanah Masyarakat',
+            'Direktorat Survei dan Pemetaan Tematik',
+            'Direktorat Penilaian Tanah dan Ekonomi Pertanahan',
+            'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu',
+            'Kantor Wilayah BPN Provinsi D.I. Yogyakarta',
+            'Kantor Pertanahan Kabupaten Semarang',
+            'Kantor Wilayah BPN Provinsi Jawa Tengah',
+            'Kantor Pertanahan Kota Surakarta',
+            'Kantor Pertanahan Kabupaten Banyumas'
+        ];
+
+        var igts = [
+            'Bidang Tanah',
+            'Hak Atas Tanah',
+            'Inventarisasi Tanah Kritis',
+            'Kemampuan Tanah',
+            'Lahan Baku Sawah Nasional',
+            'Lahan Sawah Dilindungi',
+            'RDTR Kabupaten/ Kota',
+            'RDTR Kawasan Perbatasan Negara',
+            'RTRW Kabupaten',
+            'Sebaran Lokasi Pemberdayaan Tanah Masyarakat',
+            'Zona Nilai Tanah',
+            'Neraca Penatagunaan Tanah',
+            'RTRW Provinsi',
+            'Peta Kawasan Rawan Bencana Geologi'
+        ];
+
+        var kets = [
+            '-',
+            'Penyelarasan batas administrasi spasial',
+            'Validasi topologi zero gap/overlap',
+            'Upload data tematik triwulan III',
+            'Sinkronisasi peta rencana pola ruang',
+            'Kompilasi layer batas bidang persil',
+            'Pembaruan atribut basis data IGT',
+            'Pengajuan integrasi geodatabase',
+            'Penyesuaian rekomendasi teknis BIG',
+            'Perbaikan penamaan tema standar Kugi',
+            'Verifikasi koordinat sistem proyeksi UTM'
+        ];
+
+        var dates = ['12/10/2026', '11/10/2026', '17/10/2026', '18/08/2026', '21/10/2026', '24/10/2026', '05/09/2026', '14/07/2026', '29/06/2026', '19/05/2026'];
+
+        var records = [];
+        var idCounter = 1;
+
+        // 1. Terintegrasi records
+        var terintegrasiBase = base9.filter(function(r) { return r.statusKey === 'terintegrasi'; });
+        for (var i = 0; i < counts.terintegrasi; i++) {
+            if (i < terintegrasiBase.length) {
+                records.push(Object.assign({}, terintegrasiBase[i], { id: idCounter++ }));
+            } else {
+                var dIdx = (i * 3 + 1) % direks.length;
+                var igtIdx = (i * 5 + 2) % igts.length;
+                var dt = dates[i % dates.length];
+                records.push({
+                    id: idCounter++,
+                    direktorat: direks[dIdx],
+                    igt: igts[igtIdx],
+                    jenisData: (i % 8 === 0) ? 'GeoJSON' : 'SHP',
+                    tglUpload: dt,
+                    tglIntegrasi: dt,
+                    keterangan: kets[i % kets.length],
+                    status: 'Terintegrasi',
+                    statusKey: 'terintegrasi',
+                    hasDownload: true
+                });
+            }
+        }
+
+        // 2. Terkompilasi records
+        var terkompilasiBase = base9.filter(function(r) { return r.statusKey === 'terkompilasi'; });
+        for (var j = 0; j < counts.terkompilasi; j++) {
+            if (j < terkompilasiBase.length) {
+                records.push(Object.assign({}, terkompilasiBase[j], { id: idCounter++ }));
+            } else {
+                var dIdx2 = (j * 4 + 3) % direks.length;
+                var igtIdx2 = (j * 2 + 1) % igts.length;
+                var dt2 = dates[(j + 2) % dates.length];
+                records.push({
+                    id: idCounter++,
+                    direktorat: direks[dIdx2],
+                    igt: igts[igtIdx2],
+                    jenisData: 'SHP',
+                    tglUpload: dt2,
+                    tglIntegrasi: '-',
+                    keterangan: kets[(j + 3) % kets.length],
+                    status: 'Terkompilasi',
+                    statusKey: 'terkompilasi',
+                    hasDownload: false
+                });
+            }
+        }
+
+        // 3. Terupload records
+        for (var k = 0; k < counts.terupload; k++) {
+            var dIdx3 = (k * 2 + 5) % direks.length;
+            var igtIdx3 = (k * 3 + 4) % igts.length;
+            var dt3 = dates[(k + 4) % dates.length];
+            records.push({
+                id: idCounter++,
+                direktorat: direks[dIdx3],
+                igt: igts[igtIdx3],
+                jenisData: (k % 5 === 0) ? 'GeoJSON' : 'SHP',
+                tglUpload: dt3,
+                tglIntegrasi: '-',
+                keterangan: kets[(k + 1) % kets.length],
+                status: 'Terupload',
+                statusKey: 'terupload',
+                hasDownload: false
+            });
+        }
+
+        // 4. Revisi records
+        for (var m = 0; m < counts.perbaikan; m++) {
+            var dIdx4 = (m * 7 + 2) % direks.length;
+            var igtIdx4 = (m * 4 + 3) % igts.length;
+            var dt4 = dates[(m + 1) % dates.length];
+            records.push({
+                id: idCounter++,
+                direktorat: direks[dIdx4],
+                igt: igts[igtIdx4],
+                jenisData: 'SHP',
+                tglUpload: dt4,
+                tglIntegrasi: '-',
+                keterangan: 'Perlu revisi penataan atribut dan topologi',
+                status: 'Revisi Perbaikan',
+                statusKey: 'perbaikan',
+                hasDownload: false
+            });
+        }
+
+        var filteredList = records;
+        if (statusFilter && statusFilter !== 'all') {
+            filteredList = records.filter(function(r) {
+                return r.statusKey === statusFilter;
+            });
+        }
+
+        return {
+            items: filteredList,
+            totalItems: records.length,
+            counts: counts,
+            wilayah: (namaKabupaten ? (namaKabupaten + ', ' + namaProvinsi) : (namaProvinsi || 'Seluruh Indonesia'))
+        };
     }
 };

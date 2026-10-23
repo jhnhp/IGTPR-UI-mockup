@@ -25,6 +25,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 15 | **Ketebalan Ruas Grafik untuk Kategori Bernilai 0 (Revisi Perbaikan)** | Ruas kategori dengan jumlah 0 memiliki lebar tetap 24px (`min-width: 24px`), sehingga terlihat memakan porsi ruang yang cukup besar meskipun datanya kosong. | Diberi penanganan khusus `.is-nol`: bila jumlah data 0, ruas bar dibuat **sangat tipis (lebar 4px)** dengan `flex-grow: 0` dan warna merah solid (`#f87171`), tetap terlihat sebagai penanda batas tanpa mendistorsi proporsi data lainnya. |
 | 16 | **Penerapan Warna Solid pada Ruas Terupload & Revisi** | Ruas *Terupload* dan *Revisi Perbaikan* sebelumnya memiliki pola garis-garis diagonal selang-seling (`repeating-linear-gradient`) seperti halnya ruas *Terintegrasi* dan *Terkompilasi*. | Disederhanakan menjadi **warna solid (polos tanpa garis selang-seling)**: **Terupload** menggunakan warna hijau pastel solid (`#86efac`) dan **Revisi Perbaikan** menggunakan warna merah pastel solid (`#fca5a5` / `#f87171`). Pola garis selang-seling kini khusus dipertahankan hanya pada *Terintegrasi* dan *Terkompilasi* agar selaras dengan grafik Kompilasi Integrasi. |
 | 17 | **Penambahan Metrik Jumlah Layer pada Usulan Input Data** | Kartu Usulan Input Data hanya menampilkan kuantitas data mentah (misal: "98 data" dan "26 data") tanpa informasi berapa layer IGT yang dinaungi. | Ditambahkan metrik akumulasi layer: metrik utama menjadi **`98 data / 30 layer`**, dan setiap item status dilengkapi rincian layer (misal: **`26 data / 14 layer`** Terintegrasi, **`7 data / 4 layer`** Terkompilasi, **`65 data / 12 layer`** Terupload, **`0 data / 0 layer`** Revisi). Tooltip bilah progres juga disesuaikan menampilkan kuantitas data dan layer secara utuh. |
+| 18 | **Interaktivitas Modal Tabel Usulan Input Data (Clickable Bar & Angka)** | Angka ringkasan dan bilah progres bersifat statis (tidak dapat diklik) tanpa rincian data tabular. | Angka total metrik (**98 data / 30 layer**), bilah progres, dan item status kini **sepenuhnya interaktif (*clickable*)**. Mengklik angka 98 menampilkan pop-up modal tabel lengkap berisi 98 data usulan. Mengklik bar atau angka kategori spesifik (*Terintegrasi*, *Terkompilasi*, *Terupload*, *Revisi*) membuka modal yang sama dengan **kondisi terfilter otomatis**. Modal dilengkapi tab navigasi filter, pencarian teks instan, 9 kolom tabel lengkap sesuai standar, tombol aksi (Lihat, Riwayat, Hapus, Cloud Metadata, Edit), tombol download (SHP & Link), serta paginasi interaktif. |
 
 ---
 
@@ -162,6 +163,47 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
     4. **Revisi Perbaikan**: `0 data / 0 layer`
   - **Tooltip Bilah Progres**: Setiap ruas bilah kemajuan menyematkan atribut `title` lengkap, contoh: *"Terintegrasi: 26 data / 14 layer"*.
   - **Dinamika Multi-Level**: Diterapkan secara reaktif pada data store dummy untuk seluruh tingkatan wilayah (Nasional, Provinsi, dan Kabupaten/Kota), sehingga saat pengguna melakukan penjelajahan wilayah (drill-down), jumlah data dan layernya terkalkulasi secara sinkron dan otomatis.
+
+### 15. Interaktivitas Modal Tabel Usulan Input Data (Clickable Bar & Angka)
+- **Mekanisme Pemicu Interaktif (*Clickable Triggers*)**:
+  - **Klik Angka Total (`98 data / 30 layer`)**: Membuka modal pop-up tabel dengan tab default **"Semua (98)"**, menampilkan seluruh 98 usulan data dari semua status tanpa batasan filter.
+  - **Klik Ruas Bilah Kemajuan (*Progress Bar Segment*)**: Mengklik salah satu ruas bilah kemajuan (misal: ruas hijau solid *Terupload*, ruas biru gelap *Terintegrasi*, dsb.) langsung membuka modal dalam keadaan **terfilter otomatis** sesuai status ruas tersebut.
+  - **Klik Angka / Teks Rincian Kategori**: Mengklik salah satu item dari 4 kategori rincian di bawah grafik (misal: *26 data / 14 layer Terintegrasi*) membuka modal pop-up dengan filter status aktif yang bersesuaian.
+  - **Indikator Kursor & Hover**: Elemen angka total, ruas bilah kemajuan, dan rincian status diberi gaya kursor `pointer` dan transisi hover yang responsif untuk mengindikasikan interaktivitas.
+- **Tab Navigasi Filter di Header Modal**:
+  - Modal dilengkapi tab filter interaktif di sisi atas:
+    - **Semua (98)**: Menampilkan seluruh data usulan.
+    - **Terintegrasi (26)**: Menampilkan usulan yang telah selesai terintegrasi ke geoportal.
+    - **Terkompilasi (7)**: Menampilkan data yang telah lolos tahap kompilasi data spasial.
+    - **Terupload (65)**: Menampilkan data yang baru diunggah oleh unit kerja terkait.
+    - **Revisi Perbaikan (0)**: Menampilkan data yang membutuhkan perbaikan geometrik/atribut.
+  - Pengguna dapat beralih antar-status secara instan tanpa perlu menutup dan membuka ulang modal.
+- **Struktur Tabel Standar (9 Kolom Lengkap Sesuai Desain Asli)**:
+  1. **Nama Direktorat**: Menampilkan instansi / direktorat pengusul (misal: *Direktorat Pengaturan Tanah Pemerintah...*, *Kantor Wilayah BPN Provinsi D.I. Yogyakarta*, dll.).
+  2. **Nama IGT**: Nama layer tematik (misal: *Bidang Tanah*, *Batas Kawasan*, dll.).
+  3. **Jenis Data**: Format berkas geospasial (*SHP*).
+  4. **Tanggal Upload**: Format tanggal unggah `DD/MM/YYYY`.
+  5. **Tanggal Terintegrasi**: Format tanggal integrasi `DD/MM/YYYY` (atau tanda `-` jika status belum terintegrasi).
+  6. **Keterangan**: Nama arsip zip atau catatan revisi pengusul (misal: *test beda direktorat*, *REVISI 1908*, *test ke 2 BIDANG_PERSIL_DIY_ATR_LKP.zip*, dll.).
+  7. **Status**: Badge visual dengan palet warna selaras (*Terintegrasi* = biru tua, *Terkompilasi* = biru muda, *Terupload* = hijau pastel, *Revisi* = merah pastel).
+  8. **Aksi**: 5 tombol tindakan cepat dengan tooltip:
+     - 🔍 *Detail*: Melihat ringkasan data dan atribut.
+     - 🕒 *Riwayat*: Melacak log histori perubahan status dan perbaikan.
+     - 🗑 *Hapus*: Opsi pembatalan/penghapusan usulan.
+     - ☁ *Metadata Geospasial*: Membuka dialog pratinjau layer spasial.
+     - ✎ *Edit*: Memperbarui metadata atau deskripsi usulan.
+  9. **Download**: 2 tombol unduh berkas:
+     - 📄 *Download SHP/ZIP*: Mengunduh paket data shapefile geospasial.
+     - 🔗 *Salin Tautan / Layanan Web*: Mengakses endpoint geoservice/WMS terkait.
+- **Fitur Kontrol Pencarian, Paginasi & Aksesibilitas**:
+  - **Pencarian Realtime**: Input teks pencarian di pojok kanan atas modal yang menyaring baris tabel secara instan berdasarkan nama direktorat, nama IGT, keterangan, maupun tanggal.
+  - **Pilihan Entri per Halaman**: Dropdown fleksibel untuk menampilkan 10, 25, 50, atau 100 baris per halaman.
+  - **Paginasi Dinamis**: Menampilkan teks informasi entri (`Showing 1 to 10 of 98 entries`) dan tombol navigasi halaman (*Previous*, *1*, *2*, ... *Next*).
+  - **Aksesibilitas Penutupan**: Modal dapat ditutup dengan mengklik tombol silang (✕) di kanan atas, tombol *Tutup* di footer, mengklik area di luar kotak modal (*backdrop click*), atau menekan tombol keyboard `Escape`.
+- **Integrasi Kontekstual Wilayah (*Spatial Drill-down Context*)**:
+  - Modal secara cerdas membaca konteks wilayah yang sedang aktif (`currentProvince` dan `currentKabupaten`).
+  - Bila pengguna sedang berada pada tingkat Nasional, modal menampilkan 98 data nasional.
+  - Bila pengguna sedang membuka detail provinsi tertentu (misal: Jawa Tengah), modal secara proporsional menampilkan usulan data untuk wilayah provinsi tersebut.
 
 ---
 

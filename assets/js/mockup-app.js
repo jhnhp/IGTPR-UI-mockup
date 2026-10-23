@@ -26,6 +26,7 @@ function getFitBoundsPadding() {
 $(document).ready(function() {
     initSidebar();
     initHeroMap();
+    initUsulanModalEvents();
     applyDataFilter(null, null); // start at national level
 });
 
@@ -953,6 +954,7 @@ function renderUsulanInputData(usulan) {
     $('#status-data-total').text(usulan.total);
     var totalLayer = usulan.totalLayer !== undefined ? usulan.totalLayer : 30;
     $('#status-data-total-layer').text(totalLayer);
+    $('#status-data .igt-panel__nilai').attr('title', 'Klik untuk melihat seluruh usulan data (' + usulan.total + ' data)');
 
     var progresHtml = '';
     var rincianHtml = '';
@@ -963,11 +965,11 @@ function renderUsulanInputData(usulan) {
         var kelasNol = isNol ? ' is-nol' : '';
         var inlineStyle = isNol ? 'flex-grow: 0; min-width: 4px; width: 4px;' : 'flex-grow: ' + (bobot || 1);
         var layerCount = kat.layer !== undefined ? kat.layer : 0;
-        var titleText = kat.label + ': ' + kat.jumlah + ' data / ' + layerCount + ' layer';
+        var titleText = kat.label + ': ' + kat.jumlah + ' data / ' + layerCount + ' layer (Klik untuk melihat rincian)';
 
-        progresHtml += '<div class="igt-progres__ruas ' + (kat.kelas || '') + kelasNol + ' igt-progres__ruas--' + (idx + 1) + '" style="' + inlineStyle + '" title="' + titleText + '"></div>';
+        progresHtml += '<div class="igt-progres__ruas ' + (kat.kelas || '') + kelasNol + ' igt-progres__ruas--' + (idx + 1) + '" style="' + inlineStyle + '" title="' + titleText + '" data-status="' + kat.kunci + '"></div>';
 
-        rincianHtml += '<div class="igt-rincian__item ' + kat.kelas + '">'
+        rincianHtml += '<div class="igt-rincian__item ' + kat.kelas + '" data-status="' + kat.kunci + '" title="Klik untuk melihat data ' + kat.label + ' (' + kat.jumlah + ' data)">'
             + '<span class="igt-rincian__titik"></span>'
             + '<div class="igt-rincian__isi">'
             + '<div class="igt-rincian__angka"><strong>' + kat.jumlah + '</strong><span>data</span><span class="igt-rincian__pemisah">/</span><strong>' + layerCount + '</strong><span>layer</span></div>'
@@ -977,6 +979,243 @@ function renderUsulanInputData(usulan) {
 
     $('#status-data-progres').html(progresHtml);
     $('#status-data-rincian').html(rincianHtml);
+}
+
+/* ----------------------------------------------------
+   5.1. Modal Daftar Usulan Input Data Table Controller
+----------------------------------------------------- */
+var usulanModalState = {
+    currentStatus: 'all',
+    currentPage: 1,
+    perPage: 10,
+    searchQuery: '',
+    sortCol: null,
+    sortDir: 'asc'
+};
+
+function openUsulanModal(statusFilter) {
+    usulanModalState.currentStatus = statusFilter || 'all';
+    usulanModalState.currentPage = 1;
+    usulanModalState.searchQuery = '';
+    $('#modal-usulan-search').val('');
+    $('#modal-usulan-perpage').val(usulanModalState.perPage);
+
+    renderUsulanModalContent();
+    $('#modal-usulan-data').fadeIn(200);
+    $('body').css('overflow', 'hidden');
+}
+
+function closeUsulanModal() {
+    $('#modal-usulan-data').fadeOut(200);
+    $('body').css('overflow', '');
+}
+
+function renderUsulanModalContent() {
+    var detail = window.MOCKUP_DATA.getUsulanDetailList(null, currentProvince, currentKabupaten);
+    if (!detail) return;
+
+    // Set region name in header badge
+    $('#modal-usulan-wilayah').text(detail.wilayah);
+
+    // Update counts on tabs
+    $('#modal-count-all').text(detail.counts.all);
+    $('#modal-count-terintegrasi').text(detail.counts.terintegrasi);
+    $('#modal-count-terkompilasi').text(detail.counts.terkompilasi);
+    $('#modal-count-terupload').text(detail.counts.terupload);
+    $('#modal-count-perbaikan').text(detail.counts.perbaikan);
+
+    // Update active tab class
+    $('#modal-usulan-tabs .igt-modal-tab').removeClass('is-active');
+    $('#modal-usulan-tabs .igt-modal-tab[data-status="' + usulanModalState.currentStatus + '"]').addClass('is-active');
+
+    // 1. Filter by status
+    var items = detail.items;
+    if (usulanModalState.currentStatus !== 'all') {
+        items = items.filter(function(item) {
+            return item.statusKey === usulanModalState.currentStatus;
+        });
+    }
+
+    // 2. Filter by search query
+    var query = (usulanModalState.searchQuery || '').trim().toLowerCase();
+    if (query) {
+        items = items.filter(function(item) {
+            return (item.direktorat && item.direktorat.toLowerCase().indexOf(query) !== -1)
+                || (item.igt && item.igt.toLowerCase().indexOf(query) !== -1)
+                || (item.jenisData && item.jenisData.toLowerCase().indexOf(query) !== -1)
+                || (item.tglUpload && item.tglUpload.toLowerCase().indexOf(query) !== -1)
+                || (item.tglIntegrasi && item.tglIntegrasi.toLowerCase().indexOf(query) !== -1)
+                || (item.keterangan && item.keterangan.toLowerCase().indexOf(query) !== -1)
+                || (item.status && item.status.toLowerCase().indexOf(query) !== -1);
+        });
+    }
+
+    // 3. Sort if sortCol is set
+    if (usulanModalState.sortCol) {
+        var col = usulanModalState.sortCol;
+        var dir = usulanModalState.sortDir === 'desc' ? -1 : 1;
+        items.sort(function(a, b) {
+            var valA = (a[col] || '').toString().toLowerCase();
+            var valB = (b[col] || '').toString().toLowerCase();
+            if (valA < valB) return -1 * dir;
+            if (valA > valB) return 1 * dir;
+            return 0;
+        });
+    }
+
+    // 4. Pagination
+    var totalFiltered = items.length;
+    var totalPages = Math.ceil(totalFiltered / usulanModalState.perPage) || 1;
+    if (usulanModalState.currentPage > totalPages) usulanModalState.currentPage = totalPages;
+    if (usulanModalState.currentPage < 1) usulanModalState.currentPage = 1;
+
+    var startIndex = (usulanModalState.currentPage - 1) * usulanModalState.perPage;
+    var endIndex = Math.min(startIndex + usulanModalState.perPage, totalFiltered);
+    var pagedItems = items.slice(startIndex, endIndex);
+
+    // 5. Render Table Rows
+    var rowsHtml = '';
+    if (pagedItems.length === 0) {
+        rowsHtml = '<tr><td colspan="9" style="text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 14px;">Tidak ada data usulan yang ditemukan.</td></tr>';
+    } else {
+        pagedItems.forEach(function(item) {
+            var downloadHtml = item.hasDownload
+                ? '<div class="igt-download-group">'
+                    + '<button type="button" class="igt-download-btn" title="Unduh Berkas SHP">&#128196;</button>'
+                    + '<button type="button" class="igt-download-btn" title="Buka Geoportal Link">&#128279;</button>'
+                    + '</div>'
+                : '<span style="color:#94a3b8; padding-left: 8px;">-</span>';
+
+            rowsHtml += '<tr>'
+                + '<td style="font-weight: 500; min-width: 220px;">' + item.direktorat + '</td>'
+                + '<td style="min-width: 140px;">' + item.igt + '</td>'
+                + '<td>' + item.jenisData + '</td>'
+                + '<td style="white-space: nowrap;">' + item.tglUpload + '</td>'
+                + '<td style="white-space: nowrap;">' + item.tglIntegrasi + '</td>'
+                + '<td style="color: #64748b; min-width: 160px;">' + item.keterangan + '</td>'
+                + '<td><span class="igt-status-badge igt-status-badge--' + item.statusKey + '">' + item.status + '</span></td>'
+                + '<td>'
+                + '<div class="igt-aksi-group">'
+                + '<button type="button" class="igt-aksi-btn igt-aksi-btn--view" title="Detail Usulan">&#128269;</button>'
+                + '<button type="button" class="igt-aksi-btn igt-aksi-btn--history" title="Riwayat Versi">&#128338;</button>'
+                + '<button type="button" class="igt-aksi-btn igt-aksi-btn--delete" title="Hapus Usulan">&#128465;</button>'
+                + '<button type="button" class="igt-aksi-btn igt-aksi-btn--layer" title="Lihat Spasial Peta">&#9729;</button>'
+                + '<button type="button" class="igt-aksi-btn igt-aksi-btn--edit" title="Edit Data">&#9998;</button>'
+                + '</div>'
+                + '</td>'
+                + '<td>' + downloadHtml + '</td>'
+                + '</tr>';
+        });
+    }
+    $('#modal-usulan-tbody').html(rowsHtml);
+
+    // 6. Render Footer Info
+    var infoText = totalFiltered === 0
+        ? 'Showing 0 to 0 of 0 entries'
+        : 'Showing ' + (startIndex + 1) + ' to ' + endIndex + ' of ' + totalFiltered + ' entries';
+    if (usulanModalState.searchQuery || usulanModalState.currentStatus !== 'all') {
+        infoText += ' (filtered from ' + detail.totalItems + ' total entries)';
+    }
+    $('#modal-usulan-info').text(infoText);
+
+    // 7. Render Pagination Buttons
+    var paginationHtml = '';
+    paginationHtml += '<button type="button" class="igt-modal-page-btn" data-page="' + (usulanModalState.currentPage - 1) + '" ' + (usulanModalState.currentPage <= 1 ? 'disabled' : '') + '>Previous</button>';
+
+    var startPage = Math.max(1, usulanModalState.currentPage - 2);
+    var endPage = Math.min(totalPages, startPage + 4);
+    if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+    for (var p = startPage; p <= endPage; p++) {
+        var activeClass = p === usulanModalState.currentPage ? ' is-active' : '';
+        paginationHtml += '<button type="button" class="igt-modal-page-btn' + activeClass + '" data-page="' + p + '">' + p + '</button>';
+    }
+
+    paginationHtml += '<button type="button" class="igt-modal-page-btn" data-page="' + (usulanModalState.currentPage + 1) + '" ' + (usulanModalState.currentPage >= totalPages ? 'disabled' : '') + '>Next</button>';
+    $('#modal-usulan-pagination').html(paginationHtml);
+}
+
+function initUsulanModalEvents() {
+    // 1. Click on header numbers (98 data / 30 layer) -> open all
+    $(document).on('click', '#status-data .igt-panel__nilai, #status-data-total, #status-data-total-layer', function(e) {
+        e.preventDefault();
+        openUsulanModal('all');
+    });
+
+    // 2. Click on progress bar ruas
+    $(document).on('click', '#status-data-progres .igt-progres__ruas', function(e) {
+        e.preventDefault();
+        var status = $(this).data('status') || 'all';
+        openUsulanModal(status);
+    });
+
+    // 3. Click on breakdown items
+    $(document).on('click', '#status-data-rincian .igt-rincian__item', function(e) {
+        e.preventDefault();
+        var status = $(this).data('status') || 'all';
+        openUsulanModal(status);
+    });
+
+    // 4. Modal tabs
+    $(document).on('click', '#modal-usulan-tabs .igt-modal-tab', function() {
+        var status = $(this).data('status');
+        usulanModalState.currentStatus = status;
+        usulanModalState.currentPage = 1;
+        renderUsulanModalContent();
+    });
+
+    // 5. Modal Search input
+    $(document).on('input', '#modal-usulan-search', function() {
+        usulanModalState.searchQuery = $(this).val();
+        usulanModalState.currentPage = 1;
+        renderUsulanModalContent();
+    });
+
+    // 6. Modal Perpage select
+    $(document).on('change', '#modal-usulan-perpage', function() {
+        usulanModalState.perPage = parseInt($(this).val(), 10) || 10;
+        usulanModalState.currentPage = 1;
+        renderUsulanModalContent();
+    });
+
+    // 7. Modal Pagination buttons
+    $(document).on('click', '#modal-usulan-pagination .igt-modal-page-btn', function() {
+        if ($(this).is(':disabled')) return;
+        var page = parseInt($(this).data('page'), 10);
+        if (page) {
+            usulanModalState.currentPage = page;
+            renderUsulanModalContent();
+        }
+    });
+
+    // 8. Modal Sorting headers
+    $(document).on('click', '#modal-usulan-table th.is-sortable', function() {
+        var sortCol = $(this).data('sort');
+        if (usulanModalState.sortCol === sortCol) {
+            usulanModalState.sortDir = usulanModalState.sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+            usulanModalState.sortCol = sortCol;
+            usulanModalState.sortDir = 'asc';
+        }
+        renderUsulanModalContent();
+    });
+
+    // 9. Close Modal
+    $(document).on('click', '#modal-usulan-close', function() {
+        closeUsulanModal();
+    });
+
+    $(document).on('click', '#modal-usulan-data', function(e) {
+        if ($(e.target).is('#modal-usulan-data')) {
+            closeUsulanModal();
+        }
+    });
+
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && $('#modal-usulan-data').is(':visible')) {
+            closeUsulanModal();
+        }
+    });
 }
 
 function renderKompilasiIntegrasi(kompilasi) {
