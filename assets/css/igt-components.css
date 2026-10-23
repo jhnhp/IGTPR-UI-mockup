@@ -1543,7 +1543,7 @@ a.igt-stat:hover {
 .igt-progres__ruas:nth-child(3),
 .igt-progres__ruas--3,
 .igt-progres__ruas.is-terupload {
-    background-color: #86efac;
+    background-color: hsl(217, 30%, 75%);
     background-image: none;
     box-shadow: none;
 }
@@ -1551,7 +1551,7 @@ a.igt-stat:hover {
 .igt-progres__ruas:nth-child(4),
 .igt-progres__ruas--4,
 .igt-progres__ruas.is-perbaikan {
-    background-color: #fca5a5;
+    background-color: hsl(0, 10%, 80%);
     background-image: none;
     box-shadow: none;
 }
@@ -1567,7 +1567,7 @@ a.igt-stat:hover {
 }
 
 .igt-progres__ruas.is-nol.is-perbaikan {
-    background-color: #f87171 !important;
+    background-color: hsl(0, 10%, 65%) !important;
 }
 
 .igt-rincian {
@@ -1614,12 +1614,12 @@ a.igt-stat:hover {
 
 .igt-rincian__item:nth-child(3) .igt-rincian__titik,
 .igt-rincian__item.is-terupload .igt-rincian__titik {
-    background-color: #4ade80;
+    background-color: hsl(217, 30%, 60%);
 }
 
 .igt-rincian__item:nth-child(4) .igt-rincian__titik,
 .igt-rincian__item.is-perbaikan .igt-rincian__titik {
-    background-color: #f87171;
+    background-color: hsl(0, 10%, 60%);
 }
 
 .igt-rincian__isi {
@@ -2300,12 +2300,12 @@ a.igt-stat:hover {
 }
 
 .igt-modal-tab.is-terupload.is-active {
-    background: #15803d;
+    background: #5b7396;
     color: #ffffff;
 }
 
 .igt-modal-tab.is-perbaikan.is-active {
-    background: #dc2626;
+    background: #857272;
     color: #ffffff;
 }
 
@@ -2483,13 +2483,13 @@ a.igt-stat:hover {
 }
 
 .igt-status-badge--terupload {
-    background-color: #86efac;
-    color: #14532d;
+    background-color: hsl(217, 30%, 88%);
+    color: hsl(217, 35%, 28%);
 }
 
 .igt-status-badge--perbaikan {
-    background-color: #fca5a5;
-    color: #7f1d1d;
+    background-color: hsl(0, 10%, 88%);
+    color: hsl(0, 15%, 28%);
 }
 
 /* Action Buttons matching screenshot */

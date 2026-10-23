@@ -28,6 +28,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 18 | **Interaktivitas Modal Tabel Usulan Input Data (Clickable Bar & Angka)** | Angka ringkasan dan bilah progres bersifat statis (tidak dapat diklik) tanpa rincian data tabular. | Angka total metrik (**98 data / 30 layer**), bilah progres, dan item status kini **sepenuhnya interaktif (*clickable*)**. Mengklik angka 98 menampilkan pop-up modal tabel lengkap berisi 98 data usulan. Mengklik bar atau angka kategori spesifik (*Terintegrasi*, *Terkompilasi*, *Terupload*, *Revisi*) membuka modal yang sama dengan **kondisi terfilter otomatis**. Modal dilengkapi tab navigasi filter, pencarian teks instan, 9 kolom tabel lengkap sesuai standar, tombol aksi (Lihat, Riwayat, Hapus, Cloud Metadata, Edit), tombol download (SHP & Link), serta paginasi interaktif. |
 | 19 | **Filter Tahun Responsif pada Usulan Input Data** | Dropdown filter tahun (`#status-data-tahun`) bersifat statis tanpa logika responsif; pergantian tahun tidak mengubah metrik kartu maupun data tabel. | Filter tahun kini **sepenuhnya responsif secara fungsional dan visual**: <br>• **Fungsional**: Memilih tahun (2026, 2025, 2024, 2023, atau Semua Tahun) secara instan memperbarui metrik data & layer, proporsi bar progres, dan rincian status. Modal pop-up tabel usulan data ikut tersinkronisasi dua arah (*two-way sync*) memfilter data sesuai tahun aktif.<br>• **Visual (CSS Responsive)**: Header kartu menggunakan `flex-wrap: wrap; row-gap: 10px;` dan penyesuaian media queries (mobile/tablet) sehingga angka metrik dan filter tahun tetap proporsional dan rapi tanpa terpotong atau tumpang tindih. |
 | 20 | **Sinkronisasi Terpusat Filter Tahun Renaksi (Dekat Peta ke Seluruh Komponen Bawah)** | Filter tahun di dekat peta (`#beranda-detail-tahun`) hanya memfilter daftar chip tema geospasial pada popup info, terisolasi dari komponen dashboard di bawahnya. | Filter tahun di dekat peta kini menjadi **pengendali terpusat (*central controller*)** yang terhubung langsung ke **seluruh komponen data di bawah peta**: <br>1. *Usulan Input Data* (angka, layer, progress bar, rincian)<br>2. *Kompilasi Integrasi* (angka layer & diagram batang bulanan)<br>3. *Statistik IGT* (penyaringan entri tabular & luas)<br>4. *Leader Board* (peringkat & capaian tema per tahun)<br>5. *Capaian Renaksi* (target & realisasi persentase per tahun)<br>6. *Aktivitas Terkini* (log tanggal sesuai tahun renaksi)<br>7. *Modal Pop-up Usulan Data* (otomatis terfilter tahun aktif).<br>Dilengkapi pula mekanisme **sinkronisasi dua arah** (*bidirectional sync*), sehingga jika pengguna mengubah tahun di kartu manapun, kontrol utama di dekat peta ikut tersinkronisasi. |
+| 21 | **Penyelarasan Warna Status Usulan Input Data (Terupload 30% Saturation & Revisi 10% Saturation)** | Warna status *Terupload* sebelumnya hijau pastel (`#86efac`) dan *Revisi Perbaikan* merah pastel (`#fca5a5`). | Diperbarui sesuai permintaan: <br>• **Terupload**: Mengikuti rumpun warna biru yang sama dengan *Terintegrasi* & *Terkompilasi* (hue ~217°) namun dengan **saturasi 30%** dan **warna solid polos** (`hsl(217, 30%, 75%)` / `#adc0d6`, titik `#7b94b7`).<br>• **Revisi Perbaikan**: Menggunakan warna merah terang dengan **saturasi 10%** (`hsl(0, 10%, 80%)` / `#d1c7c7`, penanda bar nol tipis 4px `#aba4a4`, dan titik `#a38f8f`). Menghasilkan harmoni warna yang serasi, bersih, dan profesional. |
 
 ---
 
@@ -244,6 +245,23 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
     7. **Modal Pop-up Usulan Data**: Otomatis tersinkronisasi saat dibuka, menampilkan badge tahun yang sesuai dan menyaring data tabel modal.
 - **Sinkronisasi Dua Arah (*Bidirectional Sync*)**:
   - Menyediakan event listener lintas kontrol: jika pengguna mengubah tahun melalui kartu *Usulan Input Data*, kartu *Kompilasi Integrasi*, kartu *Leader Board*, maupun dari dalam modal pop-up, dropdown master `#beranda-detail-tahun` di dekat peta ikut tersinkronisasi secara otomatis, menjaga konsistensi state di seluruh antarmuka aplikasi.
+
+### 18. Pembaruan Palet Warna Usulan Input Data (Terupload 30% Saturation Blue & Revisi 10% Saturation Red)
+- **Status Terupload**:
+  - Mengikuti rumpun rona warna biru (*blue hue* ~217°) yang sama dengan status *Terintegrasi* (`#1d4ed8`) dan *Terkompilasi* (`#93c5fd`).
+  - Diterapkan tingkat kejenuhan (*saturation*) **30%** dengan format solid polos tanpa corak diagonal:
+    - Ruas Bar Progres: `hsl(217, 30%, 75%)` (`#adc0d6`), `background-image: none; box-shadow: none;`
+    - Titik Rincian Status: `hsl(217, 30%, 60%)` (`#7b94b7`)
+    - Badge Status Modal: `hsl(217, 30%, 88%)` dengan warna teks `hsl(217, 35%, 28%)`
+    - Tab Modal Aktif: `#5b7396` dengan teks putih.
+- **Status Revisi Perbaikan**:
+  - Menggunakan rona merah terang (*bright red base hue* 0°) dengan tingkat kejenuhan (*saturation*) **10%**:
+    - Ruas Bar Progres (> 0 data): `hsl(0, 10%, 80%)` (`#d1c7c7`), solid polos tanpa corak diagonal.
+    - Ruas Bar Progres (0 data): penanda tipis 4px `hsl(0, 10%, 65%)` (`#aba4a4`).
+    - Titik Rincian Status: `hsl(0, 10%, 60%)` (`#a38f8f`).
+    - Badge Status Modal: `hsl(0, 10%, 88%)` dengan warna teks `hsl(0, 15%, 28%)`.
+    - Tab Modal Aktif: `#857272` dengan teks putih.
+- **Konsistensi Visual**: Menjaga hirarki visual dashboard tetap tenang, elegan, dan profesional, di mana status *Terupload* menyatu dalam spektrum biru data terinput, sementara status *Revisi* tampil lembut tanpa menimbulkan kesan alarmist yang mencolok.
 
 ---
 
