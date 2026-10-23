@@ -956,8 +956,11 @@ function renderUsulanInputData(usulan) {
     var rincianHtml = '';
 
     usulan.kategori.forEach(function(kat, idx) {
-        var bobot = usulan.total > 0 ? (kat.jumlah > 0 ? kat.jumlah : 0.8) : 1;
-        progresHtml += '<div class="igt-progres__ruas ' + (kat.kelas || '') + ' igt-progres__ruas--' + (idx + 1) + '" style="flex-grow: ' + bobot + '" title="' + kat.label + ': ' + kat.jumlah + ' data"></div>';
+        var isNol = kat.jumlah === 0;
+        var bobot = isNol ? 0 : kat.jumlah;
+        var kelasNol = isNol ? ' is-nol' : '';
+        var inlineStyle = isNol ? 'flex-grow: 0; min-width: 4px; width: 4px;' : 'flex-grow: ' + (bobot || 1);
+        progresHtml += '<div class="igt-progres__ruas ' + (kat.kelas || '') + kelasNol + ' igt-progres__ruas--' + (idx + 1) + '" style="' + inlineStyle + '" title="' + kat.label + ': ' + kat.jumlah + ' data"></div>';
 
         rincianHtml += '<div class="igt-rincian__item ' + kat.kelas + '">'
             + '<span class="igt-rincian__titik"></span>'
