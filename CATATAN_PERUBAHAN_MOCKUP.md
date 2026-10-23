@@ -23,6 +23,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 13 | **Urutan Kategori Grafik Usulan Input Data** | Urutan kategori lama: *Terupload*, *Terkompilasi*, *Revisi Perbaikan*, *Terintegrasi*. | Urutan dirombak secara logis sesuai alur verifikasi data: **Terintegrasi** $\rightarrow$ **Terkompilasi** $\rightarrow$ **Terupload** $\rightarrow$ **Revisi Perbaikan**, baik pada bilah ruas progres (*progress bar*) maupun grid rincian status data di bawahnya. |
 | 14 | **Warna Pastel Status Terupload (Hijau) & Revisi (Merah)** | Warna status *Terupload* sebelumnya biru cerulean (`#1860a9`/`#2f8ce4`) dan *Revisi Perbaikan* amber/kuning (`#fef3c7`/`#f59e0b`). | Diperbarui menggunakan warna pastel: **Terupload** menjadi **hijau pastel** (`#86efac` gradasi ke `#4ade80` dengan titik `#4ade80`) dan **Revisi Perbaikan** menjadi **merah pastel** (`#fecaca` gradasi ke `#fca5a5` dengan titik `#f87171`), memberikan identifikasi visual yang intuitif dan nyaman dipandang. |
 | 15 | **Ketebalan Ruas Grafik untuk Kategori Bernilai 0 (Revisi Perbaikan)** | Ruas kategori dengan jumlah 0 memiliki lebar tetap 24px (`min-width: 24px`), sehingga terlihat memakan porsi ruang yang cukup besar meskipun datanya kosong. | Diberi penanganan khusus `.is-nol`: bila jumlah data 0, ruas bar dibuat **sangat tipis (lebar 4px)** dengan `flex-grow: 0` dan warna merah solid (`#f87171`), tetap terlihat sebagai penanda batas tanpa mendistorsi proporsi data lainnya. |
+| 16 | **Penerapan Warna Solid pada Ruas Terupload & Revisi** | Ruas *Terupload* dan *Revisi Perbaikan* sebelumnya memiliki pola garis-garis diagonal selang-seling (`repeating-linear-gradient`) seperti halnya ruas *Terintegrasi* dan *Terkompilasi*. | Disederhanakan menjadi **warna solid (polos tanpa garis selang-seling)**: **Terupload** menggunakan warna hijau pastel solid (`#86efac`) dan **Revisi Perbaikan** menggunakan warna merah pastel solid (`#fca5a5` / `#f87171`). Pola garis selang-seling kini khusus dipertahankan hanya pada *Terintegrasi* dan *Terkompilasi* agar selaras dengan grafik Kompilasi Integrasi. |
 
 ---
 
@@ -141,6 +142,14 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
   - Diperbaiki pada renderer [`assets/js/mockup-app.js`](assets/js/mockup-app.js) dengan menyematkan kelas `.is-nol` dan properti `flex-grow: 0; min-width: 4px; width: 4px;`.
   - Ditata secara visual melalui CSS dengan lebar ultra-tipis **4px**, sudut lengkung `border-radius: 2px`, dan warna merah solid aksen (`#f87171`).
   - Hasil: Kategori bernilai 0 tetap terwakili secara elegan di ujung grafik sebagai aksen tipis tanpa mengaburkan skala proporsional kategori yang memiliki data.
+
+### 13. Penyederhanaan Warna Solid pada Ruas Terupload & Revisi
+- **Penghapusan Pola Garis Selang-seling**:
+  - Menghapus pola garis diagonal (`repeating-linear-gradient`) dan efek bayangan ganda pada ruas *Terupload* dan *Revisi Perbaikan*.
+  - Menetapkan warna polos/solid murni:
+    - **Terupload**: `#86efac` (solid pastel green, `background-image: none; box-shadow: none;`)
+    - **Revisi Perbaikan**: `#fca5a5` / `#f87171` (solid pastel red, `background-image: none; box-shadow: none;`)
+  - Pola tekstur garis diagonal selang-seling kini hanya digunakan secara eksklusif pada ruas *Terintegrasi* (`#1d4ed8`) dan *Terkompilasi* (`#93c5fd`), sehingga korelasi visual dengan kartu *Kompilasi Integrasi* di sebelah kanan menjadi jauh lebih konsisten dan kontrasnya jelas.
 
 ---
 
