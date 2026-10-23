@@ -1479,7 +1479,26 @@ a.igt-stat:hover {
     background-color: #f5f5f5;
 }
 
-.igt-progres__ruas:nth-child(1) {
+.igt-progres__ruas:nth-child(1),
+.igt-progres__ruas--1,
+.igt-progres__ruas.is-terintegrasi {
+    background-color: #1d4ed8;
+    background-image:
+        repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.1) 0 5px, transparent 5px 15px),
+        linear-gradient(180deg, #2563eb 0%, #1e40af 100%);
+    box-shadow: inset -2px -2px 12px rgba(47, 140, 228, 0.15), inset 2px 2px 6px rgba(255, 255, 255, 0.65);
+}
+
+.igt-progres__ruas:nth-child(2),
+.igt-progres__ruas--2,
+.igt-progres__ruas.is-terkompilasi {
+    background-color: #93c5fd;
+    background-image: repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.15) 0 4px, transparent 4px 10px);
+}
+
+.igt-progres__ruas:nth-child(3),
+.igt-progres__ruas--3,
+.igt-progres__ruas.is-terupload {
     background-color: #1860a9;
     background-image:
         repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.1) 0 5px, transparent 5px 16.667px),
@@ -1487,23 +1506,12 @@ a.igt-stat:hover {
     box-shadow: inset -2px -2px 12px rgba(47, 140, 228, 0.15), inset 2px 2px 6px rgba(255, 255, 255, 0.65);
 }
 
-.igt-progres__ruas:nth-child(2),
-.igt-progres__ruas--2 {
-    background-color: #93c5fd;
-    background-image: repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.15) 0 4px, transparent 4px 10px);
-}
-
-.igt-progres__ruas:nth-child(3),
-.igt-progres__ruas--3 {
-    background-color: #fef3c7;
-}
-
 .igt-progres__ruas:nth-child(4),
-.igt-progres__ruas--4 {
-    background-color: #1d4ed8;
-    background-image:
-        repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.1) 0 5px, transparent 5px 15px),
-        linear-gradient(180deg, #2563eb 0%, #1e40af 100%);
+.igt-progres__ruas--4,
+.igt-progres__ruas.is-perbaikan {
+    background-color: #fef3c7;
+    background-image: none;
+    box-shadow: none;
 }
 
 .igt-rincian {
@@ -1539,8 +1547,8 @@ a.igt-stat:hover {
 }
 
 .igt-rincian__item:nth-child(1) .igt-rincian__titik,
-.igt-rincian__item.is-terupload .igt-rincian__titik {
-    background-color: #2f8ce4;
+.igt-rincian__item.is-terintegrasi .igt-rincian__titik {
+    background-color: #1d4ed8;
 }
 
 .igt-rincian__item:nth-child(2) .igt-rincian__titik,
@@ -1549,13 +1557,13 @@ a.igt-stat:hover {
 }
 
 .igt-rincian__item:nth-child(3) .igt-rincian__titik,
-.igt-rincian__item.is-perbaikan .igt-rincian__titik {
-    background-color: #f59e0b;
+.igt-rincian__item.is-terupload .igt-rincian__titik {
+    background-color: #2f8ce4;
 }
 
 .igt-rincian__item:nth-child(4) .igt-rincian__titik,
-.igt-rincian__item.is-terintegrasi .igt-rincian__titik {
-    background-color: #1d4ed8;
+.igt-rincian__item.is-perbaikan .igt-rincian__titik {
+    background-color: #f59e0b;
 }
 
 .igt-rincian__isi {

@@ -16,10 +16,10 @@ window.MOCKUP_DATA = {
         usulanInputData: {
             total: 98,
             kategori: [
-                { kunci: 'terupload', label: 'Terupload', jumlah: 65, diperbarui: 'Diperbarui 11 jam lalu', kelas: 'is-terupload' },
+                { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 26, diperbarui: 'Diperbarui 6 jam lalu', kelas: 'is-terintegrasi' },
                 { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 7, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
-                { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, diperbarui: '-', kelas: 'is-perbaikan' },
-                { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 26, diperbarui: 'Diperbarui 6 jam lalu', kelas: 'is-terintegrasi' }
+                { kunci: 'terupload', label: 'Terupload', jumlah: 65, diperbarui: 'Diperbarui 11 jam lalu', kelas: 'is-terupload' },
+                { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, diperbarui: '-', kelas: 'is-perbaikan' }
             ]
         },
         kompilasiIntegrasi: {
@@ -169,10 +169,10 @@ window.MOCKUP_DATA = {
                 usulanInputData: {
                     total: totalUsulanKab,
                     kategori: [
-                        { kunci: 'terupload', label: 'Terupload', jumlah: teruploadKab, diperbarui: 'Diperbarui 1 jam lalu', kelas: 'is-terupload' },
+                        { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: terintegrasiKab, diperbarui: 'Diperbarui 15 menit lalu', kelas: 'is-terintegrasi' },
                         { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: terkompilasiKab, diperbarui: 'Diperbarui 5 jam lalu', kelas: 'is-terkompilasi' },
-                        { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: perbaikanKab, diperbarui: perbaikanKab > 0 ? 'Diperbarui kemarin' : '-', kelas: 'is-perbaikan' },
-                        { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: terintegrasiKab, diperbarui: 'Diperbarui 15 menit lalu', kelas: 'is-terintegrasi' }
+                        { kunci: 'terupload', label: 'Terupload', jumlah: teruploadKab, diperbarui: 'Diperbarui 1 jam lalu', kelas: 'is-terupload' },
+                        { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: perbaikanKab, diperbarui: perbaikanKab > 0 ? 'Diperbarui kemarin' : '-', kelas: 'is-perbaikan' }
                     ]
                 },
                 kompilasiIntegrasi: {
@@ -265,10 +265,10 @@ window.MOCKUP_DATA = {
             usulanInputData: {
                 total: totalUsulan,
                 kategori: [
-                    { kunci: 'terupload', label: 'Terupload', jumlah: terupload, diperbarui: 'Diperbarui 3 jam lalu', kelas: 'is-terupload' },
+                    { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: terintegrasi, diperbarui: 'Diperbarui 30 menit lalu', kelas: 'is-terintegrasi' },
                     { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: terkompilasi, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
-                    { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: perbaikan, diperbarui: perbaikan > 0 ? 'Diperbarui 2 hari lalu' : '-', kelas: 'is-perbaikan' },
-                    { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: terintegrasi, diperbarui: 'Diperbarui 30 menit lalu', kelas: 'is-terintegrasi' }
+                    { kunci: 'terupload', label: 'Terupload', jumlah: terupload, diperbarui: 'Diperbarui 3 jam lalu', kelas: 'is-terupload' },
+                    { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: perbaikan, diperbarui: perbaikan > 0 ? 'Diperbarui 2 hari lalu' : '-', kelas: 'is-perbaikan' }
                 ]
             },
             kompilasiIntegrasi: {

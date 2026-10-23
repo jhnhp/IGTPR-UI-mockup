@@ -436,25 +436,48 @@
             margin-bottom: 6px !important;
         }
 
-        /* Usulan Input Data status colors matched with Kompilasi Integrasi */
-        .igt-progres__ruas:nth-child(2),
-        .igt-progres__ruas--2 {
-            background-color: #93c5fd !important;
-            background-image: repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.15) 0 4px, transparent 4px 10px) !important;
-        }
-        .igt-progres__ruas:nth-child(4),
-        .igt-progres__ruas--4 {
+        /* Usulan Input Data status colors matched with Kompilasi Integrasi (Order: Terintegrasi, Terkompilasi, Terupload, Revisi) */
+        .igt-progres__ruas:nth-child(1),
+        .igt-progres__ruas--1,
+        .igt-progres__ruas.is-terintegrasi {
             background-color: #1d4ed8 !important;
             background-image: repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.1) 0 5px, transparent 5px 15px),
                               linear-gradient(180deg, #2563eb 0%, #1e40af 100%) !important;
+        }
+        .igt-progres__ruas:nth-child(2),
+        .igt-progres__ruas--2,
+        .igt-progres__ruas.is-terkompilasi {
+            background-color: #93c5fd !important;
+            background-image: repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.15) 0 4px, transparent 4px 10px) !important;
+        }
+        .igt-progres__ruas:nth-child(3),
+        .igt-progres__ruas--3,
+        .igt-progres__ruas.is-terupload {
+            background-color: #1860a9 !important;
+            background-image: repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.1) 0 5px, transparent 5px 16.667px),
+                              linear-gradient(-11.7deg, #71aae3 31%, #1860a9 69%) !important;
+        }
+        .igt-progres__ruas:nth-child(4),
+        .igt-progres__ruas--4,
+        .igt-progres__ruas.is-perbaikan {
+            background-color: #fef3c7 !important;
+            background-image: none !important;
+        }
+        .igt-rincian__item:nth-child(1) .igt-rincian__titik,
+        .igt-rincian__item.is-terintegrasi .igt-rincian__titik {
+            background-color: #1d4ed8 !important;
         }
         .igt-rincian__item:nth-child(2) .igt-rincian__titik,
         .igt-rincian__item.is-terkompilasi .igt-rincian__titik {
             background-color: #93c5fd !important;
         }
+        .igt-rincian__item:nth-child(3) .igt-rincian__titik,
+        .igt-rincian__item.is-terupload .igt-rincian__titik {
+            background-color: #2f8ce4 !important;
+        }
         .igt-rincian__item:nth-child(4) .igt-rincian__titik,
-        .igt-rincian__item.is-terintegrasi .igt-rincian__titik {
-            background-color: #1d4ed8 !important;
+        .igt-rincian__item.is-perbaikan .igt-rincian__titik {
+            background-color: #f59e0b !important;
         }
 
         /* Dropdown panel absolute z-index */

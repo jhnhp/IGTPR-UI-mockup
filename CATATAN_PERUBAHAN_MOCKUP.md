@@ -20,6 +20,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 10 | **Spasi Vertikal Popup Detail Informasi** | Posisi popup terlalu mepet dan sedikit menabrak teks *"Hai, Internal IGT 👋"* (overlap -4px akibat `top: 64px`). | Posisi disesuaikan menjadi `top: 92px` dengan `max-height: calc(100% - 108px)`, memberikan jarak vertikal lega (+24px) di bawah teks sapaan tanpa mengorbankan ruang peta. |
 | 11 | **Tipografi & Spasi Kartu Ringkasan (Usulan Input Data & Kompilasi Integrasi)** | Angka metrik (98 dan 14) berukuran standar (40px) dan jarak vertikal antara judul kartu dengan angka terlalu renggang (gap 46px). | Angka metrik **dibesarkan menjadi 58px (bold 700)** dan jarak vertikal antara judul kartu dengan angkanya didekatkan menjadi **gap 14px** (`justify-content: flex-start`). Tampilan metrik menjadi jauh lebih tegas dan proporsional. |
 | 12 | **Penyelarasan Warna Status Usulan Input Data & Kompilasi Integrasi** | Warna status *Terkompilasi* (`#e0f2fe`/`#0ea5e9`) dan *Terintegrasi* (hijau `#dcfce7`/`#16a34a`) pada Usulan Input Data tidak selaras dengan kartu Kompilasi Integrasi di sebelahnya. | Warna *Terkompilasi* disamakan menjadi **soft blue (`#93c5fd`)** dan *Terintegrasi* disamakan menjadi **royal blue (`#1d4ed8`)**, baik pada ruas bar kemajuan maupun titik rincian status. Menciptakan keseragaman palet warna yang konsisten antar-kedua kartu ringkasan. |
+| 13 | **Urutan Kategori Grafik Usulan Input Data** | Urutan kategori lama: *Terupload*, *Terkompilasi*, *Revisi Perbaikan*, *Terintegrasi*. | Urutan dirombak secara logis sesuai alur verifikasi data: **Terintegrasi** $\rightarrow$ **Terkompilasi** $\rightarrow$ **Terupload** $\rightarrow$ **Revisi Perbaikan**, baik pada bilah ruas progres (*progress bar*) maupun grid rincian status data di bawahnya. |
 
 ---
 
@@ -111,6 +112,19 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
     - **Terintegrasi**: Diubah dari warna hijau (`#dcfce7` / `#16a34a`) menjadi **royal blue (`#1d4ed8`)** dengan gradasi elegan, identik dengan warna *Layer Terintegrasi*.
   - Perubahan diterapkan pada ruas bilah kemajuan (`.igt-progres__ruas`) dan titik indikator status (`.igt-rincian__titik`).
   - Hasil: Menghilangkan inkonsistensi warna dan menyatukan bahasa visual kedua kartu ringkasan secara utuh dan serasi.
+
+### 10. Pengurutan Kategori pada Grafik Usulan Input Data
+- **Restrukturisasi Urutan Status**:
+  - Urutan kategori pada kartu **Usulan Input Data** disesuaikan mengikuti instruksi alur tahapan data:
+    1. **Terintegrasi** (26 data, royal blue `#1d4ed8` dengan gradasi elegan)
+    2. **Terkompilasi** (7 data, soft sky blue `#93c5fd` dengan garis halus)
+    3. **Terupload** (65 data, cerulean blue `#1860a9`/`#2f8ce4` dengan garis diagonal)
+    4. **Revisi Perbaikan** (0 data, amber `#fef3c7`/`#f59e0b`)
+  - Perubahan diterapkan menyeluruh pada:
+    - Data store [`dummy-data.js`](assets/js/dummy-data.js) (tingkat nasional, provinsi, dan kabupaten).
+    - Renderer bilah kemajuan di [`mockup-app.js`](assets/js/mockup-app.js) dengan injeksi kelas dinamis pada setiap ruas `.igt-progres__ruas`.
+    - Styling CSS di [`assets/css/igt-components.css`](assets/css/igt-components.css) dan tag `<style>` di [`index.html`](index.html).
+  - Hasil: Grafik bilah kemajuan dan grid rincian menampilkan status *Terintegrasi* di posisi pertama, diikuti *Terkompilasi*, *Terupload*, dan *Revisi Perbaikan*.
 
 ---
 
