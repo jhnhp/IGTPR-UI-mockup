@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="IGTPR UI Mockup - Pure HTML Static Dashboard">
+    <link rel="icon" type="image/x-icon" href="assets/img/geoportalLogo.ico">
+    <title>Geoportal IGT-PR - Dashboard</title>
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="assets/lib/remixicon/fonts/remixicon.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/maplibre-gl.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/igt-components.css">
+
+    <style>
+        /* Standalone mockup customizations */
+        body {
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #1e293b;
+        }
+
+        .sidebar {
+            z-index: 1040;
+        }
+
+        .main-app {
+            background-color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* Responsive sidebar collapse behavior */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.25s ease-in-out;
+            }
+            body.sidebar-show .sidebar {
+                transform: translateX(0);
+            }
+            body.sidebar-show::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                background: rgba(15, 23, 42, 0.4);
+                z-index: 1030;
+            }
+        }
+
+        /* Map styling overrides */
+        .igt-hero__peta {
+            position: relative;
+            height: 380px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Fix Maplibre controls position */
+        .maplibregl-ctrl-top-right {
+            top: 14px;
+            right: 14px;
+        }
+
+        /* Filter popup box */
+        #beranda-filter {
+            display: none;
+            position: absolute;
+            top: 48px;
+            right: 0;
+            width: 320px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            z-index: 100;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Table check plain styling */
+        .igt-table__check img {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Dropdown panel absolute z-index */
+        .igt-dropdown {
+            position: relative;
+        }
+        .igt-dropdown__panel {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 4px;
+            z-index: 99;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            min-width: 200px;
+            display: none;
+        }
+        .igt-dropdown__panel.is-open {
+            display: block;
+        }
+
+        .main-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0 16px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 13px;
+            color: #64748b;
+        }
+        .main-footer a {
+            color: #1e40af;
+            font-weight: 500;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ==============================================
+         SIDEBAR
+    =============================================== -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo" style="font-size: 19px; display: flex; align-items: center; gap: 10px; font-weight: 700; color: #1e293b; text-decoration: none;">
+                <img src="assets/img/geoportalLogo.png" alt="Logo" width="40px">
+                <span>Geoportal IGT-PR</span>
+            </a>
+        </div>
+
+        <div id="sidebarMenu" class="sidebar-body">
+            <!-- GROUP: DASHBOARD -->
+            <div class="nav-group show">
+                <a href="#" class="nav-label">Dashboard</a>
+                <ul class="nav nav-sidebar">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link active">
+                            <i class="ri-bar-chart-2-line"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- GROUP: DATA -->
+            <div class="nav-group show">
+                <a href="#" class="nav-label">Data</a>
+                <ul class="nav nav-sidebar">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-folder-2-line"></i>
+                            <span>Kompilasi Data</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-briefcase-5-line"></i>
+                            <span>Integrasi Data</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-group-line"></i>
+                            <span>Self Assessment</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-map-2-line"></i>
+                            <span>Peta IGT</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- GROUP: DATA DERIVATIF -->
+            <div class="nav-group show">
+                <a href="#" class="nav-label">Data Derivatif</a>
+                <ul class="nav nav-sidebar">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-stack-line"></i>
+                            <span>Create Layer Derivatif</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-database-2-line"></i>
+                            <span>Atribut Layer Derivatif</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-palette-line"></i>
+                            <span>SLD Derivatif</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-upload-cloud-line"></i>
+                            <span>Unggah Data Derivatif</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-checkbox-circle-line"></i>
+                            <span>Verifikasi Derivatif</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-list-unordered"></i>
+                            <span>List Data Derivatif</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- GROUP: C M S -->
+            <div class="nav-group show">
+                <a href="#" class="nav-label">C M S</a>
+                <ul class="nav nav-sidebar">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-home-4-line"></i>
+                            <span>CMS Landing Page</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-shield-user-line"></i>
+                            <span>Direktorat</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-stack-line"></i>
+                            <span>Layer IGT</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-database-2-line"></i>
+                            <span>Attribut Data</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-palette-line"></i>
+                            <span>SLD</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-image-line"></i>
+                            <span>Symbology</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-file-list-3-line"></i>
+                            <span>MetaData</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="ri-stack-overflow-line"></i>
+                            <span>Tumpang Susun</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SIDEBAR FOOTER (USER PROFILE) -->
+        <div class="sidebar-footer">
+            <div class="sidebar-footer-top">
+                <div class="sidebar-footer-thumb">
+                    <img src="assets/img/profile.png" alt="Avatar">
+                </div>
+                <div class="sidebar-footer-body">
+                    <h6><a href="#">Admin ATR/BPN</a></h6>
+                    <p>Administrator</p>
+                </div>
+                <a id="sidebarFooterMenu" href="#" class="dropdown-link">
+                    <i class="ri-arrow-down-s-line"></i>
+                </a>
+            </div>
+            <div class="sidebar-footer-menu" style="display: none;">
+                <nav class="nav">
+                    <a href="javascript:void(0)"><i class="ri-logout-box-r-line"></i> Log Out</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================
+         HEADER TOPBAR
+    =============================================== -->
+    <div class="header-main px-3 px-lg-4">
+        <a id="menuSidebar" href="#" class="menu-link me-3 me-lg-4"><i class="ri-menu-2-fill"></i></a>
+        <div class="me-auto d-flex align-items-center">
+            <h4 class="mb-0 fw-bold text-dark d-none d-md-block" style="font-size: 1.25rem; letter-spacing: -0.02em;">Dashboard</h4>
+        </div>
+
+        <!-- Notification Bell -->
+        <div class="dropdown dropdown-notification ms-3 ms-xl-4 position-relative">
+            <a href="#" class="dropdown-link position-relative" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                <i class="ri-notification-3-line" style="font-size: 1.25rem;"></i>
+                <span class="badge bg-primary rounded-pill position-absolute" style="top: -4px; right: -8px; font-size: 0.65rem; padding: 0.2em 0.45em; min-width: 18px;">10</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end mt-2">
+                <div class="dropdown-menu-header p-3 border-bottom">
+                    <h6 class="dropdown-menu-title mb-0 fw-bold">Notifikasi</h6>
+                </div>
+                <ul class="list-group list-group-flush" id="notif">
+                    <li class="list-group-item p-3 text-muted small">10 notifikasi baru pada sistem.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Profile Avatar -->
+        <div class="dropdown dropdown-profile ms-3 ms-xl-4">
+            <a href="#" class="dropdown-link" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                <div class="avatar online"><img src="assets/img/profile.png" alt="Avatar"></div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end mt-2 p-3" style="min-width: 200px;">
+                <h6 class="mb-1 text-dark fw-semibold">Admin ATR/BPN</h6>
+                <p class="text-muted small mb-2">Administrator</p>
+                <div class="border-top pt-2">
+                    <a href="javascript:void(0)" class="text-danger text-decoration-none small"><i class="ri-logout-box-r-line"></i> Log Out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================
+         MAIN CONTENT AREA
+    =============================================== -->
+    <div class="main main-app p-3 p-lg-4">
+
+        <!-- 1. HERO SECTION: GREETING & INDONESIA MAP -->
+        <div class="igt-hero mb-4" id="beranda">
+            <div class="igt-hero__kepala">
+                <div class="igt-hero__salam">
+                    <span class="igt-hero__tanggal">Jumat, 23 Oktober 2026</span>
+                    <h4 class="igt-hero__nama">Hai, Internal IGT 👋</h4>
+                </div>
+                <div class="igt-hero__alat position-relative">
+                    <button type="button" class="igt-btn" id="beranda-filter-toggle">
+                        <span class="igt-btn__icon"><img src="assets/img/icons/sliders.svg" alt="filter"></span>
+                        Filter
+                        <span class="igt-btn__badge" id="beranda-filter-badge" style="display: none">0</span>
+                    </button>
+
+                    <!-- Filter Dropdown Panel -->
+                    <div class="igt-filter" id="beranda-filter">
+                        <div class="igt-filter__head d-flex justify-content-between align-items-center mb-3">
+                            <span class="igt-filter__title fw-bold">Filter Peta</span>
+                            <button type="button" class="btn btn-sm btn-light p-1" id="beranda-filter-close">
+                                <img src="assets/img/icons/x.svg" alt="Tutup" width="14">
+                            </button>
+                        </div>
+                        <div class="igt-filter__grid mb-3">
+                            <div class="mb-2">
+                                <label class="small text-muted mb-1" for="beranda-filter-year">Tahun Renaksi</label>
+                                <select class="form-select form-select-sm" id="beranda-filter-year">
+                                    <option value="all" selected>Semua Tahun</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2024">2024</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <label class="small text-muted mb-1">Jenis IGT</label>
+                                <select class="form-select form-select-sm">
+                                    <option value="all" selected>Semua Jenis</option>
+                                    <option value="bidang">IGT Berbasis Bidang</option>
+                                    <option value="kawasan">IGT Berbasis Kawasan</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="small text-muted mb-3" style="font-size: 11px;">Jumlah tema per provinsi dan kartu Detail Informasi hanya menghitung IGT yang lolos filter ini.</p>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-sm btn-light" id="beranda-filter-reset">Reset</button>
+                            <button type="button" class="btn btn-sm btn-primary" id="beranda-filter-apply">Terapkan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vector Map of Indonesia -->
+            <div class="igt-hero__peta" id="beranda-peta"></div>
+        </div>
+
+        <!-- 2. SUMMARY CARDS: USULAN INPUT DATA & KOMPILASI INTEGRASI -->
+        <div class="igt-beranda-isi">
+            <div class="igt-ringkas-row mb-4">
+                <!-- Usulan Input Data Card -->
+                <div class="igt-panel" id="status-data">
+                    <div class="igt-panel__atas">
+                        <div class="igt-panel__kepala">
+                            <h6 class="igt-panel__judul">Usulan Input Data</h6>
+                            <img class="igt-panel__info" id="status-data-info" src="assets/img/icons/info.svg" alt="Info" title="Jumlah pengajuan data IGT menurut status terakhirnya.">
+                        </div>
+                        <div class="igt-panel__angka">
+                            <div class="igt-panel__nilai"><strong id="status-data-total">98</strong><span>data</span></div>
+                            <label class="igt-btn igt-pilih">
+                                <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
+                                <select id="status-data-tahun" aria-label="Tahun renaksi Usulan Input Data">
+                                    <option value="all">Semua Tahun</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2025">2025</option>
+                                </select>
+                                <img class="igt-pilih__caret" src="assets/img/icons/caret-up-down.svg" alt="">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="igt-panel__bawah">
+                        <div class="igt-progres" id="status-data-progres"></div>
+                        <div class="igt-rincian" id="status-data-rincian"></div>
+                    </div>
+                </div>
+
+                <!-- Kompilasi Integrasi Card -->
+                <div class="igt-panel" id="integrasi-kompilasi">
+                    <div class="igt-panel__atas">
+                        <div class="igt-panel__kepala">
+                            <h6 class="igt-panel__judul">Kompilasi Integrasi</h6>
+                            <img class="igt-panel__info" id="integrasi-kompilasi-info" src="assets/img/icons/info.svg" alt="Info" title="Akumulasi Layer IGT terkompilasi dan terintegrasi">
+                        </div>
+                        <div class="igt-panel__angka">
+                            <div class="igt-panel__nilai igt-panel__nilai--kecil"><strong id="integrasi-kompilasi-terkompilasi">14</strong><span>Layer IGT</span></div>
+                            <label class="igt-btn igt-pilih">
+                                <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
+                                <select id="integrasi-kompilasi-tahun" aria-label="Tahun Kompilasi Integrasi">
+                                    <option value="all">Semua Tahun</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2025">2025</option>
+                                </select>
+                                <img class="igt-pilih__caret" src="assets/img/icons/caret-up-down.svg" alt="">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="igt-panel__bawah">
+                        <div class="igt-tumpuk">
+                            <div class="igt-tumpuk__batang" id="integrasi-kompilasi-grafik"></div>
+                            <div class="igt-tumpuk__bulan" id="integrasi-kompilasi-bulan"></div>
+                        </div>
+                        <div class="igt-batang__legenda">
+                            <span>Layer Terkompilasi</span>
+                            <span>Layer Terintegrasi</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. STATISTIK IGT TABLE -->
+            <div class="igt-card mb-4" id="statistik-igt">
+                <div class="igt-card__head">
+                    <h6 class="igt-card__title">Statistik IGT</h6>
+                    <div class="igt-card__tools">
+                        <div class="igt-searchbar">
+                            <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt=""></span>
+                            <input type="search" placeholder="Cari sesuatu...">
+                            <span class="igt-searchbar__shortcut">&#8984; K</span>
+                        </div>
+                        <div class="igt-segment" role="group">
+                            <button type="button" class="igt-segment__item is-active" data-tampilan="tabel">Tabel</button>
+                            <button type="button" class="igt-segment__item" data-tampilan="grafik">Grafik</button>
+                        </div>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/sliders.svg" alt=""></span>
+                            Filter
+                        </button>
+                        <div class="igt-dropdown" id="statistik-igt-kelompok">
+                            <button type="button" class="igt-dropdown__trigger">
+                                <span class="igt-dropdown__label">Data Berdasarkan Direktorat</span>
+                                <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
+                            </button>
+                            <div class="igt-dropdown__panel">
+                                <button type="button" class="igt-dropdown__item is-active">
+                                    <img src="assets/img/icons/radio-on.svg" alt=""> Data Berdasarkan Direktorat
+                                </button>
+                                <button type="button" class="igt-dropdown__item">
+                                    <img src="assets/img/icons/radio-off.svg" alt=""> Data Berdasarkan Provinsi
+                                </button>
+                                <button type="button" class="igt-dropdown__item">
+                                    <img src="assets/img/icons/radio-off.svg" alt=""> Data Berdasarkan Kabupaten/Kota
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/download-simple.svg" alt=""></span>
+                            Unduh Data
+                        </button>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/arrows-out.svg" alt=""></span>
+                            View Full Table
+                        </button>
+                    </div>
+                </div>
+
+                <div id="statistik-igt-tabel">
+                    <div class="igt-table-wrap">
+                        <table class="igt-table">
+                            <thead>
+                                <tr>
+                                    <th class="igt-table__check is-plain"><img src="assets/img/icons/check-square.svg" alt=""></th>
+                                    <th data-kolom="igt"><span class="igt-table__sort">IGT <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="provinsi"><span class="igt-table__sort">Provinsi <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="kabupaten"><span class="igt-table__sort">Kabupaten <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="bidang"><span class="igt-table__sort">Bidang <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="luas"><span class="igt-table__sort">Luas (Ha) <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="statistik-igt-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="igt-table-foot">
+                        <div class="igt-table-foot__perpage">
+                            Per page
+                            <select id="statistik-igt-perpage">
+                                <option value="10" selected>10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                        <div class="igt-pagination" id="statistik-igt-pagination"></div>
+                    </div>
+                </div>
+                <div id="statistik-igt-grafik" style="display: none; padding: 40px; text-align: center; color: #64748b;">
+                    <i class="ri-bar-chart-box-line" style="font-size: 3rem;"></i>
+                    <p class="mt-2">Tampilan Grafik Statistik IGT</p>
+                </div>
+            </div>
+
+            <!-- 4. LEADER BOARD SECTION -->
+            <div class="igt-card mb-4" id="leader-board">
+                <div class="igt-card__head">
+                    <h6 class="igt-card__title">Leader Board</h6>
+                    <div class="igt-card__tools">
+                        <div class="igt-searchbar">
+                            <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt=""></span>
+                            <input type="search" id="leader-board-cari" placeholder="Cari sesuatu...">
+                            <span class="igt-searchbar__shortcut">&#8984; K</span>
+                        </div>
+                        <div class="igt-segment" role="group">
+                            <button type="button" class="igt-segment__item is-active" data-metrik="pemenuhan">Pemenuhan</button>
+                            <button type="button" class="igt-segment__item" data-metrik="keaktifan">Ke-Aktifan</button>
+                        </div>
+                        <label class="igt-btn igt-pilih">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
+                            <select id="leader-board-tahun" aria-label="Tahun Leader Board">
+                                <option value="all">Semua Tahun</option>
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                            </select>
+                            <img class="igt-pilih__caret" src="assets/img/icons/caret-up-down.svg" alt="">
+                        </label>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/sliders.svg" alt=""></span>
+                            Filter
+                        </button>
+                    </div>
+                </div>
+
+                <div class="igt-papan">
+                    <div class="igt-papan__kepala">
+                        <div class="igt-papan__legenda">
+                            <span>IGT Berbasis Bidang</span>
+                            <span>IGT Berbasis Kawasan</span>
+                        </div>
+                        <div class="igt-papan__alat">
+                            <div class="igt-dropdown" id="leader-board-dasar">
+                                <button type="button" class="igt-dropdown__trigger">
+                                    <span class="igt-dropdown__label">Data Berdasarkan Direktorat</span>
+                                    <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
+                                </button>
+                                <div class="igt-dropdown__panel">
+                                    <button type="button" class="igt-dropdown__item is-active">
+                                        <img src="assets/img/icons/radio-on.svg" alt=""> Data Berdasarkan Direktorat
+                                    </button>
+                                    <button type="button" class="igt-dropdown__item">
+                                        <img src="assets/img/icons/radio-off.svg" alt=""> Data Berdasarkan Daerah
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" class="igt-btn" id="leader-board-full">
+                                <span class="igt-btn__icon"><img src="assets/img/icons/arrows-out.svg" alt=""></span>
+                                View Full Table
+                            </button>
+                        </div>
+                    </div>
+                    <div class="igt-papan__daftar" id="leader-board-daftar"></div>
+                </div>
+            </div>
+
+            <!-- 5. CAPAIAN RENAKSI TABLE -->
+            <div class="igt-card mb-4" id="capaian-renaksi">
+                <div class="igt-card__head">
+                    <h6 class="igt-card__title">Capaian Renaksi</h6>
+                    <div class="igt-card__tools">
+                        <div class="igt-searchbar">
+                            <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt=""></span>
+                            <input type="search" placeholder="Cari sesuatu...">
+                            <span class="igt-searchbar__shortcut">&#8984; K</span>
+                        </div>
+                        <div class="igt-segment" role="group">
+                            <button type="button" class="igt-segment__item is-active" data-tampilan="tabel">Tabel</button>
+                            <button type="button" class="igt-segment__item" data-tampilan="grafik">Grafik</button>
+                        </div>
+                        <label class="igt-btn igt-pilih">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
+                            <select aria-label="Tahun Capaian Renaksi">
+                                <option value="all">Semua Tahun</option>
+                                <option value="2026">2026</option>
+                            </select>
+                            <img class="igt-pilih__caret" src="assets/img/icons/caret-up-down.svg" alt="">
+                        </label>
+                        <div class="igt-dropdown" id="capaian-renaksi-kelompok">
+                            <button type="button" class="igt-dropdown__trigger">
+                                <span class="igt-dropdown__label">Data Berdasarkan Direktorat</span>
+                                <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
+                            </button>
+                            <div class="igt-dropdown__panel">
+                                <button type="button" class="igt-dropdown__item is-active">
+                                    <img src="assets/img/icons/radio-on.svg" alt=""> Data Berdasarkan Direktorat
+                                </button>
+                                <button type="button" class="igt-dropdown__item">
+                                    <img src="assets/img/icons/radio-off.svg" alt=""> Data Berdasarkan Provinsi
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/download-simple.svg" alt=""></span>
+                            Unduh Data
+                        </button>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/arrows-out.svg" alt=""></span>
+                            View Full Table
+                        </button>
+                    </div>
+                </div>
+
+                <div id="capaian-renaksi-tabel">
+                    <div class="igt-table-wrap">
+                        <table class="igt-table">
+                            <thead>
+                                <tr>
+                                    <th class="igt-table__check is-plain"><img src="assets/img/icons/check-square.svg" alt=""></th>
+                                    <th data-kolom="direktorat"><span class="igt-table__sort">Direktorat <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="target"><span class="igt-table__sort">Target <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="capaian"><span class="igt-table__sort">Capaian <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="capaian-renaksi-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="igt-table-foot">
+                        <div class="igt-table-foot__perpage">
+                            Per page
+                            <select id="capaian-renaksi-perpage">
+                                <option value="10" selected>10</option>
+                                <option value="25">25</option>
+                            </select>
+                        </div>
+                        <div class="igt-pagination" id="capaian-renaksi-pagination"></div>
+                    </div>
+                </div>
+                <div id="capaian-renaksi-grafik" style="display: none; padding: 40px; text-align: center; color: #64748b;">
+                    <i class="ri-bar-chart-box-line" style="font-size: 3rem;"></i>
+                    <p class="mt-2">Tampilan Grafik Capaian Renaksi</p>
+                </div>
+            </div>
+
+            <!-- 6. STATISTIK DERIVATIF TABLE -->
+            <div class="igt-card mb-4" id="statistik-derivatif">
+                <div class="igt-card__head">
+                    <h6 class="igt-card__title">Statistik Derivatif</h6>
+                    <div class="igt-card__tools">
+                        <div class="igt-searchbar">
+                            <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt=""></span>
+                            <input type="search" placeholder="Cari sesuatu...">
+                            <span class="igt-searchbar__shortcut">&#8984; K</span>
+                        </div>
+                        <div class="igt-segment" role="group">
+                            <button type="button" class="igt-segment__item is-active" data-tampilan="tabel">Tabel</button>
+                            <button type="button" class="igt-segment__item" data-tampilan="grafik">Grafik</button>
+                        </div>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/sliders.svg" alt=""></span>
+                            Filter
+                        </button>
+                        <div class="igt-dropdown" id="statistik-derivatif-kelompok">
+                            <button type="button" class="igt-dropdown__trigger">
+                                <span class="igt-dropdown__label">Data Berdasarkan Direktorat</span>
+                                <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
+                            </button>
+                            <div class="igt-dropdown__panel">
+                                <button type="button" class="igt-dropdown__item is-active">
+                                    <img src="assets/img/icons/radio-on.svg" alt=""> Data Berdasarkan Direktorat
+                                </button>
+                                <button type="button" class="igt-dropdown__item">
+                                    <img src="assets/img/icons/radio-off.svg" alt=""> Data Berdasarkan Provinsi
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/download-simple.svg" alt=""></span>
+                            Unduh Data
+                        </button>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/arrows-out.svg" alt=""></span>
+                            View Full Table
+                        </button>
+                    </div>
+                </div>
+
+                <div id="statistik-derivatif-tabel">
+                    <div class="igt-table-wrap">
+                        <table class="igt-table">
+                            <thead>
+                                <tr>
+                                    <th class="igt-table__check is-plain"><img src="assets/img/icons/check-square.svg" alt=""></th>
+                                    <th data-kolom="layer"><span class="igt-table__sort">Layer Derivatif <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="provinsi"><span class="igt-table__sort">Provinsi <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="kabupaten"><span class="igt-table__sort">Kabupaten <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="bidang"><span class="igt-table__sort">Bidang <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="luas"><span class="igt-table__sort">Luas (Ha) <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="statistik-derivatif-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="igt-table-foot">
+                        <div class="igt-table-foot__perpage">
+                            Per page
+                            <select id="statistik-derivatif-perpage">
+                                <option value="10" selected>10</option>
+                            </select>
+                        </div>
+                        <div class="igt-pagination" id="statistik-derivatif-pagination"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. STATISTIK AKSES IGT TABLE -->
+            <div class="igt-card mb-4" id="statistik-akses">
+                <div class="igt-card__head">
+                    <h6 class="igt-card__title">Statistik Akses IGT</h6>
+                    <div class="igt-card__tools">
+                        <div class="igt-searchbar">
+                            <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt=""></span>
+                            <input type="search" placeholder="Cari sesuatu...">
+                            <span class="igt-searchbar__shortcut">&#8984; K</span>
+                        </div>
+                        <div class="igt-segment" role="group">
+                            <button type="button" class="igt-segment__item is-active" data-tampilan="tabel">Tabel</button>
+                            <button type="button" class="igt-segment__item" data-tampilan="grafik">Grafik</button>
+                        </div>
+                        <label class="igt-btn igt-pilih">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
+                            <select aria-label="Tanggal">
+                                <option value="all">Tanggal</option>
+                            </select>
+                            <img class="igt-pilih__caret" src="assets/img/icons/caret-down.svg" alt="">
+                        </label>
+                        <div class="igt-dropdown" id="statistik-akses-kelompok">
+                            <button type="button" class="igt-dropdown__trigger">
+                                <span class="igt-dropdown__label">Data Berdasarkan Direktorat</span>
+                                <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
+                            </button>
+                            <div class="igt-dropdown__panel">
+                                <button type="button" class="igt-dropdown__item is-active">
+                                    <img src="assets/img/icons/radio-on.svg" alt=""> Data Berdasarkan Direktorat
+                                </button>
+                                <button type="button" class="igt-dropdown__item">
+                                    <img src="assets/img/icons/radio-off.svg" alt=""> Data Berdasarkan Aktivitas
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/download-simple.svg" alt=""></span>
+                            Unduh Data
+                        </button>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/arrows-out.svg" alt=""></span>
+                            View Full Table
+                        </button>
+                    </div>
+                </div>
+
+                <div id="statistik-akses-tabel">
+                    <div class="igt-table-wrap">
+                        <table class="igt-table">
+                            <thead>
+                                <tr>
+                                    <th class="igt-table__check is-plain"><img src="assets/img/icons/check-square.svg" alt=""></th>
+                                    <th data-kolom="direktorat"><span class="igt-table__sort">Direktorat <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="aktivitas"><span class="igt-table__sort">Aktivitas <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="total"><span class="igt-table__sort">Total <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="statistik-akses-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="igt-table-foot">
+                        <div class="igt-table-foot__perpage">
+                            Per page
+                            <select id="statistik-akses-perpage">
+                                <option value="10" selected>10</option>
+                            </select>
+                        </div>
+                        <div class="igt-pagination" id="statistik-akses-pagination"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. AKTIVITAS LOG TABLE -->
+            <div class="igt-card mb-4" id="aktivitas-log">
+                <div class="igt-card__head">
+                    <h6 class="igt-card__title">Aktivitas Log</h6>
+                    <div class="igt-card__tools">
+                        <div class="igt-searchbar">
+                            <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt=""></span>
+                            <input type="search" placeholder="Cari sesuatu...">
+                            <span class="igt-searchbar__shortcut">&#8984; K</span>
+                        </div>
+                        <div class="igt-segment" role="group">
+                            <button type="button" class="igt-segment__item is-active" data-tampilan="tabel">Tabel</button>
+                            <button type="button" class="igt-segment__item" data-tampilan="grafik">Grafik</button>
+                        </div>
+                        <label class="igt-btn igt-pilih">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
+                            <select aria-label="Tanggal">
+                                <option value="all">Tanggal</option>
+                            </select>
+                            <img class="igt-pilih__caret" src="assets/img/icons/caret-down.svg" alt="">
+                        </label>
+                        <div class="igt-dropdown" id="aktivitas-log-kelompok">
+                            <button type="button" class="igt-dropdown__trigger">
+                                <span class="igt-dropdown__label">Data Berdasarkan Direktorat</span>
+                                <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
+                            </button>
+                            <div class="igt-dropdown__panel">
+                                <button type="button" class="igt-dropdown__item is-active">
+                                    <img src="assets/img/icons/radio-on.svg" alt=""> Data Berdasarkan Direktorat
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/download-simple.svg" alt=""></span>
+                            Unduh Data
+                        </button>
+                        <button type="button" class="igt-btn">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/arrows-out.svg" alt=""></span>
+                            View Full Table
+                        </button>
+                    </div>
+                </div>
+
+                <div id="aktivitas-log-tabel">
+                    <div class="igt-table-wrap">
+                        <table class="igt-table">
+                            <thead>
+                                <tr>
+                                    <th class="igt-table__check is-plain"><img src="assets/img/icons/check-square.svg" alt=""></th>
+                                    <th data-kolom="user"><span class="igt-table__sort">Nama User <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="aktivitas"><span class="igt-table__sort">Aktivitas <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                    <th data-kolom="tanggal"><span class="igt-table__sort">Tanggal <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="aktivitas-log-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="igt-table-foot">
+                        <div class="igt-table-foot__perpage">
+                            Per page
+                            <select id="aktivitas-log-perpage">
+                                <option value="10" selected>10</option>
+                            </select>
+                        </div>
+                        <div class="igt-pagination" id="aktivitas-log-pagination"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="main-footer">
+                <span>&copy; 2023 All Rights Reserved.</span>
+                <span>Created by: <a href="#">IGT ATR/BPN</a></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================
+         SCRIPTS
+    =============================================== -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/maplibre-gl.js"></script>
+    <script src="assets/data/indonesia-provinsi.js"></script>
+    <script src="assets/js/dummy-data.js"></script>
+    <script src="assets/js/mockup-app.js"></script>
+</body>
+</html>
