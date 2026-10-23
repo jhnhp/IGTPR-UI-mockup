@@ -6,12 +6,22 @@
  * Level 3: Tingkat Kabupaten/Kota (e.g. Kab. Semarang, Kota Semarang, Banyumas, Karanganyar, Solo)
  */
 
-var INDONESIA_BOUNDS = [[94.5, -11.5], [141.5, 6.5]];
+var INDONESIA_BOUNDS = [[93.0, -12.8], [142.5, 7.5]];
 var currentProvince = null;
 var currentProvinceFeature = null;
 var currentKabupaten = null;
 var mapInstance = null;
 var tableControllers = {};
+
+function getFitBoundsPadding() {
+    var w = window.innerWidth;
+    return {
+        top: 25,
+        bottom: 60,
+        left: w >= 1200 ? 220 : 30,
+        right: 30
+    };
+}
 
 $(document).ready(function() {
     initSidebar();
@@ -217,7 +227,7 @@ function initHeroMap() {
                     ]
                 },
                 bounds: INDONESIA_BOUNDS,
-                fitBoundsOptions: { padding: { top: 25, bottom: 35, left: 20, right: 20 } },
+                fitBoundsOptions: { padding: getFitBoundsPadding() },
                 attributionControl: false,
                 scrollZoom: false,
                 doubleClickZoom: false,
@@ -493,7 +503,7 @@ function resetKeSeluruhIndonesia() {
     if (mapInstance) {
         mapInstance.dragPan.disable();
         mapInstance.fitBounds(INDONESIA_BOUNDS, {
-            padding: { top: 25, bottom: 35, left: 20, right: 20 },
+            padding: getFitBoundsPadding(),
             duration: 900
         });
 

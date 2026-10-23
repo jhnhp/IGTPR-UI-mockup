@@ -52,8 +52,8 @@
         /* Hero Section & Maplibre container */
         .igt-hero {
             position: relative;
-            min-height: 480px;
-            margin-bottom: 12px;
+            height: 520px;
+            margin-bottom: 24px;
         }
 
         .igt-hero__peta {
@@ -74,6 +74,13 @@
             position: relative;
             z-index: 10;
             pointer-events: auto;
+        }
+
+        /* Prevent cards from overlapping the southern islands */
+        .igt-beranda-isi {
+            position: relative;
+            margin-top: 0 !important;
+            z-index: 10;
         }
 
         .map-wilayah-pill {
