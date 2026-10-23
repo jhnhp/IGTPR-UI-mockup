@@ -24,6 +24,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 14 | **Warna Pastel Status Terupload (Hijau) & Revisi (Merah)** | Warna status *Terupload* sebelumnya biru cerulean (`#1860a9`/`#2f8ce4`) dan *Revisi Perbaikan* amber/kuning (`#fef3c7`/`#f59e0b`). | Diperbarui menggunakan warna pastel: **Terupload** menjadi **hijau pastel** (`#86efac` gradasi ke `#4ade80` dengan titik `#4ade80`) dan **Revisi Perbaikan** menjadi **merah pastel** (`#fecaca` gradasi ke `#fca5a5` dengan titik `#f87171`), memberikan identifikasi visual yang intuitif dan nyaman dipandang. |
 | 15 | **Ketebalan Ruas Grafik untuk Kategori Bernilai 0 (Revisi Perbaikan)** | Ruas kategori dengan jumlah 0 memiliki lebar tetap 24px (`min-width: 24px`), sehingga terlihat memakan porsi ruang yang cukup besar meskipun datanya kosong. | Diberi penanganan khusus `.is-nol`: bila jumlah data 0, ruas bar dibuat **sangat tipis (lebar 4px)** dengan `flex-grow: 0` dan warna merah solid (`#f87171`), tetap terlihat sebagai penanda batas tanpa mendistorsi proporsi data lainnya. |
 | 16 | **Penerapan Warna Solid pada Ruas Terupload & Revisi** | Ruas *Terupload* dan *Revisi Perbaikan* sebelumnya memiliki pola garis-garis diagonal selang-seling (`repeating-linear-gradient`) seperti halnya ruas *Terintegrasi* dan *Terkompilasi*. | Disederhanakan menjadi **warna solid (polos tanpa garis selang-seling)**: **Terupload** menggunakan warna hijau pastel solid (`#86efac`) dan **Revisi Perbaikan** menggunakan warna merah pastel solid (`#fca5a5` / `#f87171`). Pola garis selang-seling kini khusus dipertahankan hanya pada *Terintegrasi* dan *Terkompilasi* agar selaras dengan grafik Kompilasi Integrasi. |
+| 17 | **Penambahan Metrik Jumlah Layer pada Usulan Input Data** | Kartu Usulan Input Data hanya menampilkan kuantitas data mentah (misal: "98 data" dan "26 data") tanpa informasi berapa layer IGT yang dinaungi. | Ditambahkan metrik akumulasi layer: metrik utama menjadi **`98 data / 30 layer`**, dan setiap item status dilengkapi rincian layer (misal: **`26 data / 14 layer`** Terintegrasi, **`7 data / 4 layer`** Terkompilasi, **`65 data / 12 layer`** Terupload, **`0 data / 0 layer`** Revisi). Tooltip bilah progres juga disesuaikan menampilkan kuantitas data dan layer secara utuh. |
 
 ---
 
@@ -150,6 +151,17 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
     - **Terupload**: `#86efac` (solid pastel green, `background-image: none; box-shadow: none;`)
     - **Revisi Perbaikan**: `#fca5a5` / `#f87171` (solid pastel red, `background-image: none; box-shadow: none;`)
   - Pola tekstur garis diagonal selang-seling kini hanya digunakan secara eksklusif pada ruas *Terintegrasi* (`#1d4ed8`) dan *Terkompilasi* (`#93c5fd`), sehingga korelasi visual dengan kartu *Kompilasi Integrasi* di sebelah kanan menjadi jauh lebih konsisten dan kontrasnya jelas.
+
+### 14. Integrasi Metrik Jumlah Layer pada Kartu Usulan Input Data
+- **Struktur Tampilan Ganda (Data & Layer)**:
+  - **Angka Metrik Utama Header**: Menampilkan rasio komprehensif data dan layer: `<strong id="status-data-total">98</strong><span>data</span> <span class="igt-panel__pemisah">/</span> <strong id="status-data-total-layer">30</strong><span>layer</span>`.
+  - **Grid Rincian Status per Kategori**:
+    1. **Terintegrasi**: `26 data / 14 layer`
+    2. **Terkompilasi**: `7 data / 4 layer`
+    3. **Terupload**: `65 data / 12 layer`
+    4. **Revisi Perbaikan**: `0 data / 0 layer`
+  - **Tooltip Bilah Progres**: Setiap ruas bilah kemajuan menyematkan atribut `title` lengkap, contoh: *"Terintegrasi: 26 data / 14 layer"*.
+  - **Dinamika Multi-Level**: Diterapkan secara reaktif pada data store dummy untuk seluruh tingkatan wilayah (Nasional, Provinsi, dan Kabupaten/Kota), sehingga saat pengguna melakukan penjelajahan wilayah (drill-down), jumlah data dan layernya terkalkulasi secara sinkron dan otomatis.
 
 ---
 

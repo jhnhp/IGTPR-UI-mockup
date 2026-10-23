@@ -1446,6 +1446,23 @@ a.igt-stat:hover {
     margin-bottom: 6px;
 }
 
+.igt-panel__pemisah {
+    font-size: 32px;
+    font-weight: 300;
+    color: #cbd5e1;
+    margin: 0 10px 4px 10px;
+    line-height: 1;
+    align-self: center;
+}
+
+.igt-rincian__pemisah {
+    color: #cbd5e1;
+    font-weight: 300;
+    margin: 0 4px;
+    align-self: flex-end;
+    margin-bottom: 2px;
+}
+
 .igt-panel__nilai--kecil span {
     font-size: 16px;
     letter-spacing: -0.32px;

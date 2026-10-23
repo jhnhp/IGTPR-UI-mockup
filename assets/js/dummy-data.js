@@ -15,11 +15,12 @@ window.MOCKUP_DATA = {
         kabupaten: null,
         usulanInputData: {
             total: 98,
+            totalLayer: 30,
             kategori: [
-                { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 26, diperbarui: 'Diperbarui 6 jam lalu', kelas: 'is-terintegrasi' },
-                { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 7, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
-                { kunci: 'terupload', label: 'Terupload', jumlah: 65, diperbarui: 'Diperbarui 11 jam lalu', kelas: 'is-terupload' },
-                { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, diperbarui: '-', kelas: 'is-perbaikan' }
+                { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 26, layer: 14, diperbarui: 'Diperbarui 6 jam lalu', kelas: 'is-terintegrasi' },
+                { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 7, layer: 4, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
+                { kunci: 'terupload', label: 'Terupload', jumlah: 65, layer: 12, diperbarui: 'Diperbarui 11 jam lalu', kelas: 'is-terupload' },
+                { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-perbaikan' }
             ]
         },
         kompilasiIntegrasi: {
@@ -159,6 +160,12 @@ window.MOCKUP_DATA = {
             var teruploadKab = Math.max(0, totalUsulanKab - terintegrasiKab - terkompilasiKab - perbaikanKab);
 
             var totalLayerKab = 2 + (hashKab % 3); // 2 - 4 layer
+            var totalUsulanLayerKab = Math.max(3, Math.floor(totalUsulanKab * 0.45));
+            var layerTerintegrasiKab = Math.min(totalLayerKab, Math.floor(totalUsulanLayerKab * 0.35)) || 1;
+            var layerTerkompilasiKab = Math.floor(totalUsulanLayerKab * 0.2) || 1;
+            var layerPerbaikanKab = perbaikanKab > 0 ? 1 : 0;
+            var layerTeruploadKab = Math.max(1, totalUsulanLayerKab - layerTerintegrasiKab - layerTerkompilasiKab - layerPerbaikanKab);
+            var sumLayerKab = layerTerintegrasiKab + layerTerkompilasiKab + layerTeruploadKab + layerPerbaikanKab;
 
             return {
                 tingkat: 'kabupaten',
@@ -168,11 +175,12 @@ window.MOCKUP_DATA = {
                 isFiltered: true,
                 usulanInputData: {
                     total: totalUsulanKab,
+                    totalLayer: sumLayerKab,
                     kategori: [
-                        { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: terintegrasiKab, diperbarui: 'Diperbarui 15 menit lalu', kelas: 'is-terintegrasi' },
-                        { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: terkompilasiKab, diperbarui: 'Diperbarui 5 jam lalu', kelas: 'is-terkompilasi' },
-                        { kunci: 'terupload', label: 'Terupload', jumlah: teruploadKab, diperbarui: 'Diperbarui 1 jam lalu', kelas: 'is-terupload' },
-                        { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: perbaikanKab, diperbarui: perbaikanKab > 0 ? 'Diperbarui kemarin' : '-', kelas: 'is-perbaikan' }
+                        { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: terintegrasiKab, layer: layerTerintegrasiKab, diperbarui: 'Diperbarui 15 menit lalu', kelas: 'is-terintegrasi' },
+                        { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: terkompilasiKab, layer: layerTerkompilasiKab, diperbarui: 'Diperbarui 5 jam lalu', kelas: 'is-terkompilasi' },
+                        { kunci: 'terupload', label: 'Terupload', jumlah: teruploadKab, layer: layerTeruploadKab, diperbarui: 'Diperbarui 1 jam lalu', kelas: 'is-terupload' },
+                        { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: perbaikanKab, layer: layerPerbaikanKab, diperbarui: perbaikanKab > 0 ? 'Diperbarui kemarin' : '-', kelas: 'is-perbaikan' }
                     ]
                 },
                 kompilasiIntegrasi: {
@@ -255,6 +263,12 @@ window.MOCKUP_DATA = {
         var terupload = Math.max(0, totalUsulan - terintegrasi - terkompilasi - perbaikan);
 
         var totalLayer = 4 + (hash % 4);
+        var totalUsulanLayer = Math.max(6, Math.floor(totalUsulan * 0.45));
+        var layerTerintegrasi = Math.min(totalLayer, Math.floor(totalUsulanLayer * 0.35)) || 2;
+        var layerTerkompilasi = Math.floor(totalUsulanLayer * 0.2) || 1;
+        var layerPerbaikan = perbaikan > 0 ? 1 : 0;
+        var layerTerupload = Math.max(1, totalUsulanLayer - layerTerintegrasi - layerTerkompilasi - layerPerbaikan);
+        var sumLayerProv = layerTerintegrasi + layerTerkompilasi + layerTerupload + layerPerbaikan;
 
         return {
             tingkat: 'provinsi',
@@ -264,11 +278,12 @@ window.MOCKUP_DATA = {
             isFiltered: true,
             usulanInputData: {
                 total: totalUsulan,
+                totalLayer: sumLayerProv,
                 kategori: [
-                    { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: terintegrasi, diperbarui: 'Diperbarui 30 menit lalu', kelas: 'is-terintegrasi' },
-                    { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: terkompilasi, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
-                    { kunci: 'terupload', label: 'Terupload', jumlah: terupload, diperbarui: 'Diperbarui 3 jam lalu', kelas: 'is-terupload' },
-                    { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: perbaikan, diperbarui: perbaikan > 0 ? 'Diperbarui 2 hari lalu' : '-', kelas: 'is-perbaikan' }
+                    { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: terintegrasi, layer: layerTerintegrasi, diperbarui: 'Diperbarui 30 menit lalu', kelas: 'is-terintegrasi' },
+                    { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: terkompilasi, layer: layerTerkompilasi, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
+                    { kunci: 'terupload', label: 'Terupload', jumlah: terupload, layer: layerTerupload, diperbarui: 'Diperbarui 3 jam lalu', kelas: 'is-terupload' },
+                    { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: perbaikan, layer: layerPerbaikan, diperbarui: perbaikan > 0 ? 'Diperbarui 2 hari lalu' : '-', kelas: 'is-perbaikan' }
                 ]
             },
             kompilasiIntegrasi: {
