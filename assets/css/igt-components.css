@@ -1370,10 +1370,10 @@ a.igt-stat:hover {
 .igt-panel__atas {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 46px;
-    min-height: 182px;
-    padding: 16px;
+    justify-content: flex-start;
+    gap: 14px;
+    min-height: auto;
+    padding: 20px 20px 16px;
     background-color: #fafafa;
     border-radius: 21px;
 }
@@ -1430,23 +1430,26 @@ a.igt-stat:hover {
 }
 
 .igt-panel__nilai strong {
-    font-size: 40px;
-    font-weight: 500;
-    line-height: 1.25;
-    letter-spacing: -0.8px;
+    font-size: 58px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -1.5px;
     color: var(--igt-ink);
 }
 
 .igt-panel__nilai span {
-    font-size: 20px;
-    line-height: 1.7;
-    letter-spacing: -0.4px;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: -0.36px;
     color: var(--igt-muted);
+    margin-bottom: 6px;
 }
 
 .igt-panel__nilai--kecil span {
     font-size: 16px;
     letter-spacing: -0.32px;
+    margin-bottom: 6px;
 }
 
 
