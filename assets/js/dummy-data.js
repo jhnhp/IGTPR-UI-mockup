@@ -186,7 +186,7 @@ window.MOCKUP_DATA = {
     },
 
     // 2. FUNGSI RETRIEVAL TINGKAT WILAYAH (Nasional, Provinsi, atau Kabupaten)
-    getDataByWilayah: function(namaProvinsi, namaKabupaten) {
+    getRawDataByWilayah: function(namaProvinsi, namaKabupaten) {
         if (!namaProvinsi || namaProvinsi === 'all' || namaProvinsi === 'Seluruh Indonesia') {
             return this.nasional;
         }
@@ -426,6 +426,51 @@ window.MOCKUP_DATA = {
                 { user: 'Operator Kantah Banyumas', aktivitas: 'Pembaruan Atribut Spasial', tanggal: '21 Oktober 2026' }
             ]
         };
+    },
+
+    getDataByWilayah: function(namaProvinsi, namaKabupaten, tahun) {
+        var res = this.getRawDataByWilayah(namaProvinsi, namaKabupaten);
+        var t = (tahun && tahun !== 'all') ? String(tahun) : 'all';
+        if (t === 'all') return res;
+
+        // Adaptasi data komponen dashboard sesuai tahun renaksi yang dipilih
+        var usulan = this.getUsulanInputData(namaProvinsi, namaKabupaten, t);
+        var kompilasi = this.getKompilasiIntegrasi(namaProvinsi, namaKabupaten, t);
+
+        var log = res.aktivitasLog ? res.aktivitasLog.map(function(item) {
+            var tgl = item.tanggal.replace(/\b(202[3-6])\b/g, t);
+            return Object.assign({}, item, { tanggal: tgl });
+        }) : [];
+
+        var capaian = res.capaianRenaksi ? res.capaianRenaksi.map(function(item) {
+            if (t === '2026') return item;
+            var tgt = typeof item.target === 'number' ? item.target : 12;
+            var rate = t === '2025' ? 0.90 : (t === '2024' ? 0.95 : 1.0);
+            var cap = Math.min(tgt, Math.round(tgt * rate));
+            return Object.assign({}, item, {
+                target: tgt,
+                capaian: cap
+            });
+        }) : [];
+
+        var lb = res.leaderBoard ? res.leaderBoard.map(function(item, idx) {
+            var delta = t === '2025' ? (idx % 2 === 0 ? 1 : -1) : (t === '2024' ? (idx % 2 === 1 ? 1 : -1) : (t === '2023' ? (idx % 3 === 0 ? 1 : 0) : 0));
+            return Object.assign({}, item, {
+                tema: Math.max(1, item.tema + delta)
+            });
+        }) : [];
+
+        var statCount = t === '2026' ? res.statistikIGT.length : (t === '2025' ? Math.max(3, res.statistikIGT.length - 2) : (t === '2024' ? Math.max(2, res.statistikIGT.length - 3) : Math.max(2, res.statistikIGT.length - 4)));
+        var stat = res.statistikIGT ? res.statistikIGT.slice(0, statCount) : [];
+
+        return Object.assign({}, res, {
+            usulanInputData: usulan,
+            kompilasiIntegrasi: kompilasi,
+            aktivitasLog: log,
+            capaianRenaksi: capaian,
+            leaderBoard: lb,
+            statistikIGT: stat
+        });
     },
 
     /**
@@ -698,7 +743,7 @@ window.MOCKUP_DATA = {
         }
 
         // 2. Regional (Provinsi / Kabupaten)
-        var dataScope = this.getDataByWilayah(namaProvinsi, namaKabupaten);
+        var dataScope = this.getRawDataByWilayah(namaProvinsi, namaKabupaten);
         var baseUsulan = dataScope ? dataScope.usulanInputData : this.nasional.usulanInputData;
         if (t === 'all') return baseUsulan;
 
@@ -733,6 +778,40 @@ window.MOCKUP_DATA = {
             total: sumTotal,
             totalLayer: sumLayer,
             kategori: scaledKategori
+        };
+    },
+
+    getKompilasiIntegrasi: function(namaProvinsi, namaKabupaten, tahun) {
+        var dataScope = (namaProvinsi && namaProvinsi !== 'all' && namaProvinsi !== 'Seluruh Indonesia')
+            ? this.getRawDataByWilayah(namaProvinsi, namaKabupaten)
+            : this.nasional;
+        var baseKomp = dataScope ? dataScope.kompilasiIntegrasi : this.nasional.kompilasiIntegrasi;
+        var t = (tahun && tahun !== 'all') ? String(tahun) : 'all';
+        if (t === 'all') return baseKomp;
+
+        var factor = t === '2026' ? 1.0 : (t === '2025' ? 0.72 : (t === '2024' ? 0.43 : 0.22));
+        var scaledTotalLayer = Math.max(1, Math.round(baseKomp.totalLayer * factor));
+
+        var bulanan = baseKomp.bulanan.map(function(b, idx) {
+            var activeMonths = t === '2026' ? 10 : 12;
+            var isMActive = idx < activeMonths;
+            var tkomp = isMActive ? Math.round((b.terkompilasi || 0) * factor) : 0;
+            var tinteg = isMActive ? Math.round((b.terintegrasi || 0) * factor) : 0;
+            if (t === '2026' && idx === 9) {
+                tinteg = scaledTotalLayer;
+            } else if (idx === 11 && t !== '2026') {
+                tinteg = scaledTotalLayer;
+            }
+            return {
+                bulan: b.bulan,
+                terkompilasi: tkomp,
+                terintegrasi: tinteg
+            };
+        });
+
+        return {
+            totalLayer: scaledTotalLayer,
+            bulanan: bulanan
         };
     },
 

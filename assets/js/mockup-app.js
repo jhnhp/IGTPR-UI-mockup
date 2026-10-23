@@ -413,7 +413,11 @@ function initHeroMap() {
             });
 
             $('#beranda-detail-cari').on('input', renderDetailChips);
-            $('#beranda-detail-jenis, #beranda-detail-tahun').on('change', renderDetailChips);
+            $('#beranda-detail-jenis').on('change', renderDetailChips);
+            $('#beranda-detail-tahun').on('change', function() {
+                var thn = $(this).val() || 'all';
+                setDashboardYear(thn);
+            });
 
             // Wilayah selector (Pilih Provinsi saat Se-Indonesia / Pilih Kabupaten saat Se-Provinsi atau Se-Kabupaten)
             $('#beranda-detail-wilayah-pilih').on('change', function() {
@@ -640,7 +644,7 @@ function bukaDetailInformasi(namaWilayah, jenisWilayah, indukProvinsi) {
     // Reset filter controls
     $('#beranda-detail-jenis').val('');
     $('#beranda-detail-cari').val('');
-    $('#beranda-detail-tahun').val('all');
+    $('#beranda-detail-tahun').val(currentDashboardYear || 'all');
 
     // Render chips and badge counter
     renderDetailChips();
@@ -900,14 +904,17 @@ function resetKeSeluruhIndonesia() {
 /* ----------------------------------------------------
    4. Apply Filter to All Dashboard Components
 ---------------------------------------------------- */
-function applyDataFilter(namaProvinsi, namaKabupaten) {
-    var data = window.MOCKUP_DATA.getDataByWilayah(namaProvinsi, namaKabupaten);
+function applyDataFilter(namaProvinsi, namaKabupaten, tahun) {
+    var thn = (tahun !== undefined) ? (tahun || 'all') : (currentDashboardYear || 'all');
+    var data = window.MOCKUP_DATA.getDataByWilayah(namaProvinsi, namaKabupaten, thn);
     if (!data) return;
 
     // A. Render Ringkasan (Usulan & Kompilasi)
-    var usulan = window.MOCKUP_DATA.getUsulanInputData(namaProvinsi, namaKabupaten, currentUsulanYear);
+    var usulan = window.MOCKUP_DATA.getUsulanInputData(namaProvinsi, namaKabupaten, thn);
     renderUsulanInputData(usulan);
-    renderKompilasiIntegrasi(data.kompilasiIntegrasi);
+
+    var kompilasi = window.MOCKUP_DATA.getKompilasiIntegrasi ? window.MOCKUP_DATA.getKompilasiIntegrasi(namaProvinsi, namaKabupaten, thn) : data.kompilasiIntegrasi;
+    renderKompilasiIntegrasi(kompilasi);
 
     // B. Render Leader Board
     renderLeaderBoard(data.leaderBoard);
@@ -983,9 +990,44 @@ function renderUsulanInputData(usulan) {
 }
 
 /* ----------------------------------------------------
-   5.1. Modal Daftar Usulan Input Data Table Controller
+   5.1. Global Year Filter & Modal Controller
 ----------------------------------------------------- */
+var currentDashboardYear = 'all';
 var currentUsulanYear = 'all';
+
+function setDashboardYear(year) {
+    currentDashboardYear = year || 'all';
+    currentUsulanYear = currentDashboardYear;
+
+    // 1. Sinkronisasi seluruh dropdown filter tahun pada halaman
+    if ($('#beranda-detail-tahun').val() !== currentDashboardYear) {
+        $('#beranda-detail-tahun').val(currentDashboardYear);
+    }
+    if ($('#status-data-tahun').val() !== currentDashboardYear) {
+        $('#status-data-tahun').val(currentDashboardYear);
+    }
+    if ($('#integrasi-kompilasi-tahun').val() !== currentDashboardYear) {
+        $('#integrasi-kompilasi-tahun').val(currentDashboardYear);
+    }
+    if ($('#leader-board-tahun').val() !== currentDashboardYear) {
+        $('#leader-board-tahun').val(currentDashboardYear);
+    }
+    if ($('#modal-usulan-tahun').val() !== currentDashboardYear) {
+        $('#modal-usulan-tahun').val(currentDashboardYear);
+    }
+
+    // 2. Filter chips tema pada kartu Detail Informasi di dekat peta
+    renderDetailChips();
+
+    // 3. Terapkan filter ke seluruh komponen data di bawah peta
+    applyDataFilter(currentProvince, currentKabupaten, currentDashboardYear);
+
+    // 4. Jika modal sedang terbuka, perbarui isinya secara realtime
+    if ($('#modal-usulan-data').is(':visible')) {
+        usulanModalState.currentPage = 1;
+        renderUsulanModalContent();
+    }
+}
 
 var usulanModalState = {
     currentStatus: 'all',
@@ -1002,7 +1044,7 @@ function openUsulanModal(statusFilter) {
     usulanModalState.searchQuery = '';
     $('#modal-usulan-search').val('');
     $('#modal-usulan-perpage').val(usulanModalState.perPage);
-    $('#modal-usulan-tahun').val(currentUsulanYear);
+    $('#modal-usulan-tahun').val(currentDashboardYear);
 
     renderUsulanModalContent();
     $('#modal-usulan-data').fadeIn(200);
@@ -1015,12 +1057,12 @@ function closeUsulanModal() {
 }
 
 function renderUsulanModalContent() {
-    var detail = window.MOCKUP_DATA.getUsulanDetailList(null, currentProvince, currentKabupaten, currentUsulanYear);
+    var detail = window.MOCKUP_DATA.getUsulanDetailList(null, currentProvince, currentKabupaten, currentDashboardYear);
     if (!detail) return;
 
     // Set region name and year badge in header
     $('#modal-usulan-wilayah').text(detail.wilayah);
-    var labelTahun = currentUsulanYear === 'all' ? 'Semua Tahun' : ('Tahun ' + currentUsulanYear);
+    var labelTahun = currentDashboardYear === 'all' ? 'Semua Tahun' : ('Tahun ' + currentDashboardYear);
     $('#modal-usulan-tahun-badge').text(labelTahun);
 
     // Update counts on tabs
@@ -1142,22 +1184,10 @@ function renderUsulanModalContent() {
 }
 
 function initUsulanModalEvents() {
-    // 0. Filter Tahun pada Kartu Usulan Input Data Dashboard
-    $(document).on('change', '#status-data-tahun', function() {
-        currentUsulanYear = $(this).val() || 'all';
-        $('#modal-usulan-tahun').val(currentUsulanYear);
-        var usulan = window.MOCKUP_DATA.getUsulanInputData(currentProvince, currentKabupaten, currentUsulanYear);
-        renderUsulanInputData(usulan);
-    });
-
-    // 0.1. Filter Tahun pada Toolbar Modal Pop-up
-    $(document).on('change', '#modal-usulan-tahun', function() {
-        currentUsulanYear = $(this).val() || 'all';
-        $('#status-data-tahun').val(currentUsulanYear);
-        var usulan = window.MOCKUP_DATA.getUsulanInputData(currentProvince, currentKabupaten, currentUsulanYear);
-        renderUsulanInputData(usulan);
-        usulanModalState.currentPage = 1;
-        renderUsulanModalContent();
+    // 0. Filter Tahun Sinkronisasi Terpusat (Usulan Data, Kompilasi Integrasi, Leader Board, Modal)
+    $(document).on('change', '#status-data-tahun, #integrasi-kompilasi-tahun, #leader-board-tahun, #modal-usulan-tahun', function() {
+        var thn = $(this).val() || 'all';
+        setDashboardYear(thn);
     });
 
     // 1. Click on header numbers (98 data / 30 layer) -> open all
