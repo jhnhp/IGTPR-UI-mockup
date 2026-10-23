@@ -408,14 +408,17 @@
 
             <!-- Vector Map of Indonesia -->
             <div class="igt-hero__peta position-relative" id="beranda-peta">
-                <!-- Floating Map Pill Indicator for Zoomed Province -->
-                <div class="map-wilayah-pill position-absolute" id="map-wilayah-indicator" style="display: none; top: 16px; left: 16px; z-index: 10; background: rgba(255,255,255,0.95); backdrop-filter: blur(4px); padding: 6px 14px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid #cbd5e1; gap: 10px;">
+                <!-- Floating Map Breadcrumb / Filter Indicator -->
+                <div class="map-wilayah-pill position-absolute" id="map-wilayah-indicator" style="display: none; top: 16px; left: 16px; z-index: 10; background: rgba(255,255,255,0.96); backdrop-filter: blur(6px); padding: 6px 14px; border-radius: 30px; box-shadow: 0 4px 14px rgba(0,0,0,0.12); border: 1px solid #cbd5e1; align-items: center; gap: 8px;">
                     <span class="d-flex align-items-center gap-1" style="font-size: 13px; font-weight: 600; color: #1e293b;">
                         <i class="ri-map-pin-2-fill text-primary" style="font-size: 16px;"></i>
-                        <span id="map-selected-name">-</span>
+                        <span id="map-breadcrumb-text">-</span>
                     </span>
+                    <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 rounded-pill" id="btn-back-to-province" style="display: none; font-size: 11px; font-weight: 500;" title="Kembali ke Tingkat Provinsi">
+                        <i class="ri-arrow-up-s-line"></i> <span id="btn-back-province-name">Provinsi</span>
+                    </button>
                     <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 rounded-pill" id="btn-reset-map-zoom" style="font-size: 11px; font-weight: 500;" title="Kembali ke Seluruh Indonesia">
-                        <i class="ri-arrow-go-back-line"></i> Kembali ke Seluruh Indonesia
+                        <i class="ri-arrow-go-back-line"></i> Seluruh Indonesia
                     </button>
                 </div>
             </div>
@@ -929,6 +932,7 @@
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/maplibre-gl.js"></script>
     <script src="assets/data/indonesia-provinsi.js"></script>
+    <script src="assets/data/indonesia-kabupaten.js"></script>
     <script src="assets/js/dummy-data.js"></script>
     <script src="assets/js/mockup-app.js"></script>
 </body>

@@ -1,17 +1,22 @@
 /**
  * IGTPR Mockup UI - Pure HTML/JS Application Logic
- * Interactive Province Filtering & Zoom-to-Province Behavior.
+ * Multi-Level Drilldown:
+ * Level 1: Seluruh Indonesia (Nasional)
+ * Level 2: Tingkat Provinsi (e.g. Jawa Tengah) -> Menampilkan batas kabupaten/kota
+ * Level 3: Tingkat Kabupaten/Kota (e.g. Kab. Semarang, Kota Semarang, Banyumas, Karanganyar, Solo)
  */
 
 var INDONESIA_BOUNDS = [[94.5, -11.5], [141.5, 6.5]];
-var currentSelectedProvince = null;
+var currentProvince = null;
+var currentProvinceFeature = null;
+var currentKabupaten = null;
 var mapInstance = null;
 var tableControllers = {};
 
 $(document).ready(function() {
     initSidebar();
     initHeroMap();
-    applyDataFilter(null); // start with national data
+    applyDataFilter(null, null); // start at national level
 });
 
 /* ----------------------------------------------------
@@ -67,8 +72,19 @@ function hitungBatasFitur(feature) {
     return [[minX, minY], [maxX, maxY]];
 }
 
+function formatNamaKabupaten(nama) {
+    if (!nama) return '';
+    var n = String(nama).trim();
+    if (/^kota\s+/i.test(n)) {
+        if (/^kota\s+surakarta/i.test(n)) return 'Kota Surakarta (Solo)';
+        return n;
+    }
+    if (/^kabupaten\s+/i.test(n)) return n;
+    return 'Kabupaten ' + n;
+}
+
 /* ----------------------------------------------------
-   3. Indonesia Map (Fixed View + Click to Zoom Province)
+   3. Indonesia Multi-Level Map (MapLibre GL)
 ---------------------------------------------------- */
 function initHeroMap() {
     var container = document.getElementById('beranda-peta');
@@ -76,18 +92,27 @@ function initHeroMap() {
 
     if (typeof maplibregl !== 'undefined' && window.INDONESIA_GEOJSON) {
         try {
+            var sources = {
+                'indonesia': {
+                    type: 'geojson',
+                    data: window.INDONESIA_GEOJSON
+                }
+            };
+
+            if (window.INDONESIA_KABUPATEN_GEOJSON) {
+                sources['kabupaten'] = {
+                    type: 'geojson',
+                    data: window.INDONESIA_KABUPATEN_GEOJSON
+                };
+            }
+
             mapInstance = new maplibregl.Map({
                 container: 'beranda-peta',
                 style: {
                     version: 8,
-                    sources: {
-                        'indonesia': {
-                            type: 'geojson',
-                            data: window.INDONESIA_GEOJSON
-                        }
-                    },
+                    sources: sources,
                     layers: [
-                        // Base fill for provinces
+                        // --- PROVINCE LEVEL LAYERS ---
                         {
                             id: 'provinsi-isi',
                             type: 'fill',
@@ -95,22 +120,16 @@ function initHeroMap() {
                             paint: {
                                 'fill-color': '#1860a9',
                                 'fill-opacity': [
-                                    'case',
-                                    ['boolean', ['feature-state', 'selected'], false],
-                                    0.75,
-                                    [
-                                        'interpolate',
-                                        ['linear'],
-                                        ['get', 'tema'],
-                                        0, 0.08,
-                                        1, 0.22,
-                                        2, 0.38,
-                                        4, 0.60
-                                    ]
+                                    'interpolate',
+                                    ['linear'],
+                                    ['get', 'tema'],
+                                    0, 0.08,
+                                    1, 0.22,
+                                    2, 0.38,
+                                    4, 0.60
                                 ]
                             }
                         },
-                        // Province boundary lines
                         {
                             id: 'provinsi-garis',
                             type: 'line',
@@ -121,7 +140,6 @@ function initHeroMap() {
                                 'line-opacity': 0.85
                             }
                         },
-                        // Hover highlight line
                         {
                             id: 'provinsi-sorot',
                             type: 'line',
@@ -132,32 +150,80 @@ function initHeroMap() {
                             },
                             filter: ['==', 'nama', '']
                         },
-                        // Clicked province prominent border
                         {
                             id: 'provinsi-terpilih-garis',
                             type: 'line',
                             source: 'indonesia',
                             paint: {
                                 'line-color': '#0f172a',
-                                'line-width': 3.0
+                                'line-width': 2.5
                             },
                             filter: ['==', 'nama', '']
+                        },
+
+                        // --- KABUPATEN / KOTA LEVEL LAYERS ---
+                        {
+                            id: 'kabupaten-isi',
+                            type: 'fill',
+                            source: 'kabupaten',
+                            paint: {
+                                'fill-color': '#60a5fa',
+                                'fill-opacity': 0.35
+                            },
+                            filter: ['==', 'provinsi', ''] // initially hidden
+                        },
+                        {
+                            id: 'kabupaten-garis',
+                            type: 'line',
+                            source: 'kabupaten',
+                            paint: {
+                                'line-color': '#1d4ed8',
+                                'line-width': 1.2
+                            },
+                            filter: ['==', 'provinsi', '']
+                        },
+                        {
+                            id: 'kabupaten-sorot',
+                            type: 'line',
+                            source: 'kabupaten',
+                            paint: {
+                                'line-color': '#0f172a',
+                                'line-width': 2.5
+                            },
+                            filter: ['==', 'kabupaten', '']
+                        },
+                        {
+                            id: 'kabupaten-terpilih-isi',
+                            type: 'fill',
+                            source: 'kabupaten',
+                            paint: {
+                                'fill-color': '#1e40af',
+                                'fill-opacity': 0.70
+                            },
+                            filter: ['==', 'kabupaten', '']
+                        },
+                        {
+                            id: 'kabupaten-terpilih-garis',
+                            type: 'line',
+                            source: 'kabupaten',
+                            paint: {
+                                'line-color': '#0f172a',
+                                'line-width': 3.0
+                            },
+                            filter: ['==', 'kabupaten', '']
                         }
                     ]
                 },
                 bounds: INDONESIA_BOUNDS,
                 fitBoundsOptions: { padding: { top: 25, bottom: 35, left: 20, right: 20 } },
                 attributionControl: false,
-                // LOCK MANUAL CONTROLS: no scroll zoom, fixed orientation
                 scrollZoom: false,
                 doubleClickZoom: false,
                 touchPitch: false,
                 dragRotate: false,
                 boxZoom: false,
-                dragPan: false // locked until province is clicked
+                dragPan: false
             });
-
-            // NOTE: NavigationControl (+ and - zoom buttons) are intentionally REMOVED as requested.
 
             var popup = new maplibregl.Popup({
                 closeButton: false,
@@ -165,8 +231,9 @@ function initHeroMap() {
                 offset: 12
             });
 
-            // Hover effects
+            // 1. Hover Province
             mapInstance.on('mousemove', 'provinsi-isi', function(e) {
+                if (currentProvince) return; // ignore when already inside a province
                 mapInstance.getCanvas().style.cursor = 'pointer';
                 if (e.features.length > 0) {
                     var f = e.features[0];
@@ -174,33 +241,73 @@ function initHeroMap() {
                     popup.setLngLat(e.lngLat)
                         .setHTML('<div style="padding:4px 8px; font-size:12px; font-weight:600; color:#0f172a;">' +
                             f.properties.nama +
-                            '<div style="font-weight:400; color:#64748b; font-size:11px;">Klik untuk zoom & filter data</div></div>')
+                            '<div style="font-weight:400; color:#64748b; font-size:11px;">Klik untuk lihat kabupaten/kota</div></div>')
                         .addTo(mapInstance);
                 }
             });
 
             mapInstance.on('mouseleave', 'provinsi-isi', function() {
-                mapInstance.getCanvas().style.cursor = '';
-                mapInstance.setFilter('provinsi-sorot', ['==', 'nama', '']);
-                popup.remove();
+                if (!currentProvince) {
+                    mapInstance.getCanvas().style.cursor = '';
+                    mapInstance.setFilter('provinsi-sorot', ['==', 'nama', '']);
+                    popup.remove();
+                }
             });
 
-            // CLICK PROVINCE -> ZOOM IN & FILTER DATA!
+            // 2. Click Province (Level 1 -> Level 2)
             mapInstance.on('click', 'provinsi-isi', function(e) {
+                if (currentProvince) return;
                 if (!e.features || e.features.length === 0) return;
                 var f = e.features[0];
-                var provName = f.properties.nama;
                 popup.remove();
-                zoomKeProvinsi(f, provName);
+                zoomKeProvinsi(f, f.properties.nama);
             });
 
-            // Reset buttons handler
-            $(document).on('click', '#btn-reset-map-zoom, #btn-reset-hero-filter', function(e) {
+            // 3. Hover Kabupaten
+            mapInstance.on('mousemove', 'kabupaten-isi', function(e) {
+                if (!currentProvince) return;
+                mapInstance.getCanvas().style.cursor = 'pointer';
+                if (e.features.length > 0) {
+                    var f = e.features[0];
+                    var kabName = f.properties.kabupaten;
+                    mapInstance.setFilter('kabupaten-sorot', ['==', 'kabupaten', kabName]);
+                    popup.setLngLat(e.lngLat)
+                        .setHTML('<div style="padding:4px 8px; font-size:12px; font-weight:600; color:#0f172a;">' +
+                            formatNamaKabupaten(kabName) +
+                            '<div style="font-weight:400; color:#64748b; font-size:11px;">' + currentProvince + ' &bull; Klik untuk filter data</div></div>')
+                        .addTo(mapInstance);
+                }
+            });
+
+            mapInstance.on('mouseleave', 'kabupaten-isi', function() {
+                if (currentProvince) {
+                    mapInstance.getCanvas().style.cursor = '';
+                    mapInstance.setFilter('kabupaten-sorot', ['==', 'kabupaten', '']);
+                    popup.remove();
+                }
+            });
+
+            // 4. Click Kabupaten (Level 2 -> Level 3)
+            mapInstance.on('click', 'kabupaten-isi', function(e) {
+                if (!currentProvince) return;
+                if (!e.features || e.features.length === 0) return;
+                var f = e.features[0];
+                popup.remove();
+                zoomKeKabupaten(f, f.properties.kabupaten);
+            });
+
+            // 5. Navigation Buttons
+            $(document).on('click', '#btn-back-to-province', function(e) {
+                e.preventDefault();
+                kembaliKeProvinsi();
+            });
+
+            $(document).on('click', '#btn-reset-map-zoom', function(e) {
                 e.preventDefault();
                 resetKeSeluruhIndonesia();
             });
 
-            // Filter modal toggle
+            // 6. Filter modal toggle
             $('#beranda-filter-toggle').on('click', function(e) {
                 e.stopPropagation();
                 $('#beranda-filter').fadeToggle(150);
@@ -211,69 +318,159 @@ function initHeroMap() {
 
             return;
         } catch (err) {
-            console.warn('MapLibre init error:', err);
+            console.warn('MapLibre multi-level init error:', err);
         }
     }
 
     container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#64748b;font-size:14px;"><img src="assets/img/icons/map-pin.svg" style="opacity:0.4;width:40px;margin-right:12px;"> Peta Wilayah Indonesia</div>';
 }
 
-function zoomKeProvinsi(feature, namaProvinsi) {
-    currentSelectedProvince = namaProvinsi;
+/* ----------------------------------------------------
+   Level Transitions
+---------------------------------------------------- */
 
-    // 1. Calculate Bounding Box of the province
+// Transition to Province View (Level 2)
+function zoomKeProvinsi(feature, namaProvinsi) {
+    currentProvince = namaProvinsi;
+    currentProvinceFeature = feature;
+    currentKabupaten = null;
+
     var bbox = hitungBatasFitur(feature);
 
-    // 2. Smoothly zoom into the clicked province
     if (mapInstance) {
-        mapInstance.dragPan.enable(); // allow subtle panning while zoomed in
+        mapInstance.dragPan.enable();
         mapInstance.fitBounds(bbox, {
-            padding: { top: 60, bottom: 60, left: 60, right: 60 },
-            maxZoom: 7.8,
+            padding: { top: 50, bottom: 50, left: 50, right: 50 },
+            maxZoom: 8.5,
             duration: 1000
         });
 
-        // Set highlight filter
+        // Highlight selected province boundary
         mapInstance.setFilter('provinsi-terpilih-garis', ['==', 'nama', namaProvinsi]);
+        mapInstance.setFilter('provinsi-sorot', ['==', 'nama', '']);
+
+        // Reveal kabupaten boundaries for this province
+        var provKey = namaProvinsi.toLowerCase();
+        var kabFilter = ['==', ['downcase', ['get', 'provinsi']], provKey];
+        mapInstance.setFilter('kabupaten-isi', kabFilter);
+        mapInstance.setFilter('kabupaten-garis', kabFilter);
+
+        // Reset kabupaten selection highlight
+        mapInstance.setFilter('kabupaten-terpilih-isi', ['==', 'kabupaten', '']);
+        mapInstance.setFilter('kabupaten-terpilih-garis', ['==', 'kabupaten', '']);
     }
 
-    // 3. Show floating reset controls on map & header
-    $('#map-selected-name').text(namaProvinsi);
+    // Update Floating Breadcrumb on Map
+    $('#map-breadcrumb-text').text(namaProvinsi);
+    $('#btn-back-to-province').hide();
     $('#map-wilayah-indicator').fadeIn(200);
-    $('#hero-wilayah-badge').text('Provinsi: ' + namaProvinsi).fadeIn(200);
 
-    // 4. Filter and update all data components below!
-    applyDataFilter(namaProvinsi);
+    // Update Header Badge
+    $('#hero-wilayah-badge').html('<i class="ri-map-pin-2-line"></i> Provinsi ' + namaProvinsi).fadeIn(200);
+
+    // Update Dashboard Data
+    applyDataFilter(namaProvinsi, null);
 }
 
-function resetKeSeluruhIndonesia() {
-    currentSelectedProvince = null;
+// Transition to Kabupaten View (Level 3)
+function zoomKeKabupaten(feature, namaKabupaten) {
+    currentKabupaten = namaKabupaten;
+    var kabDisplay = formatNamaKabupaten(namaKabupaten);
 
-    // 1. Reset map view to full Indonesia bounds
+    var bbox = hitungBatasFitur(feature);
+
     if (mapInstance) {
-        mapInstance.dragPan.disable(); // lock view again
+        mapInstance.fitBounds(bbox, {
+            padding: { top: 60, bottom: 60, left: 60, right: 60 },
+            maxZoom: 10.5,
+            duration: 900
+        });
+
+        // Highlight selected kabupaten
+        mapInstance.setFilter('kabupaten-terpilih-isi', ['==', 'kabupaten', namaKabupaten]);
+        mapInstance.setFilter('kabupaten-terpilih-garis', ['==', 'kabupaten', namaKabupaten]);
+        mapInstance.setFilter('kabupaten-sorot', ['==', 'kabupaten', '']);
+    }
+
+    // Update Floating Breadcrumb on Map
+    $('#map-breadcrumb-text').html(currentProvince + ' &rsaquo; <strong>' + kabDisplay + '</strong>');
+    $('#btn-back-province-name').text(currentProvince);
+    $('#btn-back-to-province').show();
+    $('#map-wilayah-indicator').fadeIn(200);
+
+    // Update Header Badge
+    $('#hero-wilayah-badge').html('<i class="ri-building-line"></i> ' + kabDisplay + ' (' + currentProvince + ')').fadeIn(200);
+
+    // Update Dashboard Data for this Kabupaten
+    applyDataFilter(currentProvince, namaKabupaten);
+}
+
+// Return from Kabupaten back to Province view
+function kembaliKeProvinsi() {
+    if (currentProvinceFeature && currentProvince) {
+        currentKabupaten = null;
+        var bbox = hitungBatasFitur(currentProvinceFeature);
+
+        if (mapInstance) {
+            mapInstance.fitBounds(bbox, {
+                padding: { top: 50, bottom: 50, left: 50, right: 50 },
+                maxZoom: 8.5,
+                duration: 900
+            });
+
+            // Clear kabupaten selection highlight
+            mapInstance.setFilter('kabupaten-terpilih-isi', ['==', 'kabupaten', '']);
+            mapInstance.setFilter('kabupaten-terpilih-garis', ['==', 'kabupaten', '']);
+        }
+
+        // Update Breadcrumb & Badge back to province
+        $('#map-breadcrumb-text').text(currentProvince);
+        $('#btn-back-to-province').hide();
+        $('#hero-wilayah-badge').html('<i class="ri-map-pin-2-line"></i> Provinsi ' + currentProvince);
+
+        // Update Dashboard Data back to province level
+        applyDataFilter(currentProvince, null);
+    } else {
+        resetKeSeluruhIndonesia();
+    }
+}
+
+// Return back to National view (Level 1)
+function resetKeSeluruhIndonesia() {
+    currentProvince = null;
+    currentProvinceFeature = null;
+    currentKabupaten = null;
+
+    if (mapInstance) {
+        mapInstance.dragPan.disable();
         mapInstance.fitBounds(INDONESIA_BOUNDS, {
             padding: { top: 25, bottom: 35, left: 20, right: 20 },
             duration: 900
         });
 
-        // Clear highlight
+        // Hide kabupaten layers
+        mapInstance.setFilter('kabupaten-isi', ['==', 'provinsi', '']);
+        mapInstance.setFilter('kabupaten-garis', ['==', 'provinsi', '']);
+        mapInstance.setFilter('kabupaten-terpilih-isi', ['==', 'kabupaten', '']);
+        mapInstance.setFilter('kabupaten-terpilih-garis', ['==', 'kabupaten', '']);
         mapInstance.setFilter('provinsi-terpilih-garis', ['==', 'nama', '']);
+        mapInstance.setFilter('provinsi-sorot', ['==', 'nama', '']);
     }
 
-    // 2. Hide reset pills
+    // Hide breadcrumbs and badge
     $('#map-wilayah-indicator').fadeOut(200);
+    $('#btn-back-to-province').hide();
     $('#hero-wilayah-badge').fadeOut(200);
 
-    // 3. Reset data to national
-    applyDataFilter(null);
+    // Reset Dashboard Data to National
+    applyDataFilter(null, null);
 }
 
 /* ----------------------------------------------------
    4. Apply Filter to All Dashboard Components
 ---------------------------------------------------- */
-function applyDataFilter(namaProvinsi) {
-    var data = window.MOCKUP_DATA.getDataByProvinsi(namaProvinsi);
+function applyDataFilter(namaProvinsi, namaKabupaten) {
+    var data = window.MOCKUP_DATA.getDataByWilayah(namaProvinsi, namaKabupaten);
     if (!data) return;
 
     // A. Render Ringkasan (Usulan & Kompilasi)
@@ -293,7 +490,7 @@ function applyDataFilter(namaProvinsi) {
     ], 'igt');
 
     renderTableSection('capaian-renaksi', data.capaianRenaksi, [
-        { key: 'direktorat', label: 'Unit / Direktorat' },
+        { key: 'direktorat', label: 'Unit / Wilayah' },
         { key: 'target', label: 'Target' },
         { key: 'capaian', label: 'Capaian' }
     ], 'direktorat');
@@ -307,7 +504,7 @@ function applyDataFilter(namaProvinsi) {
     ], 'layer');
 
     renderTableSection('statistik-akses', data.statistikAksesIGT, [
-        { key: 'direktorat', label: 'Unit / Direktorat' },
+        { key: 'direktorat', label: 'Unit / Wilayah' },
         { key: 'aktivitas', label: 'Aktivitas' },
         { key: 'total', label: 'Total' }
     ], 'direktorat');
@@ -467,7 +664,7 @@ function renderTableSection(id, rawData, columns, defaultSortCol) {
 function renderTable(ctrl) {
     var $container = $('#' + ctrl.id);
 
-    // 1. Filter by search input
+    // Filter by search
     var filtered = ctrl.data.filter(function(row) {
         if (!ctrl.search) return true;
         var term = ctrl.search.toLowerCase();
@@ -476,7 +673,7 @@ function renderTable(ctrl) {
         });
     });
 
-    // 2. Sort
+    // Sort
     filtered.sort(function(a, b) {
         var valA = a[ctrl.sortCol];
         var valB = b[ctrl.sortCol];
@@ -489,13 +686,13 @@ function renderTable(ctrl) {
         return ctrl.sortAsc ? comp : -comp;
     });
 
-    // 3. Paginate
+    // Paginate
     var totalPages = Math.max(1, Math.ceil(filtered.length / ctrl.perPage));
     if (ctrl.page > totalPages) ctrl.page = totalPages;
     var start = (ctrl.page - 1) * ctrl.perPage;
     var pageItems = filtered.slice(start, start + ctrl.perPage);
 
-    // 4. Render Rows
+    // Render Rows
     var bodyHtml = '';
     if (pageItems.length === 0) {
         bodyHtml = '<tr><td colspan="' + (ctrl.columns.length + 1) + '" class="igt-table__empty">Data Tidak Ditemukan!</td></tr>';
@@ -512,7 +709,7 @@ function renderTable(ctrl) {
     }
     $container.find('tbody').html(bodyHtml);
 
-    // 5. Render Pagination controls
+    // Render Pagination
     renderPaginationHtml($container.find('.igt-pagination'), totalPages, ctrl.page, function(newPage) {
         ctrl.page = newPage;
         renderTable(ctrl);

@@ -1,12 +1,18 @@
 /**
  * IGTPR Mockup UI - Dummy Data Store
- * Supports National (All Provinces) and Province-Specific filtering.
+ * Supports 3 Drilldown Levels:
+ * 1. Nasional (Seluruh Indonesia)
+ * 2. Provinsi (e.g. Jawa Tengah, Jawa Barat, dll.)
+ * 3. Kabupaten / Kota (e.g. Kab. Semarang, Kota Semarang, Kab. Karanganyar, Kab. Banyumas, Solo, dll.)
  */
 
 window.MOCKUP_DATA = {
-    // 1. DATA NASIONAL (Default - All Indonesia)
+    // 1. DATA TINGKAT NASIONAL (Default)
     nasional: {
+        tingkat: 'nasional',
         wilayah: 'Seluruh Indonesia',
+        provinsi: null,
+        kabupaten: null,
         usulanInputData: {
             total: 98,
             kategori: [
@@ -126,36 +132,140 @@ window.MOCKUP_DATA = {
         ]
     },
 
-    // 2. FUNGSI UNTUK MEMPEROLEH DATA SESUAI PROVINSI YANG DIPILIH
-    getDataByProvinsi: function(namaProvinsi) {
+    // 2. FUNGSI RETRIEVAL TINGKAT WILAYAH (Nasional, Provinsi, atau Kabupaten)
+    getDataByWilayah: function(namaProvinsi, namaKabupaten) {
         if (!namaProvinsi || namaProvinsi === 'all' || namaProvinsi === 'Seluruh Indonesia') {
             return this.nasional;
         }
 
-        var namaBersih = String(namaProvinsi).trim().replace(/^Provinsi\s+/i, '');
-        var namaLengkap = 'Provinsi ' + namaBersih;
+        var provBersih = String(namaProvinsi).trim().replace(/^Provinsi\s+/i, '');
+        var provLengkap = 'Provinsi ' + provBersih;
 
-        // Hash sederhana untuk memvariasikan angka dummy per provinsi
-        var hash = 0;
-        for (var i = 0; i < namaBersih.length; i++) {
-            hash = (hash * 31 + namaBersih.charCodeAt(i)) & 0xfffff;
+        // JIKA TINGKAT KABUPATEN / KOTA DIPILIH:
+        if (namaKabupaten) {
+            var kabBersih = String(namaKabupaten).trim();
+            var kabLengkap = /^Kota\s+/i.test(kabBersih) ? kabBersih : (/^Kabupaten\s+/i.test(kabBersih) ? kabBersih : 'Kabupaten ' + kabBersih);
+            
+            // Variasi nilai berbasis nama kabupaten
+            var hashKab = 0;
+            for (var k = 0; k < kabBersih.length; k++) {
+                hashKab = (hashKab * 31 + kabBersih.charCodeAt(k)) & 0xfffff;
+            }
+
+            var totalUsulanKab = 4 + (hashKab % 7); // 4 - 10 data
+            var terintegrasiKab = Math.floor(totalUsulanKab * 0.4) || 2;
+            var terkompilasiKab = Math.floor(totalUsulanKab * 0.2) || 1;
+            var perbaikanKab = (hashKab % 4 === 0) ? 1 : 0;
+            var teruploadKab = Math.max(0, totalUsulanKab - terintegrasiKab - terkompilasiKab - perbaikanKab);
+
+            var totalLayerKab = 2 + (hashKab % 3); // 2 - 4 layer
+
+            return {
+                tingkat: 'kabupaten',
+                wilayah: kabLengkap + ', ' + provLengkap,
+                provinsi: provLengkap,
+                kabupaten: kabLengkap,
+                isFiltered: true,
+                usulanInputData: {
+                    total: totalUsulanKab,
+                    kategori: [
+                        { kunci: 'terupload', label: 'Terupload', jumlah: teruploadKab, diperbarui: 'Diperbarui 1 jam lalu', kelas: 'is-terupload' },
+                        { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: terkompilasiKab, diperbarui: 'Diperbarui 5 jam lalu', kelas: 'is-terkompilasi' },
+                        { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: perbaikanKab, diperbarui: perbaikanKab > 0 ? 'Diperbarui kemarin' : '-', kelas: 'is-perbaikan' },
+                        { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: terintegrasiKab, diperbarui: 'Diperbarui 15 menit lalu', kelas: 'is-terintegrasi' }
+                    ]
+                },
+                kompilasiIntegrasi: {
+                    totalLayer: totalLayerKab,
+                    bulanan: [
+                        { bulan: 'JAN', terkompilasi: 0, terintegrasi: 0 },
+                        { bulan: 'FEB', terkompilasi: 0, terintegrasi: 1 },
+                        { bulan: 'MAR', terkompilasi: 0, terintegrasi: 1 },
+                        { bulan: 'APR', terkompilasi: 0, terintegrasi: 1 },
+                        { bulan: 'MEI', terkompilasi: 0, terintegrasi: 1 },
+                        { bulan: 'JUN', terkompilasi: 0, terintegrasi: 1 },
+                        { bulan: 'JUL', terkompilasi: 1, terintegrasi: 1 },
+                        { bulan: 'AGT', terkompilasi: 1, terintegrasi: 1 },
+                        { bulan: 'SEP', terkompilasi: 1, terintegrasi: 1 },
+                        { bulan: 'OKT', terkompilasi: 1, terintegrasi: totalLayerKab },
+                        { bulan: 'NOV', terkompilasi: 0, terintegrasi: 0 },
+                        { bulan: 'DES', terkompilasi: 0, terintegrasi: 0 }
+                    ]
+                },
+                statistikIGT: [
+                    { igt: 'Bidang Tanah Validasi', provinsi: 1, kabupaten: 1, bidang: 24 + (hashKab % 30), luas: (4.2 + (hashKab % 5)).toFixed(3) },
+                    { igt: 'Hak Atas Tanah ' + kabBersih, provinsi: 1, kabupaten: 1, bidang: 8 + (hashKab % 6), luas: (0.85 + (hashKab % 2)).toFixed(2) },
+                    { igt: 'Lahan Baku Sawah ' + kabBersih, provinsi: 1, kabupaten: 1, bidang: '4.210', luas: '11.230,45' },
+                    { igt: 'RDTR Wilayah ' + kabBersih, provinsi: 1, kabupaten: 1, bidang: '2.840', luas: '6.450,10' }
+                ],
+                leaderBoard: [
+                    {
+                        peringkat: 1,
+                        nama: 'Kantor Pertanahan ' + kabLengkap,
+                        bidang: ['Bidang Tanah', 'Hak Atas Tanah'],
+                        kawasan: ['Lahan Baku Sawah', 'RDTR Kawasan'],
+                        tema: 4
+                    },
+                    {
+                        peringkat: 2,
+                        nama: 'Dinas PUPR / Tata Ruang ' + kabLengkap,
+                        bidang: [],
+                        kawasan: ['RDTR Perkotaan', 'RTRW Kabupaten'],
+                        tema: 2
+                    },
+                    {
+                        peringkat: 3,
+                        nama: 'Bappeda ' + kabLengkap,
+                        bidang: ['Sebaran Lokasi Fasum'],
+                        kawasan: ['Peta Kerentanan'],
+                        tema: 2
+                    }
+                ],
+                capaianRenaksi: [
+                    { direktorat: 'Kantor Pertanahan ' + kabLengkap, target: 12, capaian: 9 },
+                    { direktorat: 'Seksi Penataan & Pemberdayaan Kantah', target: 6, capaian: 5 },
+                    { direktorat: 'Dinas Tata Ruang Daerah ' + kabBersih, target: 4, capaian: 3 }
+                ],
+                statistikDerivatif: [
+                    { layer: 'Derivatif Khusus ' + kabBersih, provinsi: 1, kabupaten: 1, bidang: 18, luas: '850,20' },
+                    { layer: 'Batas Bidang Tematik ' + kabBersih, provinsi: 1, kabupaten: 1, bidang: 12, luas: '1.240,00' }
+                ],
+                statistikAksesIGT: [
+                    { direktorat: 'Kantor Pertanahan ' + kabLengkap, aktivitas: 'Login', total: 28 },
+                    { direktorat: 'Dinas Tata Ruang ' + kabLengkap, aktivitas: 'Login', total: 11 }
+                ],
+                aktivitasLog: [
+                    { user: 'Operator Kantah ' + kabBersih, aktivitas: 'Unggah Geodatabase Peta', tanggal: '23 Oktober 2026' },
+                    { user: 'Verifikator Kantah ' + kabBersih, aktivitas: 'Pengecekan Topologi Bidang', tanggal: '23 Oktober 2026' },
+                    { user: 'Kepala Seksi SP ' + kabBersih, aktivitas: 'Verifikasi Validasi Data', tanggal: '22 Oktober 2026' }
+                ]
+            };
         }
 
-        var totalUsulan = 12 + (hash % 20); // 12 s/d 31
-        var terintegrasi = Math.floor(totalUsulan * 0.35) || 2;
-        var terkompilasi = Math.floor(totalUsulan * 0.15) || 1;
+        // JIKA TINGKAT PROVINSI (TANPA KABUPATEN):
+        var hash = 0;
+        for (var i = 0; i < provBersih.length; i++) {
+            hash = (hash * 31 + provBersih.charCodeAt(i)) & 0xfffff;
+        }
+
+        var totalUsulan = 16 + (hash % 16); // 16 - 31 data
+        var terintegrasi = Math.floor(totalUsulan * 0.35) || 3;
+        var terkompilasi = Math.floor(totalUsulan * 0.18) || 2;
         var perbaikan = (hash % 3 === 0) ? 1 : 0;
         var terupload = Math.max(0, totalUsulan - terintegrasi - terkompilasi - perbaikan);
 
-        var totalLayer = 3 + (hash % 5);
+        var totalLayer = 4 + (hash % 4);
 
         return {
-            wilayah: namaLengkap,
+            tingkat: 'provinsi',
+            wilayah: provLengkap,
+            provinsi: provLengkap,
+            kabupaten: null,
             isFiltered: true,
             usulanInputData: {
                 total: totalUsulan,
                 kategori: [
-                    { kunci: 'terupload', label: 'Terupload', jumlah: terupload, diperbarui: 'Diperbarui 4 jam lalu', kelas: 'is-terupload' },
+                    { kunci: 'terupload', label: 'Terupload', jumlah: terupload, diperbarui: 'Diperbarui 3 jam lalu', kelas: 'is-terupload' },
                     { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: terkompilasi, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
                     { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: perbaikan, diperbarui: perbaikan > 0 ? 'Diperbarui 2 hari lalu' : '-', kelas: 'is-perbaikan' },
                     { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: terintegrasi, diperbarui: 'Diperbarui 30 menit lalu', kelas: 'is-terintegrasi' }
@@ -173,79 +283,80 @@ window.MOCKUP_DATA = {
                     { bulan: 'JUL', terkompilasi: 0, terintegrasi: 2 },
                     { bulan: 'AGT', terkompilasi: 1, terintegrasi: 2 },
                     { bulan: 'SEP', terkompilasi: 1, terintegrasi: 2 },
-                    { bulan: 'OKT', terkompilasi: 1, terintegrasi: Math.max(2, totalLayer - 1) },
+                    { bulan: 'OKT', terkompilasi: 1, terintegrasi: totalLayer },
                     { bulan: 'NOV', terkompilasi: 0, terintegrasi: 0 },
                     { bulan: 'DES', terkompilasi: 0, terintegrasi: 0 }
                 ]
             },
             statistikIGT: [
-                { igt: 'Bidang Tanah', provinsi: 1, kabupaten: 3 + (hash % 4), bidang: 35 + (hash % 50), luas: (12.4 + (hash % 10)).toFixed(3) },
-                { igt: 'Hak Atas Tanah', provinsi: 1, kabupaten: 1, bidang: 12 + (hash % 8), luas: (1.15 + (hash % 2)).toFixed(2) },
-                { igt: 'Inventarisasi Tanah Kritis', provinsi: 1, kabupaten: 2, bidang: 412 + (hash % 100), luas: '782,410' },
-                { igt: 'Kemampuan Tanah', provinsi: 1, kabupaten: 2 + (hash % 3), bidang: '1.240', luas: '94.215,100' },
-                { igt: 'Lahan Baku Sawah Nasional', provinsi: 1, kabupaten: 3, bidang: '14.820', luas: '22.450,12' },
-                { igt: 'RDTR Kabupaten/ Kota', provinsi: 1, kabupaten: 2, bidang: '18.910', luas: '14.220,50' },
-                { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', provinsi: 1, kabupaten: 2, bidang: 185, luas: '0' }
+                { igt: 'Bidang Tanah', provinsi: 1, kabupaten: 4 + (hash % 6), bidang: 58 + (hash % 40), luas: (18.4 + (hash % 10)).toFixed(3) },
+                { igt: 'Hak Atas Tanah', provinsi: 1, kabupaten: 2, bidang: 16 + (hash % 8), luas: (1.45 + (hash % 2)).toFixed(2) },
+                { igt: 'Inventarisasi Tanah Kritis', provinsi: 1, kabupaten: 3, bidang: 520 + (hash % 100), luas: '942,150' },
+                { igt: 'Kemampuan Tanah', provinsi: 1, kabupaten: 3 + (hash % 3), bidang: '1.840', luas: '142.610,200' },
+                { igt: 'Lahan Baku Sawah Nasional', provinsi: 1, kabupaten: 5, bidang: '24.120', luas: '34.870,40' },
+                { igt: 'RDTR Kabupaten/ Kota', provinsi: 1, kabupaten: 3, bidang: '28.450', luas: '19.820,10' },
+                { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', provinsi: 1, kabupaten: 3, bidang: 320, luas: '0' }
             ],
             leaderBoard: [
                 {
                     peringkat: 1,
-                    nama: 'Kantor Wilayah BPN ' + namaLengkap,
+                    nama: 'Kantor Wilayah BPN ' + provLengkap,
                     bidang: ['Bidang Tanah', 'Hak Atas Tanah'],
                     kawasan: ['Lahan Baku Sawah Nasional', 'Neraca Penatagunaan Tanah'],
                     tema: 4
                 },
                 {
                     peringkat: 2,
-                    nama: 'Dinas PUPR / Tata Ruang ' + namaLengkap,
+                    nama: 'Dinas PUPR / Tata Ruang ' + provLengkap,
                     bidang: [],
                     kawasan: ['RDTR Kabupaten/ Kota', 'RTRW Provinsi'],
                     tema: 2
                 },
                 {
                     peringkat: 3,
-                    nama: 'Kantor Pertanahan Kab./Kota Wilayah ' + namaBersih + ' I',
+                    nama: 'Kantor Pertanahan Kab. Semarang',
                     bidang: ['Bidang Tanah'],
                     kawasan: ['Inventarisasi Tanah Kritis'],
                     tema: 2
                 },
                 {
                     peringkat: 4,
-                    nama: 'Bappeda ' + namaLengkap,
-                    bidang: [],
-                    kawasan: ['Kemampuan Tanah'],
+                    nama: 'Kantor Pertanahan Kota Surakarta (Solo)',
+                    bidang: ['Sebaran Bidang Komunal'],
+                    kawasan: [],
                     tema: 1
                 },
                 {
                     peringkat: 5,
-                    nama: 'Kantor Pertanahan Kab./Kota Wilayah ' + namaBersih + ' II',
-                    bidang: ['Sebaran Lokasi Pemberdayaan'],
+                    nama: 'Kantor Pertanahan Kab. Banyumas',
+                    bidang: ['Bidang Hak Milik'],
                     kawasan: [],
                     tema: 1
                 }
             ],
             capaianRenaksi: [
-                { direktorat: 'Kantor Wilayah BPN ' + namaLengkap, target: 24, capaian: 18 },
-                { direktorat: 'Kantor Pertanahan Kab./Kota Utama ' + namaBersih, target: 12, capaian: 9 },
-                { direktorat: 'Dinas Penataan Ruang ' + namaLengkap, target: 15, capaian: 8 },
-                { direktorat: 'Kantor Pertanahan Wilayah Pesisir ' + namaBersih, target: 8, capaian: 5 },
-                { direktorat: 'Kantor Pertanahan Wilayah Perbatasan / Penyangga', target: 6, capaian: 2 }
+                { direktorat: 'Kantor Wilayah BPN ' + provLengkap, target: 32, capaian: 24 },
+                { direktorat: 'Kantor Pertanahan Kab. Semarang', target: 14, capaian: 11 },
+                { direktorat: 'Kantor Pertanahan Kota Semarang', target: 12, capaian: 10 },
+                { direktorat: 'Kantor Pertanahan Kab. Karanganyar', target: 10, capaian: 7 },
+                { direktorat: 'Kantor Pertanahan Kab. Banyumas', target: 8, capaian: 6 }
             ],
             statistikDerivatif: [
-                { layer: 'Derivatif Bidang Tematik ' + namaBersih, provinsi: 1, kabupaten: 2, bidang: 28, luas: '1,450' },
-                { layer: 'Layer Kawasan Prioritas ' + namaBersih, provinsi: 1, kabupaten: 1, bidang: 14, luas: '3,210' },
-                { layer: 'Validasi Batas Wilayah Tematik ' + namaBersih, provinsi: 1, kabupaten: 2, bidang: '4.890', luas: '412.350,110' }
+                { layer: 'Derivatif Bidang Tematik ' + provBersih, provinsi: 1, kabupaten: 3, bidang: 42, luas: '2,150' },
+                { layer: 'Layer Kawasan Prioritas ' + provBersih, provinsi: 1, kabupaten: 2, bidang: 21, luas: '4,820' },
+                { layer: 'Validasi Batas Wilayah Tematik ' + provBersih, provinsi: 1, kabupaten: 3, bidang: '6.840', luas: '612.450,200' }
             ],
             statistikAksesIGT: [
-                { direktorat: 'Kantor Wilayah BPN ' + namaLengkap, aktivitas: 'Login', total: 64 },
-                { direktorat: 'Kantor Pertanahan Kab./Kota ' + namaBersih, aktivitas: 'Login', total: 42 },
-                { direktorat: 'Dinas Tata Ruang ' + namaLengkap, aktivitas: 'Login', total: 18 }
+                { direktorat: 'Kantor Wilayah BPN ' + provLengkap, aktivitas: 'Login', total: 78 },
+                { direktorat: 'Kantor Pertanahan Kab. Semarang', aktivitas: 'Login', total: 34 },
+                { direktorat: 'Kantor Pertanahan Kota Semarang', aktivitas: 'Login', total: 31 },
+                { direktorat: 'Kantor Pertanahan Kab. Karanganyar', aktivitas: 'Login', total: 22 }
             ],
             aktivitasLog: [
-                { user: 'Operator ' + namaBersih, aktivitas: 'Unggah Data Spasial Provinsi', tanggal: '23 Oktober 2026' },
-                { user: 'Verifikator ' + namaBersih, aktivitas: 'Verifikasi Layer IGT', tanggal: '22 Oktober 2026' },
-                { user: 'Kanwil ' + namaBersih, aktivitas: 'Pembaruan Atribut Spasial', tanggal: '20 Oktober 2026' },
-                { user: 'Administrator', aktivitas: 'Persetujuan Renaksi ' + namaBersih, tanggal: '19 Oktober 2026' }
+                { user: 'Operator Kanwil ' + provBersih, aktivitas: 'Sinkronisasi Data IGT Provinsi', tanggal: '23 Oktober 2026' },
+                { user: 'Operator Kantah Kab. Semarang', aktivitas: 'Unggah Layer Derivatif Bidang', tanggal: '23 Oktober 2026' },
+                { user: 'Verifikator Kantah Solo', aktivitas: 'Verifikasi Batas Bidang', tanggal: '22 Oktober 2026' },
+                { user: 'Operator Kantah Banyumas', aktivitas: 'Pembaruan Atribut Spasial', tanggal: '21 Oktober 2026' }
             ]
         };
     }
