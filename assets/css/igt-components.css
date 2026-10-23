@@ -1499,19 +1499,21 @@ a.igt-stat:hover {
 .igt-progres__ruas:nth-child(3),
 .igt-progres__ruas--3,
 .igt-progres__ruas.is-terupload {
-    background-color: #1860a9;
+    background-color: #86efac;
     background-image:
-        repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.1) 0 5px, transparent 5px 16.667px),
-        linear-gradient(-11.7deg, #71aae3 31%, #1860a9 69%);
-    box-shadow: inset -2px -2px 12px rgba(47, 140, 228, 0.15), inset 2px 2px 6px rgba(255, 255, 255, 0.65);
+        repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.25) 0 5px, transparent 5px 14px),
+        linear-gradient(180deg, #86efac 0%, #4ade80 100%);
+    box-shadow: inset -2px -2px 8px rgba(34, 197, 94, 0.15), inset 2px 2px 6px rgba(255, 255, 255, 0.6);
 }
 
 .igt-progres__ruas:nth-child(4),
 .igt-progres__ruas--4,
 .igt-progres__ruas.is-perbaikan {
-    background-color: #fef3c7;
-    background-image: none;
-    box-shadow: none;
+    background-color: #fca5a5;
+    background-image:
+        repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.25) 0 4px, transparent 4px 10px),
+        linear-gradient(180deg, #fecaca 0%, #fca5a5 100%);
+    box-shadow: inset -2px -2px 8px rgba(239, 68, 68, 0.15), inset 2px 2px 6px rgba(255, 255, 255, 0.6);
 }
 
 .igt-rincian {
@@ -1558,12 +1560,12 @@ a.igt-stat:hover {
 
 .igt-rincian__item:nth-child(3) .igt-rincian__titik,
 .igt-rincian__item.is-terupload .igt-rincian__titik {
-    background-color: #2f8ce4;
+    background-color: #4ade80;
 }
 
 .igt-rincian__item:nth-child(4) .igt-rincian__titik,
 .igt-rincian__item.is-perbaikan .igt-rincian__titik {
-    background-color: #f59e0b;
+    background-color: #f87171;
 }
 
 .igt-rincian__isi {
