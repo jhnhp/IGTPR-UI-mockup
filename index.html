@@ -60,6 +60,11 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
+        .map-wilayah-pill {
+            display: flex;
+            align-items: center;
+        }
+
         /* Fix Maplibre controls position */
         .maplibregl-ctrl-top-right {
             top: 14px;
@@ -353,7 +358,10 @@
             <div class="igt-hero__kepala">
                 <div class="igt-hero__salam">
                     <span class="igt-hero__tanggal">Jumat, 23 Oktober 2026</span>
-                    <h4 class="igt-hero__nama">Hai, Internal IGT 👋</h4>
+                    <h4 class="igt-hero__nama d-flex align-items-center flex-wrap gap-2">
+                        <span>Hai, Internal IGT 👋</span>
+                        <span id="hero-wilayah-badge" class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded-pill" style="display: none; font-size: 12px; font-weight: 500;"></span>
+                    </h4>
                 </div>
                 <div class="igt-hero__alat position-relative">
                     <button type="button" class="igt-btn" id="beranda-filter-toggle">
@@ -399,7 +407,18 @@
             </div>
 
             <!-- Vector Map of Indonesia -->
-            <div class="igt-hero__peta" id="beranda-peta"></div>
+            <div class="igt-hero__peta position-relative" id="beranda-peta">
+                <!-- Floating Map Pill Indicator for Zoomed Province -->
+                <div class="map-wilayah-pill position-absolute" id="map-wilayah-indicator" style="display: none; top: 16px; left: 16px; z-index: 10; background: rgba(255,255,255,0.95); backdrop-filter: blur(4px); padding: 6px 14px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid #cbd5e1; gap: 10px;">
+                    <span class="d-flex align-items-center gap-1" style="font-size: 13px; font-weight: 600; color: #1e293b;">
+                        <i class="ri-map-pin-2-fill text-primary" style="font-size: 16px;"></i>
+                        <span id="map-selected-name">-</span>
+                    </span>
+                    <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 rounded-pill" id="btn-reset-map-zoom" style="font-size: 11px; font-weight: 500;" title="Kembali ke Seluruh Indonesia">
+                        <i class="ri-arrow-go-back-line"></i> Kembali ke Seluruh Indonesia
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- 2. SUMMARY CARDS: USULAN INPUT DATA & KOMPILASI INTEGRASI -->
