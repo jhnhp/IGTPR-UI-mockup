@@ -366,10 +366,28 @@ window.MOCKUP_DATA = {
      * Matches the themes shown in the Geoportal IGT-PR dashboard screenshots.
      */
     getDetailThemes: function(namaProvinsi, namaKabupaten) {
-        if (!namaProvinsi) return [];
-
-        var pNorm = String(namaProvinsi).toLowerCase().replace(/^(provinsi|daerah istimewa)\s+/i, '').trim();
+        var pNorm = namaProvinsi ? String(namaProvinsi).toLowerCase().replace(/^(provinsi|daerah istimewa)\s+/i, '').trim() : '';
         var kNorm = namaKabupaten ? String(namaKabupaten).toLowerCase().replace(/^(kabupaten|kota)\s+/i, '').trim() : null;
+
+        // 0. SE-INDONESIA / NASIONAL (Default)
+        if (!namaProvinsi || pNorm === '' || pNorm === 'nasional' || pNorm === 'indonesia' || pNorm === 'seluruh indonesia') {
+            return [
+                { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
+                { nama: 'Hak Atas Tanah', basis: 'bidang', tahun: '2025' },
+                { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', basis: 'bidang', tahun: '2026' },
+                { nama: 'Bidang Tanah Transmigrasi', basis: 'bidang', tahun: '2024' },
+                { nama: 'Inventarisasi Tanah Kritis', basis: 'kawasan', tahun: '2026' },
+                { nama: 'Kemampuan Tanah', basis: 'kawasan', tahun: '2024' },
+                { nama: 'Lahan Baku Sawah Nasional', basis: 'kawasan', tahun: '2026' },
+                { nama: 'Lahan Sawah Dilindungi', basis: 'kawasan', tahun: '2026' },
+                { nama: 'Neraca Penatagunaan Tanah', basis: 'kawasan', tahun: '2025' },
+                { nama: 'Penggunaan Tanah', basis: 'kawasan', tahun: '2026' },
+                { nama: 'RDTR Kabupaten/ Kota', basis: 'kawasan', tahun: '2026' },
+                { nama: 'RDTR Kawasan Perbatasan Negara', basis: 'kawasan', tahun: '2025' },
+                { nama: 'RTRW Kabupaten', basis: 'kawasan', tahun: '2026' },
+                { nama: 'Zona Nilai Tanah', basis: 'kawasan', tahun: '2026' }
+            ];
+        }
 
         // 1. DAERAH ISTIMEWA YOGYAKARTA (matches media screenshot exactly)
         if (pNorm.indexOf('yogyakarta') !== -1 || pNorm.indexOf('jogja') !== -1) {

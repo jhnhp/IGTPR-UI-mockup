@@ -82,6 +82,53 @@ function hitungBatasFitur(feature) {
     return [[minX, minY], [maxX, maxY]];
 }
 
+function normProvinsi(s) {
+    return String(s || '').trim().toLowerCase().replace(/^(provinsi|daerah istimewa|daerah khusus ibukota)\s+/i, '');
+}
+
+function normKabupaten(s) {
+    return String(s || '').trim().toLowerCase().replace(/^(kabupaten|kota|administrasi)\s+/i, '');
+}
+
+function findProvinceFeature(namaProvinsi) {
+    if (!window.INDONESIA_GEOJSON || !window.INDONESIA_GEOJSON.features) return null;
+    var target = normProvinsi(namaProvinsi);
+    var features = window.INDONESIA_GEOJSON.features;
+    for (var i = 0; i < features.length; i++) {
+        var f = features[i];
+        var fnama = normProvinsi(f.properties && f.properties.nama);
+        if (fnama === target) return f;
+    }
+    return null;
+}
+
+function findKabupatenFeature(namaKabupaten, namaProvinsi) {
+    if (!window.INDONESIA_KABUPATEN_GEOJSON || !window.INDONESIA_KABUPATEN_GEOJSON.features) return null;
+    var target = String(namaKabupaten || '').trim().toLowerCase();
+    var pTarget = namaProvinsi ? normProvinsi(namaProvinsi) : null;
+    var features = window.INDONESIA_KABUPATEN_GEOJSON.features;
+
+    // Pass 1: exact match
+    for (var i = 0; i < features.length; i++) {
+        var f = features[i];
+        var fprov = normProvinsi(f.properties && f.properties.provinsi);
+        if (pTarget && fprov !== pTarget) continue;
+        var fkab = String(f.properties && f.properties.kabupaten || '').trim().toLowerCase();
+        if (fkab === target) return f;
+    }
+
+    // Pass 2: normalized match (stripping kabupaten/kota prefix)
+    var targetNorm = normKabupaten(target);
+    for (var j = 0; j < features.length; j++) {
+        var f2 = features[j];
+        var fprov2 = normProvinsi(f2.properties && f2.properties.provinsi);
+        if (pTarget && fprov2 !== pTarget) continue;
+        var fkabNorm = normKabupaten(f2.properties && f2.properties.kabupaten);
+        if (fkabNorm === targetNorm) return f2;
+    }
+    return null;
+}
+
 function formatNamaKabupaten(nama) {
     if (!nama) return '';
     var n = String(nama).trim();
@@ -227,7 +274,7 @@ function initHeroMap() {
                     ]
                 },
                 bounds: INDONESIA_BOUNDS,
-                fitBoundsOptions: { padding: getFitBoundsPadding() },
+                fitBoundsOptions: { padding: getFitBoundsPaddingDetailSeIndonesia() },
                 attributionControl: false,
                 scrollZoom: false,
                 doubleClickZoom: false,
@@ -334,7 +381,37 @@ function initHeroMap() {
             $('#beranda-detail-tutup').on('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                resetKeSeluruhIndonesia();
+                if (detailState.jenisWilayah === 'kabupaten') {
+                    kembaliKeProvinsi();
+                } else if (detailState.jenisWilayah === 'provinsi') {
+                    resetKeSeluruhIndonesia();
+                } else {
+                    // Tutup/minimize saat di tingkat nasional
+                    tutupDetailInformasi();
+                    $('#beranda-detail-toggle').fadeIn(150);
+                    if (mapInstance) {
+                        mapInstance.fitBounds(INDONESIA_BOUNDS, {
+                            padding: getFitBoundsPadding(),
+                            duration: 600
+                        });
+                    }
+                }
+            });
+
+            $('#beranda-detail-toggle').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                bukaDetailInformasi(
+                    currentKabupaten ? currentKabupaten : (currentProvince ? currentProvince : 'Seluruh Indonesia'),
+                    currentKabupaten ? 'kabupaten' : (currentProvince ? 'provinsi' : 'nasional'),
+                    currentProvince
+                );
+                if (!currentProvince && mapInstance) {
+                    mapInstance.fitBounds(INDONESIA_BOUNDS, {
+                        padding: getFitBoundsPaddingDetailSeIndonesia(),
+                        duration: 600
+                    });
+                }
             });
 
             $('#beranda-detail-kembali').on('click', function(e) {
@@ -344,7 +421,32 @@ function initHeroMap() {
             });
 
             $('#beranda-detail-cari').on('input', renderDetailChips);
-            $('#beranda-detail-jenis, #beranda-detail-igt, #beranda-detail-tahun').on('change', renderDetailChips);
+            $('#beranda-detail-jenis, #beranda-detail-tahun').on('change', renderDetailChips);
+
+            // Wilayah selector (Pilih Provinsi saat Se-Indonesia / Pilih Kabupaten saat Se-Provinsi atau Se-Kabupaten)
+            $('#beranda-detail-wilayah-pilih').on('change', function() {
+                var val = $(this).val();
+                if (detailState.jenisWilayah === 'nasional' || !currentProvince) {
+                    // Saat Se-Indonesia: memilih provinsi
+                    if (val) {
+                        var feat = findProvinceFeature(val);
+                        if (feat) {
+                            zoomKeProvinsi(feat, feat.properties.nama);
+                        }
+                    }
+                } else {
+                    // Saat Se-Provinsi atau Se-Kabupaten: memilih kabupaten
+                    if (val) {
+                        var feat = findKabupatenFeature(val, currentProvince);
+                        if (feat) {
+                            zoomKeKabupaten(feat, feat.properties.kabupaten);
+                        }
+                    } else {
+                        // Memilih "Semua Kabupaten" / "Pilih Kabupaten"
+                        kembaliKeProvinsi();
+                    }
+                }
+            });
 
             // Shortcut Cmd+K / Ctrl+K to search & Esc to close
             $(document).on('keydown', function(e) {
@@ -355,22 +457,38 @@ function initHeroMap() {
                     }
                 } else if (e.key === 'Escape') {
                     if (detailState.isOpen && !$(e.target).is('input:focus')) {
-                        resetKeSeluruhIndonesia();
+                        if (detailState.jenisWilayah === 'kabupaten') {
+                            kembaliKeProvinsi();
+                        } else if (detailState.jenisWilayah === 'provinsi') {
+                            resetKeSeluruhIndonesia();
+                        } else {
+                            tutupDetailInformasi();
+                            $('#beranda-detail-toggle').fadeIn(150);
+                            if (mapInstance) {
+                                mapInstance.fitBounds(INDONESIA_BOUNDS, {
+                                    padding: getFitBoundsPadding(),
+                                    duration: 600
+                                });
+                            }
+                        }
                     }
                 }
             });
 
-            // Map canvas background click (outside polygons) to reset
+            // Map canvas background click (outside polygons) to reset if drilled down
             mapInstance.on('click', function(e) {
-                if (detailState.isOpen) {
+                if (detailState.isOpen && currentProvince) {
                     var features = mapInstance.queryRenderedFeatures(e.point, {
-                        layers: currentProvince ? ['kabupaten-isi', 'provinsi-isi'] : ['provinsi-isi']
+                        layers: ['kabupaten-isi', 'provinsi-isi']
                     });
                     if (!features.length) {
                         resetKeSeluruhIndonesia();
                     }
                 }
             });
+
+            // Buka Detail Informasi untuk Seluruh Indonesia secara default saat peta siap
+            bukaDetailInformasi('Seluruh Indonesia', 'nasional', null);
 
             return;
         } catch (err) {
@@ -386,22 +504,50 @@ function initHeroMap() {
 ----------------------------------------------------- */
 var detailState = {
     wilayah: null,
-    jenisWilayah: null, // 'provinsi' or 'kabupaten'
+    jenisWilayah: null, // 'nasional', 'provinsi', or 'kabupaten'
     indukProvinsi: null,
     themes: [],
     isOpen: false
 };
 
+function getFitBoundsPaddingDetailSeIndonesia() {
+    var containerEl = document.getElementById('beranda-peta');
+    var containerWidth = (mapInstance && mapInstance.getContainer())
+        ? mapInstance.getContainer().clientWidth
+        : (containerEl ? containerEl.clientWidth : 1200);
+    if (!containerWidth || containerWidth <= 0) containerWidth = 1200;
+
+    var isDesktop = window.matchMedia('(min-width: 992px)').matches;
+    if (!isDesktop) {
+        return { top: 25, bottom: 45, left: 20, right: 20 };
+    }
+    var detailEl = document.getElementById('beranda-detail');
+    var detailOffset = (detailEl && detailEl.offsetLeft > 0) ? detailEl.offsetLeft : 56;
+    var detailWidth = (detailEl && detailEl.offsetWidth > 0) ? detailEl.offsetWidth : 580;
+    var leftPadding = Math.min(detailOffset + detailWidth + 24, containerWidth * 0.52);
+    return {
+        top: 25,
+        bottom: 55,
+        left: leftPadding,
+        right: 30
+    };
+}
+
 function getFitBoundsPaddingDetail() {
-    var containerWidth = mapInstance ? mapInstance.getContainer().clientWidth : 1200;
+    var containerEl = document.getElementById('beranda-peta');
+    var containerWidth = (mapInstance && mapInstance.getContainer())
+        ? mapInstance.getContainer().clientWidth
+        : (containerEl ? containerEl.clientWidth : 1200);
+    if (!containerWidth || containerWidth <= 0) containerWidth = 1200;
+
     var isDesktop = window.matchMedia('(min-width: 992px)').matches;
     if (!isDesktop) {
         return { top: 40, bottom: 40, left: 30, right: 30 };
     }
     var detailEl = document.getElementById('beranda-detail');
-    var detailOffset = detailEl ? detailEl.offsetLeft : 56;
-    var detailWidth = detailEl && detailEl.offsetWidth > 0 ? detailEl.offsetWidth : 610;
-    var leftPadding = Math.min(detailOffset + detailWidth + 40, containerWidth * 0.70);
+    var detailOffset = (detailEl && detailEl.offsetLeft > 0) ? detailEl.offsetLeft : 56;
+    var detailWidth = (detailEl && detailEl.offsetWidth > 0) ? detailEl.offsetWidth : 580;
+    var leftPadding = Math.min(detailOffset + detailWidth + 30, containerWidth * 0.70);
     return {
         top: 60,
         bottom: 60,
@@ -410,15 +556,71 @@ function getFitBoundsPaddingDetail() {
     };
 }
 
+function updateWilayahDropdown(jenisWilayah, namaProvinsi, terpilihKabupaten) {
+    var select = $('#beranda-detail-wilayah-pilih');
+    if (!select.length) return;
+
+    if (jenisWilayah === 'nasional' || !namaProvinsi) {
+        // Mode A: Pilih Provinsi (Se-Indonesia)
+        var html = '<option value="">Pilih Provinsi</option>';
+        if (window.INDONESIA_GEOJSON && window.INDONESIA_GEOJSON.features) {
+            var provNames = window.INDONESIA_GEOJSON.features
+                .map(function(f) { return f.properties && f.properties.nama; })
+                .filter(Boolean)
+                .sort(function(a, b) { return a.localeCompare(b, 'id'); });
+            provNames.forEach(function(prov) {
+                html += '<option value="' + prov + '">' + prov + '</option>';
+            });
+        }
+        select.html(html);
+        select.val('');
+        select.attr('aria-label', 'Pilih Provinsi');
+    } else {
+        // Mode B & C: Pilih Kabupaten (Se-Provinsi / Se-Kabupaten)
+        var html = '<option value="">' + (terpilihKabupaten ? 'Semua Kabupaten' : 'Pilih Kabupaten') + '</option>';
+        var provLower = normProvinsi(namaProvinsi);
+
+        if (window.INDONESIA_KABUPATEN_GEOJSON && window.INDONESIA_KABUPATEN_GEOJSON.features) {
+            var kabs = window.INDONESIA_KABUPATEN_GEOJSON.features
+                .filter(function(f) {
+                    var fp = normProvinsi(f.properties && f.properties.provinsi);
+                    return fp === provLower;
+                })
+                .map(function(f) { return f.properties.kabupaten; })
+                .sort(function(a, b) { return a.localeCompare(b, 'id'); });
+
+            if (kabs.length > 0) {
+                kabs.forEach(function(kab) {
+                    var label = formatNamaKabupaten(kab);
+                    var selected = (terpilihKabupaten && terpilihKabupaten.toLowerCase() === kab.toLowerCase()) ? ' selected' : '';
+                    html += '<option value="' + kab + '"' + selected + '>' + label + '</option>';
+                });
+            } else {
+                html += '<option value="" disabled>Belum ada data kabupaten</option>';
+            }
+        }
+        select.html(html);
+        if (terpilihKabupaten) {
+            select.val(terpilihKabupaten);
+        } else {
+            select.val('');
+        }
+        select.attr('aria-label', 'Pilih Kabupaten');
+    }
+}
+
 function bukaDetailInformasi(namaWilayah, jenisWilayah, indukProvinsi) {
     detailState.wilayah = namaWilayah;
-    detailState.jenisWilayah = jenisWilayah;
+    detailState.jenisWilayah = jenisWilayah; // 'nasional', 'provinsi', or 'kabupaten'
     detailState.indukProvinsi = indukProvinsi || null;
     detailState.isOpen = true;
 
     // Format display title
     var displayTitle = '';
-    if (jenisWilayah === 'provinsi') {
+    if (jenisWilayah === 'nasional') {
+        displayTitle = 'Seluruh Indonesia';
+        $('#beranda-detail-kembali').hide();
+    } else if (jenisWilayah === 'provinsi') {
         displayTitle = /^provinsi\s/i.test(namaWilayah) ? namaWilayah : 'Provinsi ' + namaWilayah;
         $('#beranda-detail-kembali').hide();
     } else {
@@ -430,21 +632,20 @@ function bukaDetailInformasi(namaWilayah, jenisWilayah, indukProvinsi) {
 
     // Fetch themes for this region
     detailState.themes = (window.MOCKUP_DATA && window.MOCKUP_DATA.getDetailThemes)
-        ? window.MOCKUP_DATA.getDetailThemes(indukProvinsi || namaWilayah, jenisWilayah === 'kabupaten' ? namaWilayah : null)
+        ? window.MOCKUP_DATA.getDetailThemes(
+            jenisWilayah === 'nasional' ? 'nasional' : (indukProvinsi || namaWilayah),
+            jenisWilayah === 'kabupaten' ? namaWilayah : null
+          )
         : [];
 
-    // Populate IGT dropdown options
-    var igtSelect = $('#beranda-detail-igt');
-    var igtHtml = '<option value="">Pilih IGT</option>';
-    var distinctNames = [];
-    detailState.themes.forEach(function(item) {
-        if (distinctNames.indexOf(item.nama) === -1) {
-            distinctNames.push(item.nama);
-            igtHtml += '<option value="' + item.nama + '">' + item.nama + '</option>';
-        }
-    });
-    igtSelect.html(igtHtml);
-    igtSelect.val('');
+    // Update Wilayah dropdown (Pilih Provinsi or Pilih Kabupaten)
+    updateWilayahDropdown(
+        jenisWilayah,
+        jenisWilayah === 'nasional' ? null : (indukProvinsi || namaWilayah),
+        jenisWilayah === 'kabupaten' ? namaWilayah : null
+    );
+
+    // Reset filter controls
     $('#beranda-detail-jenis').val('');
     $('#beranda-detail-cari').val('');
     $('#beranda-detail-tahun').val('all');
@@ -455,6 +656,7 @@ function bukaDetailInformasi(namaWilayah, jenisWilayah, indukProvinsi) {
     // Reveal the popup card
     $('#beranda-detail').addClass('is-buka').attr('aria-hidden', 'false');
     $('#beranda').addClass('is-rinci');
+    $('#beranda-detail-toggle').hide(); // Hide toolbar button when card is open
     $('#map-wilayah-indicator').hide(); // Hide floating breadcrumb to avoid UI clutter
 }
 
@@ -467,15 +669,13 @@ function tutupDetailInformasi() {
 function renderDetailChips() {
     var q = $.trim($('#beranda-detail-cari').val()).toLowerCase();
     var jenis = $('#beranda-detail-jenis').val();
-    var igt = $('#beranda-detail-igt').val();
     var tahun = $('#beranda-detail-tahun').val();
 
     var filtered = detailState.themes.filter(function(item) {
         var matchQ = !q || item.nama.toLowerCase().indexOf(q) !== -1;
         var matchJenis = !jenis || item.basis === jenis;
-        var matchIgt = !igt || item.nama === igt;
         var matchTahun = !tahun || tahun === 'all' || item.tahun === tahun;
-        return matchQ && matchJenis && matchIgt && matchTahun;
+        return matchQ && matchJenis && matchTahun;
     });
 
     $('#beranda-detail-tema').text(filtered.length);
@@ -658,12 +858,10 @@ function resetKeSeluruhIndonesia() {
     currentProvinceFeature = null;
     currentKabupaten = null;
 
-    tutupDetailInformasi();
-
     if (mapInstance) {
         mapInstance.dragPan.disable();
         mapInstance.fitBounds(INDONESIA_BOUNDS, {
-            padding: getFitBoundsPadding(),
+            padding: getFitBoundsPaddingDetailSeIndonesia(),
             duration: 900
         });
 
@@ -692,6 +890,9 @@ function resetKeSeluruhIndonesia() {
         mapInstance.setPaintProperty('provinsi-garis', 'line-opacity', 0.85);
         mapInstance.setPaintProperty('provinsi-garis', 'line-width', 1.0);
     }
+
+    // Keep Detail Informasi open for Seluruh Indonesia
+    bukaDetailInformasi('Seluruh Indonesia', 'nasional', null);
 
     // Hide breadcrumbs and badge
     $('#map-wilayah-indicator').fadeOut(200);

@@ -182,9 +182,9 @@
         }
 
         .igt-detail__alat .igt-searchbar {
-            flex: 1 1 140px !important;
-            min-width: 110px !important;
-            max-width: 170px !important;
+            flex: 1 1 125px !important;
+            min-width: 100px !important;
+            max-width: 160px !important;
             height: 34px;
             padding: 2px 6px;
         }
@@ -206,12 +206,18 @@
         }
 
         .igt-detail__alat .igt-pilih {
-            flex: 0 0 112px !important;
-            width: 112px !important;
-            max-width: 112px !important;
+            flex: 0 0 115px !important;
+            width: 115px !important;
+            max-width: 115px !important;
             height: 34px;
             padding: 0 6px !important;
             overflow: hidden;
+        }
+
+        .igt-detail__alat .igt-detail__pilih--wilayah {
+            flex: 0 0 125px !important;
+            width: 125px !important;
+            max-width: 125px !important;
         }
 
         .igt-detail__alat .igt-pilih select {
@@ -232,9 +238,9 @@
         }
 
         .igt-detail__alat .igt-detail__pilih--tahun {
-            flex: 0 0 125px !important;
-            width: 125px !important;
-            max-width: 125px !important;
+            flex: 0 0 120px !important;
+            width: 120px !important;
+            max-width: 120px !important;
             padding-left: 4px !important;
         }
 
@@ -659,7 +665,11 @@
                         <span id="hero-wilayah-badge" class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded-pill" style="display: none; font-size: 12px; font-weight: 500;"></span>
                     </h4>
                 </div>
-                <div class="igt-hero__alat position-relative">
+                <div class="igt-hero__alat position-relative d-flex align-items-center">
+                    <button type="button" class="igt-btn me-2" id="beranda-detail-toggle" style="display: none;">
+                        <span class="igt-btn__icon"><img src="assets/img/icons/info.svg" alt="Detail" width="16"></span>
+                        Detail Informasi
+                    </button>
                     <button type="button" class="igt-btn" id="beranda-filter-toggle">
                         <span class="igt-btn__icon"><img src="assets/img/icons/sliders.svg" alt="filter"></span>
                         Filter
@@ -751,9 +761,9 @@
                             </select>
                             <img class="igt-pilih__caret" src="assets/img/icons/arrow-down.svg" alt="">
                         </label>
-                        <label class="igt-btn igt-pilih igt-detail__pilih">
-                            <select id="beranda-detail-igt" aria-label="IGT">
-                                <option value="">Pilih IGT</option>
+                        <label class="igt-btn igt-pilih igt-detail__pilih igt-detail__pilih--wilayah" id="beranda-detail-wilayah-label">
+                            <select id="beranda-detail-wilayah-pilih" aria-label="Pilih Wilayah">
+                                <option value="">Pilih Provinsi</option>
                             </select>
                             <img class="igt-pilih__caret" src="assets/img/icons/arrow-down.svg" alt="">
                         </label>
