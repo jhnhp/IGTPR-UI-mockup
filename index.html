@@ -49,20 +49,44 @@
             }
         }
 
-        /* Map styling overrides */
-        .igt-hero__peta {
+        /* Hero Section & Maplibre container */
+        .igt-hero {
             position: relative;
-            height: 380px;
+            min-height: 480px;
+            margin-bottom: 12px;
+        }
+
+        .igt-hero__peta {
+            position: absolute;
+            inset: 0;
             width: 100%;
-            background: #ffffff;
-            border-radius: 16px;
+            height: 100%;
+            background: transparent !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            -webkit-mask-image: none !important;
+            mask-image: none !important;
+            z-index: 1;
+        }
+
+        .igt-hero__kepala {
+            position: relative;
+            z-index: 10;
+            pointer-events: auto;
         }
 
         .map-wilayah-pill {
-            display: flex;
+            display: inline-flex;
             align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 6px 16px;
+            border-radius: 30px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e2e8f0;
+            z-index: 20;
         }
 
         /* Fix Maplibre controls position */
@@ -407,9 +431,9 @@
             </div>
 
             <!-- Vector Map of Indonesia -->
-            <div class="igt-hero__peta position-relative" id="beranda-peta">
+            <div class="igt-hero__peta" id="beranda-peta">
                 <!-- Floating Map Breadcrumb / Filter Indicator -->
-                <div class="map-wilayah-pill position-absolute" id="map-wilayah-indicator" style="display: none; top: 16px; left: 16px; z-index: 10; background: rgba(255,255,255,0.96); backdrop-filter: blur(6px); padding: 6px 14px; border-radius: 30px; box-shadow: 0 4px 14px rgba(0,0,0,0.12); border: 1px solid #cbd5e1; align-items: center; gap: 8px;">
+                <div class="map-wilayah-pill position-absolute" id="map-wilayah-indicator" style="display: none; top: 68px; left: 0px; z-index: 20;">
                     <span class="d-flex align-items-center gap-1" style="font-size: 13px; font-weight: 600; color: #1e293b;">
                         <i class="ri-map-pin-2-fill text-primary" style="font-size: 16px;"></i>
                         <span id="map-breadcrumb-text">-</span>
@@ -417,7 +441,7 @@
                     <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 rounded-pill" id="btn-back-to-province" style="display: none; font-size: 11px; font-weight: 500;" title="Kembali ke Tingkat Provinsi">
                         <i class="ri-arrow-up-s-line"></i> <span id="btn-back-province-name">Provinsi</span>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 rounded-pill" id="btn-reset-map-zoom" style="font-size: 11px; font-weight: 500;" title="Kembali ke Seluruh Indonesia">
+                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 rounded-pill" id="btn-reset-map-zoom" style="font-size: 11px; font-weight: 500;" title="Kembali ke Seluruh Indonesia">
                         <i class="ri-arrow-go-back-line"></i> Seluruh Indonesia
                     </button>
                 </div>

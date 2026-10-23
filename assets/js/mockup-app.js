@@ -118,15 +118,16 @@ function initHeroMap() {
                             type: 'fill',
                             source: 'indonesia',
                             paint: {
-                                'fill-color': '#1860a9',
+                                'fill-color': '#1d4ed8',
                                 'fill-opacity': [
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'tema'],
-                                    0, 0.08,
-                                    1, 0.22,
-                                    2, 0.38,
-                                    4, 0.60
+                                    0, 0.04,
+                                    1, 0.16,
+                                    2, 0.30,
+                                    3, 0.48,
+                                    4, 0.65
                                 ]
                             }
                         },
@@ -135,7 +136,7 @@ function initHeroMap() {
                             type: 'line',
                             source: 'indonesia',
                             paint: {
-                                'line-color': '#1860a9',
+                                'line-color': '#3b82f6',
                                 'line-width': 1.0,
                                 'line-opacity': 0.85
                             }
@@ -155,8 +156,8 @@ function initHeroMap() {
                             type: 'line',
                             source: 'indonesia',
                             paint: {
-                                'line-color': '#0f172a',
-                                'line-width': 2.5
+                                'line-color': '#1e40af',
+                                'line-width': 2.0
                             },
                             filter: ['==', 'nama', '']
                         },
@@ -167,8 +168,8 @@ function initHeroMap() {
                             type: 'fill',
                             source: 'kabupaten',
                             paint: {
-                                'fill-color': '#60a5fa',
-                                'fill-opacity': 0.35
+                                'fill-color': '#e0f2fe',
+                                'fill-opacity': 0.55
                             },
                             filter: ['==', 'provinsi', ''] // initially hidden
                         },
@@ -177,8 +178,9 @@ function initHeroMap() {
                             type: 'line',
                             source: 'kabupaten',
                             paint: {
-                                'line-color': '#1d4ed8',
-                                'line-width': 1.2
+                                'line-color': '#3b82f6',
+                                'line-width': 1.0,
+                                'line-opacity': 0.85
                             },
                             filter: ['==', 'provinsi', '']
                         },
@@ -187,7 +189,7 @@ function initHeroMap() {
                             type: 'line',
                             source: 'kabupaten',
                             paint: {
-                                'line-color': '#0f172a',
+                                'line-color': '#1e3a8a',
                                 'line-width': 2.5
                             },
                             filter: ['==', 'kabupaten', '']
@@ -197,8 +199,8 @@ function initHeroMap() {
                             type: 'fill',
                             source: 'kabupaten',
                             paint: {
-                                'fill-color': '#1e40af',
-                                'fill-opacity': 0.70
+                                'fill-color': '#2563eb',
+                                'fill-opacity': 0.85
                             },
                             filter: ['==', 'kabupaten', '']
                         },
@@ -207,8 +209,8 @@ function initHeroMap() {
                             type: 'line',
                             source: 'kabupaten',
                             paint: {
-                                'line-color': '#0f172a',
-                                'line-width': 3.0
+                                'line-color': '#1e3a8a',
+                                'line-width': 2.5
                             },
                             filter: ['==', 'kabupaten', '']
                         }
@@ -340,24 +342,44 @@ function zoomKeProvinsi(feature, namaProvinsi) {
     if (mapInstance) {
         mapInstance.dragPan.enable();
         mapInstance.fitBounds(bbox, {
-            padding: { top: 50, bottom: 50, left: 50, right: 50 },
+            padding: { top: 60, bottom: 60, left: 60, right: 60 },
             maxZoom: 8.5,
             duration: 1000
         });
+
+        // Dim outside provinces so selected province pops out clearly
+        var provKey = namaProvinsi.toLowerCase();
+        mapInstance.setPaintProperty('provinsi-isi', 'fill-opacity', [
+            'case',
+            ['==', ['downcase', ['get', 'nama']], provKey], 0.04,
+            0.02
+        ]);
+        mapInstance.setPaintProperty('provinsi-garis', 'line-opacity', [
+            'case',
+            ['==', ['downcase', ['get', 'nama']], provKey], 0.9,
+            0.15
+        ]);
 
         // Highlight selected province boundary
         mapInstance.setFilter('provinsi-terpilih-garis', ['==', 'nama', namaProvinsi]);
         mapInstance.setFilter('provinsi-sorot', ['==', 'nama', '']);
 
         // Reveal kabupaten boundaries for this province
-        var provKey = namaProvinsi.toLowerCase();
         var kabFilter = ['==', ['downcase', ['get', 'provinsi']], provKey];
         mapInstance.setFilter('kabupaten-isi', kabFilter);
         mapInstance.setFilter('kabupaten-garis', kabFilter);
 
-        // Reset kabupaten selection highlight
+        // Reset kabupaten styling to default province level
+        mapInstance.setPaintProperty('kabupaten-isi', 'fill-color', '#e0f2fe');
+        mapInstance.setPaintProperty('kabupaten-isi', 'fill-opacity', 0.55);
+        mapInstance.setPaintProperty('kabupaten-garis', 'line-color', '#3b82f6');
+        mapInstance.setPaintProperty('kabupaten-garis', 'line-width', 1.0);
+        mapInstance.setPaintProperty('kabupaten-garis', 'line-opacity', 0.85);
+
+        // Reset selection
         mapInstance.setFilter('kabupaten-terpilih-isi', ['==', 'kabupaten', '']);
         mapInstance.setFilter('kabupaten-terpilih-garis', ['==', 'kabupaten', '']);
+        mapInstance.setFilter('kabupaten-sorot', ['==', 'kabupaten', '']);
     }
 
     // Update Floating Breadcrumb on Map
@@ -381,14 +403,34 @@ function zoomKeKabupaten(feature, namaKabupaten) {
 
     if (mapInstance) {
         mapInstance.fitBounds(bbox, {
-            padding: { top: 60, bottom: 60, left: 60, right: 60 },
+            padding: { top: 70, bottom: 70, left: 70, right: 70 },
             maxZoom: 10.5,
             duration: 900
         });
 
-        // Highlight selected kabupaten
-        mapInstance.setFilter('kabupaten-terpilih-isi', ['==', 'kabupaten', namaKabupaten]);
-        mapInstance.setFilter('kabupaten-terpilih-garis', ['==', 'kabupaten', namaKabupaten]);
+        // Invert focus: Mute other kabupaten, highlight selected kabupaten in rich primary blue
+        var kabKey = String(namaKabupaten).toLowerCase();
+        mapInstance.setPaintProperty('kabupaten-isi', 'fill-color', [
+            'case',
+            ['==', ['downcase', ['get', 'kabupaten']], kabKey], '#2563eb',
+            '#f8fafc'
+        ]);
+        mapInstance.setPaintProperty('kabupaten-isi', 'fill-opacity', [
+            'case',
+            ['==', ['downcase', ['get', 'kabupaten']], kabKey], 0.85,
+            0.35
+        ]);
+        mapInstance.setPaintProperty('kabupaten-garis', 'line-color', [
+            'case',
+            ['==', ['downcase', ['get', 'kabupaten']], kabKey], '#1e3a8a',
+            '#cbd5e1'
+        ]);
+        mapInstance.setPaintProperty('kabupaten-garis', 'line-width', [
+            'case',
+            ['==', ['downcase', ['get', 'kabupaten']], kabKey], 2.2,
+            0.8
+        ]);
+
         mapInstance.setFilter('kabupaten-sorot', ['==', 'kabupaten', '']);
     }
 
@@ -413,14 +455,21 @@ function kembaliKeProvinsi() {
 
         if (mapInstance) {
             mapInstance.fitBounds(bbox, {
-                padding: { top: 50, bottom: 50, left: 50, right: 50 },
+                padding: { top: 60, bottom: 60, left: 60, right: 60 },
                 maxZoom: 8.5,
                 duration: 900
             });
 
-            // Clear kabupaten selection highlight
+            // Restore all kabupaten in this province
+            mapInstance.setPaintProperty('kabupaten-isi', 'fill-color', '#e0f2fe');
+            mapInstance.setPaintProperty('kabupaten-isi', 'fill-opacity', 0.55);
+            mapInstance.setPaintProperty('kabupaten-garis', 'line-color', '#3b82f6');
+            mapInstance.setPaintProperty('kabupaten-garis', 'line-width', 1.0);
+            mapInstance.setPaintProperty('kabupaten-garis', 'line-opacity', 0.85);
+
             mapInstance.setFilter('kabupaten-terpilih-isi', ['==', 'kabupaten', '']);
             mapInstance.setFilter('kabupaten-terpilih-garis', ['==', 'kabupaten', '']);
+            mapInstance.setFilter('kabupaten-sorot', ['==', 'kabupaten', '']);
         }
 
         // Update Breadcrumb & Badge back to province
@@ -453,8 +502,25 @@ function resetKeSeluruhIndonesia() {
         mapInstance.setFilter('kabupaten-garis', ['==', 'provinsi', '']);
         mapInstance.setFilter('kabupaten-terpilih-isi', ['==', 'kabupaten', '']);
         mapInstance.setFilter('kabupaten-terpilih-garis', ['==', 'kabupaten', '']);
+        mapInstance.setFilter('kabupaten-sorot', ['==', 'kabupaten', '']);
         mapInstance.setFilter('provinsi-terpilih-garis', ['==', 'nama', '']);
         mapInstance.setFilter('provinsi-sorot', ['==', 'nama', '']);
+
+        // Restore province theme styling
+        mapInstance.setPaintProperty('provinsi-isi', 'fill-color', '#1d4ed8');
+        mapInstance.setPaintProperty('provinsi-isi', 'fill-opacity', [
+            'interpolate',
+            ['linear'],
+            ['get', 'tema'],
+            0, 0.04,
+            1, 0.16,
+            2, 0.30,
+            3, 0.48,
+            4, 0.65
+        ]);
+        mapInstance.setPaintProperty('provinsi-garis', 'line-color', '#3b82f6');
+        mapInstance.setPaintProperty('provinsi-garis', 'line-opacity', 0.85);
+        mapInstance.setPaintProperty('provinsi-garis', 'line-width', 1.0);
     }
 
     // Hide breadcrumbs and badge
