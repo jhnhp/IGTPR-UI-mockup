@@ -362,8 +362,71 @@ window.MOCKUP_DATA = {
     },
 
     /**
+     * 39 IGT Dasar Pertanahan dan Ruang (Kementerian ATR/BPN)
+     * Berdasarkan dokumen resmi: "05 DAFTAR IGT DASAR PERTANAHAN DAN RUANG"
+     */
+    daftar39IGT: [
+        // --- IGT PERTANAHAN (29 IGT) ---
+        // Ditjen Survei dan Pemetaan Pertanahan dan Ruang (Ditjen SPPR)
+        { no: 1, nama: 'Bidang Tanah', jenis: 'pertanahan', ditjen: 'Ditjen SPPR', basisFisik: 'bidang' },
+        { no: 2, nama: 'Penguasaan Tanah', jenis: 'pertanahan', ditjen: 'Ditjen SPPR', basisFisik: 'bidang' },
+        { no: 3, nama: 'Pemilikan Tanah', jenis: 'pertanahan', ditjen: 'Ditjen SPPR', basisFisik: 'bidang' },
+        { no: 4, nama: 'Penggunaan Tanah', jenis: 'pertanahan', ditjen: 'Ditjen SPPR', basisFisik: 'bidang' },
+        { no: 5, nama: 'Pemanfaatan Tanah', jenis: 'pertanahan', ditjen: 'Ditjen SPPR', basisFisik: 'bidang' },
+        { no: 35, nama: 'Unsur Dasar Pertanahan', jenis: 'pertanahan', ditjen: 'Ditjen SPPR', basisFisik: 'kawasan' },
+
+        // Ditjen Penetapan Hak dan Pendaftaran Tanah
+        { no: 11, nama: 'Hak Atas Tanah', jenis: 'pertanahan', ditjen: 'Ditjen Penetapan Hak dan Pendaftaran Tanah', basisFisik: 'bidang' },
+
+        // Ditjen Penanganan Sengketa dan Konflik Pertanahan
+        { no: 12, nama: 'Informasi Mengenai Sengketa, Konflik, dan Perkara Pertanahan', jenis: 'pertanahan', ditjen: 'Ditjen Penanganan Sengketa dan Konflik Pertanahan', basisFisik: 'bidang' },
+
+        // Ditjen Penataan Agraria
+        { no: 6, nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenis: 'pertanahan', ditjen: 'Ditjen Penataan Agraria', basisFisik: 'bidang' },
+        { no: 7, nama: 'Pertimbangan Teknis Pertanahan', jenis: 'pertanahan', ditjen: 'Ditjen Penataan Agraria', basisFisik: 'bidang' },
+        { no: 8, nama: 'Inventarisasi Tanah Kritis', jenis: 'pertanahan', ditjen: 'Ditjen Penataan Agraria', basisFisik: 'bidang' },
+        { no: 26, nama: 'Lahan Baku Sawah', jenis: 'pertanahan', ditjen: 'Ditjen Penataan Agraria', basisFisik: 'kawasan' },
+        { no: 27, nama: 'Kemampuan Tanah', jenis: 'pertanahan', ditjen: 'Ditjen Penataan Agraria', basisFisik: 'kawasan' },
+        { no: 28, nama: 'Neraca Penatagunaan Tanah', jenis: 'pertanahan', ditjen: 'Ditjen Penataan Agraria', basisFisik: 'kawasan' },
+        { no: 29, nama: 'Persebaran Pulau-Pulau Kecil Terluar di Indonesia', jenis: 'pertanahan', ditjen: 'Ditjen Penataan Agraria', basisFisik: 'kawasan' },
+        { no: 30, nama: 'Sebaran Tanah Objek Reforma Agraria', jenis: 'pertanahan', ditjen: 'Ditjen Penataan Agraria', basisFisik: 'kawasan' },
+        { no: 31, nama: 'Analisa Tanah Objek Reforma Agraria', jenis: 'pertanahan', ditjen: 'Ditjen Penataan Agraria', basisFisik: 'kawasan' },
+        { no: 32, nama: 'Potensi Objek Redistribusi Tanah', jenis: 'pertanahan', ditjen: 'Ditjen Penataan Agraria', basisFisik: 'kawasan' },
+        { no: 33, nama: 'Potensi WP3WT', jenis: 'pertanahan', ditjen: 'Ditjen Penataan Agraria', basisFisik: 'kawasan' },
+        { no: 34, nama: 'Tanah Timbul', jenis: 'pertanahan', ditjen: 'Ditjen Penataan Agraria', basisFisik: 'kawasan' },
+
+        // Ditjen Pengadaan Tanah dan Pengembangan Pertanahan
+        { no: 13, nama: 'Potensi Subjek Konsolidasi Tanah', jenis: 'pertanahan', ditjen: 'Ditjen Pengadaan Tanah dan Pengembangan Pertanahan', basisFisik: 'bidang' },
+        { no: 14, nama: 'Nilai Bidang Tanah', jenis: 'pertanahan', ditjen: 'Ditjen Pengadaan Tanah dan Pengembangan Pertanahan', basisFisik: 'bidang' },
+        { no: 15, nama: 'Desain Konsolidasi Tanah', jenis: 'pertanahan', ditjen: 'Ditjen Pengadaan Tanah dan Pengembangan Pertanahan', basisFisik: 'bidang' },
+        { no: 16, nama: 'Hasil Penerapan Desain Konsolidasi Tanah', jenis: 'pertanahan', ditjen: 'Ditjen Pengadaan Tanah dan Pengembangan Pertanahan', basisFisik: 'bidang' },
+        { no: 38, nama: 'Zona Nilai Tanah', jenis: 'pertanahan', ditjen: 'Ditjen Pengadaan Tanah dan Pengembangan Pertanahan', basisFisik: 'kawasan' },
+        { no: 39, nama: 'Sebaran Potensi Pengembangan Pertanahan', jenis: 'pertanahan', ditjen: 'Ditjen Pengadaan Tanah dan Pengembangan Pertanahan', basisFisik: 'kawasan' },
+
+        // Ditjen Pengendalian dan Penertiban Tanah dan Ruang (Pertanahan)
+        { no: 9, nama: 'Tanah Terindikasi Terlantar', jenis: 'pertanahan', ditjen: 'Ditjen Pengendalian dan Penertiban Tanah dan Ruang', basisFisik: 'bidang' },
+        { no: 36, nama: 'Lahan Sawah Dilindungi', jenis: 'pertanahan', ditjen: 'Ditjen Pengendalian dan Penertiban Tanah dan Ruang', basisFisik: 'kawasan' },
+        { no: 37, nama: 'Kawasan Terindikasi Terlantar', jenis: 'pertanahan', ditjen: 'Ditjen Pengendalian dan Penertiban Tanah dan Ruang', basisFisik: 'kawasan' },
+
+        // --- IGT TATA RUANG (10 IGT) ---
+        // Ditjen Tata Ruang
+        { no: 17, nama: 'RTRW Nasional', jenis: 'tataruang', ditjen: 'Ditjen Tata Ruang', basisFisik: 'kawasan' },
+        { no: 18, nama: 'RTRW Provinsi', jenis: 'tataruang', ditjen: 'Ditjen Tata Ruang', basisFisik: 'kawasan' },
+        { no: 19, nama: 'RTRW Kabupaten', jenis: 'tataruang', ditjen: 'Ditjen Tata Ruang', basisFisik: 'kawasan' },
+        { no: 20, nama: 'RTRW Kota', jenis: 'tataruang', ditjen: 'Ditjen Tata Ruang', basisFisik: 'kawasan' },
+        { no: 21, nama: 'RDTR Kawasan Perbatasan Negara', jenis: 'tataruang', ditjen: 'Ditjen Tata Ruang', basisFisik: 'kawasan' },
+        { no: 22, nama: 'RTR Pulau/Kepulauan', jenis: 'tataruang', ditjen: 'Ditjen Tata Ruang', basisFisik: 'kawasan' },
+        { no: 23, nama: 'RTR Kawasan Strategis Nasional', jenis: 'tataruang', ditjen: 'Ditjen Tata Ruang', basisFisik: 'kawasan' },
+        { no: 24, nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', ditjen: 'Ditjen Tata Ruang', basisFisik: 'kawasan' },
+        { no: 25, nama: 'KKPR', jenis: 'tataruang', ditjen: 'Ditjen Tata Ruang', basisFisik: 'kawasan' },
+
+        // Ditjen Pengendalian dan Penertiban Tanah dan Ruang (Tata Ruang)
+        { no: 10, nama: 'Indikasi Pelanggaran Pemanfaatan Ruang', jenis: 'tataruang', ditjen: 'Ditjen Pengendalian dan Penertiban Tanah dan Ruang', basisFisik: 'bidang' }
+    ],
+
+    /**
      * Get IGT Themes for the "Detail Informasi" popup card.
-     * Matches the themes shown in the Geoportal IGT-PR dashboard screenshots.
+     * Categorized into IGT Pertanahan & IGT Tata Ruang.
      */
     getDetailThemes: function(namaProvinsi, namaKabupaten) {
         var pNorm = namaProvinsi ? String(namaProvinsi).toLowerCase().replace(/^(provinsi|daerah istimewa)\s+/i, '').trim() : '';
@@ -372,159 +435,188 @@ window.MOCKUP_DATA = {
         // 0. SE-INDONESIA / NASIONAL (Default)
         if (!namaProvinsi || pNorm === '' || pNorm === 'nasional' || pNorm === 'indonesia' || pNorm === 'seluruh indonesia') {
             return [
-                { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-                { nama: 'Hak Atas Tanah', basis: 'bidang', tahun: '2025' },
-                { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', basis: 'bidang', tahun: '2026' },
-                { nama: 'Bidang Tanah Transmigrasi', basis: 'bidang', tahun: '2024' },
-                { nama: 'Inventarisasi Tanah Kritis', basis: 'kawasan', tahun: '2026' },
-                { nama: 'Kemampuan Tanah', basis: 'kawasan', tahun: '2024' },
-                { nama: 'Lahan Baku Sawah Nasional', basis: 'kawasan', tahun: '2026' },
-                { nama: 'Lahan Sawah Dilindungi', basis: 'kawasan', tahun: '2026' },
-                { nama: 'Neraca Penatagunaan Tanah', basis: 'kawasan', tahun: '2025' },
-                { nama: 'Penggunaan Tanah', basis: 'kawasan', tahun: '2026' },
-                { nama: 'RDTR Kabupaten/ Kota', basis: 'kawasan', tahun: '2026' },
-                { nama: 'RDTR Kawasan Perbatasan Negara', basis: 'kawasan', tahun: '2025' },
-                { nama: 'RTRW Kabupaten', basis: 'kawasan', tahun: '2026' },
-                { nama: 'Zona Nilai Tanah', basis: 'kawasan', tahun: '2026' }
+                // IGT Pertanahan (9)
+                { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Hak Atas Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Inventarisasi Tanah Kritis', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Kemampuan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2024' },
+                { nama: 'Lahan Baku Sawah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Lahan Sawah Dilindungi', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Neraca Penatagunaan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                { nama: 'Zona Nilai Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+
+                // IGT Tata Ruang (5)
+                { nama: 'RTRW Nasional', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                { nama: 'RTRW Provinsi', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                { nama: 'RTRW Kabupaten', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                { nama: 'RDTR Kawasan Perbatasan Negara', jenis: 'tataruang', basis: 'tataruang', tahun: '2025' }
             ];
         }
 
-        // 1. DAERAH ISTIMEWA YOGYAKARTA (matches media screenshot exactly)
+        // 1. DAERAH ISTIMEWA YOGYAKARTA
         if (pNorm.indexOf('yogyakarta') !== -1 || pNorm.indexOf('jogja') !== -1) {
             var diyAll = [
-                { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-                { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', basis: 'bidang', tahun: '2025' },
-                { nama: 'Inventarisasi Tanah Kritis', basis: 'kawasan', tahun: '2026' },
-                { nama: 'Kemampuan Tanah', basis: 'kawasan', tahun: '2024' },
-                { nama: 'Lahan Baku Sawah Nasional', basis: 'kawasan', tahun: '2026' },
-                { nama: 'Lahan Sawah Dilindungi', basis: 'kawasan', tahun: '2026' },
-                { nama: 'Neraca Penatagunaan Tanah', basis: 'kawasan', tahun: '2025' },
-                { nama: 'Penggunaan Tanah', basis: 'kawasan', tahun: '2026' },
-                { nama: 'RDTR Kabupaten/ Kota', basis: 'kawasan', tahun: '2026' },
-                { nama: 'Zona Nilai Tanah', basis: 'kawasan', tahun: '2025' }
+                // IGT Pertanahan
+                { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Hak Atas Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                { nama: 'Inventarisasi Tanah Kritis', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Kemampuan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2024' },
+                { nama: 'Lahan Baku Sawah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Lahan Sawah Dilindungi', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Neraca Penatagunaan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                { nama: 'Zona Nilai Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+
+                // IGT Tata Ruang
+                { nama: 'RTRW Provinsi', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                { nama: 'KKPR', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' }
             ];
 
             if (!kNorm) return diyAll;
 
             if (kNorm.indexOf('sleman') !== -1) {
                 return [
-                    { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-                    { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', basis: 'bidang', tahun: '2025' },
-                    { nama: 'Lahan Baku Sawah Nasional', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Lahan Sawah Dilindungi', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'RDTR Kabupaten/ Kota', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Zona Nilai Tanah', basis: 'kawasan', tahun: '2025' }
+                    { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                    { nama: 'Lahan Baku Sawah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Lahan Sawah Dilindungi', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Zona Nilai Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                    { nama: 'RTRW Kabupaten', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                    { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' }
                 ];
             } else if (kNorm.indexOf('bantul') !== -1) {
                 return [
-                    { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-                    { nama: 'Inventarisasi Tanah Kritis', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Kemampuan Tanah', basis: 'kawasan', tahun: '2024' },
-                    { nama: 'Lahan Baku Sawah Nasional', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Penggunaan Tanah', basis: 'kawasan', tahun: '2026' }
+                    { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Inventarisasi Tanah Kritis', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Kemampuan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2024' },
+                    { nama: 'Lahan Baku Sawah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Penggunaan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'RTRW Kabupaten', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                    { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' }
                 ];
             } else if (kNorm.indexOf('yogyakarta') !== -1) {
                 return [
-                    { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-                    { nama: 'Penggunaan Tanah', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'RDTR Kabupaten/ Kota', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Zona Nilai Tanah', basis: 'kawasan', tahun: '2025' }
+                    { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Penggunaan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Zona Nilai Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                    { nama: 'RTRW Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                    { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                    { nama: 'KKPR', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' }
                 ];
             } else if (kNorm.indexOf('gunung') !== -1) {
                 return [
-                    { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-                    { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', basis: 'bidang', tahun: '2025' },
-                    { nama: 'Inventarisasi Tanah Kritis', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Kemampuan Tanah', basis: 'kawasan', tahun: '2024' },
-                    { nama: 'Neraca Penatagunaan Tanah', basis: 'kawasan', tahun: '2025' }
+                    { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                    { nama: 'Inventarisasi Tanah Kritis', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Kemampuan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2024' },
+                    { nama: 'Neraca Penatagunaan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                    { nama: 'RTRW Kabupaten', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                    { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' }
                 ];
             } else if (kNorm.indexOf('kulon') !== -1) {
                 return [
-                    { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-                    { nama: 'Lahan Baku Sawah Nasional', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Lahan Sawah Dilindungi', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Penggunaan Tanah', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'RDTR Kabupaten/ Kota', basis: 'kawasan', tahun: '2026' }
+                    { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Lahan Baku Sawah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Lahan Sawah Dilindungi', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Penggunaan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'RTRW Kabupaten', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                    { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' }
                 ];
             }
-            return diyAll.slice(0, 5);
+            return diyAll.slice(0, 6);
         }
 
         // 2. JAWA TENGAH
         if (pNorm.indexOf('jawa tengah') !== -1 || pNorm === 'jateng') {
             var jatengAll = [
-                { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-                { nama: 'Hak Atas Tanah', basis: 'bidang', tahun: '2025' },
-                { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', basis: 'bidang', tahun: '2026' },
-                { nama: 'Inventarisasi Tanah Kritis', basis: 'kawasan', tahun: '2026' },
-                { nama: 'Kemampuan Tanah', basis: 'kawasan', tahun: '2024' },
-                { nama: 'Lahan Baku Sawah Nasional', basis: 'kawasan', tahun: '2026' },
-                { nama: 'Lahan Sawah Dilindungi', basis: 'kawasan', tahun: '2026' },
-                { nama: 'Neraca Penatagunaan Tanah', basis: 'kawasan', tahun: '2025' },
-                { nama: 'Penggunaan Tanah', basis: 'kawasan', tahun: '2026' },
-                { nama: 'RDTR Kabupaten/ Kota', basis: 'kawasan', tahun: '2026' },
-                { nama: 'RTRW Kabupaten/ Kota', basis: 'kawasan', tahun: '2025' },
-                { nama: 'Zona Nilai Tanah', basis: 'kawasan', tahun: '2026' }
+                // IGT Pertanahan
+                { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Hak Atas Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Inventarisasi Tanah Kritis', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Kemampuan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2024' },
+                { nama: 'Lahan Baku Sawah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Lahan Sawah Dilindungi', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                { nama: 'Neraca Penatagunaan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                { nama: 'Zona Nilai Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+
+                // IGT Tata Ruang
+                { nama: 'RTRW Provinsi', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                { nama: 'RTRW Kabupaten', jenis: 'tataruang', basis: 'tataruang', tahun: '2025' },
+                { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' }
             ];
 
             if (!kNorm) return jatengAll;
 
             if (kNorm.indexOf('semarang') !== -1) {
+                var isKota = kNorm.indexOf('kota') !== -1;
                 return [
-                    { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-                    { nama: 'Hak Atas Tanah', basis: 'bidang', tahun: '2025' },
-                    { nama: 'Lahan Baku Sawah Nasional', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Lahan Sawah Dilindungi', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Penggunaan Tanah', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'RDTR Kabupaten/ Kota', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Zona Nilai Tanah', basis: 'kawasan', tahun: '2026' }
+                    { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Hak Atas Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                    { nama: 'Lahan Baku Sawah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Lahan Sawah Dilindungi', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Penggunaan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Zona Nilai Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: isKota ? 'RTRW Kota' : 'RTRW Kabupaten', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                    { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' }
                 ];
             } else if (kNorm.indexOf('surakarta') !== -1 || kNorm.indexOf('solo') !== -1) {
                 return [
-                    { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-                    { nama: 'Hak Atas Tanah', basis: 'bidang', tahun: '2025' },
-                    { nama: 'Penggunaan Tanah', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'RDTR Kabupaten/ Kota', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Zona Nilai Tanah', basis: 'kawasan', tahun: '2026' }
+                    { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Hak Atas Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                    { nama: 'Penggunaan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Zona Nilai Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'RTRW Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                    { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                    { nama: 'KKPR', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' }
                 ];
             } else if (kNorm.indexOf('karanganyar') !== -1) {
                 return [
-                    { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-                    { nama: 'Inventarisasi Tanah Kritis', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Kemampuan Tanah', basis: 'kawasan', tahun: '2024' },
-                    { nama: 'Lahan Baku Sawah Nasional', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'RTRW Kabupaten/ Kota', basis: 'kawasan', tahun: '2025' }
+                    { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Inventarisasi Tanah Kritis', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Kemampuan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2024' },
+                    { nama: 'Lahan Baku Sawah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'RTRW Kabupaten', jenis: 'tataruang', basis: 'tataruang', tahun: '2025' },
+                    { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' }
                 ];
             } else if (kNorm.indexOf('banyumas') !== -1) {
                 return [
-                    { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-                    { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', basis: 'bidang', tahun: '2026' },
-                    { nama: 'Kemampuan Tanah', basis: 'kawasan', tahun: '2024' },
-                    { nama: 'Lahan Baku Sawah Nasional', basis: 'kawasan', tahun: '2026' },
-                    { nama: 'Neraca Penatagunaan Tanah', basis: 'kawasan', tahun: '2025' }
+                    { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Kemampuan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2024' },
+                    { nama: 'Lahan Baku Sawah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+                    { nama: 'Neraca Penatagunaan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+                    { nama: 'RTRW Kabupaten', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+                    { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' }
                 ];
             }
-            return jatengAll.slice(0, 6);
+            return jatengAll.slice(0, 7);
         }
 
         // 3. GENERIC / OTHER PROVINCES
         var masterList = [
-            { nama: 'Bidang Tanah', basis: 'bidang', tahun: '2026' },
-            { nama: 'Hak Atas Tanah', basis: 'bidang', tahun: '2025' },
-            { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', basis: 'bidang', tahun: '2026' },
-            { nama: 'Inventarisasi Tanah Kritis', basis: 'kawasan', tahun: '2026' },
-            { nama: 'Kemampuan Tanah', basis: 'kawasan', tahun: '2024' },
-            { nama: 'Lahan Baku Sawah Nasional', basis: 'kawasan', tahun: '2026' },
-            { nama: 'Lahan Sawah Dilindungi', basis: 'kawasan', tahun: '2026' },
-            { nama: 'Neraca Penatagunaan Tanah', basis: 'kawasan', tahun: '2025' },
-            { nama: 'Penggunaan Tanah', basis: 'kawasan', tahun: '2026' },
-            { nama: 'RDTR Kabupaten/ Kota', basis: 'kawasan', tahun: '2026' }
+            { nama: 'Bidang Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+            { nama: 'Hak Atas Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+            { nama: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+            { nama: 'Inventarisasi Tanah Kritis', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+            { nama: 'Kemampuan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2024' },
+            { nama: 'Lahan Baku Sawah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+            { nama: 'Lahan Sawah Dilindungi', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+            { nama: 'Neraca Penatagunaan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2025' },
+            { nama: 'Penggunaan Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+            { nama: 'Zona Nilai Tanah', jenis: 'pertanahan', basis: 'pertanahan', tahun: '2026' },
+            { nama: 'RTRW Provinsi', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+            { nama: 'RTRW Kabupaten', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' },
+            { nama: 'RDTR Kabupaten/Kota', jenis: 'tataruang', basis: 'tataruang', tahun: '2026' }
         ];
 
         var h = 0;
         var s = (namaKabupaten || namaProvinsi);
         for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) & 0xffffffff;
-        var count = 5 + (Math.abs(h) % 5);
+        var count = 6 + (Math.abs(h) % 5);
         return masterList.slice(0, count);
     }
 };

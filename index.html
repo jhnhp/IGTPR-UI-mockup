@@ -206,18 +206,18 @@
         }
 
         .igt-detail__alat .igt-pilih {
-            flex: 0 0 115px !important;
-            width: 115px !important;
-            max-width: 115px !important;
+            flex: 0 0 120px !important;
+            width: 120px !important;
+            max-width: 120px !important;
             height: 34px;
             padding: 0 6px !important;
             overflow: hidden;
         }
 
         .igt-detail__alat .igt-detail__pilih--wilayah {
-            flex: 0 0 125px !important;
-            width: 125px !important;
-            max-width: 125px !important;
+            flex: 0 0 120px !important;
+            width: 120px !important;
+            max-width: 120px !important;
         }
 
         .igt-detail__alat .igt-pilih select {
@@ -238,9 +238,9 @@
         }
 
         .igt-detail__alat .igt-detail__pilih--tahun {
-            flex: 0 0 120px !important;
-            width: 120px !important;
-            max-width: 120px !important;
+            flex: 0 0 115px !important;
+            width: 115px !important;
+            max-width: 115px !important;
             padding-left: 4px !important;
         }
 
@@ -284,13 +284,15 @@
             flex-shrink: 0;
         }
 
+        .igt-detail__legenda-titik--pertanahan,
         .igt-detail__legenda-titik--bidang {
             background-color: #2563eb;
             border: none;
         }
 
+        .igt-detail__legenda-titik--tataruang,
         .igt-detail__legenda-titik--kawasan {
-            background-color: #d97706;
+            background-color: #059669;
             border: none;
         }
 
@@ -321,15 +323,28 @@
             border-color: #93c5fd;
         }
 
-        .igt-tag--kawasan {
-            background-color: #fef3c7;
-            border-color: #fde68a;
-            color: #b45309;
+        .igt-tag--pertanahan {
+            background-color: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1d4ed8;
         }
 
+        .igt-tag--pertanahan:hover {
+            background-color: #dbeafe;
+            border-color: #93c5fd;
+        }
+
+        .igt-tag--tataruang,
+        .igt-tag--kawasan {
+            background-color: #ecfdf5;
+            border-color: #a7f3d0;
+            color: #047857;
+        }
+
+        .igt-tag--tataruang:hover,
         .igt-tag--kawasan:hover {
-            background-color: #fde68a;
-            border-color: #fcd34d;
+            background-color: #d1fae5;
+            border-color: #6ee7b7;
         }
 
         @media (max-width: 991.98px) {
@@ -696,10 +711,10 @@
                             </div>
                             <div class="mb-2">
                                 <label class="small text-muted mb-1">Jenis IGT</label>
-                                <select class="form-select form-select-sm">
+                                <select class="form-select form-select-sm" id="beranda-filter-jenis">
                                     <option value="all" selected>Semua Jenis</option>
-                                    <option value="bidang">IGT Berbasis Bidang</option>
-                                    <option value="kawasan">IGT Berbasis Kawasan</option>
+                                    <option value="pertanahan">IGT Pertanahan</option>
+                                    <option value="tataruang">IGT Tata Ruang</option>
                                 </select>
                             </div>
                         </div>
@@ -756,8 +771,8 @@
                         <label class="igt-btn igt-pilih igt-detail__pilih">
                             <select id="beranda-detail-jenis" aria-label="Jenis IGT">
                                 <option value="">Pilih Jenis IGT</option>
-                                <option value="bidang">Bidang</option>
-                                <option value="kawasan">Kawasan</option>
+                                <option value="pertanahan">IGT Pertanahan</option>
+                                <option value="tataruang">IGT Tata Ruang</option>
                             </select>
                             <img class="igt-pilih__caret" src="assets/img/icons/arrow-down.svg" alt="">
                         </label>

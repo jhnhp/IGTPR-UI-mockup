@@ -672,8 +672,9 @@ function renderDetailChips() {
     var tahun = $('#beranda-detail-tahun').val();
 
     var filtered = detailState.themes.filter(function(item) {
-        var matchQ = !q || item.nama.toLowerCase().indexOf(q) !== -1;
-        var matchJenis = !jenis || item.basis === jenis;
+        var matchQ = !q || item.nama.toLowerCase().indexOf(q) !== -1 || ('igt ' + item.nama.toLowerCase()).indexOf(q) !== -1;
+        var itemJenis = item.jenis || item.basis;
+        var matchJenis = !jenis || itemJenis === jenis || (jenis === 'pertanahan' && itemJenis === 'bidang') || (jenis === 'tataruang' && itemJenis === 'kawasan');
         var matchTahun = !tahun || tahun === 'all' || item.tahun === tahun;
         return matchQ && matchJenis && matchTahun;
     });
@@ -689,15 +690,16 @@ function renderDetailChips() {
     var html = '<div class="igt-detail__kolom">' +
         '<div class="igt-detail__baris-label">' +
         '    <div class="igt-detail__legenda">' +
-        '        <span class="igt-detail__legenda-item"><span class="igt-detail__legenda-titik igt-detail__legenda-titik--bidang"></span> IGT Berbasis Bidang</span>' +
-        '        <span class="igt-detail__legenda-item"><span class="igt-detail__legenda-titik igt-detail__legenda-titik--kawasan"></span> IGT Berbasis Kawasan</span>' +
+        '        <span class="igt-detail__legenda-item"><span class="igt-detail__legenda-titik igt-detail__legenda-titik--pertanahan"></span> IGT Pertanahan</span>' +
+        '        <span class="igt-detail__legenda-item"><span class="igt-detail__legenda-titik igt-detail__legenda-titik--tataruang"></span> IGT Tata Ruang</span>' +
         '    </div>' +
         '</div>' +
         '<div class="igt-detail__chips">';
 
     filtered.forEach(function(item) {
-        var cls = item.basis === 'kawasan' ? 'igt-tag--kawasan' : '';
-        var tooltip = item.basis === 'kawasan' ? 'IGT Berbasis Kawasan' : 'IGT Berbasis Bidang';
+        var isTataRuang = (item.jenis === 'tataruang' || item.basis === 'kawasan');
+        var cls = isTataRuang ? 'igt-tag--tataruang' : 'igt-tag--pertanahan';
+        var tooltip = isTataRuang ? 'IGT Tata Ruang' : 'IGT Pertanahan';
         html += '<span class="igt-tag ' + cls + '" title="' + tooltip + '">' + item.nama + '</span>';
     });
 
@@ -1049,11 +1051,11 @@ function renderLeaderBoard(leaderBoardData) {
             + '  </div>'
             + '  <div class="igt-peringkat__basis">'
             + '    <div class="igt-peringkat__kelompok">'
-            + '      <span class="igt-peringkat__label">IGT Berbasis Bidang</span>'
+            + '      <span class="igt-peringkat__label">IGT Pertanahan</span>'
             + '      <div class="igt-peringkat__chips">' + bidangChips + '</div>'
             + '    </div>'
             + '    <div class="igt-peringkat__kelompok">'
-            + '      <span class="igt-peringkat__label">IGT Berbasis Kawasan</span>'
+            + '      <span class="igt-peringkat__label">IGT Tata Ruang</span>'
             + '      <div class="igt-peringkat__chips">' + kawasanChips + '</div>'
             + '    </div>'
             + '  </div>'
