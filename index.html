@@ -400,21 +400,6 @@
             right: 14px;
         }
 
-        /* Filter popup box */
-        #beranda-filter {
-            display: none;
-            position: absolute;
-            top: 48px;
-            right: 0;
-            width: 320px;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            padding: 16px;
-            z-index: 100;
-            border: 1px solid #e2e8f0;
-        }
-
         /* Table check plain styling */
         .igt-table__check img {
             width: 16px;
@@ -693,50 +678,10 @@
                     </h4>
                 </div>
                 <div class="igt-hero__alat position-relative d-flex align-items-center">
-                    <button type="button" class="igt-btn me-2" id="beranda-detail-toggle" style="display: none;">
+                    <button type="button" class="igt-btn" id="beranda-detail-toggle" style="display: none;">
                         <span class="igt-btn__icon"><img src="assets/img/icons/info.svg" alt="Detail" width="16"></span>
                         Detail Informasi
                     </button>
-                    <button type="button" class="igt-btn" id="beranda-filter-toggle">
-                        <span class="igt-btn__icon"><img src="assets/img/icons/sliders.svg" alt="filter"></span>
-                        Filter
-                        <span class="igt-btn__badge" id="beranda-filter-badge" style="display: none">0</span>
-                    </button>
-
-                    <!-- Filter Dropdown Panel -->
-                    <div class="igt-filter" id="beranda-filter">
-                        <div class="igt-filter__head d-flex justify-content-between align-items-center mb-3">
-                            <span class="igt-filter__title fw-bold">Filter Peta</span>
-                            <button type="button" class="btn btn-sm btn-light p-1" id="beranda-filter-close">
-                                <img src="assets/img/icons/x.svg" alt="Tutup" width="14">
-                            </button>
-                        </div>
-                        <div class="igt-filter__grid mb-3">
-                            <div class="mb-2">
-                                <label class="small text-muted mb-1" for="beranda-filter-year">Tahun Renaksi</label>
-                                <select class="form-select form-select-sm" id="beranda-filter-year">
-                                    <option value="all" selected>Semua Tahun</option>
-                                    <option value="2026">2026</option>
-                                    <option value="2025">2025</option>
-                                    <option value="2024">2024</option>
-                                    <option value="2023">2023</option>
-                                </select>
-                            </div>
-                            <div class="mb-2">
-                                <label class="small text-muted mb-1">Jenis IGT</label>
-                                <select class="form-select form-select-sm" id="beranda-filter-jenis">
-                                    <option value="all" selected>Semua Jenis</option>
-                                    <option value="pertanahan">IGT Pertanahan</option>
-                                    <option value="tataruang">IGT Tata Ruang</option>
-                                </select>
-                            </div>
-                        </div>
-                        <p class="small text-muted mb-3" style="font-size: 11px;">Jumlah tema per provinsi dan kartu Detail Informasi hanya menghitung IGT yang lolos filter ini.</p>
-                        <div class="d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-sm btn-light" id="beranda-filter-reset">Reset</button>
-                            <button type="button" class="btn btn-sm btn-primary" id="beranda-filter-apply">Terapkan</button>
-                        </div>
-                    </div>
                 </div>
             </div>
 

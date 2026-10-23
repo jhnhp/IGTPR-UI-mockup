@@ -368,16 +368,7 @@ function initHeroMap() {
                 resetKeSeluruhIndonesia();
             });
 
-            // 6. Filter modal toggle
-            $('#beranda-filter-toggle').on('click', function(e) {
-                e.stopPropagation();
-                $('#beranda-filter').fadeToggle(150);
-            });
-            $('#beranda-filter-close, #beranda-filter-reset').on('click', function() {
-                $('#beranda-filter').fadeOut(150);
-            });
-
-            // 7. Detail Card Event Handlers
+            // 6. Detail Card Event Handlers
             $('#beranda-detail-tutup').on('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
