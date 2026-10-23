@@ -23,6 +23,58 @@ window.MOCKUP_DATA = {
                 { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-perbaikan' }
             ]
         },
+        usulanPerTahun: {
+            'all': {
+                total: 98,
+                totalLayer: 30,
+                kategori: [
+                    { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 26, layer: 14, diperbarui: 'Diperbarui 6 jam lalu', kelas: 'is-terintegrasi' },
+                    { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 7, layer: 4, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
+                    { kunci: 'terupload', label: 'Terupload', jumlah: 65, layer: 12, diperbarui: 'Diperbarui 11 jam lalu', kelas: 'is-terupload' },
+                    { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-perbaikan' }
+                ]
+            },
+            '2026': {
+                total: 48,
+                totalLayer: 20,
+                kategori: [
+                    { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 14, layer: 10, diperbarui: 'Diperbarui 6 jam lalu', kelas: 'is-terintegrasi' },
+                    { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 4, layer: 3, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
+                    { kunci: 'terupload', label: 'Terupload', jumlah: 30, layer: 7, diperbarui: 'Diperbarui 11 jam lalu', kelas: 'is-terupload' },
+                    { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-perbaikan' }
+                ]
+            },
+            '2025': {
+                total: 28,
+                totalLayer: 16,
+                kategori: [
+                    { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 8, layer: 6, diperbarui: 'Diperbarui 24 Des 2025', kelas: 'is-terintegrasi' },
+                    { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 2, layer: 2, diperbarui: 'Diperbarui 10 Nov 2025', kelas: 'is-terkompilasi' },
+                    { kunci: 'terupload', label: 'Terupload', jumlah: 18, layer: 8, diperbarui: 'Diperbarui 15 Okt 2025', kelas: 'is-terupload' },
+                    { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-perbaikan' }
+                ]
+            },
+            '2024': {
+                total: 15,
+                totalLayer: 9,
+                kategori: [
+                    { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 3, layer: 3, diperbarui: 'Diperbarui 18 Des 2024', kelas: 'is-terintegrasi' },
+                    { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 1, layer: 1, diperbarui: 'Diperbarui 05 Sep 2024', kelas: 'is-terkompilasi' },
+                    { kunci: 'terupload', label: 'Terupload', jumlah: 11, layer: 5, diperbarui: 'Diperbarui 22 Agu 2024', kelas: 'is-terupload' },
+                    { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-perbaikan' }
+                ]
+            },
+            '2023': {
+                total: 7,
+                totalLayer: 5,
+                kategori: [
+                    { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 1, layer: 1, diperbarui: 'Diperbarui 30 Nov 2023', kelas: 'is-terintegrasi' },
+                    { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-terkompilasi' },
+                    { kunci: 'terupload', label: 'Terupload', jumlah: 6, layer: 4, diperbarui: 'Diperbarui 12 Okt 2023', kelas: 'is-terupload' },
+                    { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-perbaikan' }
+                ]
+            }
+        },
         kompilasiIntegrasi: {
             totalLayer: 14,
             bulanan: [
@@ -635,7 +687,56 @@ window.MOCKUP_DATA = {
         return masterList.slice(0, count);
     },
 
-    getUsulanDetailList: function(statusFilter, namaProvinsi, namaKabupaten) {
+    getUsulanInputData: function(namaProvinsi, namaKabupaten, tahun) {
+        var t = (tahun && tahun !== 'all') ? String(tahun) : 'all';
+        // 1. Nasional
+        if (!namaProvinsi || namaProvinsi === 'all' || namaProvinsi === 'Seluruh Indonesia') {
+            if (this.nasional.usulanPerTahun && this.nasional.usulanPerTahun[t]) {
+                return this.nasional.usulanPerTahun[t];
+            }
+            return this.nasional.usulanInputData;
+        }
+
+        // 2. Regional (Provinsi / Kabupaten)
+        var dataScope = this.getDataByWilayah(namaProvinsi, namaKabupaten);
+        var baseUsulan = dataScope ? dataScope.usulanInputData : this.nasional.usulanInputData;
+        if (t === 'all') return baseUsulan;
+
+        var ratios = {
+            '2026': { totalRatio: 0.50, integRatio: 0.54, kompRatio: 0.57, upRatio: 0.46, layerRatio: 0.65 },
+            '2025': { totalRatio: 0.28, integRatio: 0.30, kompRatio: 0.29, upRatio: 0.28, layerRatio: 0.55 },
+            '2024': { totalRatio: 0.15, integRatio: 0.12, kompRatio: 0.14, upRatio: 0.17, layerRatio: 0.30 },
+            '2023': { totalRatio: 0.07, integRatio: 0.04, kompRatio: 0.00, upRatio: 0.09, layerRatio: 0.18 }
+        };
+        var r = ratios[t] || ratios['2026'];
+        var scaledKategori = baseUsulan.kategori.map(function(k) {
+            var j;
+            if (k.kunci === 'perbaikan') {
+                j = (t === '2026' && k.jumlah > 0) ? k.jumlah : 0;
+            } else if (k.kunci === 'terintegrasi') {
+                j = Math.max(k.jumlah > 0 ? 1 : 0, Math.round(k.jumlah * r.integRatio));
+            } else if (k.kunci === 'terkompilasi') {
+                j = Math.round(k.jumlah * r.kompRatio);
+            } else {
+                j = Math.max(k.jumlah > 0 ? 1 : 0, Math.round(k.jumlah * r.upRatio));
+            }
+            var lay = j > 0 ? Math.max(1, Math.round((k.layer || 1) * r.layerRatio)) : 0;
+            return Object.assign({}, k, {
+                jumlah: j,
+                layer: lay,
+                diperbarui: t === '2026' ? k.diperbarui : ('Tahun ' + t)
+            });
+        });
+        var sumTotal = scaledKategori.reduce(function(acc, x) { return acc + x.jumlah; }, 0);
+        var sumLayer = scaledKategori.reduce(function(acc, x) { return acc + x.layer; }, 0);
+        return {
+            total: sumTotal,
+            totalLayer: sumLayer,
+            kategori: scaledKategori
+        };
+    },
+
+    getUsulanDetailList: function(statusFilter, namaProvinsi, namaKabupaten, tahunFilter) {
         var dataScope = this.getDataByWilayah(namaProvinsi, namaKabupaten);
         var totalUsulan = dataScope ? dataScope.usulanInputData.total : 98;
 
@@ -665,6 +766,7 @@ window.MOCKUP_DATA = {
                 keterangan: '-',
                 status: 'Terintegrasi',
                 statusKey: 'terintegrasi',
+                tahun: '2026',
                 hasDownload: true
             },
             {
@@ -676,6 +778,7 @@ window.MOCKUP_DATA = {
                 keterangan: 'test beda direktorat',
                 status: 'Terkompilasi',
                 statusKey: 'terkompilasi',
+                tahun: '2026',
                 hasDownload: false
             },
             {
@@ -687,6 +790,7 @@ window.MOCKUP_DATA = {
                 keterangan: 'TEST NO GEOM',
                 status: 'Terkompilasi',
                 statusKey: 'terkompilasi',
+                tahun: '2026',
                 hasDownload: false
             },
             {
@@ -698,6 +802,7 @@ window.MOCKUP_DATA = {
                 keterangan: '-',
                 status: 'Terintegrasi',
                 statusKey: 'terintegrasi',
+                tahun: '2026',
                 hasDownload: true
             },
             {
@@ -709,6 +814,7 @@ window.MOCKUP_DATA = {
                 keterangan: 'menggunakan direktorat yang berbeda',
                 status: 'Terintegrasi',
                 statusKey: 'terintegrasi',
+                tahun: '2026',
                 hasDownload: true
             },
             {
@@ -720,6 +826,7 @@ window.MOCKUP_DATA = {
                 keterangan: 'test ke 2 BIDANG_PERSIL_DIY_ATR_LKP.zip',
                 status: 'Terintegrasi',
                 statusKey: 'terintegrasi',
+                tahun: '2026',
                 hasDownload: true
             },
             {
@@ -731,6 +838,7 @@ window.MOCKUP_DATA = {
                 keterangan: 'REVISI 1908',
                 status: 'Terintegrasi',
                 statusKey: 'terintegrasi',
+                tahun: '2026',
                 hasDownload: true
             },
             {
@@ -742,6 +850,7 @@ window.MOCKUP_DATA = {
                 keterangan: 'Direktorat Perencanaan Tata Ruang Pusat',
                 status: 'Terintegrasi',
                 statusKey: 'terintegrasi',
+                tahun: '2026',
                 hasDownload: true
             },
             {
@@ -753,6 +862,7 @@ window.MOCKUP_DATA = {
                 keterangan: 'contoh teknis',
                 status: 'Terintegrasi',
                 statusKey: 'terintegrasi',
+                tahun: '2026',
                 hasDownload: true
             }
         ];
@@ -805,20 +915,38 @@ window.MOCKUP_DATA = {
             'Verifikasi koordinat sistem proyeksi UTM'
         ];
 
-        var dates = ['12/10/2026', '11/10/2026', '17/10/2026', '18/08/2026', '21/10/2026', '24/10/2026', '05/09/2026', '14/07/2026', '29/06/2026', '19/05/2026'];
+        var dates2026 = ['12/10/2026', '11/10/2026', '17/10/2026', '18/08/2026', '21/10/2026', '24/10/2026', '05/09/2026', '14/07/2026', '29/06/2026', '19/05/2026'];
+        var dates2025 = ['14/11/2025', '20/09/2025', '12/06/2025', '05/04/2025', '18/02/2025', '28/08/2025', '10/10/2025', '15/05/2025'];
+        var dates2024 = ['16/02/2024', '10/08/2024', '25/05/2024', '11/03/2024', '04/11/2024', '19/07/2024'];
+        var dates2023 = ['20/11/2023', '15/07/2023', '09/04/2023', '28/01/2023', '05/10/2023'];
 
         var records = [];
         var idCounter = 1;
 
-        // 1. Terintegrasi records
+        // 1. Terintegrasi records (Nasional total: 26 -> 14 in 2026, 8 in 2025, 3 in 2024, 1 in 2023)
         var terintegrasiBase = base9.filter(function(r) { return r.statusKey === 'terintegrasi'; });
         for (var i = 0; i < counts.terintegrasi; i++) {
+            var thn = '2026';
+            var dt = dates2026[i % dates2026.length];
+            if (i >= 14 && i < 22) {
+                thn = '2025';
+                dt = dates2025[(i - 14) % dates2025.length];
+            } else if (i >= 22 && i < 25) {
+                thn = '2024';
+                dt = dates2024[(i - 22) % dates2024.length];
+            } else if (i >= 25) {
+                thn = '2023';
+                dt = dates2023[(i - 25) % dates2023.length];
+            }
+
             if (i < terintegrasiBase.length) {
-                records.push(Object.assign({}, terintegrasiBase[i], { id: idCounter++ }));
+                records.push(Object.assign({}, terintegrasiBase[i], {
+                    id: idCounter++,
+                    tahun: terintegrasiBase[i].tahun || thn
+                }));
             } else {
                 var dIdx = (i * 3 + 1) % direks.length;
                 var igtIdx = (i * 5 + 2) % igts.length;
-                var dt = dates[i % dates.length];
                 records.push({
                     id: idCounter++,
                     direktorat: direks[dIdx],
@@ -829,20 +957,33 @@ window.MOCKUP_DATA = {
                     keterangan: kets[i % kets.length],
                     status: 'Terintegrasi',
                     statusKey: 'terintegrasi',
+                    tahun: thn,
                     hasDownload: true
                 });
             }
         }
 
-        // 2. Terkompilasi records
+        // 2. Terkompilasi records (Nasional total: 7 -> 4 in 2026, 2 in 2025, 1 in 2024, 0 in 2023)
         var terkompilasiBase = base9.filter(function(r) { return r.statusKey === 'terkompilasi'; });
         for (var j = 0; j < counts.terkompilasi; j++) {
+            var thn2 = '2026';
+            var dt2 = dates2026[(j + 2) % dates2026.length];
+            if (j >= 4 && j < 6) {
+                thn2 = '2025';
+                dt2 = dates2025[j % dates2025.length];
+            } else if (j >= 6) {
+                thn2 = '2024';
+                dt2 = dates2024[j % dates2024.length];
+            }
+
             if (j < terkompilasiBase.length) {
-                records.push(Object.assign({}, terkompilasiBase[j], { id: idCounter++ }));
+                records.push(Object.assign({}, terkompilasiBase[j], {
+                    id: idCounter++,
+                    tahun: terkompilasiBase[j].tahun || thn2
+                }));
             } else {
                 var dIdx2 = (j * 4 + 3) % direks.length;
                 var igtIdx2 = (j * 2 + 1) % igts.length;
-                var dt2 = dates[(j + 2) % dates.length];
                 records.push({
                     id: idCounter++,
                     direktorat: direks[dIdx2],
@@ -853,16 +994,29 @@ window.MOCKUP_DATA = {
                     keterangan: kets[(j + 3) % kets.length],
                     status: 'Terkompilasi',
                     statusKey: 'terkompilasi',
+                    tahun: thn2,
                     hasDownload: false
                 });
             }
         }
 
-        // 3. Terupload records
+        // 3. Terupload records (Nasional total: 65 -> 30 in 2026, 18 in 2025, 11 in 2024, 6 in 2023)
         for (var k = 0; k < counts.terupload; k++) {
+            var thn3 = '2026';
+            var dt3 = dates2026[(k + 4) % dates2026.length];
+            if (k >= 30 && k < 48) {
+                thn3 = '2025';
+                dt3 = dates2025[(k - 30) % dates2025.length];
+            } else if (k >= 48 && k < 59) {
+                thn3 = '2024';
+                dt3 = dates2024[(k - 48) % dates2024.length];
+            } else if (k >= 59) {
+                thn3 = '2023';
+                dt3 = dates2023[(k - 59) % dates2023.length];
+            }
+
             var dIdx3 = (k * 2 + 5) % direks.length;
             var igtIdx3 = (k * 3 + 4) % igts.length;
-            var dt3 = dates[(k + 4) % dates.length];
             records.push({
                 id: idCounter++,
                 direktorat: direks[dIdx3],
@@ -873,15 +1027,17 @@ window.MOCKUP_DATA = {
                 keterangan: kets[(k + 1) % kets.length],
                 status: 'Terupload',
                 statusKey: 'terupload',
+                tahun: thn3,
                 hasDownload: false
             });
         }
 
-        // 4. Revisi records
+        // 4. Revisi records (Nasional total: 0)
         for (var m = 0; m < counts.perbaikan; m++) {
+            var thn4 = '2026';
             var dIdx4 = (m * 7 + 2) % direks.length;
             var igtIdx4 = (m * 4 + 3) % igts.length;
-            var dt4 = dates[(m + 1) % dates.length];
+            var dt4 = dates2026[(m + 1) % dates2026.length];
             records.push({
                 id: idCounter++,
                 direktorat: direks[dIdx4],
@@ -892,22 +1048,37 @@ window.MOCKUP_DATA = {
                 keterangan: 'Perlu revisi penataan atribut dan topologi',
                 status: 'Revisi Perbaikan',
                 statusKey: 'perbaikan',
+                tahun: thn4,
                 hasDownload: false
             });
         }
 
-        var filteredList = records;
+        // Year Filtering
+        var yearFilteredRecords = (tahunFilter && tahunFilter !== 'all')
+            ? records.filter(function(r) { return r.tahun === String(tahunFilter); })
+            : records;
+
+        var computedCounts = {
+            all: yearFilteredRecords.length,
+            terintegrasi: yearFilteredRecords.filter(function(r) { return r.statusKey === 'terintegrasi'; }).length,
+            terkompilasi: yearFilteredRecords.filter(function(r) { return r.statusKey === 'terkompilasi'; }).length,
+            terupload: yearFilteredRecords.filter(function(r) { return r.statusKey === 'terupload'; }).length,
+            perbaikan: yearFilteredRecords.filter(function(r) { return r.statusKey === 'perbaikan'; }).length
+        };
+
+        var filteredList = yearFilteredRecords;
         if (statusFilter && statusFilter !== 'all') {
-            filteredList = records.filter(function(r) {
+            filteredList = yearFilteredRecords.filter(function(r) {
                 return r.statusKey === statusFilter;
             });
         }
 
         return {
             items: filteredList,
-            totalItems: records.length,
-            counts: counts,
-            wilayah: (namaKabupaten ? (namaKabupaten + ', ' + namaProvinsi) : (namaProvinsi || 'Seluruh Indonesia'))
+            totalItems: yearFilteredRecords.length,
+            counts: computedCounts,
+            wilayah: (namaKabupaten ? (namaKabupaten + ', ' + namaProvinsi) : (namaProvinsi || 'Seluruh Indonesia')),
+            tahun: (tahunFilter && tahunFilter !== 'all') ? String(tahunFilter) : 'all'
         };
     }
 };

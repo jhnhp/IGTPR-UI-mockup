@@ -1404,6 +1404,33 @@ a.igt-stat:hover {
     align-items: flex-end;
     justify-content: space-between;
     gap: 12px;
+    flex-wrap: wrap;
+    row-gap: 10px;
+}
+
+#status-data .igt-pilih,
+#integrasi-kompilasi .igt-pilih {
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+#status-data .igt-pilih:hover,
+#integrasi-kompilasi .igt-pilih:hover {
+    border-color: #93c5fd;
+    background-color: #f8fafc;
+}
+
+#status-data .igt-pilih:focus-within,
+#integrasi-kompilasi .igt-pilih:focus-within {
+    border-color: var(--igt-primary);
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+}
+
+#status-data-tahun,
+#integrasi-kompilasi-tahun {
+    font-weight: 500;
 }
 
 
@@ -2219,6 +2246,16 @@ a.igt-stat:hover {
     border: 1px solid #dbeafe;
 }
 
+.igt-modal-badge-tahun {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: #0f766e;
+    background: #ccfbf1;
+    padding: 2px 9px;
+    border-radius: 9999px;
+    border: 1px solid #99f6e4;
+}
+
 .igt-modal-tabs {
     display: flex;
     gap: 4px;
@@ -2298,6 +2335,41 @@ a.igt-stat:hover {
     background: #ffffff;
     font-size: 13px;
     color: #475569;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.igt-modal-toolbar__left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.igt-modal-toolbar__filter-tahun {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #475569;
+}
+
+.igt-modal-tahun-select {
+    padding: 3px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 12.5px;
+    color: #334155;
+    background: #fff;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.igt-modal-tahun-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
 }
 
 .igt-modal-perpage-select {
@@ -2584,4 +2656,34 @@ a.igt-stat:hover {
 
 .igt-rincian__item:hover {
     background-color: #f8fafc;
+}
+
+/* Responsive enhancements for summary card header & year filters */
+@media (max-width: 640px) {
+    .igt-panel__angka {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .igt-panel__nilai strong {
+        font-size: 42px;
+    }
+    .igt-modal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .igt-modal-tabs {
+        width: 100%;
+        overflow-x: auto;
+    }
+    .igt-modal-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .igt-modal-toolbar__right,
+    .igt-modal-search-label,
+    .igt-modal-search-input {
+        width: 100%;
+    }
 }

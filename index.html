@@ -1383,6 +1383,7 @@
                         <div class="igt-modal-header__title-row">
                             <h5 class="igt-modal-title">Daftar Usulan Input Data</h5>
                             <span class="igt-modal-badge-wilayah" id="modal-usulan-wilayah">Seluruh Indonesia</span>
+                            <span class="igt-modal-badge-tahun" id="modal-usulan-tahun-badge">Semua Tahun</span>
                         </div>
                     </div>
                     <div class="igt-modal-tabs" id="modal-usulan-tabs">
@@ -1395,7 +1396,7 @@
                     <button type="button" class="igt-modal-close" id="modal-usulan-close" aria-label="Tutup modal">&times;</button>
                 </div>
 
-                <!-- Toolbar (Show Entries & Search) -->
+                <!-- Toolbar (Show Entries, Filter Tahun & Search) -->
                 <div class="igt-modal-toolbar">
                     <div class="igt-modal-toolbar__left">
                         <label class="igt-modal-perpage-label">
@@ -1408,6 +1409,16 @@
                             </select>
                             entries
                         </label>
+                        <div class="igt-modal-toolbar__filter-tahun">
+                            <label for="modal-usulan-tahun" class="igt-modal-filter-label">Tahun Renaksi:</label>
+                            <select id="modal-usulan-tahun" class="igt-modal-tahun-select" aria-label="Filter Tahun Usulan">
+                                <option value="all">Semua Tahun</option>
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="igt-modal-toolbar__right">
                         <label class="igt-modal-search-label">

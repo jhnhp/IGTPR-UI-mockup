@@ -905,7 +905,8 @@ function applyDataFilter(namaProvinsi, namaKabupaten) {
     if (!data) return;
 
     // A. Render Ringkasan (Usulan & Kompilasi)
-    renderUsulanInputData(data.usulanInputData);
+    var usulan = window.MOCKUP_DATA.getUsulanInputData(namaProvinsi, namaKabupaten, currentUsulanYear);
+    renderUsulanInputData(usulan);
     renderKompilasiIntegrasi(data.kompilasiIntegrasi);
 
     // B. Render Leader Board
@@ -984,6 +985,8 @@ function renderUsulanInputData(usulan) {
 /* ----------------------------------------------------
    5.1. Modal Daftar Usulan Input Data Table Controller
 ----------------------------------------------------- */
+var currentUsulanYear = 'all';
+
 var usulanModalState = {
     currentStatus: 'all',
     currentPage: 1,
@@ -999,6 +1002,7 @@ function openUsulanModal(statusFilter) {
     usulanModalState.searchQuery = '';
     $('#modal-usulan-search').val('');
     $('#modal-usulan-perpage').val(usulanModalState.perPage);
+    $('#modal-usulan-tahun').val(currentUsulanYear);
 
     renderUsulanModalContent();
     $('#modal-usulan-data').fadeIn(200);
@@ -1011,11 +1015,13 @@ function closeUsulanModal() {
 }
 
 function renderUsulanModalContent() {
-    var detail = window.MOCKUP_DATA.getUsulanDetailList(null, currentProvince, currentKabupaten);
+    var detail = window.MOCKUP_DATA.getUsulanDetailList(null, currentProvince, currentKabupaten, currentUsulanYear);
     if (!detail) return;
 
-    // Set region name in header badge
+    // Set region name and year badge in header
     $('#modal-usulan-wilayah').text(detail.wilayah);
+    var labelTahun = currentUsulanYear === 'all' ? 'Semua Tahun' : ('Tahun ' + currentUsulanYear);
+    $('#modal-usulan-tahun-badge').text(labelTahun);
 
     // Update counts on tabs
     $('#modal-count-all').text(detail.counts.all);
@@ -1136,6 +1142,24 @@ function renderUsulanModalContent() {
 }
 
 function initUsulanModalEvents() {
+    // 0. Filter Tahun pada Kartu Usulan Input Data Dashboard
+    $(document).on('change', '#status-data-tahun', function() {
+        currentUsulanYear = $(this).val() || 'all';
+        $('#modal-usulan-tahun').val(currentUsulanYear);
+        var usulan = window.MOCKUP_DATA.getUsulanInputData(currentProvince, currentKabupaten, currentUsulanYear);
+        renderUsulanInputData(usulan);
+    });
+
+    // 0.1. Filter Tahun pada Toolbar Modal Pop-up
+    $(document).on('change', '#modal-usulan-tahun', function() {
+        currentUsulanYear = $(this).val() || 'all';
+        $('#status-data-tahun').val(currentUsulanYear);
+        var usulan = window.MOCKUP_DATA.getUsulanInputData(currentProvince, currentKabupaten, currentUsulanYear);
+        renderUsulanInputData(usulan);
+        usulanModalState.currentPage = 1;
+        renderUsulanModalContent();
+    });
+
     // 1. Click on header numbers (98 data / 30 layer) -> open all
     $(document).on('click', '#status-data .igt-panel__nilai, #status-data-total, #status-data-total-layer', function(e) {
         e.preventDefault();

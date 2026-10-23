@@ -26,6 +26,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 16 | **Penerapan Warna Solid pada Ruas Terupload & Revisi** | Ruas *Terupload* dan *Revisi Perbaikan* sebelumnya memiliki pola garis-garis diagonal selang-seling (`repeating-linear-gradient`) seperti halnya ruas *Terintegrasi* dan *Terkompilasi*. | Disederhanakan menjadi **warna solid (polos tanpa garis selang-seling)**: **Terupload** menggunakan warna hijau pastel solid (`#86efac`) dan **Revisi Perbaikan** menggunakan warna merah pastel solid (`#fca5a5` / `#f87171`). Pola garis selang-seling kini khusus dipertahankan hanya pada *Terintegrasi* dan *Terkompilasi* agar selaras dengan grafik Kompilasi Integrasi. |
 | 17 | **Penambahan Metrik Jumlah Layer pada Usulan Input Data** | Kartu Usulan Input Data hanya menampilkan kuantitas data mentah (misal: "98 data" dan "26 data") tanpa informasi berapa layer IGT yang dinaungi. | Ditambahkan metrik akumulasi layer: metrik utama menjadi **`98 data / 30 layer`**, dan setiap item status dilengkapi rincian layer (misal: **`26 data / 14 layer`** Terintegrasi, **`7 data / 4 layer`** Terkompilasi, **`65 data / 12 layer`** Terupload, **`0 data / 0 layer`** Revisi). Tooltip bilah progres juga disesuaikan menampilkan kuantitas data dan layer secara utuh. |
 | 18 | **Interaktivitas Modal Tabel Usulan Input Data (Clickable Bar & Angka)** | Angka ringkasan dan bilah progres bersifat statis (tidak dapat diklik) tanpa rincian data tabular. | Angka total metrik (**98 data / 30 layer**), bilah progres, dan item status kini **sepenuhnya interaktif (*clickable*)**. Mengklik angka 98 menampilkan pop-up modal tabel lengkap berisi 98 data usulan. Mengklik bar atau angka kategori spesifik (*Terintegrasi*, *Terkompilasi*, *Terupload*, *Revisi*) membuka modal yang sama dengan **kondisi terfilter otomatis**. Modal dilengkapi tab navigasi filter, pencarian teks instan, 9 kolom tabel lengkap sesuai standar, tombol aksi (Lihat, Riwayat, Hapus, Cloud Metadata, Edit), tombol download (SHP & Link), serta paginasi interaktif. |
+| 19 | **Filter Tahun Responsif pada Usulan Input Data** | Dropdown filter tahun (`#status-data-tahun`) bersifat statis tanpa logika responsif; pergantian tahun tidak mengubah metrik kartu maupun data tabel. | Filter tahun kini **sepenuhnya responsif secara fungsional dan visual**: <br>• **Fungsional**: Memilih tahun (2026, 2025, 2024, 2023, atau Semua Tahun) secara instan memperbarui metrik data & layer, proporsi bar progres, dan rincian status. Modal pop-up tabel usulan data ikut tersinkronisasi dua arah (*two-way sync*) memfilter data sesuai tahun aktif.<br>• **Visual (CSS Responsive)**: Header kartu menggunakan `flex-wrap: wrap; row-gap: 10px;` dan penyesuaian media queries (mobile/tablet) sehingga angka metrik dan filter tahun tetap proporsional dan rapi tanpa terpotong atau tumpang tindih. |
 
 ---
 
@@ -204,6 +205,28 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
   - Modal secara cerdas membaca konteks wilayah yang sedang aktif (`currentProvince` dan `currentKabupaten`).
   - Bila pengguna sedang berada pada tingkat Nasional, modal menampilkan 98 data nasional.
   - Bila pengguna sedang membuka detail provinsi tertentu (misal: Jawa Tengah), modal secara proporsional menampilkan usulan data untuk wilayah provinsi tersebut.
+
+### 16. Filter Tahun Responsif pada Usulan Input Data
+- **Responsivitas Fungsional Multilevel (*Dynamic Data Filtering*)**:
+  - Pilihan filter tahun renaksi pada kartu Usulan Input Data mencakup: **Semua Tahun (`all`)**, **2026**, **2025**, **2024**, dan **2023**.
+  - Mengubah dropdown tahun secara realtime memperbarui:
+    1. **Angka Metrik Utama**: Rasio kuantitas data dan layer IGT.
+    2. **Bilah Kemajuan (*Progress Bar*)**: Proporsi panjang segmen bar sesuai persentase kategori di tahun terkait.
+    3. **Grid Rincian Status**: Kuantitas data/layer per kategori dan teks log pembaruan.
+  - **Distribusi Data Konsisten & Terpartisi Presisi**:
+    - **Semua Tahun (`all`)**: Total **`98 data / 30 layer`** (Terintegrasi: 26, Terkompilasi: 7, Terupload: 65, Revisi: 0).
+    - **Tahun 2026**: Total **`48 data / 20 layer`** (Terintegrasi: 14, Terkompilasi: 4, Terupload: 30, Revisi: 0).
+    - **Tahun 2025**: Total **`28 data / 16 layer`** (Terintegrasi: 8, Terkompilasi: 2, Terupload: 18, Revisi: 0).
+    - **Tahun 2024**: Total **`15 data / 9 layer`** (Terintegrasi: 3, Terkompilasi: 1, Terupload: 11, Revisi: 0).
+    - **Tahun 2023**: Total **`7 data / 5 layer`** (Terintegrasi: 1, Terkompilasi: 0, Terupload: 6, Revisi: 0).
+    - Pada tahun 2023 di mana kategori *Terkompilasi* bernilai 0 dan *Revisi Perbaikan* bernilai 0, kedua kategori ditangani otomatis oleh kelas `.is-nol` (ruas garis tipis 4px warna aksen).
+- **Sinkronisasi Dua Arah (*Two-Way Synchronization*) Modal Pop-up**:
+  - Saat modal pop-up dibuka ketika filter tahun aktif (misal tahun 2026), modal langsung memfilter daftar data hanya untuk usulan tahun 2026, disertai indikator badge **`Tahun 2026`** di samping nama wilayah.
+  - Modal pop-up dilengkapi dropdown **Tahun Renaksi** di area toolbar kiri. Mengubah tahun dari dalam modal langsung memfilter ulang tabel dan tab hitungan, sekaligus menyinkronkan pilihan tahun dan metrik kartu di dashboard utama.
+- **Responsivitas Antarmuka Pengguna (*CSS Responsive Layout*)**:
+  - Kontainer angka dan dropdown (`.igt-panel__angka`) menggunakan tata letak `flex-wrap: wrap; row-gap: 10px;` sehingga filter tahun tidak terhimpit atau memotong teks metrik utama saat ukuran jendela menyempit.
+  - Tombol dropdown `.igt-pilih` diberi efek hover dan focus state elegan (`box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12)`).
+  - Pada layar sempit/mobile (`<= 640px`), tata letak kartu secara responsif beralih menjadi susunan kolom vertikal dengan ukuran font metrik yang proporsional (42px) tanpa ada elemen yang terpotong.
 
 ---
 
