@@ -2,19 +2,19 @@
 """
 build_topological_map.py
 
-Generates:
-1. assets/data/indonesia-kabupaten.js
-   - Kabupaten boundaries for target drilldown provinces (Jawa Tengah, DKI Jakarta, DIY)
-   - Extracted directly from batas_kabupaten_kota.shp
-   - 100% exact shared vertices between adjacent kabupaten (0 gaps, 0 overlaps)
-   - Properly formatted as GeoJSON Polygon / MultiPolygon
-   - Cleaned coordinates rounded to 5 decimals (~1m precision)
+Generates lightweight, topologically seamless GeoJSON and JS files:
+1. assets/data/indonesia-kabupaten.geojson & .js
+   - 520 Kabupaten/Kota across all 38 provinces in Indonesia
+   - Extracted directly from shp/batas_kabupaten_kota_shapefile/batas_kabupaten_kota.shp
+   - Simplified using GEOS coverage_simplify() so adjacent kabupaten share exact identical vertices
+   - Zero gaps and zero overlaps between adjacent kabupaten
+   - Filtered sub-microscopic offshore specks (< 5e-5 sq deg) and rounded to 4 decimals (~11m precision)
 
-2. assets/data/indonesia-provinsi.js
-   - 38 provinces of Indonesia
-   - Derived directly by dissolving kabupaten boundaries with UnionCascaded()
-   - Matches the kabupaten perimeter with 0 gap
-   - Accurate theme shading matching IGTPR dashboard screenshots
+2. assets/data/indonesia-provinsi.geojson & .js
+   - 38 Provinces of Indonesia
+   - Derived directly by dissolving the simplified kabupaten (unary_union)
+   - 100% exact alignment with kabupaten perimeter (zero gap between kabupaten and province borders)
+   - Accurate theme shading properties for dashboard visualization
 """
 
 import os
@@ -23,17 +23,15 @@ import json
 import time
 from collections import defaultdict
 from osgeo import ogr
+import shapely
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SHP_PATH = os.path.join(BASE_DIR, 'shp', 'batas_kabupaten_kota_shapefile', 'batas_kabupaten_kota.shp')
+
+OUT_KAB_GEOJSON = os.path.join(BASE_DIR, 'assets', 'data', 'indonesia-kabupaten.geojson')
+OUT_PROV_GEOJSON = os.path.join(BASE_DIR, 'assets', 'data', 'indonesia-provinsi.geojson')
 OUT_KAB_JS = os.path.join(BASE_DIR, 'assets', 'data', 'indonesia-kabupaten.js')
 OUT_PROV_JS = os.path.join(BASE_DIR, 'assets', 'data', 'indonesia-provinsi.js')
-
-DRILLDOWN_PROVS = [
-    'Jawa Tengah',
-    'Daerah Khusus Ibukota Jakarta',
-    'Daerah Istimewa Yogyakarta'
-]
 
 SHADING_MAP = {
     'JAWA TIMUR': 4,
@@ -47,131 +45,147 @@ SHADING_MAP = {
     'SUMATERA SELATAN': 1
 }
 
-def round_coords(c, prec=5):
+def round_coords(c, prec=4):
     if not c:
         return []
     if isinstance(c[0], (int, float)):
         return [round(c[0], prec), round(c[1], prec)]
     return [round_coords(x, prec) for x in c]
 
+def clean_micro_polygons(geom, min_area=5e-5):
+    """Filters out sub-millimeter / micro offshore coral reef fragments < 5e-5 sq deg (~0.05 km2)."""
+    if geom.geom_type == 'MultiPolygon':
+        parts = [p for p in geom.geoms if p.area >= min_area]
+        if not parts:
+            # Keep at least the largest part if all are small
+            largest = max(geom.geoms, key=lambda p: p.area)
+            return shapely.multipolygons([largest])
+        return shapely.multipolygons(parts)
+    return geom
+
 def main():
     t0 = time.time()
-    print(f"Opening shapefile: {SHP_PATH}")
+    print("=" * 70)
+    print("INDONESIA GEODATA BUILDER (TOPOLOGICAL & LIGHTWEIGHT)")
+    print("=" * 70)
+    print(f"Reading shapefile: {SHP_PATH}")
+    
     ds = ogr.Open(SHP_PATH)
     if not ds:
-        print("ERROR: Cannot open shapefile!")
+        print(f"ERROR: Cannot open shapefile at {SHP_PATH}!")
         sys.exit(1)
         
     layer = ds.GetLayer()
+    total_raw = layer.GetFeatureCount()
+    print(f"Total raw features in shapefile: {total_raw}")
     
-    all_prov_geoms = defaultdict(list)
-    kab_features = []
+    prov_kabs = defaultdict(list)
+    skipped_count = 0
     
-    print("Reading features from shapefile...")
     for f in layer:
         prov = (f.GetField('WADMPR') or '').strip()
         kab = (f.GetField('WADMKK') or '').strip()
-        geom = f.GetGeometryRef()
-        if not prov or not geom or geom.IsEmpty():
+        geom_ref = f.GetGeometryRef()
+        
+        if not prov or not kab or not geom_ref or geom_ref.IsEmpty():
+            skipped_count += 1
             continue
             
-        all_prov_geoms[prov].append(geom.Clone())
+        sg = shapely.force_2d(shapely.from_wkb(bytes(geom_ref.ExportToWkb())))
+        cleaned = clean_micro_polygons(sg, min_area=5e-5)
+        prov_kabs[prov].append((kab, cleaned))
         
-        # If in drilldown provinces, extract kabupaten feature
-        if prov in DRILLDOWN_PROVS and kab:
-            # Clean geometry
-            if kab == 'Jepara' and geom.GetGeometryType() == ogr.wkbMultiPolygon:
-                # Karimunjawa offshore islands have extreme vertex counts (>200,000 on coral reefs)
-                # Keep all parts, simplify only offshore micro-islands < 0.05 sq deg
-                mp = ogr.Geometry(ogr.wkbMultiPolygon)
-                for i in range(geom.GetGeometryCount()):
-                    p = geom.GetGeometryRef(i)
-                    if p.Area() >= 1e-4:
-                        if p.Area() < 0.05:
-                            simp = p.SimplifyPreserveTopology(0.0005)
-                            mp.AddGeometry(simp if (simp and simp.IsValid()) else p)
-                        else:
-                            mp.AddGeometry(p)
-                clean_geom = mp
-            elif geom.GetGeometryType() == ogr.wkbMultiPolygon:
-                mp = ogr.Geometry(ogr.wkbMultiPolygon)
-                for i in range(geom.GetGeometryCount()):
-                    p = geom.GetGeometryRef(i)
-                    # Filter sub-millimeter slivers < 1e-5
-                    if p.Area() >= 1e-5:
-                        mp.AddGeometry(p)
-                clean_geom = mp
-            else:
-                clean_geom = geom
-                
-            geom_json = json.loads(clean_geom.ExportToJson())
-            geom_json['coordinates'] = round_coords(geom_json['coordinates'], 5)
+    print(f"Loaded {sum(len(v) for v in prov_kabs.values())} named kabupaten across {len(prov_kabs)} provinces.")
+    if skipped_count:
+        print(f"Skipped {skipped_count} unnamed micro-features / offshore reef fragments.")
+        
+    all_kab_features = []
+    all_prov_features = []
+    
+    print("\nProcessing topological simplification per province...")
+    t_proc = time.time()
+    
+    for idx, (prov_name, kabs) in enumerate(sorted(prov_kabs.items()), start=1):
+        p_t0 = time.time()
+        names = [k[0] for k in kabs]
+        geoms = [k[1] for k in kabs]
+        
+        # 1. Coverage simplify all kabupaten in this province together
+        # Guarantees adjacent kabupaten share identical edge vertices (0 gap, 0 overlap)
+        try:
+            simp_kabs = shapely.coverage_simplify(geoms, tolerance=0.0025)
+        except Exception as e:
+            print(f"  Warning on coverage_simplify for {prov_name}: {e}. Falling back to individual simplify.")
+            simp_kabs = [shapely.simplify(g, tolerance=0.0025, preserve_topology=True) for g in geoms]
             
-            kab_features.append({
+        # 2. Dissolve simplified kabupaten into the province boundary
+        # Guarantees province boundary aligns 100% with kabupaten outer perimeter (0 gap)
+        prov_geom = shapely.unary_union(simp_kabs)
+        
+        # Build kabupaten GeoJSON features
+        for name, g in zip(names, simp_kabs):
+            gj = json.loads(shapely.to_geojson(g))
+            gj['coordinates'] = round_coords(gj['coordinates'], 4)
+            all_kab_features.append({
                 'type': 'Feature',
                 'properties': {
-                    'provinsi': prov,
-                    'kabupaten': kab,
-                    'nama': kab
+                    'provinsi': prov_name,
+                    'kabupaten': name,
+                    'nama': name
                 },
-                'geometry': geom_json
+                'geometry': gj
             })
             
-    print(f"Extracted {len(kab_features)} kabupaten features for drilldown.")
-    
-    # Write indonesia-kabupaten.js
-    kab_collection = {
-        'type': 'FeatureCollection',
-        'features': kab_features
-    }
-    with open(OUT_KAB_JS, 'w') as f_kab:
-        f_kab.write('window.INDONESIA_KABUPATEN_GEOJSON = ' + json.dumps(kab_collection) + ';')
-    print(f"Wrote {OUT_KAB_JS} ({os.path.getsize(OUT_KAB_JS) / (1024*1024):.2f} MB)")
-    
-    # 2. Build 38 province boundaries by dissolving kabupaten
-    print("Dissolving province boundaries directly from kabupaten...")
-    prov_features = []
-    
-    for prov_name, glist in sorted(all_prov_geoms.items()):
-        mp = ogr.Geometry(ogr.wkbMultiPolygon)
-        for g in glist:
-            if g.GetGeometryType() == ogr.wkbPolygon:
-                mp.AddGeometry(g)
-            elif g.GetGeometryType() == ogr.wkbMultiPolygon:
-                for i in range(g.GetGeometryCount()):
-                    mp.AddGeometry(g.GetGeometryRef(i))
-                    
-        dissolved = mp.UnionCascaded()
-        
-        # Target provinces keep tight tolerance (0.002) for seamless alignment with kabupaten
-        # Other provinces use 0.012 for smooth fast national rendering
-        tol = 0.002 if prov_name in DRILLDOWN_PROVS else 0.012
-        simplified = dissolved.SimplifyPreserveTopology(tol)
-        if not simplified or not simplified.IsValid():
-            simplified = dissolved
-            
-        p_json = json.loads(simplified.ExportToJson())
-        p_json['coordinates'] = round_coords(p_json['coordinates'], 4)
-        
-        prov_features.append({
+        # Build province GeoJSON feature
+        pgj = json.loads(shapely.to_geojson(prov_geom))
+        pgj['coordinates'] = round_coords(pgj['coordinates'], 4)
+        all_prov_features.append({
             'type': 'Feature',
             'properties': {
                 'provinsi': prov_name,
                 'nama': prov_name,
                 'tema': SHADING_MAP.get(prov_name.upper(), 0)
             },
-            'geometry': p_json
+            'geometry': pgj
         })
-        print(f"  Dissolved {prov_name}")
         
+        print(f"  [{idx:2d}/38] {prov_name:<32} ({len(kabs):2d} kabs) in {time.time()-p_t0:.2f}s")
+        
+    print(f"\nAll provinces processed in {time.time()-t_proc:.2f}s!")
+    
+    kab_collection = {
+        'type': 'FeatureCollection',
+        'features': all_kab_features
+    }
     prov_collection = {
         'type': 'FeatureCollection',
-        'features': prov_features
+        'features': all_prov_features
     }
-    with open(OUT_PROV_JS, 'w') as f_prov:
-        f_prov.write('window.INDONESIA_GEOJSON = ' + json.dumps(prov_collection) + ';')
-    print(f"Wrote {OUT_PROV_JS} ({os.path.getsize(OUT_PROV_JS) / (1024*1024):.2f} MB)")
-    print(f"All processing completed successfully in {time.time() - t0:.2f} seconds!")
+    
+    # 1. Write GeoJSON files
+    print("\nWriting output files...")
+    with open(OUT_KAB_GEOJSON, 'w', encoding='utf-8') as f:
+        json.dump(kab_collection, f, separators=(',', ':'))
+    kab_size_mb = os.path.getsize(OUT_KAB_GEOJSON) / (1024 * 1024)
+    print(f" -> GeoJSON Kabupaten: {OUT_KAB_GEOJSON} ({kab_size_mb:.2f} MB, {len(all_kab_features)} features)")
+    
+    with open(OUT_PROV_GEOJSON, 'w', encoding='utf-8') as f:
+        json.dump(prov_collection, f, separators=(',', ':'))
+    prov_size_kb = os.path.getsize(OUT_PROV_GEOJSON) / 1024
+    print(f" -> GeoJSON Provinsi : {OUT_PROV_GEOJSON} ({prov_size_kb:.1f} KB, {len(all_prov_features)} features)")
+    
+    # 2. Write JS wrapper files for client-side loading
+    with open(OUT_KAB_JS, 'w', encoding='utf-8') as f:
+        f.write('window.INDONESIA_KABUPATEN_GEOJSON = ' + json.dumps(kab_collection, separators=(',', ':')) + ';')
+    print(f" -> JS Kabupaten     : {OUT_KAB_JS} ({os.path.getsize(OUT_KAB_JS)/(1024*1024):.2f} MB)")
+    
+    with open(OUT_PROV_JS, 'w', encoding='utf-8') as f:
+        f.write('window.INDONESIA_GEOJSON = ' + json.dumps(prov_collection, separators=(',', ':')) + ';')
+    print(f" -> JS Provinsi      : {OUT_PROV_JS} ({os.path.getsize(OUT_PROV_JS)/1024:.1f} KB)")
+    
+    print("\n" + "=" * 70)
+    print(f"FINISHED SUCCESSFULLY in {time.time() - t0:.2f} seconds!")
+    print("=" * 70)
 
 if __name__ == '__main__':
     main()

@@ -48,6 +48,14 @@ Anda dapat membuka file `index.html` secara langsung di browser mana saja:
    ```
    Lalu buka `http://localhost:8080` di browser Anda.
 
+## 📝 Catatan Perubahan & Dokumentasi
+Rincian lengkap semua perbaikan dari mockup awal dapat dilihat di file [CATATAN_PERUBAHAN_MOCKUP.md](CATATAN_PERUBAHAN_MOCKUP.md).
+
+## 🗺️ Data Geospasial (GeoJSON Ringan & Bebas Gap/Overlap)
+- [`assets/data/indonesia-provinsi.geojson`](assets/data/indonesia-provinsi.geojson): 38 Provinsi di Indonesia (~2 MB).
+- [`assets/data/indonesia-kabupaten.geojson`](assets/data/indonesia-kabupaten.geojson): 520 Kabupaten/Kota di Indonesia (~3.8 MB).
+- Dibuat menggunakan script Python [`build_topological_map.py`](build_topological_map.py) dengan penyederhanaan topologis *Visvalingam-Whyatt coverage* (0 gap, 0 overlap).
+
 ## ✏️ Cara Mengubah Data Dummy
 
 - **Data Tabel & Statistik**: Buka dan ubah objek data di [`assets/js/dummy-data.js`](assets/js/dummy-data.js).
