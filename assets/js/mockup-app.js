@@ -2506,11 +2506,7 @@ function renderTableHeader(ctrl) {
     var $thead = $container.find('thead tr');
     if (!$thead.length) return;
 
-    var hasCheck = $container.find('thead th.igt-table__check').length > 0;
     var thHtml = '<th class="igt-table__no is-plain">No</th>';
-    if (hasCheck) {
-        thHtml += '<th class="igt-table__check is-plain"><img src="assets/img/icons/check-square.svg" alt=""></th>';
-    }
     ctrl.columns.forEach(function(col) {
         thHtml += '<th data-kolom="' + col.key + '"><span class="igt-table__sort">' + col.label + ' <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>';
     });
@@ -2562,8 +2558,7 @@ function renderTable(ctrl) {
     var pageItems = filtered.slice(start, start + ctrl.perPage);
 
     // Render Rows
-    var hasCheck = $container.find('thead th.igt-table__check').length > 0;
-    var totalColspan = ctrl.columns.length + 1 + (hasCheck ? 1 : 0);
+    var totalColspan = ctrl.columns.length + 1;
     var bodyHtml = '';
     if (pageItems.length === 0) {
         bodyHtml = '<tr><td colspan="' + totalColspan + '" class="igt-table__empty">Data Tidak Ditemukan!</td></tr>';
@@ -2571,9 +2566,6 @@ function renderTable(ctrl) {
         pageItems.forEach(function(row, idx) {
             bodyHtml += '<tr>'
                 + '<td class="igt-table__no text-center">' + (start + idx + 1) + '</td>';
-            if (hasCheck) {
-                bodyHtml += '<td class="igt-table__check"><img src="assets/img/icons/check-square.svg" alt=""></td>';
-            }
             ctrl.columns.forEach(function(col) {
                 var val = row[col.key];
                 if (val === null || val === undefined) val = '-';
