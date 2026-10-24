@@ -502,6 +502,22 @@ a.igt-stat:hover {
     background-color: #fbfbfb;
 }
 
+.igt-table__no {
+    width: 48px;
+    min-width: 48px;
+    max-width: 56px;
+    text-align: center !important;
+    font-weight: 500;
+    color: #64748b;
+    padding: 14px 8px !important;
+}
+
+.igt-table thead th.igt-table__no {
+    font-weight: 600;
+    color: #475569;
+    text-align: center !important;
+}
+
 .igt-table__check {
     width: 56px;
 }
@@ -2432,6 +2448,22 @@ a.igt-stat:hover {
     white-space: nowrap;
     user-select: none;
     font-size: 12px;
+}
+
+.igt-modal-table__no {
+    width: 48px;
+    min-width: 48px;
+    max-width: 52px;
+    text-align: center !important;
+    font-weight: 500;
+    color: #64748b;
+    padding: 9px 6px !important;
+}
+
+.igt-modal-table th.igt-modal-table__no {
+    font-weight: 600;
+    color: #334155;
+    text-align: center !important;
 }
 
 .igt-modal-table th.is-sortable {

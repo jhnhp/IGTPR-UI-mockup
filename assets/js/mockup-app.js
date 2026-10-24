@@ -1130,9 +1130,9 @@ function renderUsulanModalContent() {
     // 5. Render Table Rows
     var rowsHtml = '';
     if (pagedItems.length === 0) {
-        rowsHtml = '<tr><td colspan="9" style="text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 14px;">Tidak ada data usulan yang ditemukan.</td></tr>';
+        rowsHtml = '<tr><td colspan="10" style="text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 14px;">Tidak ada data usulan yang ditemukan.</td></tr>';
     } else {
-        pagedItems.forEach(function(item) {
+        pagedItems.forEach(function(item, idx) {
             var downloadHtml = item.hasDownload
                 ? '<div class="igt-download-group">'
                     + '<button type="button" class="igt-download-btn" title="Unduh Berkas SHP">&#128196;</button>'
@@ -1141,6 +1141,7 @@ function renderUsulanModalContent() {
                 : '<span style="color:#94a3b8; padding-left: 8px;">-</span>';
 
             rowsHtml += '<tr>'
+                + '<td class="igt-modal-table__no text-center">' + (startIndex + idx + 1) + '</td>'
                 + '<td style="font-weight: 500; min-width: 220px;">' + item.direktorat + '</td>'
                 + '<td style="min-width: 140px;">' + item.igt + '</td>'
                 + '<td>' + item.jenisData + '</td>'
@@ -1455,13 +1456,14 @@ function renderKompilasiModalContent() {
         // Table Rows
         var rowsHtml = '';
         if (item.datasets && item.datasets.length > 0) {
-            item.datasets.forEach(function(ds) {
+            item.datasets.forEach(function(ds, dsIdx) {
                 var badgeClass = ds.statusKey === 'terintegrasi' ? 'igt-status-badge--terintegrasi' : 'igt-status-badge--terkompilasi';
                 var downloadBtn = ds.hasDownload
                     ? '<a href="#" class="igt-download-btn igt-download-btn--shp" title="Download SHP"><img src="assets/img/icons/download-simple.svg" width="12" height="12"> SHP</a>'
                     : '<span class="text-muted" style="font-size: 11px;">-</span>';
 
                 rowsHtml += '<tr>'
+                    + '<td class="igt-modal-table__no text-center" style="width: 45px;">' + (dsIdx + 1) + '</td>'
                     + '<td>' + ds.direktorat + '</td>'
                     + '<td><span class="badge bg-light text-dark" style="font-size: 11px;">' + ds.jenisData + '</span></td>'
                     + '<td>' + ds.tglUpload + '</td>'
@@ -1479,7 +1481,7 @@ function renderKompilasiModalContent() {
                     + '</tr>';
             });
         } else {
-            rowsHtml = '<tr><td colspan="8" class="text-center text-muted" style="padding: 18px;">Belum ada berkas data yang terunggah untuk tema ini.</td></tr>';
+            rowsHtml = '<tr><td colspan="9" class="text-center text-muted" style="padding: 18px;">Belum ada berkas data yang terunggah untuk tema ini.</td></tr>';
         }
 
         html += '<div class="igt-acc-item' + expandedClass + '" data-id="' + item.id + '">'
@@ -1509,6 +1511,7 @@ function renderKompilasiModalContent() {
                 + '<table class="igt-modal-table">'
                     + '<thead>'
                         + '<tr>'
+                            + '<th class="igt-modal-table__no" style="width: 45px; text-align: center;">No</th>'
                             + '<th>Nama Direktorat</th>'
                             + '<th>Jenis Data</th>'
                             + '<th>Tanggal Upload</th>'
@@ -1686,10 +1689,12 @@ function renderTable(ctrl) {
     // Render Rows
     var bodyHtml = '';
     if (pageItems.length === 0) {
-        bodyHtml = '<tr><td colspan="' + (ctrl.columns.length + 1) + '" class="igt-table__empty">Data Tidak Ditemukan!</td></tr>';
+        bodyHtml = '<tr><td colspan="' + (ctrl.columns.length + 2) + '" class="igt-table__empty">Data Tidak Ditemukan!</td></tr>';
     } else {
-        pageItems.forEach(function(row) {
-            bodyHtml += '<tr><td class="igt-table__check"><img src="assets/img/icons/check-square.svg" alt=""></td>';
+        pageItems.forEach(function(row, idx) {
+            bodyHtml += '<tr>'
+                + '<td class="igt-table__no text-center">' + (start + idx + 1) + '</td>'
+                + '<td class="igt-table__check"><img src="assets/img/icons/check-square.svg" alt=""></td>';
             ctrl.columns.forEach(function(col) {
                 var val = row[col.key];
                 if (val === null || val === undefined) val = '-';

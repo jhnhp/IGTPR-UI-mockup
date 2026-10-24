@@ -30,6 +30,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 20 | **Sinkronisasi Terpusat Filter Tahun Renaksi (Dekat Peta ke Seluruh Komponen Bawah)** | Filter tahun di dekat peta (`#beranda-detail-tahun`) hanya memfilter daftar chip tema geospasial pada popup info, terisolasi dari komponen dashboard di bawahnya. | Filter tahun di dekat peta kini menjadi **pengendali terpusat (*central controller*)** yang terhubung langsung ke **seluruh komponen data di bawah peta**: <br>1. *Usulan Input Data* (angka, layer, progress bar, rincian)<br>2. *Kompilasi Integrasi* (angka layer & diagram batang bulanan)<br>3. *Statistik IGT* (penyaringan entri tabular & luas)<br>4. *Leader Board* (peringkat & capaian tema per tahun)<br>5. *Capaian Renaksi* (target & realisasi persentase per tahun)<br>6. *Aktivitas Terkini* (log tanggal sesuai tahun renaksi)<br>7. *Modal Pop-up Usulan Data* (otomatis terfilter tahun aktif).<br>Dilengkapi pula mekanisme **sinkronisasi dua arah** (*bidirectional sync*), sehingga jika pengguna mengubah tahun di kartu manapun, kontrol utama di dekat peta ikut tersinkronisasi. |
 | 21 | **Penyelarasan Warna Status Usulan Input Data (Terupload 30% Saturation & Revisi 10% Saturation)** | Warna status *Terupload* sebelumnya hijau pastel (`#86efac`) dan *Revisi Perbaikan* merah pastel (`#fca5a5`). | Diperbarui sesuai permintaan: <br>• **Terupload**: Mengikuti rumpun warna biru yang sama dengan *Terintegrasi* & *Terkompilasi* (hue ~217°) namun dengan **saturasi 30%** dan **warna solid polos** (`hsl(217, 30%, 75%)` / `#adc0d6`, titik `#7b94b7`).<br>• **Revisi Perbaikan**: Menggunakan warna merah terang dengan **saturasi 10%** (`hsl(0, 10%, 80%)` / `#d1c7c7`, penanda bar nol tipis 4px `#aba4a4`, dan titik `#a38f8f`). Menghasilkan harmoni warna yang serasi, bersih, dan profesional. |
 | 22 | **Interaktivitas Modal & Bar Chart Kompilasi Integrasi (Clickable Metric & Monthly Bars)** | Angka total layer (14) dan bilah grafik bulanan (JAN-DES) bersifat statis tanpa aksi interaktif. | Menjadikan angka metrik utama (**14 Layer IGT**) dan bilah grafik bulanan **sepenuhnya interaktif (*clickable*)**: <br>• **Klik Angka 14**: Membuka modal pop-up menampilkan seluruh 14 Layer IGT yang terkompilasi maupun terintegrasi.<br>• **Klik Ruas Bar Spesifik (misal: Terintegrasi bulan April)**: Membuka modal terfilter khusus menampilkan layer IGT yang sudah terintegrasi secara **kumulatif dari bulan Januari hingga April** (3 layer: *Bidang Tanah*, *Hak Atas Tanah*, *Zona Nilai Tanah*). Begitu pula untuk *Terkompilasi* (1 layer: *RDTR Kabupaten/Kota*) dan bulan-bulan lainnya.<br>• **Tampilan Accordion IGT**: Modal menyajikan daftar IGT dalam format akordion interaktif (menampilkan status target, realisasi, persentase berwarna, dan rincian tabel dataset tiap IGT saat diperluas) sesuai standar UI Geoportal IGT. |
+| 23 | **Penambahan Kolom Nomor Urut (No) di Paling Kiri Seluruh Tabel** | Seluruh tabel (dashboard, modal usulan data, dan modal kompilasi data) tidak memiliki kolom nomor urut (`No`), baris langsung diawali dengan checkbox atau nama data. | Ditambahkan **kolom nomor urut (`No`) di posisi paling kiri (`paling kiri`)** pada seluruh 7 tabel di aplikasi: <br>1. *Statistik IGT* (`#statistik-igt-tabel`)<br>2. *Capaian Renaksi / Leader Board* (`#capaian-renaksi-tabel`)<br>3. *Statistik Derivatif* (`#statistik-derivatif-tabel`)<br>4. *Statistik Akses IGT* (`#statistik-akses-tabel`)<br>5. *Log Aktivitas Terkini* (`#aktivitas-log-tabel`)<br>6. *Modal Usulan Input Data* (`#modal-usulan-table`)<br>7. *Subtabel Modal Kompilasi & Integrasi* (`#modal-kompilasi-accordion`).<br>Penomoran dihitung otomatis dan berlanjut secara presisi mengikuti paginasi per halaman (misal: halaman 1: nomor 1–10, halaman 2: nomor 11–20). |
 
 ---
 
@@ -283,6 +284,25 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
     - Filter Tahun Renaksi (tersinkronisasi dua arah dengan dashboard).
     - Pencarian teks instan (*live search*) terhadap nama tema IGT.
     - Tab navigasi filter (*Semua*, *Terintegrasi*, *Terkompilasi*).
+
+### 20. Penambahan Kolom Nomor Urut (No) di Paling Kiri Seluruh Tabel
+- **Cakupan Penambahan Kolom**:
+  1. **Tabel Statistik IGT (`#statistik-igt-tabel`)**: Kolom `<th class="igt-table__no">No</th>` diletakkan di paling kiri sebelum kolom centang (*checkbox*). Baris bernomor urut sesuai posisi halaman.
+  2. **Tabel Capaian Renaksi (`#capaian-renaksi-tabel`)**: Kolom `No` di paling kiri sebelum kolom centang.
+  3. **Tabel Statistik Derivatif (`#statistik-derivatif-tabel`)**: Kolom `No` di paling kiri sebelum kolom centang.
+  4. **Tabel Statistik Akses IGT (`#statistik-akses-tabel`)**: Kolom `No` di paling kiri sebelum kolom centang.
+  5. **Tabel Log Aktivitas Terkini (`#aktivitas-log-tabel`)**: Kolom `No` di paling kiri sebelum kolom centang.
+  6. **Tabel Pop-up Usulan Input Data (`#modal-usulan-table`)**: Kolom `<th class="igt-modal-table__no">No</th>` di paling kiri sebelum kolom `Nama Direktorat`.
+  7. **Subtabel Akordion Kompilasi & Integrasi Data (`#modal-kompilasi-accordion .igt-modal-table`)**: Kolom `No` di paling kiri pada rincian berkas data spasial yang dapat diperluas (*expandable dataset*).
+- **Logika Penomoran & Paginasi Presisi**:
+  - Penomoran baris dihitung secara dinamis berbasis indeks halaman: `(currentPage - 1) * perPage + idx + 1`.
+  - Pada halaman 1 per page 10: nomor urut **1 s.d. 10**.
+  - Pada halaman 2: berlanjut otomatis menjadi **11 s.d. 20**, halaman 3: **21 s.d. 30**, dst.
+  - Pada saat tabel diurutkan (*sorting*) atau disaring (*filtering* / *search*), nomor urut tetap tersusun rapi dari 1 hingga jumlah baris yang tampil pada halaman tersebut.
+- **Penyelarasan Desain & Spasial (CSS Styling)**:
+  - Header dan sel nomor diatur rata tengah (`text-align: center !important`) dengan lebar proporsional (`width: 48px; min-width: 48px;`).
+  - Diberikan styling tipografi elegan (`font-weight: 500; color: #64748b; font-size: 13-14px` pada dashboard dan `12-12.5px` pada modal pop-up), menyatu sempurna dengan estetika antarmuka Geoportal IGT.
+  - Nilai `colspan` pada baris pesan kosong (*empty state*) pada seluruh tabel disesuaikan secara akurat (+1) agar tetap merentang penuh ke seluruh lebar tabel.
 
 ---
 
