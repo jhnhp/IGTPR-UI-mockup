@@ -1018,6 +1018,7 @@ window.MOCKUP_DATA = {
             return {
                 orderIndex: item.orderIndex,
                 satker: item.satker,
+                direktorat: item.satker,
                 igt: item.igt,
                 jenisIgt: item.jenisIgt,
                 satuan: item.satuan,

@@ -2084,14 +2084,14 @@ function getIgtTagClass(name) {
 var LEADERBOARD_CONFIG = {
     'capaian-renaksi': {
         key: 'capaian-renaksi',
-        shortTitle: 'Capaian Renaksi Satker',
-        subbarInfo: 'Peringkat Capaian Rencana Aksi (Renaksi) per Satker',
+        shortTitle: 'Capaian Renaksi Direktorat',
+        subbarInfo: 'Peringkat Capaian Renaksi per Direktorat',
         tahunTitle: 'Tahun Renaksi',
         showSatker: true,
         defaultSortCol: 'persentase',
         columns: [
             { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
-            { key: 'satker', label: 'Satker', sortable: true },
+            { key: 'satker', label: 'Direktorat', sortable: true },
             { key: 'realisasi', label: 'Realisasi / Target', sortable: false },
             { key: 'persentase', label: 'Persentase', sortable: true }
         ]
@@ -2569,16 +2569,16 @@ var leaderBoardDetailState = {
     currentPage: 1,
     perPage: 10,
     sortCol: 'satker',
-    sortDir: 'asc'
+    sortDir: 'desc'
 };
 
 var LEADERBOARD_DETAIL_CONFIG = {
     'capaian-renaksi': {
-        title: 'Tabel Detail Capaian Rencana Aksi (Renaksi) per Satker',
+        title: 'Tabel Detail Capaian Renaksi per Direktorat',
         defaultSortCol: 'satker',
         columns: [
             { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
-            { key: 'satker', label: 'Satker', sortable: true },
+            { key: 'satker', label: 'Direktorat', sortable: true },
             { key: 'igt', label: 'IGT', sortable: true },
             { key: 'target', label: 'Target', sortable: true },
             { key: 'realisasi', label: 'Realisasi', sortable: true },
@@ -2676,24 +2676,58 @@ function updateLeaderBoardDetailTable() {
 
     // Sorting
     var sortCol = leaderBoardDetailState.sortCol || cfg.defaultSortCol;
-    var sortDir = leaderBoardDetailState.sortDir || (sortCol === 'satker' ? 'asc' : 'desc');
+    var sortDir = leaderBoardDetailState.sortDir || ((kat === 'capaian-renaksi' || sortCol === 'persentase') ? 'desc' : 'asc');
     var sorted = filtered.slice();
 
     if (sortCol) {
+        // Precalculate average percentage per Direktorat/Satker for capaian-renaksi
+        var satkerStats = {};
+        if (kat === 'capaian-renaksi') {
+            filtered.forEach(function(item) {
+                var s = item.satker || item.direktorat || '';
+                if (!satkerStats[s]) {
+                    satkerStats[s] = { sum: 0, count: 0, avg: 0 };
+                }
+                satkerStats[s].sum += (Number(item.persentase) || 0);
+                satkerStats[s].count++;
+            });
+            Object.keys(satkerStats).forEach(function(s) {
+                satkerStats[s].avg = satkerStats[s].sum / Math.max(1, satkerStats[s].count);
+            });
+        }
+
         sorted.sort(function(a, b) {
-            if (sortCol === 'satker') {
-                var cmp = (sortDir === 'asc')
-                    ? (a.satker || '').localeCompare(b.satker || '')
-                    : (b.satker || '').localeCompare(a.satker || '');
-                if (cmp !== 0) return cmp;
-                return (a.orderIndex || 0) - (b.orderIndex || 0);
+            if (sortCol === 'satker' || sortCol === 'direktorat') {
+                if (kat === 'capaian-renaksi') {
+                    var sA = a.satker || a.direktorat || '';
+                    var sB = b.satker || b.direktorat || '';
+                    var avgA = satkerStats[sA] ? satkerStats[sA].avg : 0;
+                    var avgB = satkerStats[sB] ? satkerStats[sB].avg : 0;
+
+                    // Primary: Urutkan berdasarkan persentase rata-rata direktorat tertinggi (desc) / terendah (asc)
+                    var cmp = (sortDir === 'asc') ? (avgA - avgB) : (avgB - avgA);
+                    if (Math.abs(cmp) > 0.0001) return cmp;
+
+                    // Secondary: Nama Direktorat alfabetis
+                    var nameCmp = sA.localeCompare(sB, 'id');
+                    if (nameCmp !== 0) return nameCmp;
+
+                    // Tertiary: Persentase IGT di dalam grup direktorat (tertinggi dahulu)
+                    return (Number(b.persentase) || 0) - (Number(a.persentase) || 0);
+                } else {
+                    var cmp = (sortDir === 'asc')
+                        ? (a.satker || '').localeCompare(b.satker || '', 'id')
+                        : (b.satker || '').localeCompare(a.satker || '', 'id');
+                    if (cmp !== 0) return cmp;
+                    return (a.orderIndex || 0) - (b.orderIndex || 0);
+                }
             }
 
             var valA = a[sortCol];
             var valB = b[sortCol];
 
             if (typeof valA === 'string' && typeof valB === 'string') {
-                return sortDir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                return sortDir === 'asc' ? valA.localeCompare(valB, 'id') : valB.localeCompare(valA, 'id');
             } else {
                 valA = Number(valA) || 0;
                 valB = Number(valB) || 0;
@@ -2880,7 +2914,7 @@ function updateLeaderBoardDetailTable() {
             leaderBoardDetailState.sortDir = (leaderBoardDetailState.sortDir === 'asc' ? 'desc' : 'asc');
         } else {
             leaderBoardDetailState.sortCol = key;
-            leaderBoardDetailState.sortDir = (key === 'satker' || key === 'igt' || key === 'jenisIgt') ? 'asc' : 'desc';
+            leaderBoardDetailState.sortDir = ((key === 'satker' && kat === 'capaian-renaksi') || key === 'persentase' || key === 'target' || key === 'realisasi' || key === 'jumlahAkses' || key === 'jumlahLogin') ? 'desc' : 'asc';
         }
         updateLeaderBoardDetailTable();
     });
