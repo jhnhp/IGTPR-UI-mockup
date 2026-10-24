@@ -2083,16 +2083,10 @@ function updateLeaderBoardTable() {
                 tbodyHtml += '<td>' + targetHtml + '</td>';
 
                 // Persentase (Kolom Diperbesar: Progress bar lebar & angka persentase prominent)
-                var bobotSubHtml = '';
-                if (item.hasBidang && item.hasKawasan) {
-                    var tipText = 'Kawasan (Ha): ' + item.pctKawasan.toFixed(2) + '% (bobot ' + item.countKawasan + ') • Bidang: ' + item.pctBidang.toFixed(2) + '% (bobot ' + item.countBidang + ')';
-                    bobotSubHtml = '<span class="igt-progress-bobot-sub" title="' + tipText + '">(Bobot: ' + item.countKawasan + ' Ha, ' + item.countBidang + ' Bidang)</span>';
-                }
                 tbodyHtml += '<td><div class="igt-progress-cell">'
                     + '<div class="igt-progress-bar-wrap"><div class="igt-progress-bar igt-progress-bar--' + item.progressColor + '" style="width: ' + Math.min(100, item.persentase) + '%"></div></div>'
                     + '<div class="igt-progress-meta">'
                     + '  <span class="igt-progress-text">' + item.persenStr + '</span>'
-                    +    bobotSubHtml
                     + '</div>'
                     + '</div></td>';
 
@@ -2238,11 +2232,7 @@ function exportLeaderBoardToCSV() {
                 tgtText = item.realisasiKawasan + '/' + item.targetKawasan + ' Ha';
             }
             row.push('"' + tgtText + '"');
-            var pctText = item.persenStr;
-            if (item.hasBidang && item.hasKawasan) {
-                pctText += ' (' + item.bobotNote + ')';
-            }
-            row.push('"' + pctText + '"');
+            row.push('"' + item.persenStr + '"');
         } else if (leaderBoardState.kategori === 'igt-akses') {
             row.push(r);
             row.push('"' + (item.igt || '').replace(/"/g, '""') + '"');
