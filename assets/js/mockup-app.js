@@ -2308,92 +2308,44 @@ function updateLeaderBoardDetailTable() {
                 // No
                 tbodyHtml += '<td class="igt-table__no">' + rowNo + '</td>';
 
-                // Direktorat (Preview Chip + Tombol "+X lainnya ▾")
-                var daftarBidang = (item.daftarIgt || []).filter(function(name) {
-                    return isBidangIgt(name);
-                });
-                var daftarKawasan = (item.daftarIgt || []).filter(function(name) {
-                    return !isBidangIgt(name);
-                });
+                // Direktorat (Teks murni tanpa chip/badge)
+                tbodyHtml += '<td><strong>' + item.satker + '</strong></td>';
 
-                var chipsHtml = '';
-                if (item.daftarIgt && item.daftarIgt.length > 0) {
-                    var previewChips = [];
-                    var hiddenChips = [];
-
-                    if (item.hasBidang && item.hasKawasan) {
-                        if (daftarBidang.length > 0) previewChips.push({ name: daftarBidang[0], isBidang: true });
-                        if (daftarKawasan.length > 0) previewChips.push({ name: daftarKawasan[0], isBidang: false });
-                        for (var b = 1; b < daftarBidang.length; b++) hiddenChips.push({ name: daftarBidang[b], isBidang: true });
-                        for (var k = 1; k < daftarKawasan.length; k++) hiddenChips.push({ name: daftarKawasan[k], isBidang: false });
-                    } else {
-                        item.daftarIgt.forEach(function(name, i) {
-                            var isB = isBidangIgt(name);
-                            if (i < 2) previewChips.push({ name: name, isBidang: isB });
-                            else hiddenChips.push({ name: name, isBidang: isB });
-                        });
-                    }
-
-                    var rowKey = 'detail-renaksi-' + (startIndex + idx);
-                    var previewHtml = previewChips.map(function(c) {
-                        var cls = c.isBidang ? 'igt-tag--bidang' : 'igt-tag--kawasan';
-                        return '<span class="' + cls + '">' + c.name + '</span>';
-                    }).join(' ');
-
-                    var hiddenHtml = '';
-                    var moreBtnHtml = '';
-                    if (hiddenChips.length > 0) {
-                        hiddenHtml = '<span class="igt-chips-hidden" id="igt-more-' + rowKey + '" style="display: none;">'
-                            + hiddenChips.map(function(c) {
-                                var cls = c.isBidang ? 'igt-tag--bidang' : 'igt-tag--kawasan';
-                                return '<span class="' + cls + '">' + c.name + '</span>';
-                            }).join(' ')
-                            + '</span>';
-                        moreBtnHtml = '<button type="button" class="igt-tag-more" data-target="igt-more-' + rowKey + '" data-count="' + hiddenChips.length + '">+' + hiddenChips.length + ' lainnya ▾</button>';
-                    }
-
-                    chipsHtml = '<div class="igt-chips-wrap">' + previewHtml + ' ' + hiddenHtml + ' ' + moreBtnHtml + '</div>';
-                }
-
-                tbodyHtml += '<td><div class="igt-satker-cell-col"><div class="igt-satker-name">' + item.satker + '</div>' + chipsHtml + '</div></td>';
-
-                // Target
+                // Target (Satuannya ditulis biasa aja, tanpa chip/badge)
                 var targetHtml = '';
                 if (item.hasBidang && item.hasKawasan) {
-                    targetHtml = '<div class="igt-target-cell-multi">'
-                        + '  <div class="igt-target-item igt-target-item--bidang"><span class="igt-target-num"><strong>' + item.targetBidang.toLocaleString('id-ID') + '</strong></span> <span class="igt-satuan-badge--bidang">Bidang</span></div>'
-                        + '  <div class="igt-target-item igt-target-item--kawasan"><span class="igt-target-num"><strong>' + item.targetKawasan.toLocaleString('id-ID') + '</strong></span> <span class="igt-satuan-badge--kawasan">Ha</span></div>'
+                    targetHtml = '<div style="line-height: 1.45;">'
+                        + '<div><strong>' + item.targetBidang.toLocaleString('id-ID') + '</strong> Bidang</div>'
+                        + '<div class="text-muted"><strong>' + item.targetKawasan.toLocaleString('id-ID') + '</strong> Ha</div>'
                         + '</div>';
                 } else if (item.hasBidang) {
-                    targetHtml = '<div class="igt-target-item igt-target-item--bidang"><span class="igt-target-num"><strong>' + item.targetBidang.toLocaleString('id-ID') + '</strong></span> <span class="igt-satuan-badge--bidang">Bidang</span></div>';
+                    targetHtml = '<strong>' + item.targetBidang.toLocaleString('id-ID') + '</strong> Bidang';
                 } else if (item.hasKawasan) {
-                    targetHtml = '<div class="igt-target-item igt-target-item--kawasan"><span class="igt-target-num"><strong>' + item.targetKawasan.toLocaleString('id-ID') + '</strong></span> <span class="igt-satuan-badge--kawasan">Ha</span></div>';
+                    targetHtml = '<strong>' + item.targetKawasan.toLocaleString('id-ID') + '</strong> Ha';
                 } else {
                     targetHtml = '<span class="text-muted">-</span>';
                 }
                 tbodyHtml += '<td>' + targetHtml + '</td>';
 
-                // Realisasi
+                // Realisasi (Satuannya ditulis biasa aja, tanpa chip/badge)
                 var realisasiHtml = '';
                 if (item.hasBidang && item.hasKawasan) {
-                    realisasiHtml = '<div class="igt-target-cell-multi">'
-                        + '  <div class="igt-target-item igt-target-item--bidang"><span class="igt-target-num"><strong>' + item.realisasiBidang.toLocaleString('id-ID') + '</strong></span> <span class="igt-satuan-badge--bidang">Bidang</span></div>'
-                        + '  <div class="igt-target-item igt-target-item--kawasan"><span class="igt-target-num"><strong>' + item.realisasiKawasan.toLocaleString('id-ID') + '</strong></span> <span class="igt-satuan-badge--kawasan">Ha</span></div>'
+                    realisasiHtml = '<div style="line-height: 1.45;">'
+                        + '<div><strong>' + item.realisasiBidang.toLocaleString('id-ID') + '</strong> Bidang</div>'
+                        + '<div class="text-muted"><strong>' + item.realisasiKawasan.toLocaleString('id-ID') + '</strong> Ha</div>'
                         + '</div>';
                 } else if (item.hasBidang) {
-                    realisasiHtml = '<div class="igt-target-item igt-target-item--bidang"><span class="igt-target-num"><strong>' + item.realisasiBidang.toLocaleString('id-ID') + '</strong></span> <span class="igt-satuan-badge--bidang">Bidang</span></div>';
+                    realisasiHtml = '<strong>' + item.realisasiBidang.toLocaleString('id-ID') + '</strong> Bidang';
                 } else if (item.hasKawasan) {
-                    realisasiHtml = '<div class="igt-target-item igt-target-item--kawasan"><span class="igt-target-num"><strong>' + item.realisasiKawasan.toLocaleString('id-ID') + '</strong></span> <span class="igt-satuan-badge--kawasan">Ha</span></div>';
+                    realisasiHtml = '<strong>' + item.realisasiKawasan.toLocaleString('id-ID') + '</strong> Ha';
                 } else {
                     realisasiHtml = '<span class="text-muted">-</span>';
                 }
                 tbodyHtml += '<td>' + realisasiHtml + '</td>';
 
-                // Persentase
-                tbodyHtml += '<td><div class="igt-progress-cell">'
-                    + '<div class="igt-progress-bar-wrap"><div class="igt-progress-bar igt-progress-bar--' + item.progressColor + '" style="width: ' + Math.min(100, item.persentase) + '%"></div></div>'
-                    + '<div class="igt-progress-meta"><span class="igt-progress-text">' + item.persenStr + '</span></div>'
-                    + '</div></td>';
+                // Persentase (Tanpa bar progress, ditulis angka biasa)
+                var pctColorCls = item.persentase >= 85 ? 'text-success' : (item.persentase >= 70 ? 'text-warning' : 'text-danger');
+                tbodyHtml += '<td><span class="fw-bold ' + pctColorCls + '" style="font-size: 14.5px;">' + item.persenStr + '</span></td>';
 
             } else if (kat === 'igt-akses') {
                 // No
@@ -2402,20 +2354,19 @@ function updateLeaderBoardDetailTable() {
                 // Nama IGT
                 tbodyHtml += '<td><strong>' + item.igt + '</strong></td>';
 
-                // Jenis IGT
-                var jenisCls = (item.jenisIgt === 'Tata Ruang' ? 'tataruang' : 'pertanahan');
-                tbodyHtml += '<td><span class="igt-badge-jenis igt-badge-jenis--' + jenisCls + '">' + item.jenisIgt + '</span></td>';
+                // Jenis IGT (Teks biasa, tanpa badge/chip)
+                tbodyHtml += '<td>' + item.jenisIgt + '</td>';
 
                 // Direktorat Pengampu
-                tbodyHtml += '<td><span class="text-secondary">' + (item.satker || '-') + '</span></td>';
+                tbodyHtml += '<td>' + (item.satker || '-') + '</td>';
 
-                // Akses Plugin QGIS
+                // Akses Plugin QGIS (Satuannya ditulis biasa)
                 tbodyHtml += '<td>' + (item.aksesPlugin || 0).toLocaleString('id-ID') + ' kali</td>';
 
-                // Akses Geoportal
+                // Akses Geoportal (Satuannya ditulis biasa)
                 tbodyHtml += '<td>' + (item.aksesAplikasi || 0).toLocaleString('id-ID') + ' kali</td>';
 
-                // Total Akses
+                // Total Akses (Satuannya ditulis biasa)
                 tbodyHtml += '<td><strong>' + (item.jumlahAkses || 0).toLocaleString('id-ID') + ' kali</strong></td>';
 
             } else if (kat === 'satker-login' || kat === 'direktorat-login') {
@@ -2425,28 +2376,21 @@ function updateLeaderBoardDetailTable() {
                 // Nama Satker
                 tbodyHtml += '<td><strong>' + item.satker + '</strong></td>';
 
-                // Tipe Administrasi
-                var tipeCls = (item.tipe || 'pusat').toLowerCase();
-                tbodyHtml += '<td><span class="igt-tipe-badge igt-tipe-badge--' + tipeCls + '">' + (item.tipe || 'Pusat') + '</span></td>';
+                // Tipe Administrasi (Teks biasa, tanpa badge/chip)
+                tbodyHtml += '<td>' + (item.tipe || 'Pusat') + '</td>';
 
                 // Tema IGT Pengampu
                 var igtCount = item.daftarIgt ? item.daftarIgt.length : 0;
-                var igtLabel = igtCount > 0 ? (igtCount + ' Tema IGT Dasar') : '<span class="text-muted">-</span>';
+                var igtLabel = igtCount > 0 ? (igtCount + ' Tema') : '-';
                 tbodyHtml += '<td>' + igtLabel + '</td>';
 
-                // Frekuensi Login
-                tbodyHtml += '<td><strong>' + (item.jumlahLogin || 0).toLocaleString('id-ID') + ' kali</strong></td>';
+                // Frekuensi Login (Satuannya ditulis biasa)
+                tbodyHtml += '<td><strong>' + (item.jumlahLogin || 0).toLocaleString('id-ID') + ' kali login</strong></td>';
 
-                // Status Keaktifan
-                var statusBadge = '';
-                if (item.jumlahLogin >= 1500) {
-                    statusBadge = '<span class="badge bg-success-subtle text-success border border-success-subtle">Sangat Aktif</span>';
-                } else if (item.jumlahLogin >= 700) {
-                    statusBadge = '<span class="badge bg-primary-subtle text-primary border border-primary-subtle">Aktif</span>';
-                } else {
-                    statusBadge = '<span class="badge bg-warning-subtle text-warning border border-warning-subtle">Cukup Aktif</span>';
-                }
-                tbodyHtml += '<td>' + statusBadge + '</td>';
+                // Status Keaktifan (Teks biasa)
+                var statusText = (item.jumlahLogin >= 1500) ? 'Sangat Aktif' : ((item.jumlahLogin >= 700) ? 'Aktif' : 'Cukup Aktif');
+                var statusCls = (item.jumlahLogin >= 1500) ? 'text-success' : ((item.jumlahLogin >= 700) ? 'text-primary' : 'text-warning');
+                tbodyHtml += '<td><span class="fw-semibold ' + statusCls + '">' + statusText + '</span></td>';
             }
 
             tbodyHtml += '</tr>';
