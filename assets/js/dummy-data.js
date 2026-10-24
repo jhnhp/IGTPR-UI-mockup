@@ -194,16 +194,16 @@ window.MOCKUP_DATA = {
             { direktorat: 'Direktorat Perencanaan Tata Ruang', aktivitas: 'Login', total: 31 }
         ],
         aktivitasLog: [
-            { user: 'Administrator', aktivitas: 'Menambahkan SLD Master', tanggal: '15 Oktober 2026' },
-            { user: 'Administrator', aktivitas: 'Hapus SLD Master', tanggal: '15 Oktober 2026' },
-            { user: 'Administrator', aktivitas: 'Menambahkan SLD Master', tanggal: '15 Oktober 2026' },
-            { user: 'Administrator', aktivitas: 'Menambahkan User', tanggal: '15 Oktober 2026' },
-            { user: 'Administrator', aktivitas: 'Edit User', tanggal: '15 Oktober 2026' },
-            { user: 'Administrator', aktivitas: 'Edit User', tanggal: '15 Oktober 2026' },
-            { user: 'Administrator', aktivitas: 'Edit User', tanggal: '15 Oktober 2026' },
-            { user: 'Administrator', aktivitas: 'Edit Symbology Master', tanggal: '15 Oktober 2026' },
-            { user: 'Administrator', aktivitas: 'Edit User', tanggal: '15 Oktober 2026' },
-            { user: 'Administrator', aktivitas: 'Menambahkan Symbology Master', tanggal: '15 Oktober 2026' }
+            { user: 'Administrator', aktivitas: 'Menambahkan SLD Master', waktu: '2026-10-18 14:32:10', tanggal: '2026-10-18 14:32:10' },
+            { user: 'Administrator', aktivitas: 'Hapus SLD Master', waktu: '2026-10-18 14:28:45', tanggal: '2026-10-18 14:28:45' },
+            { user: 'Administrator', aktivitas: 'Menambahkan SLD Master', waktu: '2026-10-18 13:55:02', tanggal: '2026-10-18 13:55:02' },
+            { user: 'Administrator', aktivitas: 'Menambahkan User', waktu: '2026-10-18 11:40:19', tanggal: '2026-10-18 11:40:19' },
+            { user: 'Administrator', aktivitas: 'Edit User', waktu: '2026-10-18 11:22:38', tanggal: '2026-10-18 11:22:38' },
+            { user: 'Administrator', aktivitas: 'Edit User', waktu: '2026-10-18 10:50:14', tanggal: '2026-10-18 10:50:14' },
+            { user: 'Administrator', aktivitas: 'Edit User', waktu: '2026-10-18 10:15:50', tanggal: '2026-10-18 10:15:50' },
+            { user: 'Administrator', aktivitas: 'Edit Symbology Master', waktu: '2026-10-18 09:42:33', tanggal: '2026-10-18 09:42:33' },
+            { user: 'Administrator', aktivitas: 'Edit User', waktu: '2026-10-18 09:18:05', tanggal: '2026-10-18 09:18:05' },
+            { user: 'Administrator', aktivitas: 'Menambahkan Symbology Master', waktu: '2026-10-18 08:30:12', tanggal: '2026-10-18 08:30:12' }
         ]
     },
 
@@ -323,9 +323,9 @@ window.MOCKUP_DATA = {
                     { direktorat: 'Dinas Tata Ruang ' + kabLengkap, aktivitas: 'Login', total: 11 }
                 ],
                 aktivitasLog: [
-                    { user: 'Operator Kantah ' + kabBersih, aktivitas: 'Unggah Geodatabase Peta', tanggal: '23 Oktober 2026' },
-                    { user: 'Verifikator Kantah ' + kabBersih, aktivitas: 'Pengecekan Topologi Bidang', tanggal: '23 Oktober 2026' },
-                    { user: 'Kepala Seksi SP ' + kabBersih, aktivitas: 'Verifikasi Validasi Data', tanggal: '22 Oktober 2026' }
+                    { user: 'Operator Kantah ' + kabBersih, aktivitas: 'Unggah Geodatabase Peta', waktu: '2026-10-23 15:45:10', tanggal: '2026-10-23 15:45:10' },
+                    { user: 'Verifikator Kantah ' + kabBersih, aktivitas: 'Pengecekan Topologi Bidang', waktu: '2026-10-23 11:20:34', tanggal: '2026-10-23 11:20:34' },
+                    { user: 'Kepala Seksi SP ' + kabBersih, aktivitas: 'Verifikasi Validasi Data', waktu: '2026-10-22 09:15:58', tanggal: '2026-10-22 09:15:58' }
                 ]
             };
         }
@@ -456,10 +456,10 @@ window.MOCKUP_DATA = {
                 { direktorat: 'Kantor Pertanahan Kab. Karanganyar', aktivitas: 'Login', total: 22 }
             ],
             aktivitasLog: [
-                { user: 'Operator Kanwil ' + provBersih, aktivitas: 'Sinkronisasi Data IGT Provinsi', tanggal: '23 Oktober 2026' },
-                { user: 'Operator Kantah Kab. Semarang', aktivitas: 'Unggah Layer Derivatif Bidang', tanggal: '23 Oktober 2026' },
-                { user: 'Verifikator Kantah Solo', aktivitas: 'Verifikasi Batas Bidang', tanggal: '22 Oktober 2026' },
-                { user: 'Operator Kantah Banyumas', aktivitas: 'Pembaruan Atribut Spasial', tanggal: '21 Oktober 2026' }
+                { user: 'Operator Kanwil ' + provBersih, aktivitas: 'Sinkronisasi Data IGT Provinsi', waktu: '2026-10-23 16:10:42', tanggal: '2026-10-23 16:10:42' },
+                { user: 'Operator Kantah Kab. Semarang', aktivitas: 'Unggah Layer Derivatif Bidang', waktu: '2026-10-23 14:25:18', tanggal: '2026-10-23 14:25:18' },
+                { user: 'Verifikator Kantah Solo', aktivitas: 'Verifikasi Batas Bidang', waktu: '2026-10-22 11:05:30', tanggal: '2026-10-22 11:05:30' },
+                { user: 'Operator Kantah Banyumas', aktivitas: 'Pembaruan Atribut Spasial', waktu: '2026-10-21 08:50:12', tanggal: '2026-10-21 08:50:12' }
             ]
         };
     },
@@ -474,8 +474,12 @@ window.MOCKUP_DATA = {
         var kompilasi = this.getKompilasiIntegrasi(namaProvinsi, namaKabupaten, t);
 
         var log = res.aktivitasLog ? res.aktivitasLog.map(function(item) {
-            var tgl = item.tanggal.replace(/\b(202[3-6])\b/g, t);
-            return Object.assign({}, item, { tanggal: tgl });
+            var raw = item.waktu || item.tanggal || '';
+            var wkt = (t && t !== 'all') ? raw.replace(/\b(202[3-6])\b/g, t) : raw;
+            return Object.assign({}, item, {
+                waktu: wkt,
+                tanggal: wkt
+            });
         }) : [];
 
         var capaian = res.capaianRenaksi ? res.capaianRenaksi.map(function(item) {

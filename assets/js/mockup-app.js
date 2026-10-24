@@ -1412,8 +1412,8 @@ function applyDataFilter(namaProvinsi, namaKabupaten, tahun) {
     renderTableSection('aktivitas-log', data.aktivitasLog, [
         { key: 'user', label: 'Nama User' },
         { key: 'aktivitas', label: 'Aktivitas' },
-        { key: 'tanggal', label: 'Tanggal' }
-    ], 'tanggal');
+        { key: 'waktu', label: 'Waktu' }
+    ], 'waktu');
 }
 
 /* ----------------------------------------------------
@@ -2958,7 +2958,7 @@ function renderTableSection(id, rawData, columns, defaultSortCol, mode) {
             perPage: 10,
             page: 1,
             sortCol: defaultSortCol,
-            sortAsc: true
+            sortAsc: id === 'aktivitas-log' ? false : true
         };
         renderTableHeader(tableControllers[id]);
         bindTableEvents(tableControllers[id]);
@@ -3000,11 +3000,16 @@ function renderTable(ctrl) {
         });
     });
 
-    // Helper for natural numeric & string sorting
+    // Helper for natural numeric, timestamp & string sorting
     function parseSortValue(val) {
         if (val === null || val === undefined) return -Infinity;
         if (typeof val === 'number') return val;
         var str = String(val).trim();
+        // Support Date / Timestamp sorting (e.g. 2026-10-18 14:32:10)
+        if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+            var parsedTime = Date.parse(str.replace(' ', 'T'));
+            if (!isNaN(parsedTime)) return parsedTime;
+        }
         if (/^[\d\.,]+$/.test(str)) {
             var clean = str.replace(/\./g, '').replace(',', '.');
             var num = parseFloat(clean);
@@ -3043,6 +3048,7 @@ function renderTable(ctrl) {
                 + '<td class="igt-table__no text-center">' + (start + idx + 1) + '</td>';
             ctrl.columns.forEach(function(col) {
                 var val = row[col.key];
+                if (col.key === 'waktu' && (val === null || val === undefined)) val = row.tanggal;
                 if (val === null || val === undefined) val = '-';
                 var cellContent = val;
                 if (col.key === 'jenisIgt') {
@@ -3051,6 +3057,8 @@ function renderTable(ctrl) {
                     } else {
                         cellContent = '<span class="igt-badge-jenis igt-badge-jenis--pertanahan">Pertanahan</span>';
                     }
+                } else if (col.key === 'waktu') {
+                    cellContent = '<span style="font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12.5px; color: #334155; font-weight: 500;">' + val + '</span>';
                 }
                 bodyHtml += '<td>' + cellContent + '</td>';
             });
