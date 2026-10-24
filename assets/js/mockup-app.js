@@ -159,47 +159,19 @@ function applyRoleFilterToLeaderboard(rawData, kategori) {
     }
 
     if (currentActiveRole === 'sppr') {
-        var spprUnits = [
-            'Direktorat Pengukuran Dan Pemetaan Kadastral',
-            'Direktorat Pengukuran dan Pemetaan Kadastral',
-            'Direktorat Pengukuran Dan Pemetaan Dasar Pertanahan Ruang',
-            'Direktorat Survei Dan Pemetaan Tematik',
-            'Direktorat Penilaian Tanah dan Ekonomi Pertanahan',
-            'Sekretariat Direktorat Jenderal SPPR',
-            'Balai Pemetaan dan Survei Tematik SPPR'
-        ];
-        var spprIgtKeywords = [
-            'Bidang Tanah',
-            'Penguasaan Tanah',
-            'Pemilikan Tanah',
-            'Penggunaan Tanah',
-            'Pemanfaatan Tanah',
-            'Unsur Dasar Pertanahan',
-            'Batas Wilayah',
-            'Kerangka Kontrol',
-            'Tutupan Lahan',
-            'Morfologi'
-        ];
+        // Role Direktorat SPPR: Khusus leaderboard dapat melihat data seluruh Direktorat Kementerian ATR/BPN untuk pacuan berkompetisi
         if (kategori === 'capaian-renaksi') {
             return rawData.filter(function(item) {
                 var s = item.satker || item.direktorat || '';
-                return spprUnits.some(function(d) {
-                    return s.toLowerCase() === d.toLowerCase();
-                }) || s.indexOf('SPPR') !== -1;
-            });
-        } else if (kategori === 'igt-akses') {
-            return rawData.filter(function(item) {
-                return spprIgtKeywords.some(function(k) {
-                    return item.igt && item.igt.toLowerCase().indexOf(k.toLowerCase()) !== -1;
-                });
+                return s && s.indexOf('Kanwil') === -1 && s.indexOf('Kantah') === -1 && s.indexOf('Balai') === -1 && s.indexOf('Sekretariat Direktorat Jenderal SPPR') === -1;
             });
         } else if (kategori === 'satker-login' || kategori === 'direktorat-login') {
             return rawData.filter(function(item) {
                 var s = item.satker || item.direktorat || '';
-                return spprUnits.some(function(d) {
-                    return s.toLowerCase() === d.toLowerCase();
-                }) || s.indexOf('SPPR') !== -1;
+                return item.tipe === 'Pusat' || (s && s.indexOf('Direktorat') !== -1);
             });
+        } else if (kategori === 'igt-akses') {
+            return rawData;
         }
     } else if (currentActiveRole === 'kanwil-diy') {
         // Role Kanwil DIY: Menampilkan data seluruh Kanwil-kanwil se-Indonesia (15 Kanwil)
@@ -2052,6 +2024,26 @@ function getIgtTagClass(name) {
     return 'igt-tag--kawasan';
 }
 
+function getRoleSatkerBadge(satkerName) {
+    if (!satkerName) return '';
+    var s = String(satkerName).toLowerCase();
+    if (currentActiveRole === 'sppr') {
+        var isSPPR = s.indexOf('kadastral') !== -1 || s.indexOf('tematik') !== -1 || s.indexOf('dasar pertanahan') !== -1 || s.indexOf('penilaian tanah') !== -1 || s.indexOf('sppr') !== -1;
+        if (isSPPR) {
+            return ' <span class="badge" style="background-color: #2563eb; color: #ffffff; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 600; vertical-align: middle;">Unit Anda</span>';
+        }
+    } else if (currentActiveRole === 'kanwil-diy') {
+        if (s.indexOf('yogyakarta') !== -1 && (s.indexOf('kanwil') !== -1 || s.indexOf('kantor wilayah') !== -1)) {
+            return ' <span class="badge" style="background-color: #2563eb; color: #ffffff; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 600; vertical-align: middle;">Wilayah Anda</span>';
+        }
+    } else if (currentActiveRole === 'kantah-gunungkidul') {
+        if (s.indexOf('gunungkidul') !== -1 || s.indexOf('gunung kidul') !== -1) {
+            return ' <span class="badge" style="background-color: #2563eb; color: #ffffff; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 600; vertical-align: middle;">Kantah Anda</span>';
+        }
+    }
+    return '';
+}
+
 var LEADERBOARD_CONFIG = {
     'capaian-renaksi': {
         key: 'capaian-renaksi',
@@ -2386,7 +2378,7 @@ function updateLeaderBoardTable() {
 
                 tbodyHtml += '<td>'
                     + '<div class="igt-satker-cell-col">'
-                    + '  <div class="igt-satker-name">' + item.satker + '</div>'
+                    + '  <div class="igt-satker-name">' + item.satker + getRoleSatkerBadge(item.satker) + '</div>'
                     +    chipsHtml
                     + '</div>'
                     + '</td>';
@@ -2496,7 +2488,7 @@ function updateLeaderBoardTable() {
                     hbarHtml += '<div class="igt-hbar-row">'
                         + '  <div class="igt-hbar-rank">' + rankBadge + '</div>'
                         + '  <div class="igt-hbar-left">'
-                        + '    <div class="igt-hbar-title">' + item.satker + tipeBadge + '</div>'
+                        + '    <div class="igt-hbar-title">' + item.satker + tipeBadge + getRoleSatkerBadge(item.satker) + '</div>'
                         + '  </div>'
                         + '  <div class="igt-hbar-chart">'
                         + '    <div class="igt-hbar-bar-wrap igt-hbar-bar-wrap--login" style="width: ' + barPercent + '%;" title="' + item.satker + (item.tipe ? ' (' + item.tipe + ')' : '') + ': ' + item.jumlahLogin.toLocaleString('id-ID') + ' kali login">'
@@ -2817,7 +2809,7 @@ function updateLeaderBoardDetailTable() {
 
                         var rowspanAttr = span > 1 ? (' rowspan="' + span + '"') : '';
                         tbodyHtml += '<td' + rowspanAttr + ' class="igt-table__merged-satker" style="vertical-align: middle; background-color: #f8fafc; border-right: 1.5px solid #e2e8f0; padding: 12px 14px;">'
-                            + '<div style="font-weight: 700; color: #0f172a; font-size: 13.5px; line-height: 1.4;">' + item.satker + '</div>'
+                            + '<div style="font-weight: 700; color: #0f172a; font-size: 13.5px; line-height: 1.4;">' + item.satker + getRoleSatkerBadge(item.satker) + '</div>'
                             + '<div class="d-flex align-items-center gap-2 mt-1">'
                             + '<span class="badge" style="background: #e2e8f0; color: #334155; font-size: 10.5px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">' + totalSatkerIgt + ' IGT</span>'
                             + '<span class="text-muted" style="font-size: 11.5px;">Rata-rata: <strong class="' + avgColorCls + '">' + avgPct + '%</strong></span>'
@@ -2827,7 +2819,7 @@ function updateLeaderBoardDetailTable() {
                     // if span === 0, DO NOT emit <td> for Satker because it is merged with rowspan from above
                 } else {
                     // Flat view (when sorted by persentase, target, etc.)
-                    tbodyHtml += '<td><span class="fw-semibold text-secondary" style="font-size: 13px;">' + item.satker + '</span></td>';
+                    tbodyHtml += '<td><span class="fw-semibold text-secondary" style="font-size: 13px;">' + item.satker + getRoleSatkerBadge(item.satker) + '</span></td>';
                 }
 
                 // IGT (Nama IGT yang jelas)
@@ -2860,7 +2852,7 @@ function updateLeaderBoardDetailTable() {
                 tbodyHtml += '<td>' + item.jenisIgt + '</td>';
 
                 // Direktorat Pengampu
-                tbodyHtml += '<td>' + (item.satker || '-') + '</td>';
+                tbodyHtml += '<td>' + (item.satker ? (item.satker + getRoleSatkerBadge(item.satker)) : '-') + '</td>';
 
                 // Akses Plugin QGIS (Satuannya ditulis biasa)
                 tbodyHtml += '<td>' + (item.aksesPlugin || 0).toLocaleString('id-ID') + ' kali</td>';
@@ -2876,7 +2868,7 @@ function updateLeaderBoardDetailTable() {
                 tbodyHtml += '<td class="igt-table__no">' + rowNo + '</td>';
 
                 // Nama Satker
-                tbodyHtml += '<td><strong>' + item.satker + '</strong></td>';
+                tbodyHtml += '<td><strong>' + item.satker + '</strong>' + getRoleSatkerBadge(item.satker) + '</td>';
 
                 // Tipe Administrasi (Teks biasa, tanpa badge/chip)
                 tbodyHtml += '<td>' + (item.tipe || 'Pusat') + '</td>';
