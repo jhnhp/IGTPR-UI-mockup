@@ -906,6 +906,15 @@ function resetKeSeluruhIndonesia() {
 ---------------------------------------------------- */
 var currentStatistikIgtMode = 'igt';
 
+function getJenisIgt(namaIgt) {
+    if (!namaIgt) return 'Pertanahan';
+    var lower = String(namaIgt).toLowerCase();
+    if (lower.indexOf('rdtr') !== -1 || lower.indexOf('rtrw') !== -1 || lower.indexOf('rtr') !== -1 || lower.indexOf('kkpr') !== -1 || lower.indexOf('ruang') !== -1) {
+        return 'Tata Ruang';
+    }
+    return 'Pertanahan';
+}
+
 function updateStatistikIgtView(dataOverride) {
     var raw = dataOverride || window.MOCKUP_DATA.getDataByWilayah(currentProvince, currentKabupaten, currentDashboardYear);
     if (!raw) raw = window.MOCKUP_DATA.nasional;
@@ -937,13 +946,18 @@ function updateStatistikIgtView(dataOverride) {
         defaultSort = 'kabupaten';
     } else {
         columns = [
+            { key: 'jenisIgt', label: 'Jenis IGT' },
             { key: 'igt', label: 'IGT' },
             { key: 'provinsi', label: 'Provinsi' },
             { key: 'kabupaten', label: 'Kabupaten' },
             { key: 'bidang', label: 'Bidang' },
             { key: 'luas', label: 'Luas (Ha)' }
         ];
-        data = raw.statistikIGT || (window.MOCKUP_DATA.nasional ? window.MOCKUP_DATA.nasional.statistikIGT : []) || [];
+        var rawItems = raw.statistikIGT || (window.MOCKUP_DATA.nasional ? window.MOCKUP_DATA.nasional.statistikIGT : []) || [];
+        data = rawItems.map(function(item) {
+            var jenis = item.jenisIgt || getJenisIgt(item.igt);
+            return Object.assign({}, item, { jenisIgt: jenis });
+        });
         defaultSort = 'igt';
     }
 
@@ -1783,7 +1797,15 @@ function renderTable(ctrl) {
             ctrl.columns.forEach(function(col) {
                 var val = row[col.key];
                 if (val === null || val === undefined) val = '-';
-                bodyHtml += '<td>' + val + '</td>';
+                var cellContent = val;
+                if (col.key === 'jenisIgt') {
+                    if (val === 'Tata Ruang') {
+                        cellContent = '<span class="igt-badge-jenis igt-badge-jenis--tataruang">Tata Ruang</span>';
+                    } else {
+                        cellContent = '<span class="igt-badge-jenis igt-badge-jenis--pertanahan">Pertanahan</span>';
+                    }
+                }
+                bodyHtml += '<td>' + cellContent + '</td>';
             });
             bodyHtml += '</tr>';
         });
@@ -2093,7 +2115,8 @@ function renderStatistikIGTGrafik(ctrl) {
         var rawLabel = mode === 'provinsi' ? (item.provinsi || '-') : (mode === 'kabupaten' ? (item.kabupaten || '-') : (item.igt || '-'));
         var displayLabel = mode === 'provinsi' ? getShortProvinsiLabel(rawLabel) : (mode === 'kabupaten' ? getShortKabupatenLabel(rawLabel, item) : getShortIgtLabel(rawLabel));
 
-        svg += '<g class="igt-chart-cluster" data-idx="' + idx + '" data-mode="' + mode + '" data-label="' + rawLabel + '" data-igt="' + (item.igt || item.jumlahIgt || '-') + '" data-prov="' + (item.provinsi || '-') + '" data-kab="' + (item.kabupaten || '-') + '" data-bidang="' + (item.bidang || '-') + '" data-luas="' + (item.luas || '-') + '">';
+        var jenisVal = item.jenisIgt || (mode === 'igt' ? getJenisIgt(item.igt) : '');
+        svg += '<g class="igt-chart-cluster" data-idx="' + idx + '" data-mode="' + mode + '" data-label="' + rawLabel + '" data-igt="' + (item.igt || item.jumlahIgt || '-') + '" data-jenis="' + jenisVal + '" data-prov="' + (item.provinsi || '-') + '" data-kab="' + (item.kabupaten || '-') + '" data-bidang="' + (item.bidang || '-') + '" data-luas="' + (item.luas || '-') + '">';
 
         // Invisible full-height hover zone
         svg += '<rect x="' + (clusterCenter - (clusterStep / 2)) + '" y="' + plotTop + '" width="' + clusterStep + '" height="' + (plotHeight + 35) + '" fill="transparent" class="igt-chart-hover-zone"></rect>';
@@ -2201,6 +2224,11 @@ function renderStatistikIGTGrafik(ctrl) {
                 html += '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#94a3b8;"></span> Provinsi: <strong>' + prov + '</strong></div>'
                     + '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#68b6db;"></span> Jumlah IGT: <strong>' + igt + '</strong></div>';
             } else {
+                var jenis = $cluster.data('jenis');
+                if (jenis) {
+                    var jenisColor = jenis === 'Tata Ruang' ? '#10b981' : '#2563eb';
+                    html += '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:' + jenisColor + ';"></span> Jenis IGT: <strong>' + jenis + '</strong></div>';
+                }
                 html += '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#68b6db;"></span> Jumlah Data Provinsi: <strong>' + prov + '</strong></div>'
                     + '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#6793db;"></span> Jumlah Data Kabupaten: <strong>' + kab + '</strong></div>';
             }

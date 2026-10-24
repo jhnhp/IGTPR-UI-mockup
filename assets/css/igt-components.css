@@ -2525,6 +2525,30 @@ a.igt-stat:hover {
     color: hsl(0, 15%, 28%);
 }
 
+/* Badge Jenis IGT (Pertanahan / Tata Ruang) */
+.igt-badge-jenis {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.igt-badge-jenis--pertanahan {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.igt-badge-jenis--tataruang {
+    background-color: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+
 /* Action Buttons matching screenshot */
 .igt-aksi-group {
     display: inline-flex;

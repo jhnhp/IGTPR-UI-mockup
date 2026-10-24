@@ -93,17 +93,17 @@ window.MOCKUP_DATA = {
             ]
         },
         statistikIGT: [
-            { igt: 'Bidang Tanah', provinsi: 3, kabupaten: 7, bidang: 142, luas: '14,998' },
-            { igt: 'Hak Atas Tanah', provinsi: 1, kabupaten: 1, bidang: 22, luas: '1,15' },
-            { igt: 'Inventarisasi Tanah Kritis', provinsi: 1, kabupaten: 1, bidang: '1.026', luas: '1.877,075' },
-            { igt: 'Kemampuan Tanah', provinsi: 1, kabupaten: 5, bidang: '3.842', luas: '293.831,445' },
-            { igt: 'Lahan Baku Sawah Nasional', provinsi: 1, kabupaten: 5, bidang: '51.929', luas: '66.870,42' },
-            { igt: 'Lahan Sawah Dilindungi', provinsi: 1, kabupaten: 5, bidang: '55.079', luas: '73.288,827' },
-            { igt: 'RDTR Kabupaten/ Kota', provinsi: 1, kabupaten: 3, bidang: '51.528', luas: '35.547,203' },
-            { igt: 'RDTR Kawasan Perbatasan Negara', provinsi: 1, kabupaten: 3, bidang: '2.829', luas: '8.876,029' },
-            { igt: 'RTRW Kabupaten', provinsi: 0, kabupaten: 1, bidang: '7.516', luas: '231.015,748' },
-            { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', provinsi: 1, kabupaten: 5, bidang: 625, luas: '0' },
-            { igt: 'Zona Nilai Tanah', provinsi: 1, kabupaten: 5, bidang: '4.120', luas: '128.450' }
+            { igt: 'Bidang Tanah', jenisIgt: 'Pertanahan', provinsi: 3, kabupaten: 7, bidang: 142, luas: '14,998' },
+            { igt: 'Hak Atas Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: 22, luas: '1,15' },
+            { igt: 'Inventarisasi Tanah Kritis', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: '1.026', luas: '1.877,075' },
+            { igt: 'Kemampuan Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 5, bidang: '3.842', luas: '293.831,445' },
+            { igt: 'Lahan Baku Sawah Nasional', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 5, bidang: '51.929', luas: '66.870,42' },
+            { igt: 'Lahan Sawah Dilindungi', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 5, bidang: '55.079', luas: '73.288,827' },
+            { igt: 'RDTR Kabupaten/ Kota', jenisIgt: 'Tata Ruang', provinsi: 1, kabupaten: 3, bidang: '51.528', luas: '35.547,203' },
+            { igt: 'RDTR Kawasan Perbatasan Negara', jenisIgt: 'Tata Ruang', provinsi: 1, kabupaten: 3, bidang: '2.829', luas: '8.876,029' },
+            { igt: 'RTRW Kabupaten', jenisIgt: 'Tata Ruang', provinsi: 0, kabupaten: 1, bidang: '7.516', luas: '231.015,748' },
+            { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 5, bidang: 625, luas: '0' },
+            { igt: 'Zona Nilai Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 5, bidang: '4.120', luas: '128.450' }
         ],
         statistikIGTProvinsi: [
             { provinsi: 'Bali', jumlahIgt: 2, kabupaten: 1, bidang: 160, luas: '12,892' },
@@ -275,10 +275,10 @@ window.MOCKUP_DATA = {
                     ]
                 },
                 statistikIGT: [
-                    { igt: 'Bidang Tanah Validasi', provinsi: 1, kabupaten: 1, bidang: 24 + (hashKab % 30), luas: (4.2 + (hashKab % 5)).toFixed(3) },
-                    { igt: 'Hak Atas Tanah ' + kabBersih, provinsi: 1, kabupaten: 1, bidang: 8 + (hashKab % 6), luas: (0.85 + (hashKab % 2)).toFixed(2) },
-                    { igt: 'Lahan Baku Sawah ' + kabBersih, provinsi: 1, kabupaten: 1, bidang: '4.210', luas: '11.230,45' },
-                    { igt: 'RDTR Wilayah ' + kabBersih, provinsi: 1, kabupaten: 1, bidang: '2.840', luas: '6.450,10' }
+                    { igt: 'Bidang Tanah Validasi', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: 24 + (hashKab % 30), luas: (4.2 + (hashKab % 5)).toFixed(3) },
+                    { igt: 'Hak Atas Tanah ' + kabBersih, jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: 8 + (hashKab % 6), luas: (0.85 + (hashKab % 2)).toFixed(2) },
+                    { igt: 'Lahan Baku Sawah ' + kabBersih, jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: '4.210', luas: '11.230,45' },
+                    { igt: 'RDTR Wilayah ' + kabBersih, jenisIgt: 'Tata Ruang', provinsi: 1, kabupaten: 1, bidang: '2.840', luas: '6.450,10' }
                 ],
                 statistikIGTProvinsi: [
                     { provinsi: provLengkap, jumlahIgt: totalLayerKab, kabupaten: 1, bidang: 24 + (hashKab % 30), luas: (4.2 + (hashKab % 5)).toFixed(3) }
@@ -384,13 +384,13 @@ window.MOCKUP_DATA = {
                 ]
             },
             statistikIGT: [
-                { igt: 'Bidang Tanah', provinsi: 1, kabupaten: 4 + (hash % 6), bidang: 58 + (hash % 40), luas: (18.4 + (hash % 10)).toFixed(3) },
-                { igt: 'Hak Atas Tanah', provinsi: 1, kabupaten: 2, bidang: 16 + (hash % 8), luas: (1.45 + (hash % 2)).toFixed(2) },
-                { igt: 'Inventarisasi Tanah Kritis', provinsi: 1, kabupaten: 3, bidang: 520 + (hash % 100), luas: '942,150' },
-                { igt: 'Kemampuan Tanah', provinsi: 1, kabupaten: 3 + (hash % 3), bidang: '1.840', luas: '142.610,200' },
-                { igt: 'Lahan Baku Sawah Nasional', provinsi: 1, kabupaten: 5, bidang: '24.120', luas: '34.870,40' },
-                { igt: 'RDTR Kabupaten/ Kota', provinsi: 1, kabupaten: 3, bidang: '28.450', luas: '19.820,10' },
-                { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', provinsi: 1, kabupaten: 3, bidang: 320, luas: '0' }
+                { igt: 'Bidang Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 4 + (hash % 6), bidang: 58 + (hash % 40), luas: (18.4 + (hash % 10)).toFixed(3) },
+                { igt: 'Hak Atas Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 2, bidang: 16 + (hash % 8), luas: (1.45 + (hash % 2)).toFixed(2) },
+                { igt: 'Inventarisasi Tanah Kritis', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 3, bidang: 520 + (hash % 100), luas: '942,150' },
+                { igt: 'Kemampuan Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 3 + (hash % 3), bidang: '1.840', luas: '142.610,200' },
+                { igt: 'Lahan Baku Sawah Nasional', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 5, bidang: '24.120', luas: '34.870,40' },
+                { igt: 'RDTR Kabupaten/ Kota', jenisIgt: 'Tata Ruang', provinsi: 1, kabupaten: 3, bidang: '28.450', luas: '19.820,10' },
+                { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 3, bidang: 320, luas: '0' }
             ],
             statistikIGTProvinsi: [
                 { provinsi: provLengkap, jumlahIgt: totalLayer, kabupaten: 4 + (hash % 6), bidang: '24.120', luas: '34.870,40' }
