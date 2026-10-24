@@ -1123,88 +1123,42 @@
                     </div>
                 </div>
 
-                <!-- 3. Leader Board selesai (Fixed 5 Entri Teratas) -->
-            </div>
-
-            <!-- 5. CAPAIAN RENAKSI TABLE -->
-            <div class="igt-card mb-4" id="capaian-renaksi">
-                <div class="igt-card__head">
-                    <h6 class="igt-card__title">Capaian Renaksi</h6>
-                    <div class="igt-card__tools">
-                        <div class="igt-searchbar">
-                            <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt=""></span>
-                            <input type="search" id="capaian-renaksi-cari" placeholder="Cari sesuatu...">
-                            <span class="igt-searchbar__shortcut">&#8984; K</span>
+                <!-- 3. Tabel Detail Seluruh Data (Mengikuti Tab Pilihan di Atas) -->
+                <div class="igt-leaderboard-detail-wrap" id="leader-board-detail-wrap">
+                    <div class="igt-leaderboard-detail-head">
+                        <div class="igt-leaderboard-detail-title-group">
+                            <h6 class="igt-leaderboard-detail-title" id="leader-board-detail-title">Tabel Detail Data</h6>
+                            <span class="igt-leaderboard-detail-badge" id="leader-board-detail-badge">0 Data</span>
                         </div>
-                        <div class="igt-segment" role="group">
-                            <button type="button" class="igt-segment__item is-active" data-tampilan="tabel">Tabel</button>
-                            <button type="button" class="igt-segment__item" data-tampilan="grafik">Grafik</button>
-                        </div>
-                        <label class="igt-btn igt-pilih">
-                            <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
-                            <select aria-label="Tahun Capaian Renaksi">
-                                <option value="all">Semua Tahun</option>
-                                <option value="2026">2026</option>
-                                <option value="2025">2025</option>
-                                <option value="2024">2024</option>
-                                <option value="2023">2023</option>
-                            </select>
-                            <img class="igt-pilih__caret" src="assets/img/icons/caret-up-down.svg" alt="">
-                        </label>
-                        <div class="igt-dropdown" id="capaian-renaksi-kelompok">
-                            <button type="button" class="igt-dropdown__trigger">
-                                <span class="igt-dropdown__label">Data Berdasarkan Direktorat</span>
-                                <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
-                            </button>
-                            <div class="igt-dropdown__panel">
-                                <button type="button" class="igt-dropdown__item is-active">
-                                    <img src="assets/img/icons/radio-on.svg" alt=""> Data Berdasarkan Direktorat
-                                </button>
-                                <button type="button" class="igt-dropdown__item">
-                                    <img src="assets/img/icons/radio-off.svg" alt=""> Data Berdasarkan Provinsi
-                                </button>
+                        <div class="igt-leaderboard-detail-tools">
+                            <div class="igt-searchbar igt-searchbar--sm">
+                                <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt=""></span>
+                                <input type="search" id="leader-board-detail-cari" placeholder="Cari di tabel detail...">
                             </div>
                         </div>
-                        <button type="button" class="igt-btn">
-                            <span class="igt-btn__icon"><img src="assets/img/icons/download-simple.svg" alt=""></span>
-                            Unduh Data
-                        </button>
-                        <button type="button" class="igt-btn">
-                            <span class="igt-btn__icon"><img src="assets/img/icons/arrows-out.svg" alt=""></span>
-                            View Full Table
-                        </button>
                     </div>
-                </div>
 
-                <div id="capaian-renaksi-tabel">
                     <div class="igt-table-wrap">
-                        <table class="igt-table">
+                        <table class="igt-table" id="leader-board-detail-table">
                             <thead>
-                                <tr>
-                                    <th class="igt-table__no is-plain">No</th>
-                                    <th class="igt-table__check is-plain"><img src="assets/img/icons/check-square.svg" alt=""></th>
-                                    <th data-kolom="direktorat"><span class="igt-table__sort">Direktorat <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
-                                    <th data-kolom="target"><span class="igt-table__sort">Target <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
-                                    <th data-kolom="capaian"><span class="igt-table__sort">Capaian <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
-                                </tr>
+                                <tr id="leader-board-detail-thead"></tr>
                             </thead>
-                            <tbody id="capaian-renaksi-body"></tbody>
+                            <tbody id="leader-board-detail-body"></tbody>
                         </table>
                     </div>
-                    <div class="igt-table-foot">
+
+                    <!-- Footer Tabel Detail: Per page (default 10) + Paginasi -->
+                    <div class="igt-table-foot" id="leader-board-detail-foot">
                         <div class="igt-table-foot__perpage">
                             Per page
-                            <select id="capaian-renaksi-perpage">
+                            <select id="leader-board-detail-perpage">
                                 <option value="10" selected>10</option>
                                 <option value="25">25</option>
+                                <option value="50">50</option>
                             </select>
                         </div>
-                        <div class="igt-pagination" id="capaian-renaksi-pagination"></div>
+                        <div class="igt-pagination" id="leader-board-detail-pagination"></div>
                     </div>
-                </div>
-                <div id="capaian-renaksi-grafik" style="display: none; padding: 40px; text-align: center; color: #64748b;">
-                    <i class="ri-bar-chart-box-line" style="font-size: 3rem;"></i>
-                    <p class="mt-2">Tampilan Grafik Capaian Renaksi</p>
                 </div>
             </div>
 

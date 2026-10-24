@@ -4086,6 +4086,63 @@ a.igt-stat:hover {
     }
 }
 
+/* ----------------------------------------------------
+   Leader Board Detail Table Section
+----------------------------------------------------- */
+.igt-leaderboard-detail-wrap {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px dashed #cbd5e1;
+}
+
+.igt-leaderboard-detail-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.igt-leaderboard-detail-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.igt-leaderboard-detail-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.igt-leaderboard-detail-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.igt-searchbar--sm {
+    height: 34px;
+    padding: 0 10px;
+}
+
+.igt-searchbar--sm input {
+    font-size: 13px;
+    width: 200px;
+}
+
+.igt-searchbar--sm .igt-searchbar__icon img {
+    width: 14px;
+    height: 14px;
+}
+
+
 
 
 
