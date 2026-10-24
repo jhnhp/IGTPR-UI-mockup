@@ -1682,13 +1682,13 @@ var LEADERBOARD_CONFIG = {
     'capaian-renaksi': {
         key: 'capaian-renaksi',
         shortTitle: 'Capaian Renaksi Satker',
-        subbarInfo: 'Peringkat Capaian Rencana Aksi (Renaksi) per Satker / Direktorat',
+        subbarInfo: 'Peringkat Capaian Rencana Aksi (Renaksi) per Direktorat',
         tahunTitle: 'Tahun Renaksi',
         showSatker: true,
         defaultSortCol: 'persentase',
         columns: [
             { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
-            { key: 'satker', label: 'Satker / Direktorat', sortable: true },
+            { key: 'satker', label: 'Direktorat', sortable: true },
             { key: 'realisasi', label: 'Realisasi / Target', sortable: false },
             { key: 'persentase', label: 'Persentase', sortable: true }
         ]
@@ -1987,7 +1987,7 @@ function updateLeaderBoardTable() {
                         });
                     }
 
-                    var rowKey = 'renaksi-' + idx;
+                    var rowKey = 'renaksi-' + (startIndex + idx);
                     var previewHtml = previewChips.map(function(c) {
                         var cls = c.isBidang ? 'igt-tag--bidang' : 'igt-tag--kawasan';
                         return '<span class="' + cls + '">' + c.name + '</span>';
@@ -2170,7 +2170,7 @@ function exportLeaderBoardToCSV() {
     var rawData = window.MOCKUP_DATA.getLeaderBoardData(
         leaderBoardState.kategori,
         leaderBoardState.tahun,
-        leaderBoardState.satker
+        leaderBoardState.jenisIgt
     );
 
     var headers = [];
