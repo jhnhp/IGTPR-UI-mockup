@@ -34,6 +34,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 24 | **Penghapusan Ikon Info (Tanda "i") di Kanan Atas Kartu Ringkasan** | Terdapat ikon informasi lingkaran (*info icon* / tanda "i") pada pojok kanan atas header kartu *Usulan Input Data* dan *Kompilasi Integrasi*. | Ikon tanda "i" (`.igt-panel__info` / `info.svg`) **dihapus secara menyeluruh** dari header kartu *Usulan Input Data* dan *Kompilasi Integrasi*. Menghasilkan tampilan header kartu ringkasan yang jauh lebih bersih, rapi, dan minimalis. |
 | 25 | **Penghapusan Kolom Kotak-kotak (Checkbox) pada Tabel Statistik IGT** | Tabel Statistik IGT memiliki kolom centang kotak-kotak (`check-square.svg`) di antara kolom `No` dan `IGT`. | Kolom centang kotak-kotak (`.igt-table__check`) **dihapus dari tabel Statistik IGT**. Logika perenderan tabel disesuaikan dinamis mendeteksi keberadaan header centang (`hasCheck`), menghasilkan tata letak tabel yang bersih, rapi, dan persis sesuai desain referensi asli. |
 | 26 | **Implementasi Tampilan Grafik Statistik IGT (Clustered Bar Chart)** | Tampilan tombol toggle *Grafik* pada kartu Statistik IGT sebelumnya hanya berupa teks placeholder statis. | Diimplementasikan **tampilan grafik batang bergugus (*clustered column bar chart*) interaktif** persis sesuai tangkapan layar modul Statistik IGT: <br>• **Legenda & Palet Warna**: *Jumlah Data Provinsi* (cyan `#68b6db`) dan *Jumlah Data Kabupaten* (medium blue `#6793db`).<br>• **Struktur Sumbu**: Sumbu Y skala 0–8 dengan garis kisi (*grid lines*) horizontal dan vertikal per tema, serta ikon garis di kiri bawah.<br>• **Kategori IGT Lengkap (11 Tema)**: Menampilkan 11 tema IGT (*Bidang Tanah*, *Hak Atas Tanah*, *Inventarisasi Tanah Kritis*, *Kemampuan Tanah*, *Lahan Baku Sawah*, *Lahan Sawah Dilindungi*, *RDTR Kab/Kota*, *RDTR Kawasan*, *RTRW Kabupaten*, *Sebaran Lokasi*, dan *Zona Nilai Tanah*).<br>• **Interaktivitas & Filter Dropdown**: Dilengkapi dropdown metrik (*Data Berdasarkan Administrasi*, *Bidang*, *Luas*), tooltip interaktif saat *hover*, serta tersinkronisasi otomatis dengan filter tahun renaksi dan wilayah. |
+| 27 | **Penyelarasan Opsi Dropdown Statistik IGT (Data Berdasarkan IGT)** | Dropdown pengelompokan pertama pada toolbar Statistik IGT bertuliskan *"Data Berdasarkan Direktorat"*. | Diperbarui menjadi **"Data Berdasarkan IGT"**, baik pada label pemicu (*trigger*) maupun item opsi aktif di dalam dropdown panel (`#statistik-igt-kelompok`), selaras dengan isi kolom data yang menampilkan tema-tema IGT. |
 
 ---
 
@@ -343,6 +344,13 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
     - Tooltip melayang (*floating tooltip*) muncul secara mulus saat kursor diarahkan ke setiap gugus batang, menyajikan nama lengkap tema IGT, jumlah data provinsi, kabupaten, bidang, dan luas wilayah.
     - Sinkronisasi dinamis: saat pengguna mengubah filter tahun renaksi maupun wilayah administrasi peta, grafik secara otomatis merender ulang data sesuai pilihan aktif.
     - Peralihan mulus (*smooth toggle*) antara tampilan *Tabel* dan *Grafik* melalui kontrol segmen header.
+
+### 24. Penyelarasan Opsi Dropdown Toolbar Statistik IGT (Data Berdasarkan IGT)
+- **Latar Belakang**: Dropdown pertama pada toolbar Statistik IGT sebelumnya bertuliskan *"Data Berdasarkan Direktorat"*, padahal tabel dan data statistik menyajikan tema-tema Informasi Geospasial Tematik (IGT).
+- **Perubahan yang Diterapkan**:
+  - Mengubah label default trigger dropdown `#statistik-igt-kelompok` menjadi **"Data Berdasarkan IGT"**.
+  - Mengubah item opsi pertama (radio aktif) di dalam `#statistik-igt-kelompok .igt-dropdown__panel` menjadi **"Data Berdasarkan IGT"**.
+- **Hasil Tampilan**: Selaras 100% dengan kolom data yang berfokus pada tema IGT, menjaga kejelasan hierarki data bagi pengguna saat menjelajahi statistik Geoportal.
 
 ---
 
