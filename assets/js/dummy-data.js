@@ -880,29 +880,152 @@ window.MOCKUP_DATA = {
     isIgtPertanahan: function(nama) {
         if (!nama) return false;
         var n = String(nama).toLowerCase().trim();
-        var tr = [
-            'rtrw nasional', 'rtrw provinsi', 'rtrw kabupaten', 'rtrw kota',
-            'rdtr kawasan perbatasan negara', 'rtr pulau/kepulauan',
-            'rtr kawasan strategis nasional', 'rdtr kabupaten/kota', 'kkpr',
-            'indikasi pelanggaran pemanfaatan ruang'
+        var trKeywords = [
+            'tata ruang', 'rtrw', 'rdtr', 'kesesuaian kegiatan', 'izin lokasi',
+            'pelanggaran pemanfaatan ruang', 'lahan sawah yang dilindungi', 'lahan baku sawah'
         ];
-        return tr.indexOf(n) === -1;
+        var isTr = trKeywords.some(function(kw) { return n.indexOf(kw) !== -1; });
+        return !isTr;
     },
 
     getIgtBasisFisik: function(nama) {
         if (!nama) return 'bidang';
         var n = String(nama).toLowerCase().trim();
-        var kawasan = [
-            'unsur dasar pertanahan', 'zona nilai tanah', 'sebaran potensi pengembangan pertanahan',
+        var kawasanKeywords = [
+            'unsur dasar pertanahan', 'zona nilai tanah', 'lokasi pengembangan pertanahan',
             'lahan baku sawah', 'kemampuan tanah', 'neraca penatagunaan tanah',
-            'persebaran pulau-pulau kecil terluar di indonesia', 'sebaran tanah objek reforma agraria',
+            'pesisir', 'sebaran tanah objek reforma agraria',
             'analisa tanah objek reforma agraria', 'potensi objek redistribusi tanah',
-            'potensi wp3wt', 'tanah timbul', 'lahan sawah dilindungi', 'kawasan terindikasi terlantar',
-            'rtrw nasional', 'rtrw provinsi', 'rtrw kabupaten', 'rtrw kota',
-            'rdtr kawasan perbatasan negara', 'rtr pulau/kepulauan', 'rtr kawasan strategis nasional',
-            'rdtr kabupaten/kota', 'kkpr'
+            'wp3wt', 'tanah timbul', 'lahan sawah yang dilindungi', 'lahan sawah dilindungi',
+            'kawasan terindikasi telantar', 'kawasan terindikasi terlantar',
+            'tanah kritis',
+            'tata ruang', 'rtrw', 'rdtr', 'kesesuaian kegiatan', 'izin lokasi'
         ];
-        return kawasan.indexOf(n) !== -1 ? 'kawasan' : 'bidang';
+        var isKaw = kawasanKeywords.some(function(kw) { return n.indexOf(kw) !== -1; });
+        return isKaw ? 'kawasan' : 'bidang';
+    },
+
+    getRenaksiDetailIgtData: function(tahunFilter, jenisIgtFilter) {
+        var t = (tahunFilter && tahunFilter !== 'all') ? String(tahunFilter) : 'all';
+        var factor = t === '2026' || t === 'all' ? 1.0 : (t === '2025' ? 0.78 : (t === '2024' ? 0.52 : 0.30));
+
+        // 43 Official IGT from Examples/IGT.xlsx mapped to 19 Direktorat + Regional Satkers
+        var rawIgtList = [
+            // 1. Direktorat Perencanaan Tata Ruang (4 IGT)
+            { orderIndex: 1, satker: 'Direktorat Perencanaan Tata Ruang', igt: 'IGT Rencana Tata Ruang Wilayah Nasional (RTRWN)', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 1200, realisasiBase: 1080 },
+            { orderIndex: 2, satker: 'Direktorat Perencanaan Tata Ruang', igt: 'IGT Rencana Tata Ruang Pulau/Kepulauan', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 2500, realisasiBase: 2150 },
+            { orderIndex: 3, satker: 'Direktorat Perencanaan Tata Ruang', igt: 'IGT Rencana Tata Ruang Kawasan Strategis Nasional', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 4000, realisasiBase: 3440 },
+            { orderIndex: 4, satker: 'Direktorat Perencanaan Tata Ruang', igt: 'IGT Rencana Detail Tata Ruang Kawasan Perbatasan Negara', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 1500, realisasiBase: 1200 },
+
+            // 2. Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah I (4 IGT)
+            { orderIndex: 5, satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah I', igt: 'IGT Rencana Tata Ruang Wilayah (RTRW) Provinsi', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 8000, realisasiBase: 6560 },
+            { orderIndex: 6, satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah I', igt: 'IGT Rencana Tata Ruang Wilayah (RTRW) Kabupaten', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 12000, realisasiBase: 9840 },
+            { orderIndex: 7, satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah I', igt: 'IGT Rencana Tata Ruang Wilayah (RTRW) Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 5000, realisasiBase: 4250 },
+            { orderIndex: 8, satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah I', igt: 'IGT RDTR Kabupaten/Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 6000, realisasiBase: 4800 },
+
+            // 3. Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II (4 IGT)
+            { orderIndex: 9, satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II', igt: 'IGT Rencana Tata Ruang Wilayah (RTRW) Provinsi', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 7500, realisasiBase: 5850 },
+            { orderIndex: 10, satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II', igt: 'IGT Rencana Tata Ruang Wilayah (RTRW) Kabupaten', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 11000, realisasiBase: 8580 },
+            { orderIndex: 11, satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II', igt: 'IGT Rencana Tata Ruang Wilayah (RTRW) Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 4500, realisasiBase: 3690 },
+            { orderIndex: 12, satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II', igt: 'IGT RDTR Kabupaten/Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 5500, realisasiBase: 4180 },
+
+            // 4. Direktorat Sinkronisasi Pemanfaatan Ruang (1 IGT)
+            { orderIndex: 13, satker: 'Direktorat Sinkronisasi Pemanfaatan Ruang', igt: 'IGT Izin Lokasi dan IGT Kesesuaian Kegiatan Pemanfaatan Ruang', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 3000, realisasiBase: 2490 },
+
+            // 5. Direktorat Pengukuran dan Pemetaan Kadastral (1 IGT)
+            { orderIndex: 14, satker: 'Direktorat Pengukuran dan Pemetaan Kadastral', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 50000, realisasiBase: 47000 },
+
+            // 6. Direktorat Pengukuran Dan Pemetaan Dasar Pertanahan Ruang (1 IGT)
+            { orderIndex: 15, satker: 'Direktorat Pengukuran Dan Pemetaan Dasar Pertanahan Ruang', igt: 'IGT Unsur Dasar Pertanahan', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 10000, realisasiBase: 9200 },
+
+            // 7. Direktorat Survei Dan Pemetaan Tematik (4 IGT)
+            { orderIndex: 16, satker: 'Direktorat Survei Dan Pemetaan Tematik', igt: 'IGT Penggunaan Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 30000, realisasiBase: 28500 },
+            { orderIndex: 17, satker: 'Direktorat Survei Dan Pemetaan Tematik', igt: 'IGT Pemilikan Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 30000, realisasiBase: 27900 },
+            { orderIndex: 18, satker: 'Direktorat Survei Dan Pemetaan Tematik', igt: 'IGT Penguasaan Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 30000, realisasiBase: 27600 },
+            { orderIndex: 19, satker: 'Direktorat Survei Dan Pemetaan Tematik', igt: 'IGT Pemanfaatan Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 30000, realisasiBase: 27000 },
+
+            // 8. Sekretariat Direktorat Jenderal Penetapan Hak dan Pendaftaran Tanah (1 IGT)
+            { orderIndex: 20, satker: 'Sekretariat Direktorat Jenderal Penetapan Hak dan Pendaftaran Tanah', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 15000, realisasiBase: 14550 },
+
+            // 9. Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal (1 IGT)
+            { orderIndex: 21, satker: 'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal', igt: 'IGT Hak Ulayat', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 8000, realisasiBase: 7200 },
+
+            // 10. Direktorat Landreform (3 IGT)
+            { orderIndex: 22, satker: 'Direktorat Landreform', igt: 'IGT Sebaran Tanah Objek Reforma Agraria', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 18000, realisasiBase: 14940 },
+            { orderIndex: 23, satker: 'Direktorat Landreform', igt: 'IGT Analisa Tanah Objek Reforma Agraria', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 15000, realisasiBase: 12150 },
+            { orderIndex: 24, satker: 'Direktorat Landreform', igt: 'IGT Potensi Objek Redistribusi Tanah', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 12000, realisasiBase: 9360 },
+
+            // 11. Direktorat Pemberdayaan Tanah Masyarakat (1 IGT)
+            { orderIndex: 25, satker: 'Direktorat Pemberdayaan Tanah Masyarakat', igt: 'IGT Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 20000, realisasiBase: 17200 },
+
+            // 12. Direktorat Penatagunaan Tanah (7 IGT)
+            { orderIndex: 26, satker: 'Direktorat Penatagunaan Tanah', igt: 'IGT Lahan Baku Sawah Nasional', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 12000, realisasiBase: 10200 },
+            { orderIndex: 27, satker: 'Direktorat Penatagunaan Tanah', igt: 'IGT Neraca Penatagunaan Tanah', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 8000, realisasiBase: 6560 },
+            { orderIndex: 28, satker: 'Direktorat Penatagunaan Tanah', igt: 'IGT Pertimbangan Teknis Pertanahan', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 15000, realisasiBase: 12750 },
+            { orderIndex: 29, satker: 'Direktorat Penatagunaan Tanah', igt: 'IGT Kemampuan Tanah', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 10000, realisasiBase: 8100 },
+            { orderIndex: 30, satker: 'Direktorat Penatagunaan Tanah', igt: 'IGT Potensi Wilayah Pesisir, Pulau-pulau Kecil, Perbatasan, dan Wilayah Tertentu', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 5000, realisasiBase: 4050 },
+            { orderIndex: 31, satker: 'Direktorat Penatagunaan Tanah', igt: 'IGT Inventarisasi Tanah Kritis', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 15000, realisasiBase: 12000 },
+            { orderIndex: 32, satker: 'Direktorat Penatagunaan Tanah', igt: 'IGT Sebaran Tanah Timbul', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 6000, realisasiBase: 4680 },
+
+            // 13. Direktorat Bina Pengadaan Dan Pencadangan Tanah (1 IGT)
+            { orderIndex: 33, satker: 'Direktorat Bina Pengadaan Dan Pencadangan Tanah', igt: 'IGT Penetapan Lokasi Pengadaan Tanah bagi Kepentingan Umum', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 12000, realisasiBase: 9840 },
+
+            // 14. Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan (3 IGT)
+            { orderIndex: 34, satker: 'Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan', igt: 'IGT Potensi Subjek Objek Konsolidasi Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 25000, realisasiBase: 21750 },
+            { orderIndex: 35, satker: 'Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan', igt: 'IGT Desain Konsolidasi Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 20000, realisasiBase: 17400 },
+            { orderIndex: 36, satker: 'Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan', igt: 'IGT Lokasi Pengembangan Pertanahan', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 14000, realisasiBase: 11900 },
+
+            // 15. Direktorat Penilaian Tanah dan Ekonomi Pertanahan (2 IGT)
+            { orderIndex: 37, satker: 'Direktorat Penilaian Tanah dan Ekonomi Pertanahan', igt: 'IGT Zona Nilai Tanah', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 6000, realisasiBase: 5400 },
+            { orderIndex: 38, satker: 'Direktorat Penilaian Tanah dan Ekonomi Pertanahan', igt: 'IGT Nilai Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 30000, realisasiBase: 27000 },
+
+            // 16. Direktorat Penertiban Pemanfaatan Ruang (1 IGT)
+            { orderIndex: 39, satker: 'Direktorat Penertiban Pemanfaatan Ruang', igt: 'IGT Indikasi Pelanggaran Pemanfaatan Ruang', jenisIgt: 'Tata Ruang', satuan: 'Bidang', targetBase: 15000, realisasiBase: 11250 },
+
+            // 17. Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu (1 IGT)
+            { orderIndex: 40, satker: 'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu', igt: 'IGT Lahan Sawah yang Dilindungi', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 25000, realisasiBase: 19000 },
+
+            // 18. Direktur Penertiban Penguasaan, Pemilikan dan Penggunaan Tanah (2 IGT)
+            { orderIndex: 41, satker: 'Direktur Penertiban Penguasaan, Pemilikan dan Penggunaan Tanah', igt: 'IGT Tanah Terindikasi Telantar', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 25000, realisasiBase: 19000 },
+            { orderIndex: 42, satker: 'Direktur Penertiban Penguasaan, Pemilikan dan Penggunaan Tanah', igt: 'IGT Kawasan Terindikasi Telantar', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 10000, realisasiBase: 7500 },
+
+            // 19. Sekretariat Direktorat Jenderal Penanganan Sengketa dan Konflik Pertanahan (1 IGT)
+            { orderIndex: 43, satker: 'Sekretariat Direktorat Jenderal Penanganan Sengketa dan Konflik Pertanahan', igt: 'IGT Informasi mengenai Sengketa, Konflik, dan Perkara Pertanahan', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 25000, realisasiBase: 24000 },
+
+            // Unit Daerah (Kanwil & Kantah untuk isolasi role simulation)
+            { orderIndex: 44, satker: 'Kanwil BPN Provinsi D.I. Yogyakarta', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 60000, realisasiBase: 56400 },
+            { orderIndex: 45, satker: 'Kanwil BPN Provinsi D.I. Yogyakarta', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 40000, realisasiBase: 37600 },
+            { orderIndex: 46, satker: 'Kanwil BPN Provinsi D.I. Yogyakarta', igt: 'IGT RDTR Kabupaten/Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 5000, realisasiBase: 4450 },
+
+            { orderIndex: 47, satker: 'Kantah Kab. Gunungkidul', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 35000, realisasiBase: 32900 },
+            { orderIndex: 48, satker: 'Kantah Kab. Gunungkidul', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 25000, realisasiBase: 23500 }
+        ];
+
+        if (jenisIgtFilter === 'pertanahan') {
+            rawIgtList = rawIgtList.filter(function(it) { return it.jenisIgt === 'Pertanahan'; });
+        } else if (jenisIgtFilter === 'tataruang') {
+            rawIgtList = rawIgtList.filter(function(it) { return it.jenisIgt === 'Tata Ruang'; });
+        }
+
+        return rawIgtList.map(function(item) {
+            var tgt = Math.max(1, Math.round(item.targetBase * factor));
+            var real = Math.max(1, Math.round(item.realisasiBase * factor));
+            var pct = Math.min(100, Math.round((real / tgt) * 10000) / 100);
+            return {
+                orderIndex: item.orderIndex,
+                satker: item.satker,
+                igt: item.igt,
+                jenisIgt: item.jenisIgt,
+                satuan: item.satuan,
+                target: tgt,
+                realisasi: real,
+                persentase: pct,
+                persenStr: pct.toFixed(2) + '%',
+                targetStr: tgt.toLocaleString('id-ID') + ' ' + item.satuan,
+                realisasiStr: real.toLocaleString('id-ID') + ' ' + item.satuan,
+                tahun: t
+            };
+        });
     },
 
     getLeaderBoardData: function(kategori, tahunFilter, arg3, arg4) {
@@ -922,96 +1045,116 @@ window.MOCKUP_DATA = {
         }
         var self = this;
 
+        if (kat === 'capaian-renaksi-detail') {
+            return self.getRenaksiDetailIgtData(t, jenisIgtFilter);
+        }
+
         var satkerIgtMap = {
-            'Direktorat Pengukuran Dan Pemetaan Kadastral': [
-                'Bidang Tanah'
-            ],
-            'Direktorat Penetapan Hak Atas Tanah dan Ruang': [
-                'Hak Atas Tanah'
-            ],
-            'Direktorat Penanganan Sengketa Pertanahan': [
-                'Informasi Mengenai Sengketa, Konflik, dan Perkara Pertanahan'
-            ],
-            'Direktorat Pemberdayaan Tanah Masyarakat': [
-                'Sebaran Lokasi Pemberdayaan Tanah Masyarakat'
-            ],
-            'Direktorat Survei Dan Pemetaan Tematik': [
-                'Penguasaan Tanah',
-                'Pemilikan Tanah',
-                'Penggunaan Tanah',
-                'Pemanfaatan Tanah',
-                'Unsur Dasar Pertanahan'
-            ],
-            'Direktorat Penilaian Tanah Dan Ekonomi Pertanahan': [
-                'Nilai Bidang Tanah',
-                'Zona Nilai Tanah'
-            ],
-            'Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan': [
-                'Potensi Subjek Konsolidasi Tanah',
-                'Desain Konsolidasi Tanah',
-                'Hasil Penerapan Desain Konsolidasi Tanah',
-                'Sebaran Potensi Pengembangan Pertanahan'
-            ],
-            'Direktorat Penatagunaan Tanah': [
-                'Pertimbangan Teknis Pertanahan',
-                'Inventarisasi Tanah Kritis',
-                'Lahan Baku Sawah',
-                'Kemampuan Tanah',
-                'Neraca Penatagunaan Tanah'
-            ],
-            'Direktorat Landreform': [
-                'Persebaran Pulau-Pulau Kecil Terluar di Indonesia',
-                'Sebaran Tanah Objek Reforma Agraria',
-                'Analisa Tanah Objek Reforma Agraria',
-                'Potensi Objek Redistribusi Tanah',
-                'Potensi WP3WT',
-                'Tanah Timbul'
-            ],
-            'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan Dan Wilayah Tertentu': [
-                'Tanah Terindikasi Terlantar',
-                'Lahan Sawah Dilindungi',
-                'Kawasan Terindikasi Terlantar'
-            ],
-            'Direktorat Penertiban Pemanfaatan Ruang': [
-                'Indikasi Pelanggaran Pemanfaatan Ruang'
+            'Direktorat Perencanaan Tata Ruang': [
+                'IGT Rencana Tata Ruang Wilayah Nasional (RTRWN)',
+                'IGT Rencana Tata Ruang Pulau/Kepulauan',
+                'IGT Rencana Tata Ruang Kawasan Strategis Nasional',
+                'IGT Rencana Detail Tata Ruang Kawasan Perbatasan Negara'
             ],
             'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah I': [
-                'RTRW Provinsi',
-                'RTRW Kabupaten',
-                'RTRW Kota',
-                'RDTR Kabupaten/Kota',
-                'KKPR'
+                'IGT Rencana Tata Ruang Wilayah (RTRW) Provinsi',
+                'IGT Rencana Tata Ruang Wilayah (RTRW) Kabupaten',
+                'IGT Rencana Tata Ruang Wilayah (RTRW) Kota',
+                'IGT RDTR Kabupaten/Kota'
             ],
-            'Direktorat Perencanaan Tata Ruang Nasional': [
-                'RTRW Nasional',
-                'RDTR Kawasan Perbatasan Negara',
-                'RTR Pulau/Kepulauan',
-                'RTR Kawasan Strategis Nasional'
+            'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II': [
+                'IGT Rencana Tata Ruang Wilayah (RTRW) Provinsi',
+                'IGT Rencana Tata Ruang Wilayah (RTRW) Kabupaten',
+                'IGT Rencana Tata Ruang Wilayah (RTRW) Kota',
+                'IGT RDTR Kabupaten/Kota'
+            ],
+            'Direktorat Sinkronisasi Pemanfaatan Ruang': [
+                'IGT Izin Lokasi dan IGT Kesesuaian Kegiatan Pemanfaatan Ruang'
+            ],
+            'Direktorat Pengukuran dan Pemetaan Kadastral': [
+                'IGT Bidang Tanah'
+            ],
+            'Direktorat Pengukuran Dan Pemetaan Dasar Pertanahan Ruang': [
+                'IGT Unsur Dasar Pertanahan'
+            ],
+            'Direktorat Survei Dan Pemetaan Tematik': [
+                'IGT Penggunaan Tanah',
+                'IGT Pemilikan Tanah',
+                'IGT Penguasaan Tanah',
+                'IGT Pemanfaatan Tanah'
+            ],
+            'Sekretariat Direktorat Jenderal Penetapan Hak dan Pendaftaran Tanah': [
+                'IGT Hak Atas Tanah'
+            ],
+            'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal': [
+                'IGT Hak Ulayat'
+            ],
+            'Direktorat Landreform': [
+                'IGT Sebaran Tanah Objek Reforma Agraria',
+                'IGT Analisa Tanah Objek Reforma Agraria',
+                'IGT Potensi Objek Redistribusi Tanah'
+            ],
+            'Direktorat Pemberdayaan Tanah Masyarakat': [
+                'IGT Sebaran Lokasi Pemberdayaan Tanah Masyarakat'
+            ],
+            'Direktorat Penatagunaan Tanah': [
+                'IGT Lahan Baku Sawah Nasional',
+                'IGT Neraca Penatagunaan Tanah',
+                'IGT Pertimbangan Teknis Pertanahan',
+                'IGT Kemampuan Tanah',
+                'IGT Potensi Wilayah Pesisir, Pulau-pulau Kecil, Perbatasan, dan Wilayah Tertentu',
+                'IGT Inventarisasi Tanah Kritis',
+                'IGT Sebaran Tanah Timbul'
+            ],
+            'Direktorat Bina Pengadaan Dan Pencadangan Tanah': [
+                'IGT Penetapan Lokasi Pengadaan Tanah bagi Kepentingan Umum'
+            ],
+            'Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan': [
+                'IGT Potensi Subjek Objek Konsolidasi Tanah',
+                'IGT Desain Konsolidasi Tanah',
+                'IGT Lokasi Pengembangan Pertanahan'
+            ],
+            'Direktorat Penilaian Tanah dan Ekonomi Pertanahan': [
+                'IGT Zona Nilai Tanah',
+                'IGT Nilai Bidang Tanah'
+            ],
+            'Direktorat Penertiban Pemanfaatan Ruang': [
+                'IGT Indikasi Pelanggaran Pemanfaatan Ruang'
+            ],
+            'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu': [
+                'IGT Lahan Sawah yang Dilindungi'
+            ],
+            'Direktur Penertiban Penguasaan, Pemilikan dan Penggunaan Tanah': [
+                'IGT Tanah Terindikasi Telantar',
+                'IGT Kawasan Terindikasi Telantar'
+            ],
+            'Sekretariat Direktorat Jenderal Penanganan Sengketa dan Konflik Pertanahan': [
+                'IGT Informasi mengenai Sengketa, Konflik, dan Perkara Pertanahan'
             ],
             'Kanwil BPN Provinsi D.I. Yogyakarta': [
-                'Bidang Tanah',
-                'Hak Atas Tanah',
-                'RDTR Kabupaten/Kota'
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT RDTR Kabupaten/Kota'
             ],
             'Kantah Kab. Gunungkidul': [
-                'Bidang Tanah',
-                'Hak Atas Tanah'
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah'
             ],
             'Kantah Kab. Sleman': [
-                'Bidang Tanah',
-                'Hak Atas Tanah'
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah'
             ],
             'Kantah Kab. Bantul': [
-                'Bidang Tanah',
-                'Hak Atas Tanah'
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah'
             ],
             'Kantah Kota Yogyakarta': [
-                'Bidang Tanah',
-                'Hak Atas Tanah'
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah'
             ],
             'Kantah Kab. Kulon Progo': [
-                'Bidang Tanah',
-                'Hak Atas Tanah'
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah'
             ]
         };
 
@@ -1129,284 +1272,42 @@ window.MOCKUP_DATA = {
             });
 
         } else {
-            // Kategori 1: Capaian Renaksi oleh Satker/Direktorat
-            // Sesuai 13 Direktorat Resmi Pengelola 39 IGT Kementerian ATR/BPN
-            var baseSatkerCapaian = [
-                {
-                    satker: 'Direktorat Penetapan Hak Atas Tanah dan Ruang',
-                    daftarIgt: ['Hak Atas Tanah'],
-                    targetBidang: Math.max(2, Math.round(10 * factor)),
-                    realisasiBidang: Math.max(2, Math.round(10 * factor)),
-                    countBidang: 1,
-                    targetKawasan: 0,
-                    realisasiKawasan: 0,
-                    countKawasan: 0
-                },
-                {
-                    satker: 'Direktorat Penanganan Sengketa Pertanahan',
-                    daftarIgt: ['Informasi Mengenai Sengketa, Konflik, dan Perkara Pertanahan'],
-                    targetBidang: Math.max(5, Math.round(25 * factor)),
-                    realisasiBidang: Math.max(5, Math.round(24 * factor)),
-                    countBidang: 1,
-                    targetKawasan: 0,
-                    realisasiKawasan: 0,
-                    countKawasan: 0
-                },
-                {
-                    satker: 'Direktorat Pengukuran Dan Pemetaan Kadastral',
-                    daftarIgt: ['Bidang Tanah'],
-                    targetBidang: Math.max(10, Math.round(50 * factor)),
-                    realisasiBidang: Math.max(9, Math.round(47 * factor)),
-                    countBidang: 1,
-                    targetKawasan: 0,
-                    realisasiKawasan: 0,
-                    countKawasan: 0
-                },
-                {
-                    satker: 'Direktorat Survei Dan Pemetaan Tematik',
-                    // Dual basis: 4 Bidang + 1 Kawasan
-                    daftarIgt: [
-                        'Penguasaan Tanah',
-                        'Pemilikan Tanah',
-                        'Penggunaan Tanah',
-                        'Pemanfaatan Tanah',
-                        'Unsur Dasar Pertanahan'
-                    ],
-                    targetBidang: Math.max(10, Math.round(120 * factor)),
-                    realisasiBidang: Math.max(9, Math.round(112 * factor)),
-                    countBidang: 4,
-                    targetKawasan: Math.max(1000, Math.round(10000 * factor)),
-                    realisasiKawasan: Math.max(900, Math.round(9200 * factor)),
-                    countKawasan: 1
-                },
-                {
-                    satker: 'Direktorat Penilaian Tanah Dan Ekonomi Pertanahan',
-                    // Dual basis: 1 Bidang + 1 Kawasan
-                    daftarIgt: [
-                        'Nilai Bidang Tanah',
-                        'Zona Nilai Tanah'
-                    ],
-                    targetBidang: Math.max(5, Math.round(30 * factor)),
-                    realisasiBidang: Math.max(4, Math.round(27 * factor)),
-                    countBidang: 1,
-                    targetKawasan: Math.max(500, Math.round(6000 * factor)),
-                    realisasiKawasan: Math.max(450, Math.round(5400 * factor)),
-                    countKawasan: 1
-                },
-                {
-                    satker: 'Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan',
-                    // Dual basis: 3 Bidang + 1 Kawasan
-                    daftarIgt: [
-                        'Potensi Subjek Konsolidasi Tanah',
-                        'Desain Konsolidasi Tanah',
-                        'Hasil Penerapan Desain Konsolidasi Tanah',
-                        'Sebaran Potensi Pengembangan Pertanahan'
-                    ],
-                    targetBidang: Math.max(10, Math.round(70 * factor)),
-                    realisasiBidang: Math.max(8, Math.round(61 * factor)),
-                    countBidang: 3,
-                    targetKawasan: Math.max(1000, Math.round(14000 * factor)),
-                    realisasiKawasan: Math.max(850, Math.round(11900 * factor)),
-                    countKawasan: 1
-                },
-                {
-                    satker: 'Direktorat Pemberdayaan Tanah Masyarakat',
-                    daftarIgt: ['Sebaran Lokasi Pemberdayaan Tanah Masyarakat'],
-                    targetBidang: Math.max(5, Math.round(20 * factor)),
-                    realisasiBidang: Math.max(4, Math.round(17 * factor)),
-                    countBidang: 1,
-                    targetKawasan: 0,
-                    realisasiKawasan: 0,
-                    countKawasan: 0
-                },
-                {
-                    satker: 'Direktorat Penatagunaan Tanah',
-                    // Dual basis: 2 Bidang + 3 Kawasan
-                    daftarIgt: [
-                        'Pertimbangan Teknis Pertanahan',
-                        'Inventarisasi Tanah Kritis',
-                        'Lahan Baku Sawah',
-                        'Kemampuan Tanah',
-                        'Neraca Penatagunaan Tanah'
-                    ],
-                    targetBidang: Math.max(5, Math.round(30 * factor)),
-                    realisasiBidang: Math.max(4, Math.round(25 * factor)),
-                    countBidang: 2,
-                    targetKawasan: Math.max(4000, Math.round(45000 * factor)),
-                    realisasiKawasan: Math.max(3200, Math.round(37350 * factor)),
-                    countKawasan: 3
-                },
-                {
-                    satker: 'Direktorat Landreform',
-                    // 6 Kawasan
-                    daftarIgt: [
-                        'Persebaran Pulau-Pulau Kecil Terluar di Indonesia',
-                        'Sebaran Tanah Objek Reforma Agraria',
-                        'Analisa Tanah Objek Reforma Agraria',
-                        'Potensi Objek Redistribusi Tanah',
-                        'Potensi WP3WT',
-                        'Tanah Timbul'
-                    ],
-                    targetBidang: 0,
-                    realisasiBidang: 0,
-                    countBidang: 0,
-                    targetKawasan: Math.max(5000, Math.round(45000 * factor)),
-                    realisasiKawasan: Math.max(3800, Math.round(36450 * factor)),
-                    countKawasan: 6
-                },
-                {
-                    satker: 'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan Dan Wilayah Tertentu',
-                    // Dual basis: 1 Bidang + 2 Kawasan
-                    daftarIgt: [
-                        'Tanah Terindikasi Terlantar',
-                        'Lahan Sawah Dilindungi',
-                        'Kawasan Terindikasi Terlantar'
-                    ],
-                    targetBidang: Math.max(4, Math.round(25 * factor)),
-                    realisasiBidang: Math.max(3, Math.round(19 * factor)),
-                    countBidang: 1,
-                    targetKawasan: Math.max(2000, Math.round(25000 * factor)),
-                    realisasiKawasan: Math.max(1500, Math.round(19000 * factor)),
-                    countKawasan: 2
-                },
-                {
-                    satker: 'Direktorat Penertiban Pemanfaatan Ruang',
-                    // 1 Bidang (Tata Ruang)
-                    daftarIgt: [
-                        'Indikasi Pelanggaran Pemanfaatan Ruang'
-                    ],
-                    targetBidang: Math.max(4, Math.round(15 * factor)),
-                    realisasiBidang: Math.max(3, Math.round(11 * factor)),
-                    countBidang: 1,
-                    targetKawasan: 0,
-                    realisasiKawasan: 0,
-                    countKawasan: 0
-                },
-                {
-                    satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah I',
-                    // 5 Kawasan (Tata Ruang)
-                    daftarIgt: [
-                        'RTRW Provinsi',
-                        'RTRW Kabupaten',
-                        'RTRW Kota',
-                        'RDTR Kabupaten/Kota',
-                        'KKPR'
-                    ],
-                    targetBidang: 0,
-                    realisasiBidang: 0,
-                    countBidang: 0,
-                    targetKawasan: Math.max(2500, Math.round(25000 * factor)),
-                    realisasiKawasan: Math.max(1700, Math.round(17750 * factor)),
-                    countKawasan: 5
-                },
-                {
-                    satker: 'Direktorat Perencanaan Tata Ruang Nasional',
-                    // 4 Kawasan (Tata Ruang)
-                    daftarIgt: [
-                        'RTRW Nasional',
-                        'RDTR Kawasan Perbatasan Negara',
-                        'RTR Pulau/Kepulauan',
-                        'RTR Kawasan Strategis Nasional'
-                    ],
-                    targetBidang: 0,
-                    realisasiBidang: 0,
-                    countBidang: 0,
-                    targetKawasan: Math.max(2000, Math.round(20000 * factor)),
-                    realisasiKawasan: Math.max(1300, Math.round(13600 * factor)),
-                    countKawasan: 4
-                },
-                {
-                    satker: 'Kanwil BPN Provinsi D.I. Yogyakarta',
-                    daftarIgt: [
-                        'Bidang Tanah',
-                        'Hak Atas Tanah',
-                        'RDTR Kabupaten/Kota'
-                    ],
-                    targetBidang: Math.max(20, Math.round(120 * factor)),
-                    realisasiBidang: Math.max(18, Math.round(112 * factor)),
-                    countBidang: 2,
-                    targetKawasan: Math.max(1000, Math.round(5000 * factor)),
-                    realisasiKawasan: Math.max(850, Math.round(4450 * factor)),
-                    countKawasan: 1
-                },
-                {
-                    satker: 'Kantah Kab. Gunungkidul',
-                    daftarIgt: [
-                        'Bidang Tanah',
-                        'Hak Atas Tanah'
-                    ],
-                    targetBidang: Math.max(15, Math.round(64 * factor)),
-                    realisasiBidang: Math.max(14, Math.round(60 * factor)),
-                    countBidang: 2,
-                    targetKawasan: 0,
-                    realisasiKawasan: 0,
-                    countKawasan: 0
+            // Kategori 1: Capaian Renaksi oleh Satker/Direktorat (Aggregated Top Leaderboard)
+            // Sesuai 19 Direktorat Resmi Pengelola 43 IGT Kementerian ATR/BPN (dari sheet Examples/IGT.xlsx)
+            var detailItems = self.getRenaksiDetailIgtData(t, jenisIgtFilter);
+
+            var satkerMap = {};
+            var satkerOrder = [];
+
+            detailItems.forEach(function(d) {
+                if (!satkerMap[d.satker]) {
+                    satkerMap[d.satker] = {
+                        satker: d.satker,
+                        daftarIgt: [],
+                        targetBidang: 0,
+                        realisasiBidang: 0,
+                        countBidang: 0,
+                        targetKawasan: 0,
+                        realisasiKawasan: 0,
+                        countKawasan: 0
+                    };
+                    satkerOrder.push(d.satker);
                 }
-            ];
-
-            var filteredBaseSatker = [];
-            baseSatkerCapaian.forEach(function(item) {
-                var filteredIgt = item.daftarIgt;
-                if (jenisIgtFilter === 'pertanahan') {
-                    filteredIgt = item.daftarIgt.filter(function(name) {
-                        return self.isIgtPertanahan(name);
-                    });
-                } else if (jenisIgtFilter === 'tataruang') {
-                    filteredIgt = item.daftarIgt.filter(function(name) {
-                        return !self.isIgtPertanahan(name);
-                    });
+                var entry = satkerMap[d.satker];
+                entry.daftarIgt.push(d.igt);
+                if (d.satuan === 'Bidang') {
+                    entry.targetBidang += d.target;
+                    entry.realisasiBidang += d.realisasi;
+                    entry.countBidang++;
+                } else {
+                    entry.targetKawasan += d.target;
+                    entry.realisasiKawasan += d.realisasi;
+                    entry.countKawasan++;
                 }
-
-                if (filteredIgt.length === 0) {
-                    return;
-                }
-
-                var cBidang = 0;
-                var cKawasan = 0;
-                filteredIgt.forEach(function(name) {
-                    if (self.getIgtBasisFisik(name) === 'kawasan') {
-                        cKawasan++;
-                    } else {
-                        cBidang++;
-                    }
-                });
-
-                var tBidang = item.targetBidang;
-                var rBidang = item.realisasiBidang;
-                var tKawasan = item.targetKawasan;
-                var rKawasan = item.realisasiKawasan;
-
-                if (cBidang === 0) {
-                    tBidang = 0;
-                    rBidang = 0;
-                } else if (item.countBidang > 0 && cBidang < item.countBidang) {
-                    var ratioB = cBidang / item.countBidang;
-                    tBidang = Math.max(1, Math.round(item.targetBidang * ratioB));
-                    rBidang = Math.max(1, Math.round(item.realisasiBidang * ratioB));
-                }
-
-                if (cKawasan === 0) {
-                    tKawasan = 0;
-                    rKawasan = 0;
-                } else if (item.countKawasan > 0 && cKawasan < item.countKawasan) {
-                    var ratioK = cKawasan / item.countKawasan;
-                    tKawasan = Math.max(1, Math.round(item.targetKawasan * ratioK));
-                    rKawasan = Math.max(1, Math.round(item.realisasiKawasan * ratioK));
-                }
-
-                filteredBaseSatker.push({
-                    satker: item.satker,
-                    daftarIgt: filteredIgt,
-                    targetBidang: tBidang,
-                    realisasiBidang: rBidang,
-                    countBidang: cBidang,
-                    targetKawasan: tKawasan,
-                    realisasiKawasan: rKawasan,
-                    countKawasan: cKawasan
-                });
             });
 
-            var items = filteredBaseSatker.map(function(item) {
+            var items = satkerOrder.map(function(sKey) {
+                var item = satkerMap[sKey];
                 var hasBidang = item.countBidang > 0 && item.targetBidang > 0;
                 var hasKawasan = item.countKawasan > 0 && item.targetKawasan > 0;
 
@@ -1481,29 +1382,27 @@ window.MOCKUP_DATA = {
     getLeaderBoardSatkerList: function() {
         return [
             'Semua Satker',
-            'Direktorat Pengukuran Dan Pemetaan Kadastral',
-            'Direktorat Penetapan Hak Atas Tanah dan Ruang',
-            'Direktorat Penanganan Sengketa Pertanahan',
-            'Direktorat Pemberdayaan Tanah Masyarakat',
-            'Direktorat Survei Dan Pemetaan Tematik',
-            'Direktorat Penilaian Tanah Dan Ekonomi Pertanahan',
-            'Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan',
-            'Direktorat Penatagunaan Tanah',
-            'Direktorat Landreform',
-            'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan Dan Wilayah Tertentu',
-            'Direktorat Penertiban Pemanfaatan Ruang',
+            'Direktorat Perencanaan Tata Ruang',
             'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah I',
-            'Direktorat Perencanaan Tata Ruang Nasional',
-            'Kanwil BPN Provinsi Jawa Barat',
-            'Kanwil BPN Provinsi Jawa Timur',
-            'Kanwil BPN Provinsi Jawa Tengah',
-            'Kanwil BPN Provinsi DKI Jakarta',
-            'Kanwil BPN Provinsi Bali',
-            'Kantah Kab. Bogor',
-            'Kantah Kota Surabaya I',
-            'Kantah Kab. Sleman',
-            'Kantah Kota Jakarta Barat',
-            'Kantah Kab. Badung'
+            'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
+            'Direktorat Sinkronisasi Pemanfaatan Ruang',
+            'Direktorat Pengukuran dan Pemetaan Kadastral',
+            'Direktorat Pengukuran Dan Pemetaan Dasar Pertanahan Ruang',
+            'Direktorat Survei Dan Pemetaan Tematik',
+            'Sekretariat Direktorat Jenderal Penetapan Hak dan Pendaftaran Tanah',
+            'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal',
+            'Direktorat Landreform',
+            'Direktorat Pemberdayaan Tanah Masyarakat',
+            'Direktorat Penatagunaan Tanah',
+            'Direktorat Bina Pengadaan Dan Pencadangan Tanah',
+            'Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan',
+            'Direktorat Penilaian Tanah dan Ekonomi Pertanahan',
+            'Direktorat Penertiban Pemanfaatan Ruang',
+            'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu',
+            'Direktur Penertiban Penguasaan, Pemilikan dan Penggunaan Tanah',
+            'Sekretariat Direktorat Jenderal Penanganan Sengketa dan Konflik Pertanahan',
+            'Kanwil BPN Provinsi D.I. Yogyakarta',
+            'Kantah Kab. Gunungkidul'
         ];
     },
 

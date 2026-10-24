@@ -148,14 +148,23 @@ function updateRoleAlertBanner(role) {
 
 function applyRoleFilterToLeaderboard(rawData, kategori) {
     if (!rawData || !rawData.length) return rawData || [];
-    if (currentActiveRole === 'superadmin') return rawData;
+    if (currentActiveRole === 'superadmin') {
+        if (kategori === 'capaian-renaksi') {
+            return rawData.filter(function(item) {
+                return !item.satker || (item.satker.indexOf('Kanwil') === -1 && item.satker.indexOf('Kantah') === -1);
+            });
+        }
+        return rawData;
+    }
 
     if (currentActiveRole === 'sppr') {
         var spprDirektorat = [
             'Direktorat Pengukuran Dan Pemetaan Kadastral',
+            'Direktorat Pengukuran dan Pemetaan Kadastral',
+            'Direktorat Pengukuran Dan Pemetaan Dasar Pertanahan Ruang',
             'Direktorat Survei Dan Pemetaan Tematik'
         ];
-        var spprIgt = [
+        var spprIgtKeywords = [
             'Bidang Tanah',
             'Penguasaan Tanah',
             'Pemilikan Tanah',
@@ -165,15 +174,21 @@ function applyRoleFilterToLeaderboard(rawData, kategori) {
         ];
         if (kategori === 'capaian-renaksi') {
             return rawData.filter(function(item) {
-                return spprDirektorat.indexOf(item.satker) !== -1;
+                return spprDirektorat.some(function(d) {
+                    return item.satker && item.satker.toLowerCase() === d.toLowerCase();
+                });
             });
         } else if (kategori === 'igt-akses') {
             return rawData.filter(function(item) {
-                return spprIgt.indexOf(item.igt) !== -1;
+                return spprIgtKeywords.some(function(k) {
+                    return item.igt && item.igt.toLowerCase().indexOf(k.toLowerCase()) !== -1;
+                });
             });
         } else if (kategori === 'satker-login' || kategori === 'direktorat-login') {
             return rawData.filter(function(item) {
-                return spprDirektorat.indexOf(item.satker) !== -1 || (item.satker && item.satker.indexOf('SPPR') !== -1);
+                return spprDirektorat.some(function(d) {
+                    return item.satker && item.satker.toLowerCase() === d.toLowerCase();
+                }) || (item.satker && item.satker.indexOf('SPPR') !== -1);
             });
         }
     } else if (currentActiveRole === 'kanwil-diy') {
@@ -186,7 +201,7 @@ function applyRoleFilterToLeaderboard(rawData, kategori) {
             });
         } else if (kategori === 'capaian-renaksi') {
             return rawData.filter(function(item) {
-                return item.satker && (item.satker.indexOf('D.I. Yogyakarta') !== -1 || item.satker.indexOf('Yogyakarta') !== -1 || item.satker.indexOf('Kantor Pertanahan') !== -1);
+                return item.satker && (item.satker.indexOf('D.I. Yogyakarta') !== -1 || item.satker.indexOf('Yogyakarta') !== -1 || item.satker.indexOf('Kantah') !== -1);
             });
         }
     } else if (currentActiveRole === 'kantah-gunungkidul') {
@@ -2140,7 +2155,9 @@ function initLeaderBoard() {
         var jenis = $item.data('jenis');
         leaderBoardState.jenisIgt = jenis || 'all';
         leaderBoardState.currentPage = 1;
+        leaderBoardDetailState.currentPage = 1;
         updateLeaderBoardTable();
+        updateLeaderBoardDetailTable();
     });
 
     // B. Segment buttons (1-click category switch)
@@ -2164,6 +2181,7 @@ function initLeaderBoard() {
         leaderBoardState.currentPage = 1;
         leaderBoardDetailState.currentPage = 1;
         updateLeaderBoardTable();
+        updateLeaderBoardDetailTable();
     });
 
     // E. Search input for detailed table
@@ -2190,8 +2208,8 @@ function switchLeaderBoardKategori(kategoriKey) {
 
     // Reset detailed table state on tab switch
     leaderBoardDetailState.currentPage = 1;
-    leaderBoardDetailState.sortCol = null;
-    leaderBoardDetailState.sortDir = 'desc';
+    leaderBoardDetailState.sortCol = (kategoriKey === 'capaian-renaksi') ? 'satker' : null;
+    leaderBoardDetailState.sortDir = (kategoriKey === 'capaian-renaksi') ? 'asc' : 'desc';
 
     var cfg = LEADERBOARD_CONFIG[kategoriKey];
 
@@ -2550,19 +2568,20 @@ var leaderBoardDetailState = {
     searchQuery: '',
     currentPage: 1,
     perPage: 10,
-    sortCol: null,
-    sortDir: 'desc'
+    sortCol: 'satker',
+    sortDir: 'asc'
 };
 
 var LEADERBOARD_DETAIL_CONFIG = {
     'capaian-renaksi': {
         title: 'Tabel Detail Capaian Rencana Aksi (Renaksi) per Direktorat',
-        defaultSortCol: 'persentase',
+        defaultSortCol: 'satker',
         columns: [
             { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
             { key: 'satker', label: 'Direktorat', sortable: true },
-            { key: 'target', label: 'Target', sortable: false },
-            { key: 'realisasi', label: 'Realisasi', sortable: false },
+            { key: 'igt', label: 'IGT', sortable: true },
+            { key: 'target', label: 'Target', sortable: true },
+            { key: 'realisasi', label: 'Realisasi', sortable: true },
             { key: 'persentase', label: 'Persentase Capaian', sortable: true }
         ]
     },
@@ -2610,13 +2629,29 @@ function updateLeaderBoardDetailTable() {
     var cfg = LEADERBOARD_DETAIL_CONFIG[kat] || LEADERBOARD_DETAIL_CONFIG['capaian-renaksi'];
     var rawData = [];
 
-    if (window.MOCKUP_DATA && typeof window.MOCKUP_DATA.getLeaderBoardData === 'function') {
-        rawData = window.MOCKUP_DATA.getLeaderBoardData(
-            kat,
-            leaderBoardState.tahun,
-            leaderBoardState.jenisIgt
-        );
+    if (kat === 'capaian-renaksi') {
+        if (window.MOCKUP_DATA && typeof window.MOCKUP_DATA.getRenaksiDetailIgtData === 'function') {
+            rawData = window.MOCKUP_DATA.getRenaksiDetailIgtData(
+                leaderBoardState.tahun,
+                leaderBoardState.jenisIgt
+            );
+        } else if (window.MOCKUP_DATA && typeof window.MOCKUP_DATA.getLeaderBoardData === 'function') {
+            rawData = window.MOCKUP_DATA.getLeaderBoardData(
+                'capaian-renaksi-detail',
+                leaderBoardState.tahun,
+                leaderBoardState.jenisIgt
+            );
+        }
         rawData = applyRoleFilterToLeaderboard(rawData, kat);
+    } else {
+        if (window.MOCKUP_DATA && typeof window.MOCKUP_DATA.getLeaderBoardData === 'function') {
+            rawData = window.MOCKUP_DATA.getLeaderBoardData(
+                kat,
+                leaderBoardState.tahun,
+                leaderBoardState.jenisIgt
+            );
+            rawData = applyRoleFilterToLeaderboard(rawData, kat);
+        }
     }
 
     // Filter by detailed search query
@@ -2626,6 +2661,8 @@ function updateLeaderBoardDetailTable() {
         filtered = rawData.filter(function(item) {
             var matchSatker = (item.satker && item.satker.toLowerCase().indexOf(q) !== -1);
             var matchIgt = (item.igt && item.igt.toLowerCase().indexOf(q) !== -1);
+            var matchJenis = (item.jenisIgt && item.jenisIgt.toLowerCase().indexOf(q) !== -1);
+            var matchSatuan = (item.satuan && item.satuan.toLowerCase().indexOf(q) !== -1);
             var matchTipe = (item.tipe && item.tipe.toLowerCase().indexOf(q) !== -1);
             var matchDaftar = false;
             if (item.daftarIgt && Array.isArray(item.daftarIgt)) {
@@ -2633,17 +2670,25 @@ function updateLeaderBoardDetailTable() {
                     return name.toLowerCase().indexOf(q) !== -1;
                 });
             }
-            return matchSatker || matchIgt || matchTipe || matchDaftar;
+            return matchSatker || matchIgt || matchJenis || matchSatuan || matchTipe || matchDaftar;
         });
     }
 
     // Sorting
     var sortCol = leaderBoardDetailState.sortCol || cfg.defaultSortCol;
-    var sortDir = leaderBoardDetailState.sortDir;
+    var sortDir = leaderBoardDetailState.sortDir || (sortCol === 'satker' ? 'asc' : 'desc');
     var sorted = filtered.slice();
 
     if (sortCol) {
         sorted.sort(function(a, b) {
+            if (sortCol === 'satker') {
+                var cmp = (sortDir === 'asc')
+                    ? (a.satker || '').localeCompare(b.satker || '')
+                    : (b.satker || '').localeCompare(a.satker || '');
+                if (cmp !== 0) return cmp;
+                return (a.orderIndex || 0) - (b.orderIndex || 0);
+            }
+
             var valA = a[sortCol];
             var valB = b[sortCol];
 
@@ -2696,8 +2741,38 @@ function updateLeaderBoardDetailTable() {
     if (pageData.length === 0) {
         tbodyHtml = '<tr><td colspan="' + cfg.columns.length + '" class="text-center py-4 text-muted">Tidak ada data yang sesuai filter</td></tr>';
     } else {
+        var isGroupedBySatker = (kat === 'capaian-renaksi' && (sortCol === 'satker' || !sortCol));
+        var prevSatker = null;
+
         pageData.forEach(function(item, idx) {
             var rowNo = startIndex + idx + 1;
+
+            // Group Header Row per Direktorat (when default grouped by Direktorat)
+            if (isGroupedBySatker && item.satker !== prevSatker) {
+                prevSatker = item.satker;
+                var satkerItems = filtered.filter(function(x) { return x.satker === item.satker; });
+                var satkerCount = satkerItems.length;
+                var sumPct = satkerItems.reduce(function(acc, x) { return acc + (x.persentase || 0); }, 0);
+                var avgPct = (sumPct / Math.max(1, satkerCount)).toFixed(2);
+                var avgColorCls = avgPct >= 85 ? 'text-success' : (avgPct >= 70 ? 'text-warning' : 'text-danger');
+
+                tbodyHtml += '<tr class="igt-table-group-header">'
+                    + '<td colspan="' + cfg.columns.length + '">'
+                    + '<div class="d-flex align-items-center justify-content-between">'
+                    + '<div>'
+                    + '<span class="igt-group-badge">Direktorat Pengampu</span>'
+                    + '<strong class="igt-group-name">' + item.satker + '</strong> '
+                    + '<span class="text-muted small ms-2">(' + satkerCount + ' IGT)</span>'
+                    + '</div>'
+                    + '<div>'
+                    + '<span class="text-muted small me-2">Rata-rata Capaian:</span>'
+                    + '<strong class="' + avgColorCls + '" style="font-size: 13.5px;">' + avgPct + '%</strong>'
+                    + '</div>'
+                    + '</div>'
+                    + '</td>'
+                    + '</tr>';
+            }
+
             tbodyHtml += '<tr>';
 
             if (kat === 'capaian-renaksi') {
@@ -2705,41 +2780,24 @@ function updateLeaderBoardDetailTable() {
                 tbodyHtml += '<td class="igt-table__no">' + rowNo + '</td>';
 
                 // Direktorat (Teks murni tanpa chip/badge)
-                tbodyHtml += '<td><strong>' + item.satker + '</strong></td>';
+                tbodyHtml += '<td><span class="fw-semibold text-secondary" style="font-size: 13px;">' + item.satker + '</span></td>';
+
+                // IGT (Nama IGT yang jelas)
+                tbodyHtml += '<td><strong style="color: #0f172a; font-size: 13.5px;">' + item.igt + '</strong></td>';
 
                 // Target (Satuannya ditulis biasa aja, tanpa chip/badge)
-                var targetHtml = '';
-                if (item.hasBidang && item.hasKawasan) {
-                    targetHtml = '<div style="line-height: 1.45;">'
-                        + '<div><strong>' + item.targetBidang.toLocaleString('id-ID') + '</strong> Bidang</div>'
-                        + '<div class="text-muted"><strong>' + item.targetKawasan.toLocaleString('id-ID') + '</strong> Ha</div>'
-                        + '</div>';
-                } else if (item.hasBidang) {
-                    targetHtml = '<strong>' + item.targetBidang.toLocaleString('id-ID') + '</strong> Bidang';
-                } else if (item.hasKawasan) {
-                    targetHtml = '<strong>' + item.targetKawasan.toLocaleString('id-ID') + '</strong> Ha';
-                } else {
-                    targetHtml = '<span class="text-muted">-</span>';
-                }
-                tbodyHtml += '<td>' + targetHtml + '</td>';
+                var targetDisplay = (item.target !== undefined && item.target !== null)
+                    ? ('<strong>' + item.target.toLocaleString('id-ID') + '</strong> ' + (item.satuan || ''))
+                    : '-';
+                tbodyHtml += '<td>' + targetDisplay + '</td>';
 
                 // Realisasi (Satuannya ditulis biasa aja, tanpa chip/badge)
-                var realisasiHtml = '';
-                if (item.hasBidang && item.hasKawasan) {
-                    realisasiHtml = '<div style="line-height: 1.45;">'
-                        + '<div><strong>' + item.realisasiBidang.toLocaleString('id-ID') + '</strong> Bidang</div>'
-                        + '<div class="text-muted"><strong>' + item.realisasiKawasan.toLocaleString('id-ID') + '</strong> Ha</div>'
-                        + '</div>';
-                } else if (item.hasBidang) {
-                    realisasiHtml = '<strong>' + item.realisasiBidang.toLocaleString('id-ID') + '</strong> Bidang';
-                } else if (item.hasKawasan) {
-                    realisasiHtml = '<strong>' + item.realisasiKawasan.toLocaleString('id-ID') + '</strong> Ha';
-                } else {
-                    realisasiHtml = '<span class="text-muted">-</span>';
-                }
-                tbodyHtml += '<td>' + realisasiHtml + '</td>';
+                var realisasiDisplay = (item.realisasi !== undefined && item.realisasi !== null)
+                    ? ('<strong>' + item.realisasi.toLocaleString('id-ID') + '</strong> ' + (item.satuan || ''))
+                    : '-';
+                tbodyHtml += '<td>' + realisasiDisplay + '</td>';
 
-                // Persentase (Tanpa bar progress, ditulis angka biasa)
+                // Persentase (Tanpa bar progress, ditulis angka biasa dengan pewarnaan semantik)
                 var pctColorCls = item.persentase >= 85 ? 'text-success' : (item.persentase >= 70 ? 'text-warning' : 'text-danger');
                 tbodyHtml += '<td><span class="fw-bold ' + pctColorCls + '" style="font-size: 14.5px;">' + item.persenStr + '</span></td>';
 
@@ -2801,7 +2859,7 @@ function updateLeaderBoardDetailTable() {
             leaderBoardDetailState.sortDir = (leaderBoardDetailState.sortDir === 'asc' ? 'desc' : 'asc');
         } else {
             leaderBoardDetailState.sortCol = key;
-            leaderBoardDetailState.sortDir = 'desc';
+            leaderBoardDetailState.sortDir = (key === 'satker' || key === 'igt' || key === 'jenisIgt') ? 'asc' : 'desc';
         }
         updateLeaderBoardDetailTable();
     });

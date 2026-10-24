@@ -57,6 +57,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 47 | **Diferensiasi Format Tabel Detail: Tanpa Progress Bar, Tanpa Chip, dan Penulisan Satuan Teks Biasa** | Tabel detail di bawah leaderboard sebelumnya masih mengadopsi elemen visual seperti leaderboard (progress bar warna-warni, chip tema geospasial, dan badge pill satuan). | Disesuaikan menjadi **tampilan tabel data grid standar yang bersih dan kontras dengan leaderboard**: <br>• **Tanpa Progress Bar**: Kolom persentase murni angka tebal (misal: `88.50%`) dengan warna teks semantik (`text-success`, `text-warning`, `text-danger`).<br>• **Tanpa Chip/Badge**: Kolom Direktorat, Jenis IGT, dan Tipe Satker disajikan dalam teks polos bersih tanpa chip atau badge pill.<br>• **Satuan Ditulis Biasa**: Angka target, realisasi, frekuensi akses, dan frekuensi login ditulis langsung berdampingan dengan satuannya sebagai teks biasa (misal: `10 Bidang`, `10.000 Ha`, `32.140 kali`, `2.840 kali login`). |
 | 48 | **Penghapusan Kolom Kotak (Checkbox) pada Seluruh Tabel Data (Statistik Derivatif, Statistik Akses, & Aktivitas Log)** | Terdapat kolom checkbox kotak (`check-square.svg`) setelah kolom `No` pada tabel Statistik Derivatif, Statistik Akses IGT, dan Aktivitas Log. | Seluruh kolom checkbox kotak **dihapus secara menyeluruh** dari markup `index.html` dan logika perenderan `mockup-app.js`. Seluruh tabel kini diawali murni dengan kolom nomor urut (`No`) yang langsung diikuti oleh kolom data entitas (`Layer Derivatif`, `Unit / Wilayah`, `Nama User`), menghasilkan tata letak tabel yang bersih, konsisten, dan rapi di seluruh dashboard. |
 | 49 | **Transisi Sidebar Menjadi Navigasi Card per Role (Superadmin, Direktorat SPPR, Kanwil DIY, Kantah Gunung Kidul)** | Navbar samping sebelumnya memuat menu statis umum (Dashboard, Kompilasi Data, Integrasi Data, Create Layer Derivatif, CMS) yang belum mengakomodasi simulasi hak akses berbasis peran kementerian. | Navbar samping **diganti menjadi kartu interaktif per role (*Card per Role*)** yang langsung merefleksikan hak akses dan filter dashboard otomatis: <br>1. **Superadmin**: Akses penuh seluruh data nasional (38 provinsi) dan semua modul (tampilan awal/default).<br>2. **Direktorat SPPR**: Otomatis memfilter data dashboard khusus ke tema IGT dan unit di lingkungan Ditjen SPPR (*Bidang Tanah*, *Penguasaan*, *Pemilikan*, *Penggunaan*, *Pemanfaatan*, *Unsur Dasar*).<br>3. **Kanwil DIY**: Peta otomatis drill-down dan terkunci ke wilayah D.I. Yogyakarta, dropdown wilayah hanya menyajikan 5 kabupaten/kota di DIY, dan tabel satker hanya memuat satker DIY (tidak dapat melihat provinsi lain).<br>4. **Kantah Gunung Kidul**: Peta otomatis drill-down dan terkunci pada poligon Kab. Gunungkidul, dropdown terkunci murni pada Gunungkidul, dan satker login hanya memuat Kantah Gunungkidul.<br>Dilengkapi banner status role aktif di atas dashboard, sinkronisasi profil pengguna di footer sidebar, serta penanganan proteksi aksi di luar hak akses role. |
+| 50 | **Penambahan Kolom IGT dan Default Pengelompokan per Direktorat pada Tabel Detail Capaian Renaksi (Sheet IGT.xlsx)** | Tabel Detail Capaian Renaksi sebelumnya menampilkan data teragregasi per Direktorat dengan kolom No, Direktorat, Target, Realisasi, dan Persentase Capaian tanpa rincian baris individual per tema IGT. | Menyesuaikan struktur data dan tampilan Tabel Detail Capaian Renaksi (`#leader-board-detail-table`) menjadi **berbasis per IGT dan dikelompokkan per Direktorat**: <br>• **Penambahan Kolom IGT**: Kolom tabel detail disesuaikan menjadi: **`No` $\rightarrow$ `Direktorat` $\rightarrow$ `IGT` $\rightarrow$ `Target` $\rightarrow$ `Realisasi` $\rightarrow$ `Persentase Capaian`**.<br>• **Data Bersumber dari `Examples/IGT.xlsx`**: Mengadopsi 43 pemetaan resmi IGT Kementerian ATR/BPN yang terbagi ke dalam 19 Direktorat pengampu teknis.<br>• **Penyajian Metrik per IGT**: Setiap baris tabel mewakili satu IGT individual lengkap dengan target spesifik, realisasi spesifik, dan persentase capaian spesifik dengan satuan teks biasa (*Bidang* atau *Ha*).<br>• **Default Dikelompokkan per Direktorat (*Grouped View*)**: Secara default tabel mengelompokkan baris berdasarkan Direktorat pengampu dengan subheader grup elegan (`.igt-table-group-header`) yang memuat badge Direktorat, jumlah IGT, dan rata-rata capaian direktorat.<br>• **Fleksibilitas Sorting Global & Search**: Jika pengguna mengklik sort pada kolom metrik (*Persentase Capaian*, *Target*, atau *Realisasi*), tabel secara dinamis bertransisi menampilkan daftar terurut global dari tertinggi ke terendah, dan dapat kembali ke mode grup dengan mengklik kolom *Direktorat*. Terintegrasi dengan filter pencarian instan, jenis IGT, tahun, dan role switching. |
 
 ---
 
@@ -838,6 +839,44 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 3. **Banner Konteks Peran & Sinkronisasi Profil Pengguna**:
    - Disematkan bilah penanda peran aktif (`#igt-role-alert-bar`) di bagian atas dashboard dengan indikator gembok wilayah dan tombol pintas *"Kembali ke Superadmin"*.
    - Widget profil pengguna pada footer sidebar (`#sidebar-user-name`, `#sidebar-user-role`) dan header topbar secara dinamis tersinkronisasi mengikuti role yang aktif (*Admin ATR/BPN*, *Operator Ditjen SPPR*, *Operator Kanwil DIY*, atau *Operator Kantah GK*).
+
+### 47. Penambahan Kolom IGT dan Default Pengelompokan per Direktorat pada Tabel Detail Capaian Renaksi (Sheet IGT.xlsx)
+1. **Penyusunan Struktur Kolom Baru Tabel Detail**:
+   - Kolom Tabel Detail Capaian Rencana Aksi (Renaksi) pada kartu Leader Board (`#leader-board-detail-table`) diperbarui dengan menambahkan kolom baru **`IGT`** di antara kolom `Direktorat` dan `Target`.
+   - Urutan kolom resmi: **`No` $\rightarrow$ `Direktorat` $\rightarrow$ `IGT` $\rightarrow$ `Target` $\rightarrow$ `Realisasi` $\rightarrow$ `Persentase Capaian`**.
+2. **Integrasi Data Resmi 43 IGT dari `Examples/IGT.xlsx`**:
+   - Dataset detail renaksi mengadopsi 43 IGT resmi dari berkas spreadsheet `Examples/IGT.xlsx` yang dipetakan ke 19 Direktorat pengampu teknis:
+     - *Direktorat Perencanaan Tata Ruang* (4 IGT: RTRWN, RTR Pulau, RTR KSN, RDTR KPN).
+     - *Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah I* (4 IGT: RTRW Provinsi, RTRW Kabupaten, RTRW Kota, RDTR Kab/Kota).
+     - *Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II* (4 IGT: RTRW Provinsi, RTRW Kabupaten, RTRW Kota, RDTR Kab/Kota).
+     - *Direktorat Sinkronisasi Pemanfaatan Ruang* (1 IGT: Izin Lokasi & KKPR).
+     - *Direktorat Pengukuran dan Pemetaan Kadastral* (1 IGT: Bidang Tanah).
+     - *Direktorat Pengukuran Dan Pemetaan Dasar Pertanahan Ruang* (1 IGT: Unsur Dasar Pertanahan).
+     - *Direktorat Survei Dan Pemetaan Tematik* (4 IGT: Penggunaan Tanah, Pemilikan Tanah, Penguasaan Tanah, Pemanfaatan Tanah).
+     - *Sekretariat Ditjen Penetapan Hak dan Pendaftaran Tanah* (1 IGT: Hak Atas Tanah).
+     - *Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal* (1 IGT: Hak Ulayat).
+     - *Direktorat Landreform* (3 IGT: Sebaran TORA, Analisa TORA, Potensi Redistribusi).
+     - *Direktorat Pemberdayaan Tanah Masyarakat* (1 IGT: Sebaran Lokasi Pemberdayaan).
+     - *Direktorat Penatagunaan Tanah* (7 IGT: LBS, Neraca PGT, Pertek, Kemampuan Tanah, Potensi Pesisir/Pulau Kecil, Inventarisasi Tanah Kritis, Tanah Timbul).
+     - *Direktorat Bina Pengadaan Dan Pencadangan Tanah* (1 IGT: Penlok Pengadaan Tanah).
+     - *Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan* (3 IGT: Potensi Subjek Objek KT, Desain KT, Lokasi Pengembangan Pertanahan).
+     - *Direktorat Penilaian Tanah dan Ekonomi Pertanahan* (2 IGT: ZNT, Nilai Bidang Tanah).
+     - *Direktorat Penertiban Pemanfaatan Ruang* (1 IGT: Indikasi Pelanggaran Pemanfaatan Ruang).
+     - *Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu* (1 IGT: LSD).
+     - *Direktur Penertiban Penguasaan, Pemilikan dan Penggunaan Tanah* (2 IGT: Tanah Terindikasi Telantar, Kawasan Terindikasi Telantar).
+     - *Sekretariat Ditjen Penanganan Sengketa dan Konflik Pertanahan* (1 IGT: Sengketa, Konflik, dan Perkara Pertanahan).
+   - Ditambahkan entitas daerah (*Kanwil BPN Provinsi D.I. Yogyakarta* dan *Kantah Kab. Gunungkidul*) untuk mendukung simulasi isolasi peran (*role switcher*).
+3. **Penyajian Metrik per IGT Individual**:
+   - Setiap baris data mewakili satu IGT individual, sehingga capaian Target, Realisasi, dan Persentase capaian ditunjukkan secara mandiri per IGT dengan format teks bersih:
+     - Target dan Realisasi bersanding dengan satuannya secara teks biasa (misal: `50.000 Bidang` atau `1.200 Ha`).
+     - Persentase Capaian murni teks tebal semantik (`text-success`, `text-warning`, `text-danger`) tanpa progress bar dan tanpa badge chip.
+4. **Default Pengelompokan per Direktorat (*Grouped View*)**:
+   - Secara default (kondisi awal maupun saat diurutkan berdasarkan kolom Direktorat), tabel menyajikan baris-baris IGT yang terkelompok rapi di bawah Direktorat pengampunya.
+   - Disematkan baris pembatas grup elegan (`<tr class="igt-table-group-header">`) yang menyajikan badge penanda Direktorat Pengampu, jumlah IGT di bawah direktorat tersebut, serta rata-rata capaian direktorat.
+5. **Transisi Sorting Global & Pencarian Fleksibel**:
+   - Jika pengguna mengklik sort pada header kolom metrik (*Persentase Capaian*, *Target*, atau *Realisasi*), baris pembatas grup otomatis disembunyikan dan tabel menyajikan daftar terurut global dari nilai tertinggi ke terendah secara mulus.
+   - Jika pengguna mengklik kembali kolom *Direktorat*, tabel secara otomatis kembali ke mode terkelompok per direktorat (*grouped view*).
+   - Terintegrasi penuh dengan pencarian instan `#leader-board-detail-cari`, filter Jenis IGT, filter Tahun, dan filter role switcher.
 
 ---
 
