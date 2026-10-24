@@ -4395,6 +4395,15 @@ a.igt-stat:hover {
     font-weight: 700;
 }
 
+/* Merged Satker Cell styling in Renaksi Detail Table */
+.igt-table__merged-satker {
+    vertical-align: middle !important;
+    background-color: #f8fafc !important;
+    border-right: 1.5px solid #e2e8f0 !important;
+    padding: 12px 16px !important;
+}
+
+
 
 
 

@@ -2085,13 +2085,13 @@ var LEADERBOARD_CONFIG = {
     'capaian-renaksi': {
         key: 'capaian-renaksi',
         shortTitle: 'Capaian Renaksi Satker',
-        subbarInfo: 'Peringkat Capaian Rencana Aksi (Renaksi) per Direktorat',
+        subbarInfo: 'Peringkat Capaian Rencana Aksi (Renaksi) per Satker',
         tahunTitle: 'Tahun Renaksi',
         showSatker: true,
         defaultSortCol: 'persentase',
         columns: [
             { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
-            { key: 'satker', label: 'Direktorat', sortable: true },
+            { key: 'satker', label: 'Satker', sortable: true },
             { key: 'realisasi', label: 'Realisasi / Target', sortable: false },
             { key: 'persentase', label: 'Persentase', sortable: true }
         ]
@@ -2574,11 +2574,11 @@ var leaderBoardDetailState = {
 
 var LEADERBOARD_DETAIL_CONFIG = {
     'capaian-renaksi': {
-        title: 'Tabel Detail Capaian Rencana Aksi (Renaksi) per Direktorat',
+        title: 'Tabel Detail Capaian Rencana Aksi (Renaksi) per Satker',
         defaultSortCol: 'satker',
         columns: [
             { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
-            { key: 'satker', label: 'Direktorat', sortable: true },
+            { key: 'satker', label: 'Satker', sortable: true },
             { key: 'igt', label: 'IGT', sortable: true },
             { key: 'target', label: 'Target', sortable: true },
             { key: 'realisasi', label: 'Realisasi', sortable: true },
@@ -2592,7 +2592,7 @@ var LEADERBOARD_DETAIL_CONFIG = {
             { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
             { key: 'igt', label: 'Nama IGT', sortable: true },
             { key: 'jenisIgt', label: 'Jenis IGT', sortable: true },
-            { key: 'satker', label: 'Direktorat Pengampu', sortable: true },
+            { key: 'satker', label: 'Satker Pengampu', sortable: true },
             { key: 'aksesPlugin', label: 'Akses Plugin QGIS', sortable: true },
             { key: 'aksesAplikasi', label: 'Akses Geoportal', sortable: true },
             { key: 'jumlahAkses', label: 'Total Akses', sortable: true }
@@ -2742,45 +2742,66 @@ function updateLeaderBoardDetailTable() {
         tbodyHtml = '<tr><td colspan="' + cfg.columns.length + '" class="text-center py-4 text-muted">Tidak ada data yang sesuai filter</td></tr>';
     } else {
         var isGroupedBySatker = (kat === 'capaian-renaksi' && (sortCol === 'satker' || !sortCol));
-        var prevSatker = null;
+
+        // Pre-calculate rowspan for satker on the current page
+        var satkerRowSpan = [];
+        if (isGroupedBySatker) {
+            var i = 0;
+            while (i < pageData.length) {
+                var currentSatker = pageData[i].satker;
+                var count = 1;
+                while ((i + count) < pageData.length && pageData[i + count].satker === currentSatker) {
+                    count++;
+                }
+                satkerRowSpan[i] = count;
+                for (var j = 1; j < count; j++) {
+                    satkerRowSpan[i + j] = 0; // mark to skip <td>
+                }
+                i += count;
+            }
+        }
 
         pageData.forEach(function(item, idx) {
             var rowNo = startIndex + idx + 1;
+            var isLastInSatkerGroup = false;
 
-            // Group Header Row per Direktorat (when default grouped by Direktorat)
-            if (isGroupedBySatker && item.satker !== prevSatker) {
-                prevSatker = item.satker;
-                var satkerItems = filtered.filter(function(x) { return x.satker === item.satker; });
-                var satkerCount = satkerItems.length;
-                var sumPct = satkerItems.reduce(function(acc, x) { return acc + (x.persentase || 0); }, 0);
-                var avgPct = (sumPct / Math.max(1, satkerCount)).toFixed(2);
-                var avgColorCls = avgPct >= 85 ? 'text-success' : (avgPct >= 70 ? 'text-warning' : 'text-danger');
-
-                tbodyHtml += '<tr class="igt-table-group-header">'
-                    + '<td colspan="' + cfg.columns.length + '">'
-                    + '<div class="d-flex align-items-center justify-content-between">'
-                    + '<div>'
-                    + '<span class="igt-group-badge">Direktorat Pengampu</span>'
-                    + '<strong class="igt-group-name">' + item.satker + '</strong> '
-                    + '<span class="text-muted small ms-2">(' + satkerCount + ' IGT)</span>'
-                    + '</div>'
-                    + '<div>'
-                    + '<span class="text-muted small me-2">Rata-rata Capaian:</span>'
-                    + '<strong class="' + avgColorCls + '" style="font-size: 13.5px;">' + avgPct + '%</strong>'
-                    + '</div>'
-                    + '</div>'
-                    + '</td>'
-                    + '</tr>';
+            if (isGroupedBySatker) {
+                if (idx === pageData.length - 1 || pageData[idx + 1].satker !== item.satker) {
+                    isLastInSatkerGroup = true;
+                }
             }
 
-            tbodyHtml += '<tr>';
+            var trStyle = isLastInSatkerGroup ? 'border-bottom: 2px solid #cbd5e1;' : '';
+            tbodyHtml += '<tr style="' + trStyle + '">';
 
             if (kat === 'capaian-renaksi') {
                 // No
                 tbodyHtml += '<td class="igt-table__no">' + rowNo + '</td>';
 
-                // Direktorat (Teks murni tanpa chip/badge)
-                tbodyHtml += '<td><span class="fw-semibold text-secondary" style="font-size: 13px;">' + item.satker + '</span></td>';
+                // Satker (Merged with rowspan when grouped by Satker)
+                if (isGroupedBySatker) {
+                    var span = satkerRowSpan[idx];
+                    if (span > 0) {
+                        var satkerItemsTotal = filtered.filter(function(x) { return x.satker === item.satker; });
+                        var totalSatkerIgt = satkerItemsTotal.length;
+                        var sumPct = satkerItemsTotal.reduce(function(acc, x) { return acc + (x.persentase || 0); }, 0);
+                        var avgPct = (sumPct / Math.max(1, totalSatkerIgt)).toFixed(2);
+                        var avgColorCls = avgPct >= 85 ? 'text-success' : (avgPct >= 70 ? 'text-warning' : 'text-danger');
+
+                        var rowspanAttr = span > 1 ? (' rowspan="' + span + '"') : '';
+                        tbodyHtml += '<td' + rowspanAttr + ' class="igt-table__merged-satker" style="vertical-align: middle; background-color: #f8fafc; border-right: 1.5px solid #e2e8f0; padding: 12px 14px;">'
+                            + '<div style="font-weight: 700; color: #0f172a; font-size: 13.5px; line-height: 1.4;">' + item.satker + '</div>'
+                            + '<div class="d-flex align-items-center gap-2 mt-1">'
+                            + '<span class="badge" style="background: #e2e8f0; color: #334155; font-size: 10.5px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">' + totalSatkerIgt + ' IGT</span>'
+                            + '<span class="text-muted" style="font-size: 11.5px;">Rata-rata: <strong class="' + avgColorCls + '">' + avgPct + '%</strong></span>'
+                            + '</div>'
+                            + '</td>';
+                    }
+                    // if span === 0, DO NOT emit <td> for Satker because it is merged with rowspan from above
+                } else {
+                    // Flat view (when sorted by persentase, target, etc.)
+                    tbodyHtml += '<td><span class="fw-semibold text-secondary" style="font-size: 13px;">' + item.satker + '</span></td>';
+                }
 
                 // IGT (Nama IGT yang jelas)
                 tbodyHtml += '<td><strong style="color: #0f172a; font-size: 13.5px;">' + item.igt + '</strong></td>';
