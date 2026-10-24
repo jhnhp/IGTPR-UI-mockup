@@ -1051,31 +1051,20 @@
                             <input type="search" id="leader-board-cari" placeholder="Cari di Leader Board...">
                             <span class="igt-searchbar__shortcut">&#8984; K</span>
                         </div>
-                        <div class="igt-dropdown" id="leader-board-kategori">
+                        <div class="igt-dropdown" id="leader-board-jenis-wrap">
                             <button type="button" class="igt-dropdown__trigger">
-                                <span class="igt-dropdown__label" id="leader-board-kategori-label">Capaian Renaksi Satker</span>
+                                <span class="igt-dropdown__label" id="leader-board-jenis-label">Semua Jenis IGT</span>
                                 <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
                             </button>
-                            <div class="igt-dropdown__panel">
-                                <button type="button" class="igt-dropdown__item is-active" data-kategori="capaian-renaksi">
-                                    <img src="assets/img/icons/radio-on.svg" alt=""> Capaian Renaksi oleh Satker/Direktorat
+                            <div class="igt-dropdown__panel" id="leader-board-jenis-panel">
+                                <button type="button" class="igt-dropdown__item is-active" data-jenis="all">
+                                    <img src="assets/img/icons/radio-on.svg" alt=""> Semua Jenis IGT
                                 </button>
-                                <button type="button" class="igt-dropdown__item" data-kategori="igt-akses">
-                                    <img src="assets/img/icons/radio-off.svg" alt=""> IGT yang Paling Sering Diakses
+                                <button type="button" class="igt-dropdown__item" data-jenis="pertanahan">
+                                    <img src="assets/img/icons/radio-off.svg" alt=""> IGT Pertanahan
                                 </button>
-                                <button type="button" class="igt-dropdown__item" data-kategori="satker-login">
-                                    <img src="assets/img/icons/radio-off.svg" alt=""> Satker yg Paling Sering Login
-                                </button>
-                            </div>
-                        </div>
-                        <div class="igt-dropdown" id="leader-board-direktorat-wrap">
-                            <button type="button" class="igt-dropdown__trigger">
-                                <span class="igt-dropdown__label" id="leader-board-direktorat-label">Semua Satker</span>
-                                <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
-                            </button>
-                            <div class="igt-dropdown__panel" id="leader-board-direktorat-panel">
-                                <button type="button" class="igt-dropdown__item is-active" data-satker="all">
-                                    <img src="assets/img/icons/radio-on.svg" alt=""> Semua Satker
+                                <button type="button" class="igt-dropdown__item" data-jenis="tataruang">
+                                    <img src="assets/img/icons/radio-off.svg" alt=""> IGT Tata Ruang
                                 </button>
                             </div>
                         </div>

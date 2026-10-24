@@ -877,10 +877,50 @@ window.MOCKUP_DATA = {
         };
     },
 
-    getLeaderBoardData: function(kategori, tahunFilter, direktoratFilter) {
+    isIgtPertanahan: function(nama) {
+        if (!nama) return false;
+        var n = String(nama).toLowerCase().trim();
+        var tr = [
+            'rtrw nasional', 'rtrw provinsi', 'rtrw kabupaten', 'rtrw kota',
+            'rdtr kawasan perbatasan negara', 'rtr pulau/kepulauan',
+            'rtr kawasan strategis nasional', 'rdtr kabupaten/kota', 'kkpr',
+            'indikasi pelanggaran pemanfaatan ruang'
+        ];
+        return tr.indexOf(n) === -1;
+    },
+
+    getIgtBasisFisik: function(nama) {
+        if (!nama) return 'bidang';
+        var n = String(nama).toLowerCase().trim();
+        var kawasan = [
+            'unsur dasar pertanahan', 'zona nilai tanah', 'sebaran potensi pengembangan pertanahan',
+            'lahan baku sawah', 'kemampuan tanah', 'neraca penatagunaan tanah',
+            'persebaran pulau-pulau kecil terluar di indonesia', 'sebaran tanah objek reforma agraria',
+            'analisa tanah objek reforma agraria', 'potensi objek redistribusi tanah',
+            'potensi wp3wt', 'tanah timbul', 'lahan sawah dilindungi', 'kawasan terindikasi terlantar',
+            'rtrw nasional', 'rtrw provinsi', 'rtrw kabupaten', 'rtrw kota',
+            'rdtr kawasan perbatasan negara', 'rtr pulau/kepulauan', 'rtr kawasan strategis nasional',
+            'rdtr kabupaten/kota', 'kkpr'
+        ];
+        return kawasan.indexOf(n) !== -1 ? 'kawasan' : 'bidang';
+    },
+
+    getLeaderBoardData: function(kategori, tahunFilter, arg3, arg4) {
         var kat = kategori || 'capaian-renaksi';
         var t = (tahunFilter && tahunFilter !== 'all') ? String(tahunFilter) : 'all';
         var factor = t === '2026' || t === 'all' ? 1.0 : (t === '2025' ? 0.78 : (t === '2024' ? 0.52 : 0.30));
+
+        var jenisIgtFilter = 'all';
+        var direktoratFilter = 'all';
+        if (arg3 === 'pertanahan' || arg3 === 'tataruang' || arg3 === 'all') {
+            jenisIgtFilter = arg3;
+        } else if (arg3) {
+            direktoratFilter = arg3;
+        }
+        if (arg4) {
+            jenisIgtFilter = arg4;
+        }
+        var self = this;
 
         var satkerIgtMap = {
             'Ditjen Survei dan Pemetaan Pertanahan dan Ruang': [
@@ -958,6 +998,16 @@ window.MOCKUP_DATA = {
                 { igt: 'Tanah Terindikasi Terlantar', jenisIgt: 'Pertanahan', satker: 'Ditjen Pengendalian dan Penertiban Tanah dan Ruang', aksesPlugin: Math.round(1450 * factor), aksesAplikasi: Math.round(1200 * factor) }
             ];
 
+            if (jenisIgtFilter === 'pertanahan') {
+                baseAkses = baseAkses.filter(function(it) {
+                    return self.isIgtPertanahan(it.igt);
+                });
+            } else if (jenisIgtFilter === 'tataruang') {
+                baseAkses = baseAkses.filter(function(it) {
+                    return !self.isIgtPertanahan(it.igt);
+                });
+            }
+
             return baseAkses.map(function(item) {
                 var total = item.aksesPlugin + item.aksesAplikasi;
                 return {
@@ -999,6 +1049,19 @@ window.MOCKUP_DATA = {
                 { satker: 'Kanwil BPN Provinsi Nusa Tenggara Timur', tipe: 'Kanwil', jumlahLogin: Math.round(480 * factor) },
                 { satker: 'Ditjen Penanganan Sengketa dan Konflik Pertanahan', tipe: 'Pusat', jumlahLogin: Math.round(348 * factor) }
             ];
+
+            if (jenisIgtFilter === 'pertanahan') {
+                baseLogin = baseLogin.filter(function(it) {
+                    return it.satker !== 'Ditjen Tata Ruang';
+                });
+            } else if (jenisIgtFilter === 'tataruang') {
+                baseLogin = baseLogin.filter(function(it) {
+                    if (it.satker.indexOf('Ditjen') !== -1) {
+                        return it.satker === 'Ditjen Tata Ruang' || it.satker.indexOf('Penertiban') !== -1;
+                    }
+                    return true;
+                });
+            }
 
             return baseLogin.map(function(item) {
                 return {
@@ -1136,7 +1199,69 @@ window.MOCKUP_DATA = {
                 }
             ];
 
-            var items = baseSatkerCapaian.map(function(item) {
+            var filteredBaseSatker = [];
+            baseSatkerCapaian.forEach(function(item) {
+                var filteredIgt = item.daftarIgt;
+                if (jenisIgtFilter === 'pertanahan') {
+                    filteredIgt = item.daftarIgt.filter(function(name) {
+                        return self.isIgtPertanahan(name);
+                    });
+                } else if (jenisIgtFilter === 'tataruang') {
+                    filteredIgt = item.daftarIgt.filter(function(name) {
+                        return !self.isIgtPertanahan(name);
+                    });
+                }
+
+                if (filteredIgt.length === 0) {
+                    return;
+                }
+
+                var cBidang = 0;
+                var cKawasan = 0;
+                filteredIgt.forEach(function(name) {
+                    if (self.getIgtBasisFisik(name) === 'kawasan') {
+                        cKawasan++;
+                    } else {
+                        cBidang++;
+                    }
+                });
+
+                var tBidang = item.targetBidang;
+                var rBidang = item.realisasiBidang;
+                var tKawasan = item.targetKawasan;
+                var rKawasan = item.realisasiKawasan;
+
+                if (cBidang === 0) {
+                    tBidang = 0;
+                    rBidang = 0;
+                } else if (item.countBidang > 0 && cBidang < item.countBidang) {
+                    var ratioB = cBidang / item.countBidang;
+                    tBidang = Math.max(1, Math.round(item.targetBidang * ratioB));
+                    rBidang = Math.max(1, Math.round(item.realisasiBidang * ratioB));
+                }
+
+                if (cKawasan === 0) {
+                    tKawasan = 0;
+                    rKawasan = 0;
+                } else if (item.countKawasan > 0 && cKawasan < item.countKawasan) {
+                    var ratioK = cKawasan / item.countKawasan;
+                    tKawasan = Math.max(1, Math.round(item.targetKawasan * ratioK));
+                    rKawasan = Math.max(1, Math.round(item.realisasiKawasan * ratioK));
+                }
+
+                filteredBaseSatker.push({
+                    satker: item.satker,
+                    daftarIgt: filteredIgt,
+                    targetBidang: tBidang,
+                    realisasiBidang: rBidang,
+                    countBidang: cBidang,
+                    targetKawasan: tKawasan,
+                    realisasiKawasan: rKawasan,
+                    countKawasan: cKawasan
+                });
+            });
+
+            var items = filteredBaseSatker.map(function(item) {
                 var hasBidang = item.countBidang > 0 && item.targetBidang > 0;
                 var hasKawasan = item.countKawasan > 0 && item.targetKawasan > 0;
 

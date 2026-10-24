@@ -1635,9 +1635,9 @@ function renderKompilasiIntegrasi(kompilasi) {
    6. Leader Board (3 Kategori Pilihan) Renderer
 ---------------------------------------------------- */
 var leaderBoardState = {
-    kategori: 'capaian-renaksi', // 'capaian-renaksi' | 'igt-akses' | 'direktorat-login'
+    kategori: 'capaian-renaksi', // 'capaian-renaksi' | 'igt-akses' | 'satker-login'
     tahun: '2026',
-    satker: 'all',
+    jenisIgt: 'all', // 'all' | 'pertanahan' | 'tataruang'
     searchQuery: '',
     currentPage: 1,
     perPage: 5, // Default Top 5
@@ -1747,39 +1747,15 @@ function renderLeaderBoard(dashboardLeaderBoardData) {
 function initLeaderBoard() {
     leaderBoardState.initialized = true;
 
-    // A. Populate Satker filter dropdown panel
-    if (window.MOCKUP_DATA && typeof window.MOCKUP_DATA.getLeaderBoardSatkerList === 'function') {
-        var satkerList = window.MOCKUP_DATA.getLeaderBoardSatkerList();
-        var satkerHtml = '';
-        satkerList.forEach(function(s) {
-            var isAll = (s === 'Semua Satker');
-            var val = isAll ? 'all' : s;
-            var activeClass = isAll ? ' is-active' : '';
-            var radioImg = isAll ? 'radio-on.svg' : 'radio-off.svg';
-            satkerHtml += '<button type="button" class="igt-dropdown__item' + activeClass + '" data-satker="' + val + '">'
-                + '<img src="assets/img/icons/' + radioImg + '" alt=""> ' + s
-                + '</button>';
-        });
-        $('#leader-board-direktorat-panel').html(satkerHtml);
-    }
-
-    // B. Setup Kategori dropdown
-    setupDropdown('leader-board-kategori', function($item) {
-        var kat = $item.data('kategori');
-        if (kat) {
-            switchLeaderBoardKategori(kat);
-        }
-    });
-
-    // C. Setup Satker dropdown
-    setupDropdown('leader-board-direktorat-wrap', function($item) {
-        var satker = $item.data('satker');
-        leaderBoardState.satker = satker || 'all';
+    // A. Setup Jenis IGT dropdown filter
+    setupDropdown('leader-board-jenis-wrap', function($item) {
+        var jenis = $item.data('jenis');
+        leaderBoardState.jenisIgt = jenis || 'all';
         leaderBoardState.currentPage = 1;
         updateLeaderBoardTable();
     });
 
-    // D. Segment buttons (1-click category switch)
+    // B. Segment buttons (1-click category switch)
     $('#leader-board-segment .igt-segment__item').off('click').on('click', function() {
         var kat = $(this).data('kategori');
         if (kat) {
@@ -1787,28 +1763,28 @@ function initLeaderBoard() {
         }
     });
 
-    // E. Search input
+    // C. Search input
     $('#leader-board-cari').off('input').on('input', function() {
         leaderBoardState.searchQuery = $(this).val().trim().toLowerCase();
         leaderBoardState.currentPage = 1;
         updateLeaderBoardTable();
     });
 
-    // F. Tahun filter
+    // D. Tahun filter
     $('#leader-board-tahun').off('change').on('change', function() {
         leaderBoardState.tahun = $(this).val();
         leaderBoardState.currentPage = 1;
         updateLeaderBoardTable();
     });
 
-    // G. Per page selector
+    // E. Per page selector
     $('#leader-board-perpage').off('change').on('change', function() {
         leaderBoardState.perPage = parseInt($(this).val(), 10) || 5;
         leaderBoardState.currentPage = 1;
         updateLeaderBoardTable();
     });
 
-    // H. Unduh button
+    // F. Unduh button
     $('#leader-board-unduh').off('click').on('click', function() {
         exportLeaderBoardToCSV();
     });
@@ -1839,13 +1815,6 @@ function switchLeaderBoardKategori(kategoriKey) {
 
     var cfg = LEADERBOARD_CONFIG[kategoriKey];
 
-    // Synchronize Dropdown UI
-    $('#leader-board-kategori-label').text(cfg.shortTitle);
-    $('#leader-board-kategori .igt-dropdown__item').removeClass('is-active')
-        .find('img').attr('src', 'assets/img/icons/radio-off.svg');
-    var $activeDropItem = $('#leader-board-kategori .igt-dropdown__item[data-kategori="' + kategoriKey + '"]');
-    $activeDropItem.addClass('is-active').find('img').attr('src', 'assets/img/icons/radio-on.svg');
-
     // Synchronize Segment UI
     $('#leader-board-segment .igt-segment__item').removeClass('is-active');
     $('#leader-board-segment .igt-segment__item[data-kategori="' + kategoriKey + '"]').addClass('is-active');
@@ -1855,13 +1824,6 @@ function switchLeaderBoardKategori(kategoriKey) {
 
     // Update Tahun Filter Title & Label
     $('#leader-board-tahun-wrap').attr('title', cfg.tahunTitle);
-
-    // Toggle Satker Filter Visibility
-    if (cfg.showSatker) {
-        $('#leader-board-direktorat-wrap').show();
-    } else {
-        $('#leader-board-direktorat-wrap').hide();
-    }
 
     // Update View Full button label
     var fullBtnLabel = (leaderBoardState.perPage === 50)
@@ -1880,7 +1842,7 @@ function updateLeaderBoardTable() {
         rawData = window.MOCKUP_DATA.getLeaderBoardData(
             leaderBoardState.kategori,
             leaderBoardState.tahun,
-            leaderBoardState.satker
+            leaderBoardState.jenisIgt
         );
     }
 
@@ -2249,7 +2211,7 @@ function exportLeaderBoardToCSV() {
     var csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(rows.join('\n'));
     var link = document.createElement('a');
     link.setAttribute('href', csvContent);
-    link.setAttribute('download', 'leader_board_' + leaderBoardState.kategori + '_' + (leaderBoardState.tahun || 'all') + '.csv');
+    link.setAttribute('download', 'leader_board_' + leaderBoardState.kategori + '_' + (leaderBoardState.jenisIgt || 'all') + '_' + (leaderBoardState.tahun || 'all') + '.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
