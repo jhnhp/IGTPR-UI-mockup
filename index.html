@@ -561,158 +561,78 @@
         </div>
 
         <div id="sidebarMenu" class="sidebar-body">
-            <!-- GROUP: DASHBOARD -->
-            <div class="nav-group show">
-                <a href="#" class="nav-label">Dashboard</a>
-                <ul class="nav nav-sidebar">
-                    <li class="nav-item">
-                        <a href="index.html" class="nav-link active">
-                            <i class="ri-bar-chart-2-line"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            <div class="igt-role-sidebar-wrap">
+                <div class="igt-role-sidebar-header">
+                    <div class="igt-role-sidebar-title">
+                        <i class="ri-user-settings-line text-primary"></i>
+                        <span>Pilih Role Simulasi</span>
+                    </div>
+                    <p class="igt-role-sidebar-subtitle">Pilih profil pengguna untuk mensimulasikan filter otomatis dan hak akses dashboard.</p>
+                </div>
 
-            <!-- GROUP: DATA -->
-            <div class="nav-group show">
-                <a href="#" class="nav-label">Data</a>
-                <ul class="nav nav-sidebar">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-folder-2-line"></i>
-                            <span>Kompilasi Data</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-briefcase-5-line"></i>
-                            <span>Integrasi Data</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-group-line"></i>
-                            <span>Self Assessment</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-map-2-line"></i>
-                            <span>Peta IGT</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                <!-- 1. Superadmin (Page Sekarang) -->
+                <div class="igt-role-card is-active" data-role="superadmin" id="role-card-superadmin" role="button" tabindex="0">
+                    <div class="igt-role-card-top">
+                        <div class="igt-role-icon"><i class="ri-shield-keyhole-line"></i></div>
+                        <div class="igt-role-card-info">
+                            <div class="igt-role-card-title">1. Superadmin</div>
+                            <span class="igt-role-badge igt-role-badge--superadmin">Pusat • Full Access</span>
+                        </div>
+                        <div class="igt-role-indicator"><i class="ri-check-line"></i></div>
+                    </div>
+                    <p class="igt-role-card-desc">Akses penuh seluruh data nasional (38 provinsi), semua modul, dan tanpa batasan filter wilayah (tampilan default).</p>
+                </div>
 
-            <!-- GROUP: DATA DERIVATIF -->
-            <div class="nav-group show">
-                <a href="#" class="nav-label">Data Derivatif</a>
-                <ul class="nav nav-sidebar">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-stack-line"></i>
-                            <span>Create Layer Derivatif</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-database-2-line"></i>
-                            <span>Atribut Layer Derivatif</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-palette-line"></i>
-                            <span>SLD Derivatif</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-upload-cloud-line"></i>
-                            <span>Unggah Data Derivatif</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-checkbox-circle-line"></i>
-                            <span>Verifikasi Derivatif</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-list-unordered"></i>
-                            <span>List Data Derivatif</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                <!-- 2. Direktorat SPPR -->
+                <div class="igt-role-card" data-role="sppr" id="role-card-sppr" role="button" tabindex="0">
+                    <div class="igt-role-card-top">
+                        <div class="igt-role-icon"><i class="ri-compass-3-line"></i></div>
+                        <div class="igt-role-card-info">
+                            <div class="igt-role-card-title">2. Direktorat SPPR</div>
+                            <span class="igt-role-badge igt-role-badge--sppr">Eselon I / Pusat</span>
+                        </div>
+                        <div class="igt-role-indicator"><i class="ri-check-line"></i></div>
+                    </div>
+                    <p class="igt-role-card-desc">Data di dashboard otomatis terfilter khusus tema dan direktorat pengampu di lingkungan Ditjen SPPR.</p>
+                </div>
 
-            <!-- GROUP: C M S -->
-            <div class="nav-group show">
-                <a href="#" class="nav-label">C M S</a>
-                <ul class="nav nav-sidebar">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-home-4-line"></i>
-                            <span>CMS Landing Page</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-shield-user-line"></i>
-                            <span>Direktorat</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-stack-line"></i>
-                            <span>Layer IGT</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-database-2-line"></i>
-                            <span>Attribut Data</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-palette-line"></i>
-                            <span>SLD</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-image-line"></i>
-                            <span>Symbology</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-file-list-3-line"></i>
-                            <span>MetaData</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="ri-stack-overflow-line"></i>
-                            <span>Tumpang Susun</span>
-                        </a>
-                    </li>
-                </ul>
+                <!-- 3. Kanwil DIY -->
+                <div class="igt-role-card" data-role="kanwil-diy" id="role-card-kanwil-diy" role="button" tabindex="0">
+                    <div class="igt-role-card-top">
+                        <div class="igt-role-icon"><i class="ri-map-pin-user-line"></i></div>
+                        <div class="igt-role-card-info">
+                            <div class="igt-role-card-title">3. Kanwil DIY</div>
+                            <span class="igt-role-badge igt-role-badge--kanwil">Tingkat Kanwil</span>
+                        </div>
+                        <div class="igt-role-indicator"><i class="ri-check-line"></i></div>
+                    </div>
+                    <p class="igt-role-card-desc">Langsung terfilter lokasi D.I. Yogyakarta. Terkunci dan tidak dapat melihat data wilayah provinsi lain.</p>
+                </div>
+
+                <!-- 4. Kantah Gunung Kidul -->
+                <div class="igt-role-card" data-role="kantah-gunungkidul" id="role-card-kantah-gunungkidul" role="button" tabindex="0">
+                    <div class="igt-role-card-top">
+                        <div class="igt-role-icon"><i class="ri-building-line"></i></div>
+                        <div class="igt-role-card-info">
+                            <div class="igt-role-card-title">4. Kantah Gunung Kidul</div>
+                            <span class="igt-role-badge igt-role-badge--kantah">Tingkat Kantah</span>
+                        </div>
+                        <div class="igt-role-indicator"><i class="ri-check-line"></i></div>
+                    </div>
+                    <p class="igt-role-card-desc">Langsung terfilter lokasi Kab. Gunungkidul. Terkunci dan tidak dapat melihat data wilayah lain.</p>
+                </div>
             </div>
         </div>
 
-        <!-- SIDEBAR FOOTER (USER PROFILE) -->
+        <!-- SIDEBAR FOOTER (USER PROFILE SESUAI ROLE) -->
         <div class="sidebar-footer">
             <div class="sidebar-footer-top">
                 <div class="sidebar-footer-thumb">
-                    <img src="assets/img/profile.png" alt="Avatar">
+                    <img id="sidebar-user-avatar" src="assets/img/profile.png" alt="Avatar">
                 </div>
                 <div class="sidebar-footer-body">
-                    <h6><a href="#">Admin ATR/BPN</a></h6>
-                    <p>Administrator</p>
+                    <h6><a href="#" id="sidebar-user-name">Admin ATR/BPN</a></h6>
+                    <p id="sidebar-user-role">Superadministrator</p>
                 </div>
                 <a id="sidebarFooterMenu" href="#" class="dropdown-link">
                     <i class="ri-arrow-down-s-line"></i>
@@ -720,6 +640,7 @@
             </div>
             <div class="sidebar-footer-menu" style="display: none;">
                 <nav class="nav">
+                    <a href="javascript:void(0)" id="sidebar-reset-role"><i class="ri-restart-line"></i> Reset ke Superadmin</a>
                     <a href="javascript:void(0)"><i class="ri-logout-box-r-line"></i> Log Out</a>
                 </nav>
             </div>
@@ -754,11 +675,11 @@
         <!-- Profile Avatar -->
         <div class="dropdown dropdown-profile ms-3 ms-xl-4">
             <a href="#" class="dropdown-link" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                <div class="avatar online"><img src="assets/img/profile.png" alt="Avatar"></div>
+                <div class="avatar online"><img id="topbar-user-avatar" src="assets/img/profile.png" alt="Avatar"></div>
             </a>
-            <div class="dropdown-menu dropdown-menu-end mt-2 p-3" style="min-width: 200px;">
-                <h6 class="mb-1 text-dark fw-semibold">Admin ATR/BPN</h6>
-                <p class="text-muted small mb-2">Administrator</p>
+            <div class="dropdown-menu dropdown-menu-end mt-2 p-3" style="min-width: 220px;">
+                <h6 class="mb-1 text-dark fw-semibold" id="topbar-user-name">Admin ATR/BPN</h6>
+                <p class="text-muted small mb-2" id="topbar-user-role">Administrator</p>
                 <div class="border-top pt-2">
                     <a href="javascript:void(0)" class="text-danger text-decoration-none small"><i class="ri-logout-box-r-line"></i> Log Out</a>
                 </div>
@@ -770,6 +691,24 @@
          MAIN CONTENT AREA
     =============================================== -->
     <div class="main main-app p-3 p-lg-4">
+
+        <!-- Role Context Banner (Muncul saat Role Khusus Aktif) -->
+        <div class="igt-role-alert-bar mb-3" id="igt-role-alert-bar" style="display: none;">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <i class="ri-shield-user-fill text-primary" style="font-size: 20px;"></i>
+                <span class="fw-bold text-dark" style="font-size: 13.5px;">Role Aktif:</span>
+                <span class="badge bg-primary" id="igt-role-alert-badge" style="font-size: 11.5px; padding: 4px 8px;">Superadmin</span>
+                <span class="text-secondary small" id="igt-role-alert-desc" style="font-size: 12.5px;">Akses penuh seluruh data nasional</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-light text-secondary border d-none d-sm-inline-flex align-items-center gap-1" id="igt-role-alert-lock-badge">
+                    <i class="ri-lock-line"></i> <span id="igt-role-alert-lock-text">Wilayah Terkunci</span>
+                </span>
+                <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2.5" id="igt-role-reset-top-btn" style="font-size: 12px; font-weight: 600;">
+                    <i class="ri-restart-line me-1"></i> Kembali ke Superadmin
+                </button>
+            </div>
+        </div>
 
         <!-- 1. HERO SECTION: GREETING & INDONESIA MAP -->
         <div class="igt-hero mb-4" id="beranda">

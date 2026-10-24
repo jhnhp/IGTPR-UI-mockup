@@ -13,6 +13,12 @@ var currentKabupaten = null;
 var mapInstance = null;
 var tableControllers = {};
 
+// Role Simulation System State
+var currentActiveRole = 'superadmin';
+window.ROLE_LOCK_PROVINCE = null;
+window.ROLE_LOCK_KABUPATEN = null;
+window.ROLE_LOCK_DIREKTORAT = null;
+
 function getFitBoundsPadding() {
     var w = window.innerWidth;
     return {
@@ -27,6 +33,7 @@ $(document).ready(function() {
     initSidebar();
     initHeroMap();
     initUsulanModalEvents();
+    initRoleSwitcher();
     applyDataFilter(null, null); // start at national level
 });
 
@@ -55,6 +62,286 @@ function initSidebar() {
     $('#sidebarFooterMenu').on('click', function(e) {
         e.preventDefault();
         $('.sidebar-footer-menu').slideToggle(200);
+    });
+}
+
+/* ----------------------------------------------------
+   1b. Role Switcher Simulation System
+---------------------------------------------------- */
+var ROLE_CONFIG = {
+    'superadmin': {
+        name: 'Admin ATR/BPN',
+        roleTitle: 'Superadministrator',
+        badgeText: 'Superadmin (Pusat)',
+        badgeClass: 'bg-primary',
+        desc: 'Akses penuh seluruh data nasional (38 provinsi) dan semua modul.',
+        lockText: 'Akses Terbuka',
+        alertBarClass: '',
+        avatar: 'assets/img/profile.png'
+    },
+    'sppr': {
+        name: 'Operator Ditjen SPPR',
+        roleTitle: 'Direktorat SPPR',
+        badgeText: 'Direktorat SPPR',
+        badgeClass: 'bg-info text-white',
+        desc: 'Data di dashboard otomatis terfilter khusus tema dan direktorat pengampu di lingkungan Ditjen SPPR.',
+        lockText: 'Filter SPPR Aktif',
+        alertBarClass: 'is-sppr',
+        avatar: 'assets/img/profile.png'
+    },
+    'kanwil-diy': {
+        name: 'Operator Kanwil DIY',
+        roleTitle: 'Kanwil BPN D.I. Yogyakarta',
+        badgeText: 'Kanwil BPN D.I. Yogyakarta',
+        badgeClass: 'bg-warning text-dark',
+        desc: 'Otomatis terfilter lokasi D.I. Yogyakarta. Terkunci dan tidak dapat melihat data wilayah provinsi lain.',
+        lockText: 'Wilayah Terkunci (DIY)',
+        alertBarClass: 'is-kanwil',
+        avatar: 'assets/img/profile.png'
+    },
+    'kantah-gunungkidul': {
+        name: 'Operator Kantah GK',
+        roleTitle: 'Kantah Kab. Gunungkidul',
+        badgeText: 'Kantah Kab. Gunungkidul',
+        badgeClass: 'bg-success text-white',
+        desc: 'Otomatis terfilter lokasi Kab. Gunungkidul. Terkunci dan tidak dapat melihat data wilayah lain.',
+        lockText: 'Wilayah Terkunci (Gunungkidul)',
+        alertBarClass: 'is-kantah',
+        avatar: 'assets/img/profile.png'
+    }
+};
+
+function showRoleAccessToast(message) {
+    $('.igt-role-toast').remove();
+    var toastHtml = '<div class="igt-role-toast">'
+        + '<i class="ri-lock-fill text-warning" style="font-size: 16px;"></i>'
+        + '<span>' + message + '</span>'
+        + '</div>';
+    $('body').append(toastHtml);
+    setTimeout(function() {
+        $('.igt-role-toast').fadeOut(300, function() { $(this).remove(); });
+    }, 3200);
+}
+
+function updateSidebarProfile(role) {
+    var cfg = ROLE_CONFIG[role] || ROLE_CONFIG['superadmin'];
+    $('#sidebar-user-name, #topbar-user-name').text(cfg.name);
+    $('#sidebar-user-role, #topbar-user-role').text(cfg.roleTitle);
+    if (cfg.avatar) {
+        $('#sidebar-user-avatar, #topbar-user-avatar').attr('src', cfg.avatar);
+    }
+}
+
+function updateRoleAlertBanner(role) {
+    var $bar = $('#igt-role-alert-bar');
+    if (role === 'superadmin') {
+        $bar.slideUp(200);
+        return;
+    }
+    var cfg = ROLE_CONFIG[role] || ROLE_CONFIG['superadmin'];
+    $bar.removeClass('is-sppr is-kanwil is-kantah').addClass(cfg.alertBarClass);
+    $('#igt-role-alert-badge').text(cfg.badgeText).attr('class', 'badge ' + cfg.badgeClass);
+    $('#igt-role-alert-desc').text(cfg.desc);
+    $('#igt-role-alert-lock-text').text(cfg.lockText);
+    $bar.slideDown(250);
+}
+
+function applyRoleFilterToLeaderboard(rawData, kategori) {
+    if (!rawData || !rawData.length) return rawData || [];
+    if (currentActiveRole === 'superadmin') return rawData;
+
+    if (currentActiveRole === 'sppr') {
+        var spprDirektorat = [
+            'Direktorat Pengukuran Dan Pemetaan Kadastral',
+            'Direktorat Survei Dan Pemetaan Tematik'
+        ];
+        var spprIgt = [
+            'Bidang Tanah',
+            'Penguasaan Tanah',
+            'Pemilikan Tanah',
+            'Penggunaan Tanah',
+            'Pemanfaatan Tanah',
+            'Unsur Dasar Pertanahan'
+        ];
+        if (kategori === 'capaian-renaksi') {
+            return rawData.filter(function(item) {
+                return spprDirektorat.indexOf(item.satker) !== -1;
+            });
+        } else if (kategori === 'igt-akses') {
+            return rawData.filter(function(item) {
+                return spprIgt.indexOf(item.igt) !== -1;
+            });
+        } else if (kategori === 'satker-login' || kategori === 'direktorat-login') {
+            return rawData.filter(function(item) {
+                return spprDirektorat.indexOf(item.satker) !== -1 || (item.satker && item.satker.indexOf('SPPR') !== -1);
+            });
+        }
+    } else if (currentActiveRole === 'kanwil-diy') {
+        if (kategori === 'satker-login' || kategori === 'direktorat-login') {
+            var diyKeywords = ['Yogyakarta', 'Sleman', 'Bantul', 'Gunungkidul', 'Gunung Kidul', 'Kulon Progo'];
+            return rawData.filter(function(item) {
+                return diyKeywords.some(function(kw) {
+                    return item.satker && item.satker.toLowerCase().indexOf(kw.toLowerCase()) !== -1;
+                });
+            });
+        } else if (kategori === 'capaian-renaksi') {
+            return rawData.filter(function(item) {
+                return item.satker && (item.satker.indexOf('D.I. Yogyakarta') !== -1 || item.satker.indexOf('Yogyakarta') !== -1 || item.satker.indexOf('Kantor Pertanahan') !== -1);
+            });
+        }
+    } else if (currentActiveRole === 'kantah-gunungkidul') {
+        if (kategori === 'satker-login' || kategori === 'direktorat-login') {
+            return rawData.filter(function(item) {
+                return item.satker && (item.satker.toLowerCase().indexOf('gunungkidul') !== -1 || item.satker.toLowerCase().indexOf('gunung kidul') !== -1);
+            });
+        } else if (kategori === 'capaian-renaksi') {
+            return rawData.filter(function(item) {
+                return item.satker && (item.satker.toLowerCase().indexOf('gunungkidul') !== -1 || item.satker.toLowerCase().indexOf('gunung kidul') !== -1);
+            });
+        }
+    }
+    return rawData;
+}
+
+function switchDashboardRole(role) {
+    if (!role) role = 'superadmin';
+    currentActiveRole = role;
+
+    // Update active class on sidebar cards
+    $('.igt-role-card').removeClass('is-active');
+    $('.igt-role-card[data-role="' + role + '"]').addClass('is-active');
+
+    // Update footer profile
+    updateSidebarProfile(role);
+
+    // Update top alert banner
+    updateRoleAlertBanner(role);
+
+    if (role === 'superadmin') {
+        applyRoleSuperadmin();
+    } else if (role === 'sppr') {
+        applyRoleSPPR();
+    } else if (role === 'kanwil-diy') {
+        applyRoleKanwilDIY();
+    } else if (role === 'kantah-gunungkidul') {
+        applyRoleKantahGunungKidul();
+    }
+}
+
+function applyRoleSuperadmin() {
+    window.ROLE_LOCK_PROVINCE = null;
+    window.ROLE_LOCK_KABUPATEN = null;
+    window.ROLE_LOCK_DIREKTORAT = null;
+
+    $('#beranda-detail-wilayah-pilih').prop('disabled', false);
+    resetKeSeluruhIndonesia();
+    bukaDetailInformasi('Seluruh Indonesia', 'nasional', null);
+    applyDataFilter(null, null, currentDashboardYear);
+    updateLeaderBoardTable();
+    updateLeaderBoardDetailTable();
+    updateStatistikIgtView();
+}
+
+function applyRoleSPPR() {
+    window.ROLE_LOCK_PROVINCE = null;
+    window.ROLE_LOCK_KABUPATEN = null;
+    window.ROLE_LOCK_DIREKTORAT = 'SPPR';
+
+    $('#beranda-detail-wilayah-pilih').prop('disabled', false);
+
+    // Open detail card with SPPR filter
+    bukaDetailInformasi('Seluruh Indonesia', 'nasional', null);
+
+    // Filter usulan input data for SPPR
+    var spprUsulan = {
+        total: 24,
+        totalLayer: 6,
+        kategori: [
+            { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 14, layer: 3, diperbarui: 'Diperbarui 30 menit lalu', kelas: 'is-terintegrasi' },
+            { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 4, layer: 1, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
+            { kunci: 'terupload', label: 'Terupload', jumlah: 6, layer: 2, diperbarui: 'Diperbarui 3 jam lalu', kelas: 'is-terupload' },
+            { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-perbaikan' }
+        ]
+    };
+    renderUsulanInputData(spprUsulan);
+
+    // Filter kompilasi integrasi for SPPR
+    var spprKompilasi = {
+        totalLayer: 6,
+        bulanan: [
+            { bulan: 'JAN', terkompilasi: 0, terintegrasi: 1 },
+            { bulan: 'FEB', terkompilasi: 0, terintegrasi: 1 },
+            { bulan: 'MAR', terkompilasi: 0, terintegrasi: 1 },
+            { bulan: 'APR', terkompilasi: 0, terintegrasi: 1 },
+            { bulan: 'MEI', terkompilasi: 1, terintegrasi: 1 },
+            { bulan: 'JUN', terkompilasi: 1, terintegrasi: 2 },
+            { bulan: 'JUL', terkompilasi: 1, terintegrasi: 2 },
+            { bulan: 'AGT', terkompilasi: 1, terintegrasi: 2 },
+            { bulan: 'SEP', terkompilasi: 1, terintegrasi: 2 },
+            { bulan: 'OKT', terkompilasi: 1, terintegrasi: 3 },
+            { bulan: 'NOV', terkompilasi: 0, terintegrasi: 0 },
+            { bulan: 'DES', terkompilasi: 0, terintegrasi: 0 }
+        ]
+    };
+    renderKompilasiIntegrasi(spprKompilasi);
+
+    updateLeaderBoardTable();
+    updateLeaderBoardDetailTable();
+    updateStatistikIgtView();
+}
+
+function applyRoleKanwilDIY() {
+    window.ROLE_LOCK_PROVINCE = 'Daerah Istimewa Yogyakarta';
+    window.ROLE_LOCK_KABUPATEN = null;
+    window.ROLE_LOCK_DIREKTORAT = null;
+
+    var featDIY = findProvinceFeature('Daerah Istimewa Yogyakarta');
+    if (featDIY) {
+        zoomKeProvinsi(featDIY, 'Daerah Istimewa Yogyakarta');
+    } else {
+        bukaDetailInformasi('Daerah Istimewa Yogyakarta', 'provinsi', null);
+        applyDataFilter('Daerah Istimewa Yogyakarta', null);
+    }
+
+    updateLeaderBoardTable();
+    updateLeaderBoardDetailTable();
+    updateStatistikIgtView();
+}
+
+function applyRoleKantahGunungKidul() {
+    window.ROLE_LOCK_PROVINCE = 'Daerah Istimewa Yogyakarta';
+    window.ROLE_LOCK_KABUPATEN = 'Gunungkidul';
+    window.ROLE_LOCK_DIREKTORAT = null;
+
+    var featDIY = findProvinceFeature('Daerah Istimewa Yogyakarta');
+    currentProvince = 'Daerah Istimewa Yogyakarta';
+    currentProvinceFeature = featDIY;
+
+    var featGK = findKabupatenFeature('Gunungkidul', 'Daerah Istimewa Yogyakarta') || findKabupatenFeature('Gunung Kidul', 'Daerah Istimewa Yogyakarta');
+    if (featGK) {
+        zoomKeKabupaten(featGK, 'Gunungkidul');
+    } else {
+        bukaDetailInformasi('Gunungkidul', 'kabupaten', 'Daerah Istimewa Yogyakarta');
+        applyDataFilter('Daerah Istimewa Yogyakarta', 'Gunungkidul');
+    }
+
+    $('#beranda-detail-wilayah-pilih').prop('disabled', true);
+
+    updateLeaderBoardTable();
+    updateLeaderBoardDetailTable();
+    updateStatistikIgtView();
+}
+
+function initRoleSwitcher() {
+    $(document).on('click', '.igt-role-card', function(e) {
+        e.preventDefault();
+        var role = $(this).attr('data-role');
+        switchDashboardRole(role);
+    });
+
+    $(document).on('click', '#igt-role-reset-top-btn, #sidebar-reset-role', function(e) {
+        e.preventDefault();
+        switchDashboardRole('superadmin');
     });
 }
 
@@ -318,11 +605,21 @@ function initHeroMap() {
             mapInstance.on('click', 'provinsi-isi', function(e) {
                 if (!e.features || e.features.length === 0) return;
                 var f = e.features[0];
-                if (currentProvince && currentProvince.toLowerCase() === f.properties.nama.toLowerCase()) {
+                var targetProv = f.properties && f.properties.nama;
+
+                // Restrict access if role has province lock
+                if (window.ROLE_LOCK_PROVINCE) {
+                    if (normProvinsi(targetProv) !== normProvinsi(window.ROLE_LOCK_PROVINCE)) {
+                        showRoleAccessToast('Akses dibatasi hanya untuk ' + window.ROLE_LOCK_PROVINCE);
+                        return;
+                    }
+                }
+
+                if (currentProvince && currentProvince.toLowerCase() === targetProv.toLowerCase()) {
                     return;
                 }
                 popup.remove();
-                zoomKeProvinsi(f, f.properties.nama);
+                zoomKeProvinsi(f, targetProv);
             });
 
             // 3. Hover Kabupaten
@@ -354,8 +651,18 @@ function initHeroMap() {
                 if (!currentProvince) return;
                 if (!e.features || e.features.length === 0) return;
                 var f = e.features[0];
+                var targetKab = f.properties && f.properties.kabupaten;
+
+                // Restrict access if role has kabupaten lock
+                if (window.ROLE_LOCK_KABUPATEN) {
+                    if (normKabupaten(targetKab) !== normKabupaten(window.ROLE_LOCK_KABUPATEN)) {
+                        showRoleAccessToast('Akses dibatasi hanya untuk Kabupaten ' + window.ROLE_LOCK_KABUPATEN);
+                        return;
+                    }
+                }
+
                 popup.remove();
-                zoomKeKabupaten(f, f.properties.kabupaten);
+                zoomKeKabupaten(f, targetKab);
             });
 
             // 5. Navigation Buttons
@@ -422,6 +729,23 @@ function initHeroMap() {
             // Wilayah selector (Pilih Provinsi saat Se-Indonesia / Pilih Kabupaten saat Se-Provinsi atau Se-Kabupaten)
             $('#beranda-detail-wilayah-pilih').on('change', function() {
                 var val = $(this).val();
+
+                if (currentActiveRole === 'kantah-gunungkidul') {
+                    return; // Locked
+                }
+
+                if (currentActiveRole === 'kanwil-diy') {
+                    if (!val) {
+                        kembaliKeProvinsi();
+                    } else {
+                        var feat = findKabupatenFeature(val, 'Daerah Istimewa Yogyakarta');
+                        if (feat) {
+                            zoomKeKabupaten(feat, feat.properties.kabupaten);
+                        }
+                    }
+                    return;
+                }
+
                 if (detailState.jenisWilayah === 'nasional' || !currentProvince) {
                     // Saat Se-Indonesia: memilih provinsi
                     if (val) {
@@ -556,6 +880,32 @@ function updateWilayahDropdown(jenisWilayah, namaProvinsi, terpilihKabupaten) {
     var select = $('#beranda-detail-wilayah-pilih');
     if (!select.length) return;
 
+    if (currentActiveRole === 'kantah-gunungkidul') {
+        var html = '<option value="Gunungkidul" selected>Kabupaten Gunungkidul</option>';
+        select.html(html);
+        select.val('Gunungkidul');
+        select.prop('disabled', true);
+        return;
+    }
+
+    if (currentActiveRole === 'kanwil-diy') {
+        var html = '<option value="">' + (terpilihKabupaten ? 'Semua Kabupaten di DIY' : 'Pilih Kabupaten (DIY)') + '</option>';
+        var kabs = ['Bantul', 'Gunungkidul', 'Kulon Progo', 'Sleman', 'Kota Yogyakarta'];
+        kabs.forEach(function(kab) {
+            var label = formatNamaKabupaten(kab);
+            var selected = (terpilihKabupaten && (terpilihKabupaten.toLowerCase() === kab.toLowerCase() || (kab === 'Gunungkidul' && terpilihKabupaten.toLowerCase() === 'gunung kidul'))) ? ' selected' : '';
+            html += '<option value="' + kab + '"' + selected + '>' + label + '</option>';
+        });
+        select.html(html);
+        select.prop('disabled', false);
+        if (terpilihKabupaten) select.val(terpilihKabupaten);
+        else select.val('');
+        select.attr('aria-label', 'Pilih Kabupaten (D.I. Yogyakarta)');
+        return;
+    }
+
+    select.prop('disabled', false);
+
     if (jenisWilayah === 'nasional' || !namaProvinsi) {
         // Mode A: Pilih Provinsi (Se-Indonesia)
         var html = '<option value="">Pilih Provinsi</option>';
@@ -674,6 +1024,13 @@ function renderDetailChips() {
         var matchTahun = !tahun || tahun === 'all' || item.tahun === tahun;
         return matchQ && matchJenis && matchTahun;
     });
+
+    if (currentActiveRole === 'sppr') {
+        var spprThemes = ['Bidang Tanah', 'Penguasaan Tanah', 'Pemilikan Tanah', 'Penggunaan Tanah', 'Pemanfaatan Tanah', 'Unsur Dasar Pertanahan'];
+        filtered = filtered.filter(function(item) {
+            return spprThemes.indexOf(item.nama) !== -1;
+        });
+    }
 
     $('#beranda-detail-tema').text(filtered.length);
 
@@ -816,6 +1173,11 @@ function zoomKeKabupaten(feature, namaKabupaten) {
 
 // Return from Kabupaten back to Province view
 function kembaliKeProvinsi() {
+    if (window.ROLE_LOCK_KABUPATEN) {
+        showRoleAccessToast('Akses dibatasi hanya untuk Kabupaten ' + window.ROLE_LOCK_KABUPATEN);
+        return;
+    }
+
     if (currentProvinceFeature && currentProvince) {
         currentKabupaten = null;
         var bbox = hitungBatasFitur(currentProvinceFeature);
@@ -852,6 +1214,13 @@ function kembaliKeProvinsi() {
 
 // Return back to National view (Level 1)
 function resetKeSeluruhIndonesia() {
+    if (window.ROLE_LOCK_PROVINCE) {
+        showRoleAccessToast('Tidak dapat kembali ke nasional. Akses terkunci pada wilayah ' + window.ROLE_LOCK_PROVINCE);
+        var featDIY = findProvinceFeature('Daerah Istimewa Yogyakarta');
+        if (featDIY) zoomKeProvinsi(featDIY, 'Daerah Istimewa Yogyakarta');
+        return;
+    }
+
     currentProvince = null;
     currentProvinceFeature = null;
     currentKabupaten = null;
@@ -959,6 +1328,31 @@ function updateStatistikIgtView(dataOverride) {
             return Object.assign({}, item, { jenisIgt: jenis });
         });
         defaultSort = 'igt';
+    }
+
+    // Role-based data filtering for Statistik IGT
+    if (currentActiveRole === 'sppr') {
+        var spprIgtList = ['Bidang Tanah', 'Penguasaan Tanah', 'Pemilikan Tanah', 'Penggunaan Tanah', 'Pemanfaatan Tanah', 'Unsur Dasar Pertanahan'];
+        if (mode === 'igt') {
+            data = data.filter(function(r) { return spprIgtList.indexOf(r.igt) !== -1; });
+        }
+    } else if (currentActiveRole === 'kanwil-diy') {
+        if (mode === 'provinsi') {
+            data = data.filter(function(r) { return normProvinsi(r.provinsi) === normProvinsi('Daerah Istimewa Yogyakarta'); });
+        } else if (mode === 'kabupaten') {
+            data = data.filter(function(r) { return normProvinsi(r.provinsi) === normProvinsi('Daerah Istimewa Yogyakarta'); });
+        } else if (mode === 'igt') {
+            var diyKabs = ['Bantul', 'Gunung Kidul', 'Gunungkidul', 'Sleman', 'Kota Yogyakarta', 'Kulon Progo'];
+            data = data.filter(function(r) { return normProvinsi(r.provinsi) === normProvinsi('Daerah Istimewa Yogyakarta') || diyKabs.indexOf(r.kabupaten) !== -1; });
+        }
+    } else if (currentActiveRole === 'kantah-gunungkidul') {
+        if (mode === 'kabupaten') {
+            data = data.filter(function(r) { return r.kabupaten === 'Gunung Kidul' || r.kabupaten === 'Gunungkidul'; });
+        } else if (mode === 'provinsi') {
+            data = data.filter(function(r) { return normProvinsi(r.provinsi) === normProvinsi('Daerah Istimewa Yogyakarta'); });
+        } else if (mode === 'igt') {
+            data = data.filter(function(r) { return r.kabupaten === 'Gunung Kidul' || r.kabupaten === 'Gunungkidul'; });
+        }
     }
 
     renderTableSection('statistik-igt', data, columns, defaultSort, mode);
@@ -1824,6 +2218,7 @@ function updateLeaderBoardTable() {
             leaderBoardState.tahun,
             leaderBoardState.jenisIgt
         );
+        rawData = applyRoleFilterToLeaderboard(rawData, leaderBoardState.kategori);
     }
 
     // Filter by search query
@@ -2221,6 +2616,7 @@ function updateLeaderBoardDetailTable() {
             leaderBoardState.tahun,
             leaderBoardState.jenisIgt
         );
+        rawData = applyRoleFilterToLeaderboard(rawData, kat);
     }
 
     // Filter by detailed search query

@@ -4142,6 +4142,233 @@ a.igt-stat:hover {
     height: 14px;
 }
 
+/* ============================================================
+   ROLE SWITCHER SIDEBAR CARDS & ROLE ALERT
+============================================================ */
+.sidebar-body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+.igt-role-sidebar-wrap {
+    padding: 16px 14px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.igt-role-sidebar-header {
+    margin-bottom: 4px;
+}
+
+.igt-role-sidebar-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #64748b;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.igt-role-sidebar-subtitle {
+    font-size: 11px;
+    color: #94a3b8;
+    line-height: 1.35;
+    margin-bottom: 0;
+}
+
+.igt-role-card {
+    position: relative;
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 11px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: block;
+    text-decoration: none !important;
+}
+
+.igt-role-card:hover {
+    border-color: #93c5fd;
+    background: #f8fafc;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+}
+
+.igt-role-card.is-active {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.14);
+}
+
+.igt-role-card-top {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 6px;
+}
+
+.igt-role-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.igt-role-card.is-active .igt-role-icon {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.igt-role-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.igt-role-card-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.25;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.igt-role-card.is-active .igt-role-card-title {
+    color: #1d4ed8;
+}
+
+.igt-role-badge {
+    display: inline-block;
+    font-size: 9.5px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.igt-role-badge--superadmin {
+    background: #e0e7ff;
+    color: #4338ca;
+}
+
+.igt-role-badge--sppr {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.igt-role-badge--kanwil {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.igt-role-badge--kantah {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.igt-role-indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: transparent;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    background: #ffffff;
+}
+
+.igt-role-card.is-active .igt-role-indicator {
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.igt-role-card-desc {
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.38;
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+
+.igt-role-card.is-active .igt-role-card-desc {
+    color: #334155;
+}
+
+/* Role alert banner on top of dashboard */
+.igt-role-alert-bar {
+    background: #ffffff;
+    border-left: 4px solid #2563eb;
+    border-radius: 8px;
+    padding: 10px 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    transition: all 0.25s ease;
+}
+
+.igt-role-alert-bar.is-kanwil {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.igt-role-alert-bar.is-kantah {
+    border-left-color: #10b981;
+    background: #f0fdf4;
+}
+
+.igt-role-alert-bar.is-sppr {
+    border-left-color: #0284c7;
+    background: #f0f9ff;
+}
+
+/* Toast message for restricted actions */
+.igt-role-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #1e293b;
+    color: #ffffff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: fadeInToast 0.25s ease forwards;
+}
+
+@keyframes fadeInToast {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
 
 
 

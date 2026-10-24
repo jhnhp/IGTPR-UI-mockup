@@ -987,6 +987,31 @@ window.MOCKUP_DATA = {
                 'RDTR Kawasan Perbatasan Negara',
                 'RTR Pulau/Kepulauan',
                 'RTR Kawasan Strategis Nasional'
+            ],
+            'Kanwil BPN Provinsi D.I. Yogyakarta': [
+                'Bidang Tanah',
+                'Hak Atas Tanah',
+                'RDTR Kabupaten/Kota'
+            ],
+            'Kantah Kab. Gunungkidul': [
+                'Bidang Tanah',
+                'Hak Atas Tanah'
+            ],
+            'Kantah Kab. Sleman': [
+                'Bidang Tanah',
+                'Hak Atas Tanah'
+            ],
+            'Kantah Kab. Bantul': [
+                'Bidang Tanah',
+                'Hak Atas Tanah'
+            ],
+            'Kantah Kota Yogyakarta': [
+                'Bidang Tanah',
+                'Hak Atas Tanah'
+            ],
+            'Kantah Kab. Kulon Progo': [
+                'Bidang Tanah',
+                'Hak Atas Tanah'
             ]
         };
 
@@ -1041,20 +1066,26 @@ window.MOCKUP_DATA = {
             // Kategori 3: Satker yang paling sering login (Direktorat/Pusat, Kanwil, dan Kantah)
             var baseLogin = [
                 { satker: 'Direktorat Survei Dan Pemetaan Tematik', tipe: 'Pusat', jumlahLogin: Math.round(2840 * factor) },
+                { satker: 'Direktorat Pengukuran Dan Pemetaan Kadastral', tipe: 'Pusat', jumlahLogin: Math.round(2650 * factor) },
                 { satker: 'Kanwil BPN Provinsi Jawa Barat', tipe: 'Kanwil', jumlahLogin: Math.round(2450 * factor) },
                 { satker: 'Kantah Kab. Bogor', tipe: 'Kantah', jumlahLogin: Math.round(2180 * factor) },
                 { satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah I', tipe: 'Pusat', jumlahLogin: Math.round(1950 * factor) },
                 { satker: 'Kanwil BPN Provinsi Jawa Timur', tipe: 'Kanwil', jumlahLogin: Math.round(1820 * factor) },
                 { satker: 'Kantah Kota Surabaya I', tipe: 'Kantah', jumlahLogin: Math.round(1680 * factor) },
                 { satker: 'Direktorat Penetapan Hak Atas Tanah dan Ruang', tipe: 'Pusat', jumlahLogin: Math.round(1540 * factor) },
+                { satker: 'Kanwil BPN Provinsi D.I. Yogyakarta', tipe: 'Kanwil', jumlahLogin: Math.round(1520 * factor) },
                 { satker: 'Kanwil BPN Provinsi Jawa Tengah', tipe: 'Kanwil', jumlahLogin: Math.round(1480 * factor) },
                 { satker: 'Kantah Kab. Sleman', tipe: 'Kantah', jumlahLogin: Math.round(1360 * factor) },
                 { satker: 'Kanwil BPN Provinsi DKI Jakarta', tipe: 'Kanwil', jumlahLogin: Math.round(1250 * factor) },
                 { satker: 'Kantah Kota Jakarta Barat', tipe: 'Kantah', jumlahLogin: Math.round(1180 * factor) },
+                { satker: 'Kantah Kab. Gunungkidul', tipe: 'Kantah', jumlahLogin: Math.round(1120 * factor) },
                 { satker: 'Kantah Kab. Badung', tipe: 'Kantah', jumlahLogin: Math.round(1050 * factor) },
+                { satker: 'Kantah Kab. Bantul', tipe: 'Kantah', jumlahLogin: Math.round(980 * factor) },
                 { satker: 'Direktorat Penatagunaan Tanah', tipe: 'Pusat', jumlahLogin: Math.round(942 * factor) },
+                { satker: 'Kantah Kota Yogyakarta', tipe: 'Kantah', jumlahLogin: Math.round(890 * factor) },
                 { satker: 'Kanwil BPN Provinsi Bali', tipe: 'Kanwil', jumlahLogin: Math.round(860 * factor) },
                 { satker: 'Kantah Kab. Bandung', tipe: 'Kantah', jumlahLogin: Math.round(790 * factor) },
+                { satker: 'Kantah Kab. Kulon Progo', tipe: 'Kantah', jumlahLogin: Math.round(750 * factor) },
                 { satker: 'Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan', tipe: 'Pusat', jumlahLogin: Math.round(735 * factor) },
                 { satker: 'Kantah Kota Semarang', tipe: 'Kantah', jumlahLogin: Math.round(660 * factor) },
                 { satker: 'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan Dan Wilayah Tertentu', tipe: 'Pusat', jumlahLogin: Math.round(590 * factor) },
@@ -1283,6 +1314,33 @@ window.MOCKUP_DATA = {
                     targetKawasan: Math.max(2000, Math.round(20000 * factor)),
                     realisasiKawasan: Math.max(1300, Math.round(13600 * factor)),
                     countKawasan: 4
+                },
+                {
+                    satker: 'Kanwil BPN Provinsi D.I. Yogyakarta',
+                    daftarIgt: [
+                        'Bidang Tanah',
+                        'Hak Atas Tanah',
+                        'RDTR Kabupaten/Kota'
+                    ],
+                    targetBidang: Math.max(20, Math.round(120 * factor)),
+                    realisasiBidang: Math.max(18, Math.round(112 * factor)),
+                    countBidang: 2,
+                    targetKawasan: Math.max(1000, Math.round(5000 * factor)),
+                    realisasiKawasan: Math.max(850, Math.round(4450 * factor)),
+                    countKawasan: 1
+                },
+                {
+                    satker: 'Kantah Kab. Gunungkidul',
+                    daftarIgt: [
+                        'Bidang Tanah',
+                        'Hak Atas Tanah'
+                    ],
+                    targetBidang: Math.max(15, Math.round(64 * factor)),
+                    realisasiBidang: Math.max(14, Math.round(60 * factor)),
+                    countBidang: 2,
+                    targetKawasan: 0,
+                    realisasiKawasan: 0,
+                    countKawasan: 0
                 }
             ];
 
