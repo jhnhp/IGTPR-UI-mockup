@@ -35,6 +35,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 25 | **Penghapusan Kolom Kotak-kotak (Checkbox) pada Tabel Statistik IGT** | Tabel Statistik IGT memiliki kolom centang kotak-kotak (`check-square.svg`) di antara kolom `No` dan `IGT`. | Kolom centang kotak-kotak (`.igt-table__check`) **dihapus dari tabel Statistik IGT**. Logika perenderan tabel disesuaikan dinamis mendeteksi keberadaan header centang (`hasCheck`), menghasilkan tata letak tabel yang bersih, rapi, dan persis sesuai desain referensi asli. |
 | 26 | **Implementasi Tampilan Grafik Statistik IGT (Clustered Bar Chart)** | Tampilan tombol toggle *Grafik* pada kartu Statistik IGT sebelumnya hanya berupa teks placeholder statis. | Diimplementasikan **tampilan grafik batang bergugus (*clustered column bar chart*) interaktif** persis sesuai tangkapan layar modul Statistik IGT: <br>• **Legenda & Palet Warna**: *Jumlah Data Provinsi* (cyan `#68b6db`) dan *Jumlah Data Kabupaten* (medium blue `#6793db`).<br>• **Struktur Sumbu**: Sumbu Y skala 0–8 dengan garis kisi (*grid lines*) horizontal dan vertikal per tema, serta ikon garis di kiri bawah.<br>• **Kategori IGT Lengkap (11 Tema)**: Menampilkan 11 tema IGT (*Bidang Tanah*, *Hak Atas Tanah*, *Inventarisasi Tanah Kritis*, *Kemampuan Tanah*, *Lahan Baku Sawah*, *Lahan Sawah Dilindungi*, *RDTR Kab/Kota*, *RDTR Kawasan*, *RTRW Kabupaten*, *Sebaran Lokasi*, dan *Zona Nilai Tanah*).<br>• **Interaktivitas & Filter Dropdown**: Dilengkapi dropdown metrik (*Data Berdasarkan Administrasi*, *Bidang*, *Luas*), tooltip interaktif saat *hover*, serta tersinkronisasi otomatis dengan filter tahun renaksi dan wilayah. |
 | 27 | **Penyelarasan Opsi Dropdown Statistik IGT (Data Berdasarkan IGT)** | Dropdown pengelompokan pertama pada toolbar Statistik IGT bertuliskan *"Data Berdasarkan Direktorat"*. | Diperbarui menjadi **"Data Berdasarkan IGT"**, baik pada label pemicu (*trigger*) maupun item opsi aktif di dalam dropdown panel (`#statistik-igt-kelompok`), selaras dengan isi kolom data yang menampilkan tema-tema IGT. |
+| 28 | **Implementasi Tabel & Grafik Statistik IGT per Provinsi (Data Berdasarkan Provinsi)** | Pengelompokan data pada kartu Statistik IGT sebelumnya hanya mendukung pengelompokan berdasarkan IGT. | Diimplementasikan **tampilan tabel dan grafik batang bergugus (*clustered column bar chart*) per Provinsi** yang terintegrasi penuh ke dropdown toolbar `#statistik-igt-kelompok`: <br>• **Tampilan Tabel per Provinsi**: Menampilkan kolom nomor urut (`No`), `Provinsi`, `Jumlah IGT`, `Kabupaten`, `Bidang`, dan `Luas (Ha)` persis sesuai tangkapan layar Geoportal (Bali, DIY, DKI Jakarta, NTT, Tidak Tercatat).<br>• **Tampilan Grafik per Provinsi**: Grafik batang adaptif yang menyajikan 5 kategori provinsi pada sumbu X, legenda & bilah *Jumlah IGT* (cyan `#68b6db`) dan *Jumlah Data Kabupaten* (biru `#6793db`), grid sumbu Y 0–8, serta tooltip melayang interaktif saat hover.<br>• **Mendukung Mode Kabupaten**: Sekaligus melengkapi opsi *"Data Berdasarkan Kabupaten/Kota"* dengan kolom dan dataset lengkap (Badung, Bantul, Belu, Gunung Kidul, dll.).<br>• **Sinkronisasi Penuh**: Pencarian, pengurutan numerik natural, paginasi, pergantian metrik (Administrasi/Bidang/Luas), serta filter wilayah dan tahun renaksi terhubung 100% dinamis. |
 
 ---
 
@@ -351,6 +352,24 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
   - Mengubah label default trigger dropdown `#statistik-igt-kelompok` menjadi **"Data Berdasarkan IGT"**.
   - Mengubah item opsi pertama (radio aktif) di dalam `#statistik-igt-kelompok .igt-dropdown__panel` menjadi **"Data Berdasarkan IGT"**.
 - **Hasil Tampilan**: Selaras 100% dengan kolom data yang berfokus pada tema IGT, menjaga kejelasan hierarki data bagi pengguna saat menjelajahi statistik Geoportal.
+
+### 25. Penambahan Tabel dan Grafik Statistik IGT per Provinsi (Data Berdasarkan Provinsi)
+- **Latar Belakang**: Pengguna membutuhkan kemampuan untuk melihat rincian agregasi data spasial per tingkat provinsi pada modul Statistik IGT, baik dalam format tabular maupun grafik batang bergugus (*clustered column bar chart*), sesuai antarmuka Geoportal IGT.
+- **Perubahan yang Diterapkan**:
+  1. **Tabel Data Berdasarkan Provinsi (`#statistik-igt-tabel`)**:
+     - Struktur kolom dinamis: **No**, **Provinsi**, **Jumlah IGT**, **Kabupaten**, **Bidang**, dan **Luas (Ha)**.
+     - Penomoran baris nomor urut di paling kiri (`No`) tetap aktif dan sinkron dengan paginasi.
+     - Dataset terintegrasi: Bali (2 IGT, 1 Kab, 160 Bidang, 12.892 Ha), D.I. Yogyakarta (8 IGT, 5 Kab, 165.193 Bidang, 558.613,678 Ha), DKI Jakarta (1 IGT, 1 Kab, 4 Bidang, 3.256 Ha), NTT (1 IGT, 3 Kab, 2.829 Bidang, 8.876,029 Ha), dan Tidak Tercatat (1 IGT, 1 Kab, 7.516 Bidang, 231.015,748 Ha).
+     - Pengurutan alami (*natural numeric sorting*) yang presisi untuk angka berformat pemisah ribuan titik dan desimal koma (misal: `165.193` vs `2.829`).
+  2. **Grafik Data Berdasarkan Provinsi (`#statistik-igt-grafik`)**:
+     - Visualisasi grafik batang bergugus adaptif dengan 5 gugus provinsi pada sumbu X (*Bali*, *DI Yogyakarta*, *DKI Jakarta*, *Nusa Tenggara T...*, *Tidak Tercatat*).
+     - Sub-toolbar & legenda: **Jumlah IGT** (lingkaran titik cyan `#68b6db`) dan **Jumlah Data Kabupaten** (lingkaran titik biru `#6793db`).
+     - Batang vertikal berdampingan (lebar 32px) dengan tinggi proporsional terhadap skala 0–8 (skala grid presisi dengan garis horizontal & vertikal).
+     - Tooltip melayang interaktif (*floating tooltip*) menyajikan nama lengkap provinsi, Jumlah IGT, Jumlah Data Kabupaten, Bidang, dan Luas (Ha) saat kursor diarahkan ke setiap gugus batang.
+     - Filter metrik dropdown (*Data Berdasarkan Administrasi*, *Bidang*, dan *Luas*) berfungsi dinamis menyesuaikan data provinsi.
+  3. **Kelengkapan Mode Pengelompokan Lainnya**:
+     - Sekaligus melengkapi mode **"Data Berdasarkan Kabupaten/Kota"** dengan kolom `No`, `Kabupaten/Kota`, `Provinsi`, `Jumlah IGT`, `Bidang`, `Luas (Ha)` dan dataset 10 entri (*Badung*, *Bantul*, *Belu*, *Gunung Kidul*, dll.).
+     - Pengguna dapat beralih bebas antara *"Data Berdasarkan IGT"*, *"Data Berdasarkan Provinsi"*, dan *"Data Berdasarkan Kabupaten/Kota"* secara instan tanpa memuat ulang halaman.
 
 ---
 

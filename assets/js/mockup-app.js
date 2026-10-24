@@ -904,7 +904,57 @@ function resetKeSeluruhIndonesia() {
 /* ----------------------------------------------------
    4. Apply Filter to All Dashboard Components
 ---------------------------------------------------- */
+var currentStatistikIgtMode = 'igt';
+
+function updateStatistikIgtView(dataOverride) {
+    var raw = dataOverride || window.MOCKUP_DATA.getDataByWilayah(currentProvince, currentKabupaten, currentDashboardYear);
+    if (!raw) raw = window.MOCKUP_DATA.nasional;
+
+    var mode = currentStatistikIgtMode || 'igt';
+    var columns = [];
+    var data = [];
+    var defaultSort = 'igt';
+
+    if (mode === 'provinsi') {
+        columns = [
+            { key: 'provinsi', label: 'Provinsi' },
+            { key: 'jumlahIgt', label: 'Jumlah IGT' },
+            { key: 'kabupaten', label: 'Kabupaten' },
+            { key: 'bidang', label: 'Bidang' },
+            { key: 'luas', label: 'Luas (Ha)' }
+        ];
+        data = raw.statistikIGTProvinsi || (window.MOCKUP_DATA.nasional ? window.MOCKUP_DATA.nasional.statistikIGTProvinsi : []) || [];
+        defaultSort = 'provinsi';
+    } else if (mode === 'kabupaten') {
+        columns = [
+            { key: 'kabupaten', label: 'Kabupaten/Kota' },
+            { key: 'provinsi', label: 'Provinsi' },
+            { key: 'jumlahIgt', label: 'Jumlah IGT' },
+            { key: 'bidang', label: 'Bidang' },
+            { key: 'luas', label: 'Luas (Ha)' }
+        ];
+        data = raw.statistikIGTKabupaten || (window.MOCKUP_DATA.nasional ? window.MOCKUP_DATA.nasional.statistikIGTKabupaten : []) || [];
+        defaultSort = 'kabupaten';
+    } else {
+        columns = [
+            { key: 'igt', label: 'IGT' },
+            { key: 'provinsi', label: 'Provinsi' },
+            { key: 'kabupaten', label: 'Kabupaten' },
+            { key: 'bidang', label: 'Bidang' },
+            { key: 'luas', label: 'Luas (Ha)' }
+        ];
+        data = raw.statistikIGT || (window.MOCKUP_DATA.nasional ? window.MOCKUP_DATA.nasional.statistikIGT : []) || [];
+        defaultSort = 'igt';
+    }
+
+    renderTableSection('statistik-igt', data, columns, defaultSort, mode);
+}
+
 function applyDataFilter(namaProvinsi, namaKabupaten, tahun) {
+    if (namaProvinsi !== undefined) currentProvince = namaProvinsi;
+    if (namaKabupaten !== undefined) currentKabupaten = namaKabupaten;
+    if (tahun !== undefined) currentDashboardYear = tahun || 'all';
+
     var thn = (tahun !== undefined) ? (tahun || 'all') : (currentDashboardYear || 'all');
     var data = window.MOCKUP_DATA.getDataByWilayah(namaProvinsi, namaKabupaten, thn);
     if (!data) return;
@@ -920,13 +970,7 @@ function applyDataFilter(namaProvinsi, namaKabupaten, tahun) {
     renderLeaderBoard(data.leaderBoard);
 
     // C. Render All Section Tables
-    renderTableSection('statistik-igt', data.statistikIGT, [
-        { key: 'igt', label: 'IGT' },
-        { key: 'provinsi', label: 'Provinsi' },
-        { key: 'kabupaten', label: 'Kabupaten' },
-        { key: 'bidang', label: 'Bidang' },
-        { key: 'luas', label: 'Luas (Ha)' }
-    ], 'igt');
+    updateStatistikIgtView(data);
 
     renderTableSection('capaian-renaksi', data.capaianRenaksi, [
         { key: 'direktorat', label: 'Unit / Wilayah' },
@@ -1634,10 +1678,11 @@ function renderLeaderBoard(leaderBoardData) {
 /* ----------------------------------------------------
    7. Table Section Controller & Renderer
 ---------------------------------------------------- */
-function renderTableSection(id, rawData, columns, defaultSortCol) {
+function renderTableSection(id, rawData, columns, defaultSortCol, mode) {
     if (!tableControllers[id]) {
         tableControllers[id] = {
             id: id,
+            mode: mode || 'default',
             columns: columns,
             data: rawData,
             search: '',
@@ -1646,13 +1691,36 @@ function renderTableSection(id, rawData, columns, defaultSortCol) {
             sortCol: defaultSortCol,
             sortAsc: true
         };
+        renderTableHeader(tableControllers[id]);
         bindTableEvents(tableControllers[id]);
     } else {
+        tableControllers[id].columns = columns;
         tableControllers[id].data = rawData;
         tableControllers[id].page = 1;
+        if (mode) tableControllers[id].mode = mode;
+        if (defaultSortCol && (!tableControllers[id].sortCol || !columns.some(function(c) { return c.key === tableControllers[id].sortCol; }))) {
+            tableControllers[id].sortCol = defaultSortCol;
+        }
+        renderTableHeader(tableControllers[id]);
     }
 
     renderTable(tableControllers[id]);
+}
+
+function renderTableHeader(ctrl) {
+    var $container = $('#' + ctrl.id);
+    var $thead = $container.find('thead tr');
+    if (!$thead.length) return;
+
+    var hasCheck = $container.find('thead th.igt-table__check').length > 0;
+    var thHtml = '<th class="igt-table__no is-plain">No</th>';
+    if (hasCheck) {
+        thHtml += '<th class="igt-table__check is-plain"><img src="assets/img/icons/check-square.svg" alt=""></th>';
+    }
+    ctrl.columns.forEach(function(col) {
+        thHtml += '<th data-kolom="' + col.key + '"><span class="igt-table__sort">' + col.label + ' <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>';
+    });
+    $thead.html(thHtml);
 }
 
 function renderTable(ctrl) {
@@ -1667,10 +1735,23 @@ function renderTable(ctrl) {
         });
     });
 
+    // Helper for natural numeric & string sorting
+    function parseSortValue(val) {
+        if (val === null || val === undefined) return -Infinity;
+        if (typeof val === 'number') return val;
+        var str = String(val).trim();
+        if (/^[\d\.,]+$/.test(str)) {
+            var clean = str.replace(/\./g, '').replace(',', '.');
+            var num = parseFloat(clean);
+            if (!isNaN(num)) return num;
+        }
+        return str.toLowerCase();
+    }
+
     // Sort
     filtered.sort(function(a, b) {
-        var valA = a[ctrl.sortCol];
-        var valB = b[ctrl.sortCol];
+        var valA = parseSortValue(a[ctrl.sortCol]);
+        var valB = parseSortValue(b[ctrl.sortCol]);
         var comp = 0;
         if (typeof valA === 'number' && typeof valB === 'number') {
             comp = valA - valB;
@@ -1735,7 +1816,8 @@ function bindTableEvents(ctrl) {
         renderTable(ctrl);
     });
 
-    $container.find('thead th[data-kolom]').on('click', function() {
+    // Delegated sort event on column header click
+    $container.off('click', 'thead th[data-kolom]').on('click', 'thead th[data-kolom]', function() {
         var col = $(this).data('kolom');
         if (ctrl.sortCol === col) {
             ctrl.sortAsc = !ctrl.sortAsc;
@@ -1762,9 +1844,21 @@ function bindTableEvents(ctrl) {
         }
     });
 
-    setupDropdown(ctrl.id + '-kelompok');
     if (ctrl.id === 'statistik-igt') {
+        setupDropdown('statistik-igt-kelompok', function($item) {
+            var mode = $item.data('mode');
+            if (!mode) {
+                var text = $item.text().trim().toLowerCase();
+                if (text.indexOf('provinsi') !== -1) mode = 'provinsi';
+                else if (text.indexOf('kabupaten') !== -1) mode = 'kabupaten';
+                else mode = 'igt';
+            }
+            currentStatistikIgtMode = mode;
+            updateStatistikIgtView();
+        });
         setupDropdown('statistik-igt-grafik-dropdown');
+    } else {
+        setupDropdown(ctrl.id + '-kelompok');
     }
 }
 
@@ -1794,7 +1888,7 @@ function renderPaginationHtml($el, totalPages, currentPage, onPageClick) {
     });
 }
 
-function setupDropdown(id) {
+function setupDropdown(id, onSelect) {
     var $drop = $('#' + id);
     if (!$drop.length) return;
 
@@ -1810,6 +1904,9 @@ function setupDropdown(id) {
         $drop.find('.igt-dropdown__item').removeClass('is-active').find('img').attr('src', 'assets/img/icons/radio-off.svg');
         $(this).addClass('is-active').find('img').attr('src', 'assets/img/icons/radio-on.svg');
         $drop.find('.igt-dropdown__panel').removeClass('is-open');
+        if (typeof onSelect === 'function') {
+            onSelect($(this));
+        }
     });
 
     $(document).on('click', function() {
@@ -1835,10 +1932,25 @@ function getShortIgtLabel(name) {
     return name;
 }
 
+function getShortProvinsiLabel(name) {
+    if (!name) return '';
+    if (name === 'Daerah Istimewa Yogyakarta') return 'DI Yogyakarta';
+    if (name === 'Nusa Tenggara Timur') return 'Nusa Tenggara T...';
+    if (name.length > 16) return name.substring(0, 14) + '...';
+    return name;
+}
+
+function getShortKabupatenLabel(name) {
+    if (!name) return '';
+    if (name.length > 15) return name.substring(0, 13) + '...';
+    return name;
+}
+
 function renderStatistikIGTGrafik(ctrl) {
     var $canvas = $('#statistik-igt-chart-canvas');
     if (!$canvas.length) return;
 
+    var mode = (ctrl && ctrl.mode) ? ctrl.mode : (currentStatistikIgtMode || 'igt');
     var items = ctrl ? ctrl.data : (window.MOCKUP_DATA ? window.MOCKUP_DATA.statistikIGT : []);
     if (!items || items.length === 0) {
         $canvas.html('<div style="text-align: center; padding: 60px 20px; color: #94a3b8;">Tidak ada data grafik statistik.</div>');
@@ -1847,19 +1959,39 @@ function renderStatistikIGTGrafik(ctrl) {
 
     var metric = statistikIGTGrafikMetric || 'administrasi';
 
-    // Update legend based on metric
+    // Update legend based on metric and mode
     var $legend = $('#statistik-igt-grafik .igt-chart-legend');
     if (metric === 'administrasi') {
-        $legend.html(
-            '<span class="igt-chart-legend__item">'
-                + '<span class="igt-chart-legend__dot" style="background-color: #68b6db;"></span>'
-                + '<span class="igt-chart-legend__label">Jumlah Data Provinsi</span>'
-            + '</span>'
-            + '<span class="igt-chart-legend__item">'
-                + '<span class="igt-chart-legend__dot" style="background-color: #6793db;"></span>'
-                + '<span class="igt-chart-legend__label">Jumlah Data Kabupaten</span>'
-            + '</span>'
-        );
+        if (mode === 'provinsi') {
+            $legend.html(
+                '<span class="igt-chart-legend__item">'
+                    + '<span class="igt-chart-legend__dot" style="background-color: #68b6db;"></span>'
+                    + '<span class="igt-chart-legend__label">Jumlah IGT</span>'
+                + '</span>'
+                + '<span class="igt-chart-legend__item">'
+                    + '<span class="igt-chart-legend__dot" style="background-color: #6793db;"></span>'
+                    + '<span class="igt-chart-legend__label">Jumlah Data Kabupaten</span>'
+                + '</span>'
+            );
+        } else if (mode === 'kabupaten') {
+            $legend.html(
+                '<span class="igt-chart-legend__item">'
+                    + '<span class="igt-chart-legend__dot" style="background-color: #68b6db;"></span>'
+                    + '<span class="igt-chart-legend__label">Jumlah IGT</span>'
+                + '</span>'
+            );
+        } else {
+            $legend.html(
+                '<span class="igt-chart-legend__item">'
+                    + '<span class="igt-chart-legend__dot" style="background-color: #68b6db;"></span>'
+                    + '<span class="igt-chart-legend__label">Jumlah Data Provinsi</span>'
+                + '</span>'
+                + '<span class="igt-chart-legend__item">'
+                    + '<span class="igt-chart-legend__dot" style="background-color: #6793db;"></span>'
+                    + '<span class="igt-chart-legend__label">Jumlah Data Kabupaten</span>'
+                + '</span>'
+            );
+        }
     } else if (metric === 'bidang') {
         $legend.html(
             '<span class="igt-chart-legend__item">'
@@ -1880,10 +2012,20 @@ function renderStatistikIGTGrafik(ctrl) {
     var maxVal = 8;
     items.forEach(function(item) {
         if (metric === 'administrasi') {
-            var p = typeof item.provinsi === 'number' ? item.provinsi : parseInt(item.provinsi, 10) || 0;
-            var k = typeof item.kabupaten === 'number' ? item.kabupaten : parseInt(item.kabupaten, 10) || 0;
-            if (p > maxVal) maxVal = p;
-            if (k > maxVal) maxVal = k;
+            if (mode === 'provinsi') {
+                var igtVal = typeof item.jumlahIgt === 'number' ? item.jumlahIgt : parseInt(item.jumlahIgt, 10) || 0;
+                var kabVal = typeof item.kabupaten === 'number' ? item.kabupaten : parseInt(item.kabupaten, 10) || 0;
+                if (igtVal > maxVal) maxVal = igtVal;
+                if (kabVal > maxVal) maxVal = kabVal;
+            } else if (mode === 'kabupaten') {
+                var igtVal = typeof item.jumlahIgt === 'number' ? item.jumlahIgt : parseInt(item.jumlahIgt, 10) || 0;
+                if (igtVal > maxVal) maxVal = igtVal;
+            } else {
+                var p = typeof item.provinsi === 'number' ? item.provinsi : parseInt(item.provinsi, 10) || 0;
+                var k = typeof item.kabupaten === 'number' ? item.kabupaten : parseInt(item.kabupaten, 10) || 0;
+                if (p > maxVal) maxVal = p;
+                if (k > maxVal) maxVal = k;
+            }
         } else if (metric === 'bidang') {
             var b = parseInt(String(item.bidang || '0').replace(/\./g, ''), 10) || 0;
             if (b > maxVal) maxVal = b;
@@ -1916,7 +2058,7 @@ function renderStatistikIGTGrafik(ctrl) {
     var plotRight = svgWidth - 25;
     var plotWidth = plotRight - plotLeft;
     var clusterStep = plotWidth / numClusters;
-    var barWidth = metric === 'administrasi' ? 26 : 38;
+    var barWidth = (metric === 'administrasi' && mode !== 'kabupaten') ? (numClusters <= 6 ? 32 : 26) : (numClusters <= 6 ? 44 : 38);
 
     var svg = '<svg class="igt-chart-svg" viewBox="0 0 ' + svgWidth + ' ' + svgHeight + '" preserveAspectRatio="none">';
 
@@ -1943,34 +2085,64 @@ function renderStatistikIGTGrafik(ctrl) {
     // 4. Clustered Columns (Bars)
     items.forEach(function(item, idx) {
         var clusterCenter = plotLeft + (idx + 0.5) * clusterStep;
-        var rawLabel = item.igt;
-        var displayLabel = getShortIgtLabel(rawLabel);
+        var rawLabel = mode === 'provinsi' ? (item.provinsi || '-') : (mode === 'kabupaten' ? (item.kabupaten || '-') : (item.igt || '-'));
+        var displayLabel = mode === 'provinsi' ? getShortProvinsiLabel(rawLabel) : (mode === 'kabupaten' ? getShortKabupatenLabel(rawLabel) : getShortIgtLabel(rawLabel));
 
-        svg += '<g class="igt-chart-cluster" data-idx="' + idx + '" data-igt="' + rawLabel + '" data-prov="' + (item.provinsi || 0) + '" data-kab="' + (item.kabupaten || 0) + '" data-bidang="' + (item.bidang || '-') + '" data-luas="' + (item.luas || '-') + '">';
+        svg += '<g class="igt-chart-cluster" data-idx="' + idx + '" data-mode="' + mode + '" data-label="' + rawLabel + '" data-igt="' + (item.igt || item.jumlahIgt || '-') + '" data-prov="' + (item.provinsi || '-') + '" data-kab="' + (item.kabupaten || '-') + '" data-bidang="' + (item.bidang || '-') + '" data-luas="' + (item.luas || '-') + '">';
 
         // Invisible full-height hover zone
         svg += '<rect x="' + (clusterCenter - (clusterStep / 2)) + '" y="' + plotTop + '" width="' + clusterStep + '" height="' + (plotHeight + 35) + '" fill="transparent" class="igt-chart-hover-zone"></rect>';
 
         if (metric === 'administrasi') {
-            var pVal = typeof item.provinsi === 'number' ? item.provinsi : parseInt(item.provinsi, 10) || 0;
-            var kVal = typeof item.kabupaten === 'number' ? item.kabupaten : parseInt(item.kabupaten, 10) || 0;
+            if (mode === 'provinsi') {
+                var v1 = typeof item.jumlahIgt === 'number' ? item.jumlahIgt : parseInt(item.jumlahIgt, 10) || 0;
+                var v2 = typeof item.kabupaten === 'number' ? item.kabupaten : parseInt(item.kabupaten, 10) || 0;
 
-            var pHeight = (pVal / maxVal) * plotHeight;
-            var kHeight = (kVal / maxVal) * plotHeight;
+                var h1 = (v1 / maxVal) * plotHeight;
+                var h2 = (v2 / maxVal) * plotHeight;
 
-            var pX = clusterCenter - barWidth;
-            var pY = plotBottom - pHeight;
-            var kX = clusterCenter;
-            var kY = plotBottom - kHeight;
+                var x1 = clusterCenter - barWidth;
+                var y1 = plotBottom - h1;
+                var x2 = clusterCenter;
+                var y2 = plotBottom - h2;
 
-            // Bar 1: Jumlah Data Provinsi (#68b6db)
-            if (pVal > 0) {
-                svg += '<rect x="' + pX + '" y="' + pY + '" width="' + barWidth + '" height="' + pHeight + '" fill="#68b6db" class="igt-chart-bar igt-chart-bar--prov"></rect>';
-            }
+                // Bar 1: Jumlah IGT (#68b6db)
+                if (v1 > 0) {
+                    svg += '<rect x="' + x1 + '" y="' + y1 + '" width="' + barWidth + '" height="' + h1 + '" fill="#68b6db" class="igt-chart-bar igt-chart-bar--prov"></rect>';
+                }
+                // Bar 2: Jumlah Data Kabupaten (#6793db)
+                if (v2 > 0) {
+                    svg += '<rect x="' + x2 + '" y="' + y2 + '" width="' + barWidth + '" height="' + h2 + '" fill="#6793db" class="igt-chart-bar igt-chart-bar--kab"></rect>';
+                }
+            } else if (mode === 'kabupaten') {
+                var v1 = typeof item.jumlahIgt === 'number' ? item.jumlahIgt : parseInt(item.jumlahIgt, 10) || 0;
+                var h1 = (v1 / maxVal) * plotHeight;
+                var x1 = clusterCenter - (barWidth / 2);
+                var y1 = plotBottom - h1;
+                if (v1 > 0) {
+                    svg += '<rect x="' + x1 + '" y="' + y1 + '" width="' + barWidth + '" height="' + h1 + '" fill="#68b6db" class="igt-chart-bar"></rect>';
+                }
+            } else {
+                var pVal = typeof item.provinsi === 'number' ? item.provinsi : parseInt(item.provinsi, 10) || 0;
+                var kVal = typeof item.kabupaten === 'number' ? item.kabupaten : parseInt(item.kabupaten, 10) || 0;
 
-            // Bar 2: Jumlah Data Kabupaten (#6793db)
-            if (kVal > 0) {
-                svg += '<rect x="' + kX + '" y="' + kY + '" width="' + barWidth + '" height="' + kHeight + '" fill="#6793db" class="igt-chart-bar igt-chart-bar--kab"></rect>';
+                var pHeight = (pVal / maxVal) * plotHeight;
+                var kHeight = (kVal / maxVal) * plotHeight;
+
+                var pX = clusterCenter - barWidth;
+                var pY = plotBottom - pHeight;
+                var kX = clusterCenter;
+                var kY = plotBottom - kHeight;
+
+                // Bar 1: Jumlah Data Provinsi (#68b6db)
+                if (pVal > 0) {
+                    svg += '<rect x="' + pX + '" y="' + pY + '" width="' + barWidth + '" height="' + pHeight + '" fill="#68b6db" class="igt-chart-bar igt-chart-bar--prov"></rect>';
+                }
+
+                // Bar 2: Jumlah Data Kabupaten (#6793db)
+                if (kVal > 0) {
+                    svg += '<rect x="' + kX + '" y="' + kY + '" width="' + barWidth + '" height="' + kHeight + '" fill="#6793db" class="igt-chart-bar igt-chart-bar--kab"></rect>';
+                }
             }
         } else if (metric === 'bidang') {
             var bVal = parseInt(String(item.bidang || '0').replace(/\./g, ''), 10) || 0;
@@ -2008,15 +2180,26 @@ function renderStatistikIGTGrafik(ctrl) {
     $canvas.find('.igt-chart-cluster').off('mouseenter mousemove mouseleave')
         .on('mouseenter mousemove', function(e) {
             var $cluster = $(this);
+            var cMode = $cluster.data('mode');
+            var label = $cluster.data('label');
             var igt = $cluster.data('igt');
             var prov = $cluster.data('prov');
             var kab = $cluster.data('kab');
             var bidang = $cluster.data('bidang');
             var luas = $cluster.data('luas');
 
-            var html = '<div class="igt-chart-tooltip__title">' + igt + '</div>'
-                + '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#68b6db;"></span> Jumlah Data Provinsi: <strong>' + prov + '</strong></div>'
-                + '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#6793db;"></span> Jumlah Data Kabupaten: <strong>' + kab + '</strong></div>';
+            var html = '<div class="igt-chart-tooltip__title">' + label + '</div>';
+            if (cMode === 'provinsi') {
+                html += '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#68b6db;"></span> Jumlah IGT: <strong>' + igt + '</strong></div>'
+                    + '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#6793db;"></span> Jumlah Data Kabupaten: <strong>' + kab + '</strong></div>';
+            } else if (cMode === 'kabupaten') {
+                html += '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#94a3b8;"></span> Provinsi: <strong>' + prov + '</strong></div>'
+                    + '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#68b6db;"></span> Jumlah IGT: <strong>' + igt + '</strong></div>';
+            } else {
+                html += '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#68b6db;"></span> Jumlah Data Provinsi: <strong>' + prov + '</strong></div>'
+                    + '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#6793db;"></span> Jumlah Data Kabupaten: <strong>' + kab + '</strong></div>';
+            }
+
             if (bidang && bidang !== '-') {
                 html += '<div class="igt-chart-tooltip__row"><span class="igt-chart-tooltip__dot" style="background:#94a3b8;"></span> Bidang: <strong>' + bidang + '</strong></div>';
             }

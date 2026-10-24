@@ -105,6 +105,25 @@ window.MOCKUP_DATA = {
             { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', provinsi: 1, kabupaten: 5, bidang: 625, luas: '0' },
             { igt: 'Zona Nilai Tanah', provinsi: 1, kabupaten: 5, bidang: '4.120', luas: '128.450' }
         ],
+        statistikIGTProvinsi: [
+            { provinsi: 'Bali', jumlahIgt: 2, kabupaten: 1, bidang: 160, luas: '12,892' },
+            { provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 8, kabupaten: 5, bidang: '165.193', luas: '558.613,678' },
+            { provinsi: 'DKI Jakarta', jumlahIgt: 1, kabupaten: 1, bidang: 4, luas: '3,256' },
+            { provinsi: 'Nusa Tenggara Timur', jumlahIgt: 1, kabupaten: 3, bidang: '2.829', luas: '8.876,029' },
+            { provinsi: 'Tidak Tercatat', jumlahIgt: 1, kabupaten: 1, bidang: '7.516', luas: '231.015,748' }
+        ],
+        statistikIGTKabupaten: [
+            { kabupaten: 'Badung', provinsi: 'Bali', jumlahIgt: 2, bidang: 160, luas: '12,892' },
+            { kabupaten: 'Bantul', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 6, bidang: '15.554', luas: '2.720,909' },
+            { kabupaten: 'Belu', provinsi: 'Nusa Tenggara Timur', jumlahIgt: 1, bidang: '2.184', luas: '7.807,981' },
+            { kabupaten: 'Gunung Kidul', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: '64.003', luas: '270.423,81' },
+            { kabupaten: 'Gunung Kidul', provinsi: 'Tidak Tercatat', jumlahIgt: 1, bidang: '7.516', luas: '231.015,748' },
+            { kabupaten: 'Kota Jakarta Barat', provinsi: 'DKI Jakarta', jumlahIgt: 1, bidang: 4, luas: '3,256' },
+            { kabupaten: 'Kota Yogyakarta', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: '5.460', luas: '705,24' },
+            { kabupaten: 'Kulon Progo', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: 384, luas: '139.608,83' },
+            { kabupaten: 'Malaka', provinsi: 'Nusa Tenggara Timur', jumlahIgt: 1, bidang: 318, luas: '545,504' },
+            { kabupaten: 'Sleman', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: '62.022', luas: '80.096,56' }
+        ],
         leaderBoard: [
             {
                 peringkat: 1,
@@ -259,6 +278,12 @@ window.MOCKUP_DATA = {
                     { igt: 'Lahan Baku Sawah ' + kabBersih, provinsi: 1, kabupaten: 1, bidang: '4.210', luas: '11.230,45' },
                     { igt: 'RDTR Wilayah ' + kabBersih, provinsi: 1, kabupaten: 1, bidang: '2.840', luas: '6.450,10' }
                 ],
+                statistikIGTProvinsi: [
+                    { provinsi: provLengkap, jumlahIgt: totalLayerKab, kabupaten: 1, bidang: 24 + (hashKab % 30), luas: (4.2 + (hashKab % 5)).toFixed(3) }
+                ],
+                statistikIGTKabupaten: [
+                    { kabupaten: kabLengkap, provinsi: provLengkap, jumlahIgt: totalLayerKab, bidang: 24 + (hashKab % 30), luas: (4.2 + (hashKab % 5)).toFixed(3) }
+                ],
                 leaderBoard: [
                     {
                         peringkat: 1,
@@ -365,6 +390,14 @@ window.MOCKUP_DATA = {
                 { igt: 'RDTR Kabupaten/ Kota', provinsi: 1, kabupaten: 3, bidang: '28.450', luas: '19.820,10' },
                 { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', provinsi: 1, kabupaten: 3, bidang: 320, luas: '0' }
             ],
+            statistikIGTProvinsi: [
+                { provinsi: provLengkap, jumlahIgt: totalLayer, kabupaten: 4 + (hash % 6), bidang: '24.120', luas: '34.870,40' }
+            ],
+            statistikIGTKabupaten: [
+                { kabupaten: 'Kabupaten A ' + provBersih, provinsi: provLengkap, jumlahIgt: Math.max(1, totalLayer - 1), bidang: '12.450', luas: '18.420,10' },
+                { kabupaten: 'Kabupaten B ' + provBersih, provinsi: provLengkap, jumlahIgt: Math.max(1, totalLayer - 2), bidang: '8.120', luas: '10.250,30' },
+                { kabupaten: 'Kota ' + provBersih, provinsi: provLengkap, jumlahIgt: totalLayer, bidang: '3.550', luas: '6.200,00' }
+            ],
             leaderBoard: [
                 {
                     peringkat: 1,
@@ -464,13 +497,23 @@ window.MOCKUP_DATA = {
         var statCount = t === '2026' ? res.statistikIGT.length : (t === '2025' ? Math.max(3, res.statistikIGT.length - 2) : (t === '2024' ? Math.max(2, res.statistikIGT.length - 3) : Math.max(2, res.statistikIGT.length - 4)));
         var stat = res.statistikIGT ? res.statistikIGT.slice(0, statCount) : [];
 
+        var rawStatProv = res.statistikIGTProvinsi || this.nasional.statistikIGTProvinsi || [];
+        var statProvCount = t === '2026' ? rawStatProv.length : (t === '2025' ? Math.max(3, rawStatProv.length - 1) : (t === '2024' ? Math.max(2, rawStatProv.length - 2) : Math.max(2, rawStatProv.length - 3)));
+        var statProv = rawStatProv.slice(0, statProvCount);
+
+        var rawStatKab = res.statistikIGTKabupaten || this.nasional.statistikIGTKabupaten || [];
+        var statKabCount = t === '2026' ? rawStatKab.length : (t === '2025' ? Math.max(4, rawStatKab.length - 2) : (t === '2024' ? Math.max(3, rawStatKab.length - 4) : Math.max(2, rawStatKab.length - 6)));
+        var statKab = rawStatKab.slice(0, statKabCount);
+
         return Object.assign({}, res, {
             usulanInputData: usulan,
             kompilasiIntegrasi: kompilasi,
             aktivitasLog: log,
             capaianRenaksi: capaian,
             leaderBoard: lb,
-            statistikIGT: stat
+            statistikIGT: stat,
+            statistikIGTProvinsi: statProv,
+            statistikIGTKabupaten: statKab
         });
     },
 
