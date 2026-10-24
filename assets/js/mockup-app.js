@@ -1031,14 +1031,14 @@ function renderUsulanInputData(usulan) {
         var kelasNol = isNol ? ' is-nol' : '';
         var inlineStyle = isNol ? 'flex-grow: 0; min-width: 4px; width: 4px;' : 'flex-grow: ' + (bobot || 1);
         var layerCount = kat.layer !== undefined ? kat.layer : 0;
-        var titleText = kat.label + ': ' + kat.jumlah + ' data / ' + layerCount + ' layer (Klik untuk melihat rincian)';
+        var titleText = kat.label + ': ' + kat.jumlah + ' data / ' + layerCount + ' IGT (Klik untuk melihat rincian)';
 
         progresHtml += '<div class="igt-progres__ruas ' + (kat.kelas || '') + kelasNol + ' igt-progres__ruas--' + (idx + 1) + '" style="' + inlineStyle + '" title="' + titleText + '" data-status="' + kat.kunci + '"></div>';
 
         rincianHtml += '<div class="igt-rincian__item ' + kat.kelas + '" data-status="' + kat.kunci + '" title="Klik untuk melihat data ' + kat.label + ' (' + kat.jumlah + ' data)">'
             + '<span class="igt-rincian__titik"></span>'
             + '<div class="igt-rincian__isi">'
-            + '<div class="igt-rincian__angka"><strong>' + kat.jumlah + '</strong><span>data</span><span class="igt-rincian__pemisah">/</span><strong>' + layerCount + '</strong><span>layer</span></div>'
+            + '<div class="igt-rincian__angka"><strong>' + kat.jumlah + '</strong><span>data</span><span class="igt-rincian__pemisah">/</span><strong>' + layerCount + '</strong><span>IGT</span></div>'
             + '<div class="igt-panel__meta"><span>' + kat.label + '</span><span>' + kat.diperbarui + '</span></div>'
             + '</div></div>';
     });

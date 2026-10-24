@@ -40,6 +40,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 30 | **Data Kumulatif Monotonik Kompilasi & Integrasi (Mei $\ge$ April)** | Data bulanan Kompilasi & Integrasi pada tingkat provinsi mengalami fluktuasi penurunan (misal: April 2 layer, Mei turun jadi 1 layer; Februari 2 layer, Maret 1 layer; Juni 3 layer, Juli 2 layer). | Menerapkan **aturan akumulasi kumulatif (*monotonic non-decreasing progression*)** pada seluruh data bulanan (Januari–Desember) di tingkat nasional, provinsi, maupun kabupaten/kota: <br>• Nilai `terkompilasi` dan `terintegrasi` di bulan $m$ dijamin selalu $\ge$ bulan $m-1$ ($\text{data}[m] \ge \text{data}[m-1]$), sehingga capaian bulan Mei dipastikan tidak pernah lebih sedikit dari bulan April.<br>• Alur capaian nasional selaras 100% dengan 14 Layer IGT (4 terkompilasi & 10 terintegrasi).<br>• Fungsi penskalaan tahunan (`getKompilasiIntegrasi`) diberi proteksi akumulasi otomatis sehingga pemilihan tahun berapapun tetap mempertahankan tren akumulatif non-decreasing secara matematis. |
 | 31 | **Penambahan Kolom Jenis IGT pada Tabel Statistik IGT (Sebelah Kanan Nomor)** | Tabel Statistik IGT (mode *Data Berdasarkan IGT*) hanya menampilkan kolom `No`, `IGT`, `Provinsi`, `Kabupaten`, `Bidang`, dan `Luas (Ha)` tanpa identifikasi klasifikasi tematik apakah termasuk IGT Pertanahan atau Tata Ruang. | Ditambahkan **kolom `Jenis IGT` di sebelah kanan kolom nomor (`No`) sebelum nama `IGT`**: <br>• Urutan kolom: **`No` $\rightarrow$ `Jenis IGT` $\rightarrow$ `IGT` $\rightarrow$ `Provinsi` $\rightarrow$ `Kabupaten` $\rightarrow$ `Bidang` $\rightarrow$ `Luas (Ha)`**.<br>• Nilai jenis IGT dirender menggunakan badge khusus: **Pertanahan** (biru ATR `#1d4ed8` dengan latar `#eff6ff`) dan **Tata Ruang** (hijau emerald `#047857` dengan latar `#ecfdf5`).<br>• Terintegrasi penuh dengan pencarian instan (pencarian *"Tata Ruang"* atau *"Pertanahan"*), pengurutan dinamis (*sortable*), dan paginasi otomatis. |
 | 32 | **Leader Board 3 Kategori Pilihan (Capaian Renaksi Satker, IGT Sering Diakses, Direktorat Sering Login)** | Leader board sebelumnya menggunakan format statis daftar peringkat tema tanpa opsi pengelompokan kategori yang fleksibel dan tanpa filter direktorat. | Mengubah modul Leader Board menjadi **tiga kategori pilihan interaktif** (dapat dipilih via dropdown `#leader-board-kategori` maupun tab segmen `#leader-board-segment`): <br>1. **Capaian Renaksi oleh Satker/Direktorat**: Kolom `No` (badge medali #1 emas, #2 perak, #3 perunggu), `IGT`, `Satker / Direktorat`, `Realisasi / Target` (dibuat satu kolom: angka realisasi / target + badge satuan seperti *Bidang*, *Kawasan*, *Lokasi*, *Provinsi*), `Persentase` (progress bar horizontal adaptif hijau/kuning/merah + angka persentase). Dilengkapi filter khusus **Tahun Renaksi** dan dropdown filter **Direktorat / Satker**.<br>2. **IGT yang paling sering diakses (via plugin dan aplikasi)**: Kolom `No`, `Nama IGT`, `Jumlah Akses` (total akses + rincian akses via Plugin QGIS dan Aplikasi Geoportal). Filter: **Tahun Akses** (filter satker disembunyikan otomatis).<br>3. **Direktorat yg paling sering login**: Kolom `No`, `Satker / Direktorat`, `Jumlah Login` (total frekuensi login terurut peringkat menurun). Filter: **Tahun Akses** (filter satker disembunyikan otomatis).<br>Seluruh kategori dilengkapi pencarian instan, pengurutan klik kolom thead, paginasi 10/25/50 entri, serta tombol *Unduh Data* (ekspor CSV) dan *View Full Table*. |
+| 33 | **Penggantian Istilah Satuan "Layer" Menjadi "IGT" pada Usulan Input Data** | Kartu *Usulan Input Data* menampilkan label satuan tema geospasial sebagai "layer" (misal: "98 data / 30 layer", "26 data / 14 layer"). | Label satuan "layer" pada kartu ringkasan *Usulan Input Data* **diganti menjadi "IGT"** secara menyeluruh: <br>• Metrik utama kartu: **`98 data / 30 IGT`**.<br>• Rincian status per kategori: `26 data / 14 IGT` (Terintegrasi), `7 data / 4 IGT` (Terkompilasi), `65 data / 12 IGT` (Terupload), `0 data / 0 IGT` (Revisi Perbaikan).<br>• Tooltip bar progres dinamis juga diperbarui menggunakan satuan "IGT". |
 
 ---
 
@@ -483,6 +484,22 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
      - **Paginasi Multi-Opsi**: Pilihan 10, 25, dan 50 entri per halaman dengan tombol navigasi prev/next dan nomor halaman.
      - **Ekspor CSV Lengkap (`#leader-board-unduh`)**: Mengklik tombol *Unduh Data* langsung mengunduh file `.csv` terformat UTF-8 BOM berisi seluruh data kategori aktif sesuai tahun yang dipilih.
      - **Mode Layar Penuh (*View Full Table*)**: Tombol untuk beralih instan antara tampilan ringkas 10 entri dan tampilan luas 50 entri per halaman.
+
+### 30. Penggantian Satuan "Layer" Menjadi "IGT" pada Usulan Input Data
+- **Latar Belakang**:
+  - Pada kartu ringkasan *Usulan Input Data*, penyebutan satuan tema sebelumnya menggunakan kata "layer" (misal: "98 data / 30 layer").
+  - Pengguna meminta agar istilah "layer" diganti menjadi **"IGT"** (misal: "14 IGT" bukan "14 Layer", dan "30 IGT" bukan "30 layer") untuk memperjelas konteks Informasi Geospasial Tematik.
+- **Perubahan yang Diterapkan**:
+  1. **Angka Metrik Utama Header Kartu (`index.html`)**:
+     - Struktur HTML diperbarui:
+       `<strong id="status-data-total">98</strong><span>data</span><span class="igt-panel__pemisah">/</span><strong id="status-data-total-layer">30</strong><span>IGT</span>`
+  2. **Rincian Status per Kategori (`mockup-app.js`)**:
+     - Pada fungsi `renderUsulanInputData(usulan)`, seluruh label satuan rincian dan tooltip bar progres disesuaikan:
+       - **Terintegrasi**: `26 data / 14 IGT`
+       - **Terkompilasi**: `7 data / 4 IGT`
+       - **Terupload**: `65 data / 12 IGT`
+       - **Revisi Perbaikan**: `0 data / 0 IGT`
+       - Tooltip hover bar: `[Label]: [X] data / [Y] IGT (Klik untuk melihat rincian)`
 
 ---
 
