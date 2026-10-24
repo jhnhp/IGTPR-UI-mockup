@@ -999,9 +999,44 @@
                         <div class="igt-pagination" id="statistik-igt-pagination"></div>
                     </div>
                 </div>
-                <div id="statistik-igt-grafik" style="display: none; padding: 40px; text-align: center; color: #64748b;">
-                    <i class="ri-bar-chart-box-line" style="font-size: 3rem;"></i>
-                    <p class="mt-2">Tampilan Grafik Statistik IGT</p>
+                <div id="statistik-igt-grafik" class="igt-chart-wrap" style="display: none;">
+                    <!-- Sub-toolbar: Legend & Metric Dropdown -->
+                    <div class="igt-chart-subbar">
+                        <div class="igt-chart-subbar__left">
+                            <div class="igt-chart-legend">
+                                <span class="igt-chart-legend__item">
+                                    <span class="igt-chart-legend__dot" style="background-color: #68b6db;"></span>
+                                    <span class="igt-chart-legend__label">Jumlah Data Provinsi</span>
+                                </span>
+                                <span class="igt-chart-legend__item">
+                                    <span class="igt-chart-legend__dot" style="background-color: #6793db;"></span>
+                                    <span class="igt-chart-legend__label">Jumlah Data Kabupaten</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="igt-chart-subbar__right">
+                            <div class="igt-dropdown" id="statistik-igt-grafik-dropdown">
+                                <button type="button" class="igt-chart-pill-btn" id="statistik-igt-grafik-metric-btn">
+                                    <span id="statistik-igt-grafik-metric-label">Data Berdasarkan Administrasi</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                <div class="igt-dropdown__panel" id="statistik-igt-grafik-metric-panel">
+                                    <button type="button" class="igt-dropdown__item is-active" data-metric="administrasi">
+                                        Data Berdasarkan Administrasi
+                                    </button>
+                                    <button type="button" class="igt-dropdown__item" data-metric="bidang">
+                                        Data Berdasarkan Bidang
+                                    </button>
+                                    <button type="button" class="igt-dropdown__item" data-metric="luas">
+                                        Data Berdasarkan Luas (Ha)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Canvas / Body -->
+                    <div class="igt-chart-body position-relative" id="statistik-igt-chart-canvas"></div>
                 </div>
             </div>
 

@@ -33,6 +33,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 23 | **Penambahan Kolom Nomor Urut (No) di Paling Kiri Seluruh Tabel** | Seluruh tabel (dashboard, modal usulan data, dan modal kompilasi data) tidak memiliki kolom nomor urut (`No`), baris langsung diawali dengan checkbox atau nama data. | Ditambahkan **kolom nomor urut (`No`) di posisi paling kiri (`paling kiri`)** pada seluruh 7 tabel di aplikasi: <br>1. *Statistik IGT* (`#statistik-igt-tabel`)<br>2. *Capaian Renaksi / Leader Board* (`#capaian-renaksi-tabel`)<br>3. *Statistik Derivatif* (`#statistik-derivatif-tabel`)<br>4. *Statistik Akses IGT* (`#statistik-akses-tabel`)<br>5. *Log Aktivitas Terkini* (`#aktivitas-log-tabel`)<br>6. *Modal Usulan Input Data* (`#modal-usulan-table`)<br>7. *Subtabel Modal Kompilasi & Integrasi* (`#modal-kompilasi-accordion`).<br>Penomoran dihitung otomatis dan berlanjut secara presisi mengikuti paginasi per halaman (misal: halaman 1: nomor 1–10, halaman 2: nomor 11–20). |
 | 24 | **Penghapusan Ikon Info (Tanda "i") di Kanan Atas Kartu Ringkasan** | Terdapat ikon informasi lingkaran (*info icon* / tanda "i") pada pojok kanan atas header kartu *Usulan Input Data* dan *Kompilasi Integrasi*. | Ikon tanda "i" (`.igt-panel__info` / `info.svg`) **dihapus secara menyeluruh** dari header kartu *Usulan Input Data* dan *Kompilasi Integrasi*. Menghasilkan tampilan header kartu ringkasan yang jauh lebih bersih, rapi, dan minimalis. |
 | 25 | **Penghapusan Kolom Kotak-kotak (Checkbox) pada Tabel Statistik IGT** | Tabel Statistik IGT memiliki kolom centang kotak-kotak (`check-square.svg`) di antara kolom `No` dan `IGT`. | Kolom centang kotak-kotak (`.igt-table__check`) **dihapus dari tabel Statistik IGT**. Logika perenderan tabel disesuaikan dinamis mendeteksi keberadaan header centang (`hasCheck`), menghasilkan tata letak tabel yang bersih, rapi, dan persis sesuai desain referensi asli. |
+| 26 | **Implementasi Tampilan Grafik Statistik IGT (Clustered Bar Chart)** | Tampilan tombol toggle *Grafik* pada kartu Statistik IGT sebelumnya hanya berupa teks placeholder statis. | Diimplementasikan **tampilan grafik batang bergugus (*clustered column bar chart*) interaktif** persis sesuai tangkapan layar modul Statistik IGT: <br>• **Legenda & Palet Warna**: *Jumlah Data Provinsi* (cyan `#68b6db`) dan *Jumlah Data Kabupaten* (medium blue `#6793db`).<br>• **Struktur Sumbu**: Sumbu Y skala 0–8 dengan garis kisi (*grid lines*) horizontal dan vertikal per tema, serta ikon garis di kiri bawah.<br>• **Kategori IGT Lengkap (11 Tema)**: Menampilkan 11 tema IGT (*Bidang Tanah*, *Hak Atas Tanah*, *Inventarisasi Tanah Kritis*, *Kemampuan Tanah*, *Lahan Baku Sawah*, *Lahan Sawah Dilindungi*, *RDTR Kab/Kota*, *RDTR Kawasan*, *RTRW Kabupaten*, *Sebaran Lokasi*, dan *Zona Nilai Tanah*).<br>• **Interaktivitas & Filter Dropdown**: Dilengkapi dropdown metrik (*Data Berdasarkan Administrasi*, *Bidang*, *Luas*), tooltip interaktif saat *hover*, serta tersinkronisasi otomatis dengan filter tahun renaksi dan wilayah. |
 
 ---
 
@@ -323,6 +324,25 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
   - Memperbarui fungsi `renderTable(ctrl)` di `assets/js/mockup-app.js` agar secara dinamis mendeteksi keberadaan elemen header `th.igt-table__check` (`var hasCheck = $container.find('thead th.igt-table__check').length > 0;`).
   - Jika tabel tidak memiliki header centang, kolom sel `<td class="igt-table__check">` otomatis ditiadakan dan perhitungan `colspan` pesan data kosong disesuaikan secara presisi (`ctrl.columns.length + 1`).
 - **Hasil Tampilan**: Tabel Statistik IGT kini langsung menyajikan urutan kolom: **No**, **IGT**, **Provinsi**, **Kabupaten**, **Bidang**, dan **Luas (Ha)**, menghasilkan visual tabel yang bersih, lega, dan elegan.
+
+### 23. Implementasi Tampilan Grafik Statistik IGT (Clustered Column Chart)
+- **Desain & Kesesuaian Referensi**:
+  - Mengimplementasikan visualisasi grafik batang bergugus (*grouped / clustered column chart*) pada `#statistik-igt-grafik` sesuai tangkapan layar antarmuka asli Geoportal IGT.
+  - **Sub-toolbar & Legenda**:
+    - Legenda warna: lingkaran titik cyan `#68b6db` (*Jumlah Data Provinsi*) dan biru periwinkle `#6793db` (*Jumlah Data Kabupaten*).
+    - Tombol dropdown bentuk pil rounded: *Data Berdasarkan Administrasi* (dapat dipilih untuk melihat *Administrasi*, *Jumlah Bidang*, maupun *Luas (Ha)*).
+  - **Grid & Kisi Grafik**:
+    - Skala sumbu Y dari 0 s.d. 8 dengan kelipatan 2 (0, 2, 4, 6, 8) dan label teks abu-abu lembut (`#94a3b8`).
+    - Garis kisi (*grid line*) horizontal tipis di setiap kelipatan nilai, dan garis kisi vertikal tipis pembatas antartema (`#f1f5f9`).
+    - Ikon mini visualisasi garis/gelombang di sisi kiri bawah dekat titik origin `(0, 0)`.
+  - **Bilah Kolom & 11 Tema IGT**:
+    - Menampilkan seluruh 11 tema IGT (*Bidang Tanah*, *Hak Atas Tanah*, *Inventarisasi Tanah Kritis*, *Kemampuan Tanah*, *Lahan Baku Sawah Nasional*, *Lahan Sawah Dilindungi*, *RDTR Kabupaten/ Kota*, *RDTR Kawasan Perbatasan Negara*, *RTRW Kabupaten*, *Sebaran Lokasi Pemberdayaan Tanah Masyarakat*, dan *Zona Nilai Tanah*).
+    - Batang berdampingan presisi (lebar 26px) dengan tinggi proporsional terhadap data `provinsi` dan `kabupaten`.
+    - Label sumbu X di bawah baseline disingkat secara elegan (*ellipsis*) persis menyerupai referensi (*Inventarisasi Ta...*, *Kemampuan Ta...*, *Lahan Baku Sa...*, *Lahan Sawah D...*, dll.).
+  - **Interaktivitas Penuh**:
+    - Tooltip melayang (*floating tooltip*) muncul secara mulus saat kursor diarahkan ke setiap gugus batang, menyajikan nama lengkap tema IGT, jumlah data provinsi, kabupaten, bidang, dan luas wilayah.
+    - Sinkronisasi dinamis: saat pengguna mengubah filter tahun renaksi maupun wilayah administrasi peta, grafik secara otomatis merender ulang data sesuai pilihan aktif.
+    - Peralihan mulus (*smooth toggle*) antara tampilan *Tabel* dan *Grafik* melalui kontrol segmen header.
 
 ---
 

@@ -102,7 +102,8 @@ window.MOCKUP_DATA = {
             { igt: 'RDTR Kabupaten/ Kota', provinsi: 1, kabupaten: 3, bidang: '51.528', luas: '35.547,203' },
             { igt: 'RDTR Kawasan Perbatasan Negara', provinsi: 1, kabupaten: 3, bidang: '2.829', luas: '8.876,029' },
             { igt: 'RTRW Kabupaten', provinsi: 0, kabupaten: 1, bidang: '7.516', luas: '231.015,748' },
-            { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', provinsi: 1, kabupaten: 5, bidang: 625, luas: '0' }
+            { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', provinsi: 1, kabupaten: 5, bidang: 625, luas: '0' },
+            { igt: 'Zona Nilai Tanah', provinsi: 1, kabupaten: 5, bidang: '4.120', luas: '128.450' }
         ],
         leaderBoard: [
             {
