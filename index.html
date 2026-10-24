@@ -1112,6 +1112,7 @@
                     </div>
                 </div>
 
+                <!-- 1. Tampilan Tabel (Kategori 1: Capaian Renaksi) -->
                 <div id="leader-board-tabel">
                     <div class="igt-table-wrap">
                         <table class="igt-table" id="leader-board-table">
@@ -1121,18 +1122,38 @@
                             <tbody id="leader-board-body"></tbody>
                         </table>
                     </div>
-                    <div class="igt-table-foot">
-                        <div class="igt-table-foot__perpage">
-                            Per page
-                            <select id="leader-board-perpage">
-                                <option value="5" selected>5</option>
-                                <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                            </select>
+                </div>
+
+                <!-- 2. Tampilan Grafik Batang ke Samping (Kategori 2 & 3: Sering Diakses & Sering Login) -->
+                <div id="leader-board-grafik" style="display: none;">
+                    <div class="igt-hbar-card">
+                        <div class="igt-hbar-legend" id="leader-board-hbar-legend" style="display: none;">
+                            <span class="igt-hbar-legend-title">Metode Akses:</span>
+                            <div class="igt-hbar-legend-item">
+                                <span class="igt-hbar-legend-dot igt-hbar-legend-dot--plugin"></span>
+                                <span>Plugin QGIS</span>
+                            </div>
+                            <div class="igt-hbar-legend-item">
+                                <span class="igt-hbar-legend-dot igt-hbar-legend-dot--aplikasi"></span>
+                                <span>Aplikasi Geoportal</span>
+                            </div>
                         </div>
-                        <div class="igt-pagination" id="leader-board-pagination"></div>
+                        <div class="igt-hbar-list" id="leader-board-hbar-list"></div>
                     </div>
+                </div>
+
+                <!-- 3. Shared Footer: Per page + Paginasi -->
+                <div class="igt-table-foot" id="leader-board-foot">
+                    <div class="igt-table-foot__perpage">
+                        Per page
+                        <select id="leader-board-perpage">
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                    <div class="igt-pagination" id="leader-board-pagination"></div>
                 </div>
             </div>
 

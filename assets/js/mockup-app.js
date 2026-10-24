@@ -1791,7 +1791,8 @@ function initLeaderBoard() {
         if (leaderBoardState.perPage === 50) {
             leaderBoardState.perPage = 5;
             $('#leader-board-perpage').val('5');
-            $(this).find('span:last-child').text('View Full Table');
+            var btnText = (leaderBoardState.kategori === 'capaian-renaksi') ? 'View Full Table' : 'Lihat Semua';
+            $(this).find('span:last-child').text(btnText);
         } else {
             leaderBoardState.perPage = 50;
             $('#leader-board-perpage').val('50');
@@ -1834,6 +1835,12 @@ function switchLeaderBoardKategori(kategoriKey) {
     } else {
         $('#leader-board-direktorat-wrap').hide();
     }
+
+    // Update View Full button label
+    var fullBtnLabel = (leaderBoardState.perPage === 50)
+        ? 'Tampilan Standar'
+        : (kategoriKey === 'capaian-renaksi' ? 'View Full Table' : 'Lihat Semua');
+    $('#leader-board-full span:last-child').text(fullBtnLabel);
 
     updateLeaderBoardTable();
 }
@@ -1897,54 +1904,58 @@ function updateLeaderBoardTable() {
     var startIndex = (leaderBoardState.currentPage - 1) * perPage;
     var pageData = sorted.slice(startIndex, startIndex + perPage);
 
-    // Render THEAD
-    var theadHtml = '';
-    cfg.columns.forEach(function(col) {
-        var thClass = col.thClass || '';
-        var isSorted = (col.key === sortCol || (col.sortKey && col.sortKey === sortCol));
-        if (isSorted) thClass += ' is-sorted';
+    // Render based on category: Table (Capaian Renaksi) vs Horizontal Bar Chart (Akses & Login)
+    if (leaderBoardState.kategori === 'capaian-renaksi') {
+        $('#leader-board-tabel').show();
+        $('#leader-board-grafik').hide();
 
-        if (col.sortable) {
-            var iconSrc = isSorted
-                ? (sortDir === 'asc' ? 'assets/img/icons/caret-up.svg' : 'assets/img/icons/caret-down.svg')
-                : 'assets/img/icons/caret-up-down.svg';
+        // Render THEAD
+        var theadHtml = '';
+        cfg.columns.forEach(function(col) {
+            var thClass = col.thClass || '';
+            var isSorted = (col.key === sortCol || (col.sortKey && col.sortKey === sortCol));
+            if (isSorted) thClass += ' is-sorted';
 
-            theadHtml += '<th class="' + thClass + '" data-key="' + (col.sortKey || col.key) + '">'
-                + '<span class="igt-table__sort">'
-                + col.label
-                + ' <img src="' + iconSrc + '" alt="">'
-                + '</span></th>';
+            if (col.sortable) {
+                var iconSrc = isSorted
+                    ? (sortDir === 'asc' ? 'assets/img/icons/caret-up.svg' : 'assets/img/icons/caret-down.svg')
+                    : 'assets/img/icons/caret-up-down.svg';
+
+                theadHtml += '<th class="' + thClass + '" data-key="' + (col.sortKey || col.key) + '">'
+                    + '<span class="igt-table__sort">'
+                    + col.label
+                    + ' <img src="' + iconSrc + '" alt="">'
+                    + '</span></th>';
+            } else {
+                theadHtml += '<th class="' + thClass + ' is-plain">' + col.label + '</th>';
+            }
+        });
+        $('#leader-board-thead').html(theadHtml);
+
+        // Bind TH sort clicks
+        $('#leader-board-thead th[data-key]').off('click').on('click', function() {
+            var clickedKey = $(this).data('key');
+            if (leaderBoardState.sortCol === clickedKey) {
+                leaderBoardState.sortDir = (leaderBoardState.sortDir === 'asc') ? 'desc' : 'asc';
+            } else {
+                leaderBoardState.sortCol = clickedKey;
+                leaderBoardState.sortDir = (clickedKey === 'igt' || clickedKey === 'satker') ? 'asc' : 'desc';
+            }
+            updateLeaderBoardTable();
+        });
+
+        // Render TBODY
+        var tbodyHtml = '';
+        if (pageData.length === 0) {
+            tbodyHtml = '<tr class="igt-table__empty"><td colspan="' + cfg.columns.length + '">Tidak ada data peringkat yang sesuai filter</td></tr>';
         } else {
-            theadHtml += '<th class="' + thClass + ' is-plain">' + col.label + '</th>';
-        }
-    });
-    $('#leader-board-thead').html(theadHtml);
+            pageData.forEach(function(item, idx) {
+                var rank = startIndex + idx + 1;
+                var rankBadgeClass = rank === 1 ? 'igt-rank-badge--1' : (rank === 2 ? 'igt-rank-badge--2' : (rank === 3 ? 'igt-rank-badge--3' : ''));
+                var rankBadge = '<span class="igt-rank-badge ' + rankBadgeClass + '">' + rank + '</span>';
 
-    // Bind TH sort clicks
-    $('#leader-board-thead th[data-key]').off('click').on('click', function() {
-        var clickedKey = $(this).data('key');
-        if (leaderBoardState.sortCol === clickedKey) {
-            leaderBoardState.sortDir = (leaderBoardState.sortDir === 'asc') ? 'desc' : 'asc';
-        } else {
-            leaderBoardState.sortCol = clickedKey;
-            leaderBoardState.sortDir = (clickedKey === 'igt' || clickedKey === 'satker') ? 'asc' : 'desc';
-        }
-        updateLeaderBoardTable();
-    });
+                tbodyHtml += '<tr>';
 
-    // Render TBODY
-    var tbodyHtml = '';
-    if (pageData.length === 0) {
-        tbodyHtml = '<tr class="igt-table__empty"><td colspan="' + cfg.columns.length + '">Tidak ada data peringkat yang sesuai filter</td></tr>';
-    } else {
-        pageData.forEach(function(item, idx) {
-            var rank = startIndex + idx + 1;
-            var rankBadgeClass = rank === 1 ? 'igt-rank-badge--1' : (rank === 2 ? 'igt-rank-badge--2' : (rank === 3 ? 'igt-rank-badge--3' : ''));
-            var rankBadge = '<span class="igt-rank-badge ' + rankBadgeClass + '">' + rank + '</span>';
-
-            tbodyHtml += '<tr>';
-
-            if (leaderBoardState.kategori === 'capaian-renaksi') {
                 // No
                 tbodyHtml += '<td class="igt-table__no">' + rankBadge + '</td>';
 
@@ -1974,56 +1985,96 @@ function updateLeaderBoardTable() {
                     + '<span class="igt-progress-text">' + item.persenStr + '</span>'
                     + '</div></td>';
 
-            } else if (leaderBoardState.kategori === 'igt-akses') {
-                // No
-                tbodyHtml += '<td class="igt-table__no">' + rankBadge + '</td>';
+                tbodyHtml += '</tr>';
+            });
+        }
+        $('#leader-board-body').html(tbodyHtml);
 
-                // IGT (with chip underneath!)
-                var chipClass = getIgtTagClass(item.igt);
-                tbodyHtml += '<td>'
-                    + '<div class="igt-igt-cell">'
-                    + '  <div class="igt-igt-title">' + item.igt + '</div>'
-                    + '  <div class="igt-chips-wrap"><span class="' + chipClass + '">' + item.igt + '</span></div>'
-                    + '</div>'
-                    + '</td>';
+    } else {
+        // Kategori 2 (igt-akses) & Kategori 3 (direktorat-login): GRAFIK BATANG KE SAMPING
+        $('#leader-board-tabel').hide();
+        $('#leader-board-grafik').show();
 
-                // Jumlah Akses
-                tbodyHtml += '<td><div class="igt-akses-cell">'
-                    + '<span class="igt-akses-total">' + item.jumlahAkses.toLocaleString('id-ID') + ' kali</span> '
-                    + '<span class="igt-akses-sub">(Plugin: ' + item.aksesPlugin.toLocaleString('id-ID') + ' &bull; Aplikasi: ' + item.aksesAplikasi.toLocaleString('id-ID') + ')</span>'
-                    + '</div></td>';
+        if (leaderBoardState.kategori === 'igt-akses') {
+            $('#leader-board-hbar-legend').css('display', 'flex');
+        } else {
+            $('#leader-board-hbar-legend').hide();
+        }
 
+        var hbarHtml = '';
+        if (pageData.length === 0) {
+            hbarHtml = '<div class="igt-hbar-empty">Tidak ada data peringkat yang sesuai filter</div>';
+        } else {
+            // Maximum value for proportional width calculation
+            var maxVal = 1;
+            if (leaderBoardState.kategori === 'igt-akses') {
+                maxVal = sorted[0].jumlahAkses || 1;
             } else if (leaderBoardState.kategori === 'direktorat-login') {
-                // No
-                tbodyHtml += '<td class="igt-table__no">' + rankBadge + '</td>';
-
-                // Satker (with chips underneath!)
-                var chipsHtml = '';
-                if (item.daftarIgt && item.daftarIgt.length > 0) {
-                    chipsHtml = '<div class="igt-chips-wrap">' + item.daftarIgt.map(function(name) {
-                        return '<span class="' + getIgtTagClass(name) + '">' + name + '</span>';
-                    }).join(' ') + '</div>';
-                }
-                tbodyHtml += '<td>'
-                    + '<div class="igt-satker-cell-col">'
-                    + '  <div class="igt-satker-name">' + item.satker + '</div>'
-                    +    chipsHtml
-                    + '</div>'
-                    + '</td>';
-
-                // Jumlah Login
-                tbodyHtml += '<td><div class="igt-login-cell">'
-                    + '<strong>' + item.jumlahLogin.toLocaleString('id-ID') + '</strong> '
-                    + '<span class="igt-akses-sub">kali login</span>'
-                    + '</div></td>';
+                maxVal = sorted[0].jumlahLogin || 1;
             }
 
-            tbodyHtml += '</tr>';
-        });
-    }
-    $('#leader-board-body').html(tbodyHtml);
+            pageData.forEach(function(item, idx) {
+                var rank = startIndex + idx + 1;
+                var rankBadgeClass = rank === 1 ? 'igt-rank-badge--1' : (rank === 2 ? 'igt-rank-badge--2' : (rank === 3 ? 'igt-rank-badge--3' : ''));
+                var rankBadge = '<span class="igt-rank-badge ' + rankBadgeClass + '">' + rank + '</span>';
 
-    // Render Pagination
+                if (leaderBoardState.kategori === 'igt-akses') {
+                    var barPercent = Math.max(6, Math.round((item.jumlahAkses / maxVal) * 58));
+                    var pluginPercent = item.jumlahAkses > 0 ? Math.round((item.aksesPlugin / item.jumlahAkses) * 100) : 0;
+                    var aplikasiPercent = Math.max(0, 100 - pluginPercent);
+
+                    var chipClass = getIgtTagClass(item.igt);
+                    var chipsHtml = '<div class="igt-chips-wrap"><span class="' + chipClass + '">' + item.igt + '</span></div>';
+
+                    hbarHtml += '<div class="igt-hbar-row">'
+                        + '  <div class="igt-hbar-rank">' + rankBadge + '</div>'
+                        + '  <div class="igt-hbar-left">'
+                        + '    <div class="igt-hbar-title">' + item.igt + '</div>'
+                        +      chipsHtml
+                        + '  </div>'
+                        + '  <div class="igt-hbar-chart">'
+                        + '    <div class="igt-hbar-bar-wrap" style="width: ' + barPercent + '%;" title="' + item.igt + ': Total ' + item.jumlahAkses.toLocaleString('id-ID') + ' kali (Plugin QGIS: ' + item.aksesPlugin.toLocaleString('id-ID') + ', Geoportal: ' + item.aksesAplikasi.toLocaleString('id-ID') + ')">'
+                        + '      <div class="igt-hbar-seg--plugin" style="width: ' + pluginPercent + '%;"></div>'
+                        + '      <div class="igt-hbar-seg--aplikasi" style="width: ' + aplikasiPercent + '%;"></div>'
+                        + '    </div>'
+                        + '    <div class="igt-hbar-tip">'
+                        + '      <strong>' + item.jumlahAkses.toLocaleString('id-ID') + '</strong> <span class="igt-hbar-tip-unit">kali</span>'
+                        + '      <span class="igt-hbar-tip-sub">(Plugin: ' + item.aksesPlugin.toLocaleString('id-ID') + ' &bull; Aplikasi: ' + item.aksesAplikasi.toLocaleString('id-ID') + ')</span>'
+                        + '    </div>'
+                        + '  </div>'
+                        + '</div>';
+
+                } else if (leaderBoardState.kategori === 'direktorat-login') {
+                    var barPercent = Math.max(6, Math.round((item.jumlahLogin / maxVal) * 68));
+
+                    var chipsHtml = '';
+                    if (item.daftarIgt && item.daftarIgt.length > 0) {
+                        chipsHtml = '<div class="igt-chips-wrap">' + item.daftarIgt.map(function(name) {
+                            return '<span class="' + getIgtTagClass(name) + '">' + name + '</span>';
+                        }).join(' ') + '</div>';
+                    }
+
+                    hbarHtml += '<div class="igt-hbar-row">'
+                        + '  <div class="igt-hbar-rank">' + rankBadge + '</div>'
+                        + '  <div class="igt-hbar-left">'
+                        + '    <div class="igt-hbar-title">' + item.satker + '</div>'
+                        +      chipsHtml
+                        + '  </div>'
+                        + '  <div class="igt-hbar-chart">'
+                        + '    <div class="igt-hbar-bar-wrap igt-hbar-bar-wrap--login" style="width: ' + barPercent + '%;" title="' + item.satker + ': ' + item.jumlahLogin.toLocaleString('id-ID') + ' kali login">'
+                        + '    </div>'
+                        + '    <div class="igt-hbar-tip">'
+                        + '      <strong>' + item.jumlahLogin.toLocaleString('id-ID') + '</strong> <span class="igt-hbar-tip-unit">kali login</span>'
+                        + '    </div>'
+                        + '  </div>'
+                        + '</div>';
+                }
+            });
+        }
+        $('#leader-board-hbar-list').html(hbarHtml);
+    }
+
+    // Render Shared Pagination
     renderPaginationHtml($('#leader-board-pagination'), totalPages, leaderBoardState.currentPage, function(newPage) {
         leaderBoardState.currentPage = newPage;
         updateLeaderBoardTable();
