@@ -1410,6 +1410,7 @@ a.igt-stat:hover {
 }
 
 .igt-panel__info {
+    display: none !important;
     width: 24px;
     height: 24px;
     cursor: help;
