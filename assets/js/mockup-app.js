@@ -151,18 +151,22 @@ function applyRoleFilterToLeaderboard(rawData, kategori) {
     if (currentActiveRole === 'superadmin') {
         if (kategori === 'capaian-renaksi') {
             return rawData.filter(function(item) {
-                return !item.satker || (item.satker.indexOf('Kanwil') === -1 && item.satker.indexOf('Kantah') === -1);
+                var s = item.satker || item.direktorat || '';
+                return s && s.indexOf('Kanwil') === -1 && s.indexOf('Kantah') === -1 && s.indexOf('Balai') === -1 && s.indexOf('Sekretariat Direktorat Jenderal SPPR') === -1;
             });
         }
         return rawData;
     }
 
     if (currentActiveRole === 'sppr') {
-        var spprDirektorat = [
+        var spprUnits = [
             'Direktorat Pengukuran Dan Pemetaan Kadastral',
             'Direktorat Pengukuran dan Pemetaan Kadastral',
             'Direktorat Pengukuran Dan Pemetaan Dasar Pertanahan Ruang',
-            'Direktorat Survei Dan Pemetaan Tematik'
+            'Direktorat Survei Dan Pemetaan Tematik',
+            'Direktorat Penilaian Tanah dan Ekonomi Pertanahan',
+            'Sekretariat Direktorat Jenderal SPPR',
+            'Balai Pemetaan dan Survei Tematik SPPR'
         ];
         var spprIgtKeywords = [
             'Bidang Tanah',
@@ -170,13 +174,18 @@ function applyRoleFilterToLeaderboard(rawData, kategori) {
             'Pemilikan Tanah',
             'Penggunaan Tanah',
             'Pemanfaatan Tanah',
-            'Unsur Dasar Pertanahan'
+            'Unsur Dasar Pertanahan',
+            'Batas Wilayah',
+            'Kerangka Kontrol',
+            'Tutupan Lahan',
+            'Morfologi'
         ];
         if (kategori === 'capaian-renaksi') {
             return rawData.filter(function(item) {
-                return spprDirektorat.some(function(d) {
-                    return item.satker && item.satker.toLowerCase() === d.toLowerCase();
-                });
+                var s = item.satker || item.direktorat || '';
+                return spprUnits.some(function(d) {
+                    return s.toLowerCase() === d.toLowerCase();
+                }) || s.indexOf('SPPR') !== -1;
             });
         } else if (kategori === 'igt-akses') {
             return rawData.filter(function(item) {
@@ -186,33 +195,50 @@ function applyRoleFilterToLeaderboard(rawData, kategori) {
             });
         } else if (kategori === 'satker-login' || kategori === 'direktorat-login') {
             return rawData.filter(function(item) {
-                return spprDirektorat.some(function(d) {
-                    return item.satker && item.satker.toLowerCase() === d.toLowerCase();
-                }) || (item.satker && item.satker.indexOf('SPPR') !== -1);
+                var s = item.satker || item.direktorat || '';
+                return spprUnits.some(function(d) {
+                    return s.toLowerCase() === d.toLowerCase();
+                }) || s.indexOf('SPPR') !== -1;
             });
         }
     } else if (currentActiveRole === 'kanwil-diy') {
-        if (kategori === 'satker-login' || kategori === 'direktorat-login') {
-            var diyKeywords = ['Yogyakarta', 'Sleman', 'Bantul', 'Gunungkidul', 'Gunung Kidul', 'Kulon Progo'];
+        // Role Kanwil DIY: Menampilkan data seluruh Kanwil-kanwil se-Indonesia (15 Kanwil)
+        if (kategori === 'capaian-renaksi') {
             return rawData.filter(function(item) {
-                return diyKeywords.some(function(kw) {
-                    return item.satker && item.satker.toLowerCase().indexOf(kw.toLowerCase()) !== -1;
-                });
+                var s = item.satker || item.direktorat || '';
+                return s && (s.indexOf('Kanwil') !== -1 || s.indexOf('Kantor Wilayah') !== -1);
             });
-        } else if (kategori === 'capaian-renaksi') {
+        } else if (kategori === 'satker-login' || kategori === 'direktorat-login') {
             return rawData.filter(function(item) {
-                return item.satker && (item.satker.indexOf('D.I. Yogyakarta') !== -1 || item.satker.indexOf('Yogyakarta') !== -1 || item.satker.indexOf('Kantah') !== -1);
+                var s = item.satker || item.direktorat || '';
+                return item.tipe === 'Kanwil' || (s && (s.indexOf('Kanwil') !== -1 || s.indexOf('Kantor Wilayah') !== -1));
             });
+        } else if (kategori === 'igt-akses') {
+            return rawData;
         }
     } else if (currentActiveRole === 'kantah-gunungkidul') {
-        if (kategori === 'satker-login' || kategori === 'direktorat-login') {
+        // Role Kantah Gunungkidul: Menampilkan data seluruh Kantah-kantah se-DIY (5 Kantah)
+        var diyKeywords = ['Yogyakarta', 'Sleman', 'Bantul', 'Gunungkidul', 'Gunung Kidul', 'Kulon Progo'];
+        if (kategori === 'capaian-renaksi') {
             return rawData.filter(function(item) {
-                return item.satker && (item.satker.toLowerCase().indexOf('gunungkidul') !== -1 || item.satker.toLowerCase().indexOf('gunung kidul') !== -1);
+                var s = item.satker || item.direktorat || '';
+                var isKantah = s.indexOf('Kantah') !== -1 || s.indexOf('Kantor Pertanahan') !== -1;
+                var isDiy = diyKeywords.some(function(kw) {
+                    return s.toLowerCase().indexOf(kw.toLowerCase()) !== -1;
+                });
+                return isKantah && isDiy;
             });
-        } else if (kategori === 'capaian-renaksi') {
+        } else if (kategori === 'satker-login' || kategori === 'direktorat-login') {
             return rawData.filter(function(item) {
-                return item.satker && (item.satker.toLowerCase().indexOf('gunungkidul') !== -1 || item.satker.toLowerCase().indexOf('gunung kidul') !== -1);
+                var s = item.satker || item.direktorat || '';
+                var isKantah = item.tipe === 'Kantah' || s.indexOf('Kantah') !== -1 || s.indexOf('Kantor Pertanahan') !== -1;
+                var isDiy = diyKeywords.some(function(kw) {
+                    return s.toLowerCase().indexOf(kw.toLowerCase()) !== -1;
+                });
+                return isKantah && isDiy;
             });
+        } else if (kategori === 'igt-akses') {
+            return rawData;
         }
     }
     return rawData;
@@ -267,38 +293,8 @@ function applyRoleSPPR() {
     // Open detail card with SPPR filter
     bukaDetailInformasi('Seluruh Indonesia', 'nasional', null);
 
-    // Filter usulan input data for SPPR
-    var spprUsulan = {
-        total: 24,
-        totalLayer: 6,
-        kategori: [
-            { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 14, layer: 3, diperbarui: 'Diperbarui 30 menit lalu', kelas: 'is-terintegrasi' },
-            { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 4, layer: 1, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
-            { kunci: 'terupload', label: 'Terupload', jumlah: 6, layer: 2, diperbarui: 'Diperbarui 3 jam lalu', kelas: 'is-terupload' },
-            { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-perbaikan' }
-        ]
-    };
-    renderUsulanInputData(spprUsulan);
-
-    // Filter kompilasi integrasi for SPPR
-    var spprKompilasi = {
-        totalLayer: 6,
-        bulanan: [
-            { bulan: 'JAN', terkompilasi: 0, terintegrasi: 1 },
-            { bulan: 'FEB', terkompilasi: 0, terintegrasi: 1 },
-            { bulan: 'MAR', terkompilasi: 0, terintegrasi: 1 },
-            { bulan: 'APR', terkompilasi: 0, terintegrasi: 1 },
-            { bulan: 'MEI', terkompilasi: 1, terintegrasi: 1 },
-            { bulan: 'JUN', terkompilasi: 1, terintegrasi: 2 },
-            { bulan: 'JUL', terkompilasi: 1, terintegrasi: 2 },
-            { bulan: 'AGT', terkompilasi: 1, terintegrasi: 2 },
-            { bulan: 'SEP', terkompilasi: 1, terintegrasi: 2 },
-            { bulan: 'OKT', terkompilasi: 1, terintegrasi: 3 },
-            { bulan: 'NOV', terkompilasi: 0, terintegrasi: 0 },
-            { bulan: 'DES', terkompilasi: 0, terintegrasi: 0 }
-        ]
-    };
-    renderKompilasiIntegrasi(spprKompilasi);
+    // Apply data filter with SPPR datasets
+    applyDataFilter('sppr', null, currentDashboardYear);
 
     updateLeaderBoardTable();
     updateLeaderBoardDetailTable();
@@ -1345,31 +1341,6 @@ function updateStatistikIgtView(dataOverride) {
         defaultSort = 'igt';
     }
 
-    // Role-based data filtering for Statistik IGT
-    if (currentActiveRole === 'sppr') {
-        var spprIgtList = ['Bidang Tanah', 'Penguasaan Tanah', 'Pemilikan Tanah', 'Penggunaan Tanah', 'Pemanfaatan Tanah', 'Unsur Dasar Pertanahan'];
-        if (mode === 'igt') {
-            data = data.filter(function(r) { return spprIgtList.indexOf(r.igt) !== -1; });
-        }
-    } else if (currentActiveRole === 'kanwil-diy') {
-        if (mode === 'provinsi') {
-            data = data.filter(function(r) { return normProvinsi(r.provinsi) === normProvinsi('Daerah Istimewa Yogyakarta'); });
-        } else if (mode === 'kabupaten') {
-            data = data.filter(function(r) { return normProvinsi(r.provinsi) === normProvinsi('Daerah Istimewa Yogyakarta'); });
-        } else if (mode === 'igt') {
-            var diyKabs = ['Bantul', 'Gunung Kidul', 'Gunungkidul', 'Sleman', 'Kota Yogyakarta', 'Kulon Progo'];
-            data = data.filter(function(r) { return normProvinsi(r.provinsi) === normProvinsi('Daerah Istimewa Yogyakarta') || diyKabs.indexOf(r.kabupaten) !== -1; });
-        }
-    } else if (currentActiveRole === 'kantah-gunungkidul') {
-        if (mode === 'kabupaten') {
-            data = data.filter(function(r) { return r.kabupaten === 'Gunung Kidul' || r.kabupaten === 'Gunungkidul'; });
-        } else if (mode === 'provinsi') {
-            data = data.filter(function(r) { return normProvinsi(r.provinsi) === normProvinsi('Daerah Istimewa Yogyakarta'); });
-        } else if (mode === 'igt') {
-            data = data.filter(function(r) { return r.kabupaten === 'Gunung Kidul' || r.kabupaten === 'Gunungkidul'; });
-        }
-    }
-
     renderTableSection('statistik-igt', data, columns, defaultSort, mode);
 }
 
@@ -2218,7 +2189,13 @@ function switchLeaderBoardKategori(kategoriKey) {
     $('#leader-board-segment .igt-segment__item[data-kategori="' + kategoriKey + '"]').addClass('is-active');
 
     // Update Subbar Info Text
-    $('#leader-board-subbar-info').text(cfg.subbarInfo);
+    if (kategoriKey === 'capaian-renaksi') {
+        var entityLabel = (currentActiveRole === 'kanwil-diy') ? 'Kanwil' : ((currentActiveRole === 'kantah-gunungkidul') ? 'Kantah' : 'Direktorat');
+        $('#leader-board-subbar-info').text('Peringkat Capaian Renaksi per ' + entityLabel);
+        $('.igt-segment__item[data-kategori="capaian-renaksi"]').text('1. Capaian Renaksi ' + entityLabel);
+    } else {
+        $('#leader-board-subbar-info').text(cfg.subbarInfo);
+    }
 
     // Update Tahun Filter Title & Label
     $('#leader-board-tahun-wrap').attr('title', cfg.tahunTitle);
@@ -2287,12 +2264,18 @@ function updateLeaderBoardTable() {
 
     // Render based on category: Table (Capaian Renaksi) vs Horizontal Bar Chart (Akses & Login)
     if (leaderBoardState.kategori === 'capaian-renaksi') {
+        var entityLabel = (currentActiveRole === 'kanwil-diy') ? 'Kanwil' : ((currentActiveRole === 'kantah-gunungkidul') ? 'Kantah' : 'Direktorat');
+        $('#leader-board-subbar-info').text('Peringkat Capaian Renaksi per ' + entityLabel);
+        $('.igt-segment__item[data-kategori="capaian-renaksi"]').text('1. Capaian Renaksi ' + entityLabel);
+
         $('#leader-board-tabel').show();
         $('#leader-board-grafik').hide();
 
         // Render THEAD
         var theadHtml = '';
         cfg.columns.forEach(function(col) {
+            var colLabel = col.label;
+            if (col.key === 'satker') colLabel = entityLabel;
             var thClass = col.thClass || '';
             var isSorted = (col.key === sortCol || (col.sortKey && col.sortKey === sortCol));
             if (isSorted) thClass += ' is-sorted';
@@ -2304,11 +2287,11 @@ function updateLeaderBoardTable() {
 
                 theadHtml += '<th class="' + thClass + '" data-key="' + (col.sortKey || col.key) + '">'
                     + '<span class="igt-table__sort">'
-                    + col.label
+                    + colLabel
                     + ' <img src="' + iconSrc + '" alt="">'
                     + '</span></th>';
             } else {
-                theadHtml += '<th class="' + thClass + ' is-plain">' + col.label + '</th>';
+                theadHtml += '<th class="' + thClass + ' is-plain">' + colLabel + '</th>';
             }
         });
         $('#leader-board-thead').html(theadHtml);
@@ -2746,13 +2729,23 @@ function updateLeaderBoardDetailTable() {
     var startIndex = (leaderBoardDetailState.currentPage - 1) * perPage;
     var pageData = sorted.slice(startIndex, startIndex + perPage);
 
+    var entityLabel = (currentActiveRole === 'kanwil-diy') ? 'Kanwil' : ((currentActiveRole === 'kantah-gunungkidul') ? 'Kantah' : 'Direktorat');
+
     // Update Header Title & Count Badge
-    $('#leader-board-detail-title').text(cfg.title);
+    if (kat === 'capaian-renaksi') {
+        $('#leader-board-detail-title').text('Tabel Detail Capaian Renaksi per ' + entityLabel);
+    } else {
+        $('#leader-board-detail-title').text(cfg.title);
+    }
     $('#leader-board-detail-badge').text(totalEntries + ' Data');
 
     // Render THEAD
     var theadHtml = '';
     cfg.columns.forEach(function(col) {
+        var colLabel = col.label;
+        if (col.key === 'satker' && kat === 'capaian-renaksi') {
+            colLabel = entityLabel;
+        }
         var thClass = col.thClass || '';
         var isSorted = (col.key === sortCol);
         if (isSorted) thClass += ' is-sorted';
@@ -2762,10 +2755,10 @@ function updateLeaderBoardDetailTable() {
                 ? (sortDir === 'asc' ? 'assets/img/icons/caret-up.svg' : 'assets/img/icons/caret-down.svg')
                 : 'assets/img/icons/caret-up-down.svg';
             theadHtml += '<th class="' + thClass + '" data-key="' + col.key + '" style="cursor: pointer;">'
-                + '<span class="igt-table__sort">' + col.label + ' <img src="' + iconSrc + '" alt=""></span>'
+                + '<span class="igt-table__sort">' + colLabel + ' <img src="' + iconSrc + '" alt=""></span>'
                 + '</th>';
         } else {
-            theadHtml += '<th class="' + thClass + ' is-plain">' + col.label + '</th>';
+            theadHtml += '<th class="' + thClass + ' is-plain">' + colLabel + '</th>';
         }
     });
     $('#leader-board-detail-thead').html(theadHtml);

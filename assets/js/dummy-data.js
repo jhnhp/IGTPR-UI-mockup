@@ -106,11 +106,16 @@ window.MOCKUP_DATA = {
             { igt: 'Zona Nilai Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 5, bidang: '4.120', luas: '128.450' }
         ],
         statistikIGTProvinsi: [
-            { provinsi: 'Bali', jumlahIgt: 2, kabupaten: 1, bidang: 160, luas: '12,892' },
+            { provinsi: 'Bali', jumlahIgt: 3, kabupaten: 2, bidang: '1.450', luas: '128,450' },
             { provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 8, kabupaten: 5, bidang: '165.193', luas: '558.613,678' },
-            { provinsi: 'DKI Jakarta', jumlahIgt: 1, kabupaten: 1, bidang: 4, luas: '3,256' },
-            { provinsi: 'Nusa Tenggara Timur', jumlahIgt: 1, kabupaten: 3, bidang: '2.829', luas: '8.876,029' },
-            { provinsi: 'Tidak Tercatat', jumlahIgt: 1, kabupaten: 1, bidang: '7.516', luas: '231.015,748' }
+            { provinsi: 'DKI Jakarta', jumlahIgt: 4, kabupaten: 5, bidang: '84.210', luas: '66.420,120' },
+            { provinsi: 'Jawa Barat', jumlahIgt: 7, kabupaten: 27, bidang: '342.180', luas: '1.840.520,340' },
+            { provinsi: 'Jawa Tengah', jumlahIgt: 6, kabupaten: 35, bidang: '298.640', luas: '1.450.110,890' },
+            { provinsi: 'Jawa Timur', jumlahIgt: 7, kabupaten: 38, bidang: '315.420', luas: '1.920.340,650' },
+            { provinsi: 'Banten', jumlahIgt: 5, kabupaten: 8, bidang: '124.500', luas: '480.210,500' },
+            { provinsi: 'Kalimantan Timur', jumlahIgt: 5, kabupaten: 10, bidang: '98.320', luas: '2.140.850,700' },
+            { provinsi: 'Sumatera Utara', jumlahIgt: 6, kabupaten: 33, bidang: '178.490', luas: '1.250.600,400' },
+            { provinsi: 'Nusa Tenggara Timur', jumlahIgt: 3, kabupaten: 22, bidang: '45.820', luas: '380.120,800' }
         ],
         statistikIGTKabupaten: [
             { kabupaten: 'Badung', provinsi: 'Bali', jumlahIgt: 2, bidang: 160, luas: '12,892' },
@@ -179,7 +184,13 @@ window.MOCKUP_DATA = {
             { layer: 'Coba Derivatif Bidang', provinsi: 1, kabupaten: 1, bidang: 44, luas: '2,301' },
             { layer: 'Dialog Kinerja Bidang Tanah Valid Beratribut Tematik', provinsi: 1, kabupaten: 1, bidang: 37, luas: '5,356' },
             { layer: 'TES LAYER DERIVATIF BIDANG', provinsi: 1, kabupaten: 1, bidang: 46, luas: '3,914' },
-            { layer: 'TES LAYER DERIVATIF KAWASAN', provinsi: 3, kabupaten: 3, bidang: '17.938', luas: '2.025.860,518' }
+            { layer: 'TES LAYER DERIVATIF KAWASAN', provinsi: 3, kabupaten: 3, bidang: '17.938', luas: '2.025.860,518' },
+            { layer: 'Derivatif Tumpang Tindih Kawasan Hutan vs Hak Atas Tanah', provinsi: 12, kabupaten: 48, bidang: '42.150', luas: '1.450.210,350' },
+            { layer: 'Derivatif Lahan Baku Sawah Terintegrasi Spasial', provinsi: 8, kabupaten: 34, bidang: '68.900', luas: '870.450,120' },
+            { layer: 'Derivatif Potensi Sengketa Batas Wilayah Pesisir', provinsi: 6, kabupaten: 18, bidang: '12.420', luas: '320.180,440' },
+            { layer: 'Derivatif Buffer Garis Sempadan Danau dan Sungai', provinsi: 14, kabupaten: 52, bidang: '29.340', luas: '512.630,780' },
+            { layer: 'Derivatif Kesesuaian Kegiatan Pemanfaatan Ruang (KKPR)', provinsi: 10, kabupaten: 42, bidang: '38.710', luas: '640.220,150' },
+            { layer: 'Derivatif Zona Nilai Tanah Kawasan Strategis Nasional', provinsi: 5, kabupaten: 15, bidang: '18.650', luas: '245.890,600' }
         ],
         statistikAksesIGT: [
             { direktorat: 'Direktorat Bina Pengadaan Dan Pencadangan Tanah', aktivitas: 'Login', total: 1 },
@@ -207,8 +218,120 @@ window.MOCKUP_DATA = {
         ]
     },
 
+    // 1B. DATA KHUSUS ROLE DITJEN SPPR
+    sppr: {
+        tingkat: 'nasional',
+        wilayah: 'Direktorat Jenderal Survei dan Pemetaan Pertanahan dan Ruang (SPPR)',
+        provinsi: null,
+        kabupaten: null,
+        isFiltered: true,
+        usulanInputData: {
+            total: 24,
+            totalLayer: 6,
+            kategori: [
+                { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 14, layer: 3, diperbarui: 'Diperbarui 30 menit lalu', kelas: 'is-terintegrasi' },
+                { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 4, layer: 1, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
+                { kunci: 'terupload', label: 'Terupload', jumlah: 6, layer: 2, diperbarui: 'Diperbarui 3 jam lalu', kelas: 'is-terupload' },
+                { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-perbaikan' }
+            ]
+        },
+        kompilasiIntegrasi: {
+            totalLayer: 6,
+            bulanan: [
+                { bulan: 'JAN', terkompilasi: 0, terintegrasi: 1 },
+                { bulan: 'FEB', terkompilasi: 0, terintegrasi: 1 },
+                { bulan: 'MAR', terkompilasi: 0, terintegrasi: 1 },
+                { bulan: 'APR', terkompilasi: 0, terintegrasi: 1 },
+                { bulan: 'MEI', terkompilasi: 1, terintegrasi: 1 },
+                { bulan: 'JUN', terkompilasi: 1, terintegrasi: 2 },
+                { bulan: 'JUL', terkompilasi: 1, terintegrasi: 2 },
+                { bulan: 'AGT', terkompilasi: 1, terintegrasi: 2 },
+                { bulan: 'SEP', terkompilasi: 1, terintegrasi: 2 },
+                { bulan: 'OKT', terkompilasi: 1, terintegrasi: 3 },
+                { bulan: 'NOV', terkompilasi: 0, terintegrasi: 0 },
+                { bulan: 'DES', terkompilasi: 0, terintegrasi: 0 }
+            ]
+        },
+        statistikIGT: [
+            { igt: 'Bidang Tanah', jenisIgt: 'Pertanahan', provinsi: 34, kabupaten: 416, bidang: '124.580', luas: '84.920,450' },
+            { igt: 'Unsur Dasar Pertanahan', jenisIgt: 'Pertanahan', provinsi: 34, kabupaten: 514, bidang: '89.420', luas: '412.350,120' },
+            { igt: 'Penggunaan Tanah', jenisIgt: 'Pertanahan', provinsi: 30, kabupaten: 380, bidang: '76.150', luas: '340.180,600' },
+            { igt: 'Pemilikan Tanah', jenisIgt: 'Pertanahan', provinsi: 28, kabupaten: 340, bidang: '64.800', luas: '295.400,250' },
+            { igt: 'Penguasaan Tanah', jenisIgt: 'Pertanahan', provinsi: 28, kabupaten: 320, bidang: '58.300', luas: '270.890,110' },
+            { igt: 'Pemanfaatan Tanah', jenisIgt: 'Pertanahan', provinsi: 25, kabupaten: 290, bidang: '49.200', luas: '215.650,800' },
+            { igt: 'Batas Wilayah Administrasi', jenisIgt: 'Pertanahan', provinsi: 34, kabupaten: 514, bidang: '14.850', luas: '1.904.569,000' },
+            { igt: 'Kerangka Kontrol Geodesi', jenisIgt: 'Pertanahan', provinsi: 34, kabupaten: 480, bidang: '8.420', luas: '65.200,400' },
+            { igt: 'Peta Tutupan Lahan', jenisIgt: 'Pertanahan', provinsi: 22, kabupaten: 250, bidang: '32.100', luas: '512.400,750' },
+            { igt: 'Peta Morfologi Tanah', jenisIgt: 'Pertanahan', provinsi: 18, kabupaten: 190, bidang: '21.400', luas: '348.900,300' }
+        ],
+        statistikIGTProvinsi: [
+            { provinsi: 'DKI Jakarta', jumlahIgt: 6, kabupaten: 5, bidang: '84.210', luas: '66.420,120' },
+            { provinsi: 'Jawa Barat', jumlahIgt: 6, kabupaten: 27, bidang: '342.180', luas: '1.840.520,340' },
+            { provinsi: 'Jawa Tengah', jumlahIgt: 6, kabupaten: 35, bidang: '298.640', luas: '1.450.110,890' },
+            { provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 6, kabupaten: 5, bidang: '165.193', luas: '558.613,678' },
+            { provinsi: 'Jawa Timur', jumlahIgt: 6, kabupaten: 38, bidang: '315.420', luas: '1.920.340,650' },
+            { provinsi: 'Banten', jumlahIgt: 5, kabupaten: 8, bidang: '124.500', luas: '480.210,500' },
+            { provinsi: 'Bali', jumlahIgt: 5, kabupaten: 9, bidang: '95.400', luas: '210.890,400' },
+            { provinsi: 'Kalimantan Timur', jumlahIgt: 5, kabupaten: 10, bidang: '98.320', luas: '2.140.850,700' },
+            { provinsi: 'Sumatera Utara', jumlahIgt: 5, kabupaten: 33, bidang: '178.490', luas: '1.250.600,400' },
+            { provinsi: 'Sulawesi Selatan', jumlahIgt: 4, kabupaten: 24, bidang: '88.600', luas: '760.320,150' }
+        ],
+        statistikIGTKabupaten: [
+            { kabupaten: 'Sleman', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 6, bidang: '62.822', luas: '110.094,516' },
+            { kabupaten: 'Bantul', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 6, bidang: '15.554', luas: '82.720,993' },
+            { kabupaten: 'Gunung Kidul', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 6, bidang: '64.003', luas: '219.423,151' },
+            { kabupaten: 'Bogor', provinsi: 'Jawa Barat', jumlahIgt: 6, bidang: '78.450', luas: '298.410,200' },
+            { kabupaten: 'Bandung', provinsi: 'Jawa Barat', jumlahIgt: 6, bidang: '65.230', luas: '176.840,110' },
+            { kabupaten: 'Semarang', provinsi: 'Jawa Tengah', jumlahIgt: 5, bidang: '42.180', luas: '95.620,340' },
+            { kabupaten: 'Banyumas', provinsi: 'Jawa Tengah', jumlahIgt: 5, bidang: '38.900', luas: '132.450,800' },
+            { kabupaten: 'Badung', provinsi: 'Bali', jumlahIgt: 5, bidang: '34.200', luas: '41.250,600' },
+            { kabupaten: 'Surabaya', provinsi: 'Jawa Timur', jumlahIgt: 5, bidang: '56.700', luas: '33.050,450' },
+            { kabupaten: 'Balikpapan', provinsi: 'Kalimantan Timur', jumlahIgt: 5, bidang: '28.400', luas: '50.330,220' }
+        ],
+        statistikDerivatif: [
+            { layer: 'Derivatif Batas Kadastral Bidang Nasional', provinsi: 34, kabupaten: 416, bidang: '124.580', luas: '84.920,450' },
+            { layer: 'Validasi Topologi SPPR Tematik', provinsi: 28, kabupaten: 320, bidang: '76.150', luas: '340.180,600' },
+            { layer: 'Derivatif Kontur & DEM Dasar Wilayah', provinsi: 25, kabupaten: 290, bidang: '89.420', luas: '412.350,120' },
+            { layer: 'Peta Tumpang Tindih Batas Kadastral', provinsi: 18, kabupaten: 180, bidang: '18.420', luas: '94.210,300' },
+            { layer: 'Buffer Titik Kontrol Geodesi Aktif (CORS)', provinsi: 34, kabupaten: 480, bidang: '8.420', luas: '65.200,400' },
+            { layer: 'Derivatif Klasifikasi Tutupan Lahan AI', provinsi: 22, kabupaten: 250, bidang: '32.100', luas: '512.400,750' },
+            { layer: 'Peta Zona Integrasi Kadastral Lengkap', provinsi: 30, kabupaten: 350, bidang: '112.300', luas: '78.450,200' },
+            { layer: 'Sebaran Bidang Tanah Belum Terpetakan (K4)', provinsi: 26, kabupaten: 310, bidang: '95.400', luas: '68.900,100' },
+            { layer: 'Derivatif Pemetaan Batas Pesisir & Pulau Kecil', provinsi: 15, kabupaten: 85, bidang: '14.250', luas: '184.200,600' },
+            { layer: 'Analisis Kesesuaian Peta Tematik Pertanahan', provinsi: 20, kabupaten: 210, bidang: '45.800', luas: '235.600,450' }
+        ],
+        statistikAksesIGT: [
+            { direktorat: 'Direktorat Survei Dan Pemetaan Tematik', aktivitas: 'Login & Unduh Layer', total: 342 },
+            { direktorat: 'Direktorat Pengukuran dan Pemetaan Kadastral', aktivitas: 'Validasi Geometri', total: 318 },
+            { direktorat: 'Direktorat Pengukuran Dan Pemetaan Dasar Pertanahan Ruang', aktivitas: 'Sinkronisasi CORS', total: 285 },
+            { direktorat: 'Balai Pemetaan dan Survei Tematik SPPR', aktivitas: 'Pengolahan Citra', total: 246 },
+            { direktorat: 'Sekretariat Direktorat Jenderal SPPR', aktivitas: 'Monitoring Integrasi', total: 214 },
+            { direktorat: 'Bidang Survei dan Pemetaan Kanwil BPN Jabar', aktivitas: 'Unduh Peta Tematik', total: 188 },
+            { direktorat: 'Bidang Survei dan Pemetaan Kanwil BPN Jatim', aktivitas: 'Verifikasi Kadastral', total: 172 },
+            { direktorat: 'Bidang Survei dan Pemetaan Kanwil BPN DIY', aktivitas: 'Sinkronisasi Peta', total: 165 },
+            { direktorat: 'Seksi Survei Kadastral Kantah Kab. Sleman', aktivitas: 'Validasi Persil', total: 142 },
+            { direktorat: 'Seksi Pemetaan Tematik Kantah Kab. Bogor', aktivitas: 'Input Data Spasial', total: 128 }
+        ],
+        aktivitasLog: [
+            { user: 'Administrator SPPR', aktivitas: 'Pembaruan Layer Master Bidang Tanah Nasional', waktu: '2026-10-24 16:45:22', tanggal: '2026-10-24 16:45:22' },
+            { user: 'Verifikator Tematik SPPR', aktivitas: 'Verifikasi Peta Tutupan Lahan Wilayah II', waktu: '2026-10-24 15:30:18', tanggal: '2026-10-24 15:30:18' },
+            { user: 'Surveyor Kadastral Pusat', aktivitas: 'Kompilasi Data Batas Bidang Kadastral', waktu: '2026-10-24 14:15:05', tanggal: '2026-10-24 14:15:05' },
+            { user: 'Operator CORS Geodesi', aktivitas: 'Kalibrasi Stasiun Kerangka Kontrol', waktu: '2026-10-24 13:02:40', tanggal: '2026-10-24 13:02:40' },
+            { user: 'Analis Geospasial SPPR', aktivitas: 'Ekstraksi Layer Derivatif Topologi', waktu: '2026-10-24 11:48:33', tanggal: '2026-10-24 11:48:33' },
+            { user: 'Supervisor Data SPPR', aktivitas: 'Persetujuan Integrasi IGT Unsur Dasar', waktu: '2026-10-24 10:25:12', tanggal: '2026-10-24 10:25:12' },
+            { user: 'Petugas Pemetaan Tematik', aktivitas: 'Unggah Geodatabase Pemanfaatan Tanah', waktu: '2026-10-24 09:40:55', tanggal: '2026-10-24 09:40:55' },
+            { user: 'Verifikator Kadastral Jabar', aktivitas: 'Koreksi Topologi Geometri Persil', waktu: '2026-10-24 09:12:08', tanggal: '2026-10-24 09:12:08' },
+            { user: 'Operator GIS Kanwil DIY', aktivitas: 'Sinkronisasi Data Spasial Daerah', waktu: '2026-10-24 08:35:19', tanggal: '2026-10-24 08:35:19' },
+            { user: 'Administrator SPPR', aktivitas: 'Audit Akses API Plugin QGIS SPPR', waktu: '2026-10-24 08:05:44', tanggal: '2026-10-24 08:05:44' }
+        ]
+    },
+
     // 2. FUNGSI RETRIEVAL TINGKAT WILAYAH (Nasional, Provinsi, atau Kabupaten)
     getRawDataByWilayah: function(namaProvinsi, namaKabupaten) {
+        if (namaProvinsi === 'sppr' || (!namaProvinsi && typeof window !== 'undefined' && window.ROLE_LOCK_DIREKTORAT === 'SPPR')) {
+            return this.sppr;
+        }
+
         if (!namaProvinsi || namaProvinsi === 'all' || namaProvinsi === 'Seluruh Indonesia') {
             return this.nasional;
         }
@@ -216,30 +339,11 @@ window.MOCKUP_DATA = {
         var provBersih = String(namaProvinsi).trim().replace(/^Provinsi\s+/i, '');
         var provLengkap = 'Provinsi ' + provBersih;
 
-        // JIKA TINGKAT KABUPATEN / KOTA DIPILIH:
+        // JIKA TINGKAT KABUPATEN / KOTA DIPILIH (misal: Kabupaten Gunungkidul):
         if (namaKabupaten) {
             var kabBersih = String(namaKabupaten).trim();
             var kabLengkap = /^Kota\s+/i.test(kabBersih) ? kabBersih : (/^Kabupaten\s+/i.test(kabBersih) ? kabBersih : 'Kabupaten ' + kabBersih);
-            
-            // Variasi nilai berbasis nama kabupaten
-            var hashKab = 0;
-            for (var k = 0; k < kabBersih.length; k++) {
-                hashKab = (hashKab * 31 + kabBersih.charCodeAt(k)) & 0xfffff;
-            }
-
-            var totalUsulanKab = 4 + (hashKab % 7); // 4 - 10 data
-            var terintegrasiKab = Math.floor(totalUsulanKab * 0.4) || 2;
-            var terkompilasiKab = Math.floor(totalUsulanKab * 0.2) || 1;
-            var perbaikanKab = (hashKab % 4 === 0) ? 1 : 0;
-            var teruploadKab = Math.max(0, totalUsulanKab - terintegrasiKab - terkompilasiKab - perbaikanKab);
-
-            var totalLayerKab = 2 + (hashKab % 3); // 2 - 4 layer
-            var totalUsulanLayerKab = Math.max(3, Math.floor(totalUsulanKab * 0.45));
-            var layerTerintegrasiKab = Math.min(totalLayerKab, Math.floor(totalUsulanLayerKab * 0.35)) || 1;
-            var layerTerkompilasiKab = Math.floor(totalUsulanLayerKab * 0.2) || 1;
-            var layerPerbaikanKab = perbaikanKab > 0 ? 1 : 0;
-            var layerTeruploadKab = Math.max(1, totalUsulanLayerKab - layerTerintegrasiKab - layerTerkompilasiKab - layerPerbaikanKab);
-            var sumLayerKab = layerTerintegrasiKab + layerTerkompilasiKab + layerTeruploadKab + layerPerbaikanKab;
+            var isGK = kabBersih.toLowerCase().indexOf('gunung') !== -1;
 
             return {
                 tingkat: 'kabupaten',
@@ -248,43 +352,58 @@ window.MOCKUP_DATA = {
                 kabupaten: kabLengkap,
                 isFiltered: true,
                 usulanInputData: {
-                    total: totalUsulanKab,
-                    totalLayer: sumLayerKab,
+                    total: 18,
+                    totalLayer: 5,
                     kategori: [
-                        { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: terintegrasiKab, layer: layerTerintegrasiKab, diperbarui: 'Diperbarui 15 menit lalu', kelas: 'is-terintegrasi' },
-                        { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: terkompilasiKab, layer: layerTerkompilasiKab, diperbarui: 'Diperbarui 5 jam lalu', kelas: 'is-terkompilasi' },
-                        { kunci: 'terupload', label: 'Terupload', jumlah: teruploadKab, layer: layerTeruploadKab, diperbarui: 'Diperbarui 1 jam lalu', kelas: 'is-terupload' },
-                        { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: perbaikanKab, layer: layerPerbaikanKab, diperbarui: perbaikanKab > 0 ? 'Diperbarui kemarin' : '-', kelas: 'is-perbaikan' }
+                        { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 9, layer: 2, diperbarui: 'Diperbarui 15 menit lalu', kelas: 'is-terintegrasi' },
+                        { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 4, layer: 1, diperbarui: 'Diperbarui 3 jam lalu', kelas: 'is-terkompilasi' },
+                        { kunci: 'terupload', label: 'Terupload', jumlah: 5, layer: 2, diperbarui: 'Diperbarui 1 jam lalu', kelas: 'is-terupload' },
+                        { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-perbaikan' }
                     ]
                 },
                 kompilasiIntegrasi: {
-                    totalLayer: totalLayerKab,
+                    totalLayer: 5,
                     bulanan: [
                         { bulan: 'JAN', terkompilasi: 0, terintegrasi: 0 },
-                        { bulan: 'FEB', terkompilasi: 0, terintegrasi: Math.min(1, totalLayerKab) },
-                        { bulan: 'MAR', terkompilasi: 0, terintegrasi: Math.min(1, totalLayerKab) },
-                        { bulan: 'APR', terkompilasi: 0, terintegrasi: Math.min(1, totalLayerKab) },
-                        { bulan: 'MEI', terkompilasi: 0, terintegrasi: Math.min(1, totalLayerKab) },
-                        { bulan: 'JUN', terkompilasi: 0, terintegrasi: Math.min(1, totalLayerKab) },
-                        { bulan: 'JUL', terkompilasi: totalLayerKab > 1 ? 1 : 0, terintegrasi: Math.min(1, totalLayerKab) },
-                        { bulan: 'AGT', terkompilasi: totalLayerKab > 1 ? 1 : 0, terintegrasi: Math.min(1, totalLayerKab) },
-                        { bulan: 'SEP', terkompilasi: totalLayerKab > 1 ? 1 : 0, terintegrasi: Math.min(1, totalLayerKab) },
-                        { bulan: 'OKT', terkompilasi: totalLayerKab > 1 ? 1 : 0, terintegrasi: Math.max(Math.min(1, totalLayerKab), totalLayerKab - (totalLayerKab > 1 ? 1 : 0)) },
+                        { bulan: 'FEB', terkompilasi: 0, terintegrasi: 1 },
+                        { bulan: 'MAR', terkompilasi: 0, terintegrasi: 1 },
+                        { bulan: 'APR', terkompilasi: 0, terintegrasi: 1 },
+                        { bulan: 'MEI', terkompilasi: 0, terintegrasi: 1 },
+                        { bulan: 'JUN', terkompilasi: 1, terintegrasi: 1 },
+                        { bulan: 'JUL', terkompilasi: 1, terintegrasi: 1 },
+                        { bulan: 'AGT', terkompilasi: 1, terintegrasi: 2 },
+                        { bulan: 'SEP', terkompilasi: 1, terintegrasi: 2 },
+                        { bulan: 'OKT', terkompilasi: 1, terintegrasi: 3 },
                         { bulan: 'NOV', terkompilasi: 0, terintegrasi: 0 },
                         { bulan: 'DES', terkompilasi: 0, terintegrasi: 0 }
                     ]
                 },
                 statistikIGT: [
-                    { igt: 'Bidang Tanah Validasi', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: 24 + (hashKab % 30), luas: (4.2 + (hashKab % 5)).toFixed(3) },
-                    { igt: 'Hak Atas Tanah ' + kabBersih, jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: 8 + (hashKab % 6), luas: (0.85 + (hashKab % 2)).toFixed(2) },
-                    { igt: 'Lahan Baku Sawah ' + kabBersih, jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: '4.210', luas: '11.230,45' },
-                    { igt: 'RDTR Wilayah ' + kabBersih, jenisIgt: 'Tata Ruang', provinsi: 1, kabupaten: 1, bidang: '2.840', luas: '6.450,10' }
+                    { igt: 'Bidang Tanah Validasi Wonosari', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: '64.003', luas: '219.423,151' },
+                    { igt: 'Hak Atas Tanah Karst Gunungkidul', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: '48.210', luas: '184.150,200' },
+                    { igt: 'Lahan Baku Sawah Gunungkidul', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: '4.210', luas: '11.230,450' },
+                    { igt: 'RDTR Wilayah Perkotaan Wonosari', jenisIgt: 'Tata Ruang', provinsi: 1, kabupaten: 1, bidang: '2.840', luas: '6.450,100' },
+                    { igt: 'Zona Nilai Tanah Pesisir Selatan GK', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: '4.500', luas: '8.450,300' },
+                    { igt: 'Sebaran Tanah Kas Desa (SG/PAG) GK', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: '3.620', luas: '24.120,800' },
+                    { igt: 'Inventarisasi Lahan Kritis Ponjong & Semin', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: 480, luas: '1.250,600' },
+                    { igt: 'Pemetaan Kawasan Geopark Gunung Sewu', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: '1.450', luas: '42.800,400' },
+                    { igt: 'Konsolidasi Tanah Kapanewon Tepus', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 1, bidang: 320, luas: '280,500' },
+                    { igt: 'Sempadan Pantai Baron & Wediombo', jenisIgt: 'Tata Ruang', provinsi: 1, kabupaten: 1, bidang: 210, luas: '415,200' }
                 ],
                 statistikIGTProvinsi: [
-                    { provinsi: provLengkap, jumlahIgt: totalLayerKab, kabupaten: 1, bidang: 24 + (hashKab % 30), luas: (4.2 + (hashKab % 5)).toFixed(3) }
+                    { provinsi: 'Provinsi Daerah Istimewa Yogyakarta', jumlahIgt: 8, kabupaten: 5, bidang: '165.193', luas: '558.613,678' }
                 ],
                 statistikIGTKabupaten: [
-                    { kabupaten: kabLengkap, provinsi: provLengkap, jumlahIgt: totalLayerKab, bidang: 24 + (hashKab % 30), luas: (4.2 + (hashKab % 5)).toFixed(3) }
+                    { kabupaten: 'Wonosari', provinsi: 'Provinsi Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: '14.250', luas: '32.410,500' },
+                    { kabupaten: 'Playen', provinsi: 'Provinsi Daerah Istimewa Yogyakarta', jumlahIgt: 6, bidang: '9.840', luas: '28.150,200' },
+                    { kabupaten: 'Semanu', provinsi: 'Provinsi Daerah Istimewa Yogyakarta', jumlahIgt: 6, bidang: '8.120', luas: '24.600,800' },
+                    { kabupaten: 'Karangmojo', provinsi: 'Provinsi Daerah Istimewa Yogyakarta', jumlahIgt: 6, bidang: '7.450', luas: '22.340,100' },
+                    { kabupaten: 'Ponjong', provinsi: 'Provinsi Daerah Istimewa Yogyakarta', jumlahIgt: 5, bidang: '6.200', luas: '26.890,400' },
+                    { kabupaten: 'Tepus', provinsi: 'Provinsi Daerah Istimewa Yogyakarta', jumlahIgt: 5, bidang: '4.850', luas: '21.400,200' },
+                    { kabupaten: 'Tanjungsari', provinsi: 'Provinsi Daerah Istimewa Yogyakarta', jumlahIgt: 5, bidang: '3.920', luas: '18.250,600' },
+                    { kabupaten: 'Paliyan', provinsi: 'Provinsi Daerah Istimewa Yogyakarta', jumlahIgt: 5, bidang: '3.640', luas: '16.780,150' },
+                    { kabupaten: 'Patuk', provinsi: 'Provinsi Daerah Istimewa Yogyakarta', jumlahIgt: 5, bidang: '3.210', luas: '14.920,400' },
+                    { kabupaten: 'Semin', provinsi: 'Provinsi Daerah Istimewa Yogyakarta', jumlahIgt: 5, bidang: '2.523', luas: '13.680,801' }
                 ],
                 leaderBoard: [
                     {
@@ -315,41 +434,45 @@ window.MOCKUP_DATA = {
                     { direktorat: 'Dinas Tata Ruang Daerah ' + kabBersih, target: 4, capaian: 3 }
                 ],
                 statistikDerivatif: [
-                    { layer: 'Derivatif Khusus ' + kabBersih, provinsi: 1, kabupaten: 1, bidang: 18, luas: '850,20' },
-                    { layer: 'Batas Bidang Tematik ' + kabBersih, provinsi: 1, kabupaten: 1, bidang: 12, luas: '1.240,00' }
+                    { layer: 'Derivatif Khusus Gunungkidul', provinsi: 1, kabupaten: 1, bidang: 18, luas: '850,200' },
+                    { layer: 'Batas Bidang Tematik Karst Gunung Sewu', provinsi: 1, kabupaten: 1, bidang: 12, luas: '1.240,000' },
+                    { layer: 'Buffer Jalur Jalan Lintas Selatan (JJLS) GK', provinsi: 1, kabupaten: 1, bidang: 34, luas: '3.120,450' },
+                    { layer: 'Derivatif Tanah Kas Desa (Sultan Ground) Tepus', provinsi: 1, kabupaten: 1, bidang: 26, luas: '4.580,200' },
+                    { layer: 'Pemetaan Lahan Baku Sawah Wonosari', provinsi: 1, kabupaten: 1, bidang: 48, luas: '2.840,110' },
+                    { layer: 'Derivatif Sempadan Pantai Baron & Indrayanti', provinsi: 1, kabupaten: 1, bidang: 15, luas: '640,300' },
+                    { layer: 'Derivatif Zona Rawan Kekeringan GK', provinsi: 1, kabupaten: 1, bidang: 52, luas: '18.450,800' },
+                    { layer: 'Layer Kawasan Geopark Gunung Sewu', provinsi: 1, kabupaten: 1, bidang: 22, luas: '12.890,600' },
+                    { layer: 'Derivatif Lahan Pertanian Pangan Berkelanjutan Ponjong', provinsi: 1, kabupaten: 1, bidang: 38, luas: '5.420,150' },
+                    { layer: 'Pemetaan Fasum & Fasos Playen', provinsi: 1, kabupaten: 1, bidang: 19, luas: '310,800' }
                 ],
                 statistikAksesIGT: [
-                    { direktorat: 'Kantor Pertanahan ' + kabLengkap, aktivitas: 'Login', total: 28 },
-                    { direktorat: 'Dinas Tata Ruang ' + kabLengkap, aktivitas: 'Login', total: 11 }
+                    { direktorat: 'Seksi Survei & Pemetaan Kantah Kab. Gunungkidul', aktivitas: 'Login & Input Peta', total: 78 },
+                    { direktorat: 'Seksi Penetapan Hak & Pendaftaran Kantah GK', aktivitas: 'Validasi Persil', total: 64 },
+                    { direktorat: 'Seksi Penataan & Pemberdayaan Kantah GK', aktivitas: 'Pembaruan Data Reforma', total: 45 },
+                    { direktorat: 'Seksi Pengadaan Tanah & Pengembangan GK', aktivitas: 'Inventarisasi JJLS', total: 38 },
+                    { direktorat: 'Seksi Pengendalian & Penanganan Sengketa GK', aktivitas: 'Cek Peta Sengketa', total: 29 },
+                    { direktorat: 'Subbagian Tata Usaha Kantah Kab. Gunungkidul', aktivitas: 'Monitoring Surat', total: 24 },
+                    { direktorat: 'Dinas Pertanahan & Tata Ruang (Kundha Niti Mandala) GK', aktivitas: 'Sinkronisasi RDTR', total: 21 },
+                    { direktorat: 'Bappeda Kab. Gunungkidul', aktivitas: 'Akses Geoportal', total: 18 },
+                    { direktorat: 'Dinas Pekerjaan Umum dan Kawasan Permukiman GK', aktivitas: 'Akses Layer Jalan', total: 15 },
+                    { direktorat: 'Petugas Ukur Kapanewon Wonosari & Playen', aktivitas: 'Upload Titik Ukur', total: 12 }
                 ],
                 aktivitasLog: [
-                    { user: 'Operator Kantah ' + kabBersih, aktivitas: 'Unggah Geodatabase Peta', waktu: '2026-10-23 15:45:10', tanggal: '2026-10-23 15:45:10' },
-                    { user: 'Verifikator Kantah ' + kabBersih, aktivitas: 'Pengecekan Topologi Bidang', waktu: '2026-10-23 11:20:34', tanggal: '2026-10-23 11:20:34' },
-                    { user: 'Kepala Seksi SP ' + kabBersih, aktivitas: 'Verifikasi Validasi Data', waktu: '2026-10-22 09:15:58', tanggal: '2026-10-22 09:15:58' }
+                    { user: 'Operator Kantah Wonosari', aktivitas: 'Unggah Geodatabase Peta Bidang Wonosari', waktu: '2026-10-24 15:45:10', tanggal: '2026-10-24 15:45:10' },
+                    { user: 'Verifikator Kantah GK', aktivitas: 'Pengecekan Topologi Bidang Kapanewon Semanu', waktu: '2026-10-24 14:20:34', tanggal: '2026-10-24 14:20:34' },
+                    { user: 'Petugas Ukur Tepus', aktivitas: 'Pengukuran Batas Tanah Kas Desa Sultan Ground', waktu: '2026-10-24 13:10:15', tanggal: '2026-10-24 13:10:15' },
+                    { user: 'Kepala Seksi SP GK', aktivitas: 'Verifikasi Validasi Data Spasial JJLS', waktu: '2026-10-24 11:35:48', tanggal: '2026-10-24 11:35:48' },
+                    { user: 'Operator GIS Playen', aktivitas: 'Digitasi Bidang Sawah Kapanewon Playen', waktu: '2026-10-24 10:50:22', tanggal: '2026-10-24 10:50:22' },
+                    { user: 'Analis Tata Ruang GK', aktivitas: 'Sinkronisasi Layer RDTR Perkotaan Wonosari', waktu: '2026-10-24 10:05:08', tanggal: '2026-10-24 10:05:08' },
+                    { user: 'Surveyor Karangmojo', aktivitas: 'Pembaruan Koordinat Titik Batas Bidang', waktu: '2026-10-24 09:22:14', tanggal: '2026-10-24 09:22:14' },
+                    { user: 'Petugas Ukur Ponjong', aktivitas: 'Input Atribut Spasial Zona Nilai Tanah Ponjong', waktu: '2026-10-24 08:45:30', tanggal: '2026-10-24 08:45:30' },
+                    { user: 'Operator Kantah GK', aktivitas: 'Ekspor Shapefile Peta Tematik Geopark', waktu: '2026-10-24 08:15:02', tanggal: '2026-10-24 08:15:02' },
+                    { user: 'Administrator GIS GK', aktivitas: 'Sinkronisasi Harian ke Server Pusat ATR/BPN', waktu: '2026-10-23 17:30:19', tanggal: '2026-10-23 17:30:19' }
                 ]
             };
         }
 
-        // JIKA TINGKAT PROVINSI (TANPA KABUPATEN):
-        var hash = 0;
-        for (var i = 0; i < provBersih.length; i++) {
-            hash = (hash * 31 + provBersih.charCodeAt(i)) & 0xfffff;
-        }
-
-        var totalUsulan = 16 + (hash % 16); // 16 - 31 data
-        var terintegrasi = Math.floor(totalUsulan * 0.35) || 3;
-        var terkompilasi = Math.floor(totalUsulan * 0.18) || 2;
-        var perbaikan = (hash % 3 === 0) ? 1 : 0;
-        var terupload = Math.max(0, totalUsulan - terintegrasi - terkompilasi - perbaikan);
-
-        var totalLayer = 4 + (hash % 4);
-        var totalUsulanLayer = Math.max(6, Math.floor(totalUsulan * 0.45));
-        var layerTerintegrasi = Math.min(totalLayer, Math.floor(totalUsulanLayer * 0.35)) || 2;
-        var layerTerkompilasi = Math.floor(totalUsulanLayer * 0.2) || 1;
-        var layerPerbaikan = perbaikan > 0 ? 1 : 0;
-        var layerTerupload = Math.max(1, totalUsulanLayer - layerTerintegrasi - layerTerkompilasi - layerPerbaikan);
-        var sumLayerProv = layerTerintegrasi + layerTerkompilasi + layerTerupload + layerPerbaikan;
-
+        // JIKA TINGKAT PROVINSI (misal: D.I. Yogyakarta):
         return {
             tingkat: 'provinsi',
             wilayah: provLengkap,
@@ -357,48 +480,53 @@ window.MOCKUP_DATA = {
             kabupaten: null,
             isFiltered: true,
             usulanInputData: {
-                total: totalUsulan,
-                totalLayer: sumLayerProv,
+                total: 28,
+                totalLayer: 8,
                 kategori: [
-                    { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: terintegrasi, layer: layerTerintegrasi, diperbarui: 'Diperbarui 30 menit lalu', kelas: 'is-terintegrasi' },
-                    { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: terkompilasi, layer: layerTerkompilasi, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
-                    { kunci: 'terupload', label: 'Terupload', jumlah: terupload, layer: layerTerupload, diperbarui: 'Diperbarui 3 jam lalu', kelas: 'is-terupload' },
-                    { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: perbaikan, layer: layerPerbaikan, diperbarui: perbaikan > 0 ? 'Diperbarui 2 hari lalu' : '-', kelas: 'is-perbaikan' }
+                    { kunci: 'terintegrasi', label: 'Terintegrasi', jumlah: 16, layer: 4, diperbarui: 'Diperbarui 30 menit lalu', kelas: 'is-terintegrasi' },
+                    { kunci: 'terkompilasi', label: 'Terkompilasi', jumlah: 5, layer: 2, diperbarui: 'Diperbarui 1 hari lalu', kelas: 'is-terkompilasi' },
+                    { kunci: 'terupload', label: 'Terupload', jumlah: 7, layer: 2, diperbarui: 'Diperbarui 3 jam lalu', kelas: 'is-terupload' },
+                    { kunci: 'perbaikan', label: 'Revisi Perbaikan', jumlah: 0, layer: 0, diperbarui: '-', kelas: 'is-perbaikan' }
                 ]
             },
             kompilasiIntegrasi: {
-                totalLayer: totalLayer,
+                totalLayer: 8,
                 bulanan: [
                     { bulan: 'JAN', terkompilasi: 0, terintegrasi: 1 },
                     { bulan: 'FEB', terkompilasi: 0, terintegrasi: 1 },
                     { bulan: 'MAR', terkompilasi: 0, terintegrasi: 1 },
-                    { bulan: 'APR', terkompilasi: 0, terintegrasi: 1 },
-                    { bulan: 'MEI', terkompilasi: 1, terintegrasi: 1 },
-                    { bulan: 'JUN', terkompilasi: 1, terintegrasi: 2 },
-                    { bulan: 'JUL', terkompilasi: 1, terintegrasi: 2 },
-                    { bulan: 'AGT', terkompilasi: 1, terintegrasi: 2 },
-                    { bulan: 'SEP', terkompilasi: 1, terintegrasi: 2 },
-                    { bulan: 'OKT', terkompilasi: 1, terintegrasi: Math.max(2, totalLayer - 1) },
+                    { bulan: 'APR', terkompilasi: 0, terintegrasi: 2 },
+                    { bulan: 'MEI', terkompilasi: 1, terintegrasi: 2 },
+                    { bulan: 'JUN', terkompilasi: 1, terintegrasi: 3 },
+                    { bulan: 'JUL', terkompilasi: 1, terintegrasi: 3 },
+                    { bulan: 'AGT', terkompilasi: 1, terintegrasi: 3 },
+                    { bulan: 'SEP', terkompilasi: 2, terintegrasi: 4 },
+                    { bulan: 'OKT', terkompilasi: 2, terintegrasi: 4 },
                     { bulan: 'NOV', terkompilasi: 0, terintegrasi: 0 },
                     { bulan: 'DES', terkompilasi: 0, terintegrasi: 0 }
                 ]
             },
             statistikIGT: [
-                { igt: 'Bidang Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 4 + (hash % 6), bidang: 58 + (hash % 40), luas: (18.4 + (hash % 10)).toFixed(3) },
-                { igt: 'Hak Atas Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 2, bidang: 16 + (hash % 8), luas: (1.45 + (hash % 2)).toFixed(2) },
-                { igt: 'Inventarisasi Tanah Kritis', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 3, bidang: 520 + (hash % 100), luas: '942,150' },
-                { igt: 'Kemampuan Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 3 + (hash % 3), bidang: '1.840', luas: '142.610,200' },
-                { igt: 'Lahan Baku Sawah Nasional', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 5, bidang: '24.120', luas: '34.870,40' },
-                { igt: 'RDTR Kabupaten/ Kota', jenisIgt: 'Tata Ruang', provinsi: 1, kabupaten: 3, bidang: '28.450', luas: '19.820,10' },
-                { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 3, bidang: 320, luas: '0' }
+                { igt: 'Bidang Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 5, bidang: '165.193', luas: '558.613,678' },
+                { igt: 'Hak Atas Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 5, bidang: '142.300', luas: '482.110,400' },
+                { igt: 'Lahan Baku Sawah Nasional', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 4, bidang: '24.120', luas: '34.870,400' },
+                { igt: 'RDTR Kabupaten/ Kota', jenisIgt: 'Tata Ruang', provinsi: 1, kabupaten: 5, bidang: '28.450', luas: '19.820,100' },
+                { igt: 'Zona Nilai Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 5, bidang: '18.600', luas: '45.200,300' },
+                { igt: 'Sebaran Tanah Kas Desa (SG/PAG)', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 5, bidang: '14.210', luas: '88.640,300' },
+                { igt: 'Inventarisasi Tanah Kritis', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 3, bidang: 520, luas: '942,150' },
+                { igt: 'Kemampuan Tanah', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 4, bidang: '1.840', luas: '142.610,200' },
+                { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenisIgt: 'Pertanahan', provinsi: 1, kabupaten: 4, bidang: 320, luas: '0' },
+                { igt: 'Sempadan Pantai Selatan', jenisIgt: 'Tata Ruang', provinsi: 1, kabupaten: 3, bidang: '4.320', luas: '8.940,250' }
             ],
             statistikIGTProvinsi: [
-                { provinsi: provLengkap, jumlahIgt: totalLayer, kabupaten: 4 + (hash % 6), bidang: '24.120', luas: '34.870,40' }
+                { provinsi: provLengkap, jumlahIgt: 8, kabupaten: 5, bidang: '165.193', luas: '558.613,678' }
             ],
             statistikIGTKabupaten: [
-                { kabupaten: 'Kabupaten A ' + provBersih, provinsi: provLengkap, jumlahIgt: Math.max(1, totalLayer - 1), bidang: '12.450', luas: '18.420,10' },
-                { kabupaten: 'Kabupaten B ' + provBersih, provinsi: provLengkap, jumlahIgt: Math.max(1, totalLayer - 2), bidang: '8.120', luas: '10.250,30' },
-                { kabupaten: 'Kota ' + provBersih, provinsi: provLengkap, jumlahIgt: totalLayer, bidang: '3.550', luas: '6.200,00' }
+                { kabupaten: 'Kabupaten Sleman', provinsi: provLengkap, jumlahIgt: 8, bidang: '62.822', luas: '110.094,516' },
+                { kabupaten: 'Kabupaten Bantul', provinsi: provLengkap, jumlahIgt: 8, bidang: '15.554', luas: '82.720,993' },
+                { kabupaten: 'Kabupaten Gunungkidul', provinsi: provLengkap, jumlahIgt: 8, bidang: '64.003', luas: '219.423,151' },
+                { kabupaten: 'Kabupaten Kulon Progo', provinsi: provLengkap, jumlahIgt: 8, bidang: '17.354', luas: '139.608,183' },
+                { kabupaten: 'Kota Yogyakarta', provinsi: provLengkap, jumlahIgt: 8, bidang: '5.460', luas: '6.766,834' }
             ],
             leaderBoard: [
                 {
@@ -410,56 +538,75 @@ window.MOCKUP_DATA = {
                 },
                 {
                     peringkat: 2,
-                    nama: 'Dinas PUPR / Tata Ruang ' + provLengkap,
+                    nama: 'Dinas Pertanahan & Tata Ruang (Dispertaru) DIY',
                     bidang: [],
                     kawasan: ['RDTR Kabupaten/ Kota', 'RTRW Provinsi'],
                     tema: 2
                 },
                 {
                     peringkat: 3,
-                    nama: 'Kantor Pertanahan Kab. Semarang',
+                    nama: 'Kantor Pertanahan Kab. Sleman',
                     bidang: ['Bidang Tanah'],
-                    kawasan: ['Inventarisasi Tanah Kritis'],
+                    kawasan: ['Lahan Baku Sawah'],
                     tema: 2
                 },
                 {
                     peringkat: 4,
-                    nama: 'Kantor Pertanahan Kota Surakarta (Solo)',
-                    bidang: ['Sebaran Bidang Komunal'],
-                    kawasan: [],
-                    tema: 1
+                    nama: 'Kantor Pertanahan Kab. Gunungkidul',
+                    bidang: ['Bidang Tanah', 'Hak Atas Tanah'],
+                    kawasan: ['Inventarisasi Tanah Kritis'],
+                    tema: 2
                 },
                 {
                     peringkat: 5,
-                    nama: 'Kantor Pertanahan Kab. Banyumas',
-                    bidang: ['Bidang Hak Milik'],
+                    nama: 'Kantor Pertanahan Kota Yogyakarta',
+                    bidang: ['Nilai Bidang Tanah'],
                     kawasan: [],
                     tema: 1
                 }
             ],
             capaianRenaksi: [
-                { direktorat: 'Kantor Wilayah BPN ' + provLengkap, target: 32, capaian: 24 },
-                { direktorat: 'Kantor Pertanahan Kab. Semarang', target: 14, capaian: 11 },
-                { direktorat: 'Kantor Pertanahan Kota Semarang', target: 12, capaian: 10 },
-                { direktorat: 'Kantor Pertanahan Kab. Karanganyar', target: 10, capaian: 7 },
-                { direktorat: 'Kantor Pertanahan Kab. Banyumas', target: 8, capaian: 6 }
+                { direktorat: 'Kantor Wilayah BPN ' + provLengkap, target: 32, capaian: 28 },
+                { direktorat: 'Kantor Pertanahan Kab. Sleman', target: 14, capaian: 12 },
+                { direktorat: 'Kantor Pertanahan Kab. Bantul', target: 12, capaian: 10 },
+                { direktorat: 'Kantor Pertanahan Kab. Gunungkidul', target: 10, capaian: 8 },
+                { direktorat: 'Kantor Pertanahan Kota Yogyakarta', target: 8, capaian: 7 }
             ],
             statistikDerivatif: [
-                { layer: 'Derivatif Bidang Tematik ' + provBersih, provinsi: 1, kabupaten: 3, bidang: 42, luas: '2,150' },
-                { layer: 'Layer Kawasan Prioritas ' + provBersih, provinsi: 1, kabupaten: 2, bidang: 21, luas: '4,820' },
-                { layer: 'Validasi Batas Wilayah Tematik ' + provBersih, provinsi: 1, kabupaten: 3, bidang: '6.840', luas: '612.450,200' }
+                { layer: 'Derivatif Bidang Tematik DIY', provinsi: 1, kabupaten: 5, bidang: 42, luas: '2.150,000' },
+                { layer: 'Layer Kawasan Prioritas DIY', provinsi: 1, kabupaten: 4, bidang: 28, luas: '4.820,500' },
+                { layer: 'Validasi Batas Wilayah Tematik DIY', provinsi: 1, kabupaten: 5, bidang: '6.840', luas: '612.450,200' },
+                { layer: 'Derivatif Sumbu Filosofi Yogyakarta', provinsi: 1, kabupaten: 2, bidang: '1.240', luas: '380,450' },
+                { layer: 'Buffer Kawasan Rawan Bencana Merapi', provinsi: 1, kabupaten: 1, bidang: '8.450', luas: '14.280,120' },
+                { layer: 'Derivatif Tanah Kas Desa (Sultan Ground / PAG)', provinsi: 1, kabupaten: 4, bidang: '14.210', luas: '88.640,300' },
+                { layer: 'Pemetaan Lahan Baku Sawah Sleman & Bantul', provinsi: 1, kabupaten: 2, bidang: '18.900', luas: '24.150,800' },
+                { layer: 'Derivatif Kawasan Karst Gunung Sewu', provinsi: 1, kabupaten: 1, bidang: '12.650', luas: '115.420,600' },
+                { layer: 'Derivatif Sempadan Pantai Selatan Kulon Progo', provinsi: 1, kabupaten: 2, bidang: '4.320', luas: '8.940,250' },
+                { layer: 'Layer Klaster Pariwisata & Cagar Budaya DIY', provinsi: 1, kabupaten: 3, bidang: '3.180', luas: '1.850,700' }
             ],
             statistikAksesIGT: [
-                { direktorat: 'Kantor Wilayah BPN ' + provLengkap, aktivitas: 'Login', total: 78 },
-                { direktorat: 'Kantor Pertanahan Kab. Semarang', aktivitas: 'Login', total: 34 },
-                { direktorat: 'Kantor Pertanahan Kota Semarang', aktivitas: 'Login', total: 31 },
-                { direktorat: 'Kantor Pertanahan Kab. Karanganyar', aktivitas: 'Login', total: 22 }
+                { direktorat: 'Kantor Wilayah BPN Provinsi D.I. Yogyakarta', aktivitas: 'Login & Sinkronisasi', total: 185 },
+                { direktorat: 'Bidang Survei dan Pemetaan Kanwil DIY', aktivitas: 'Pengecekan Topologi', total: 142 },
+                { direktorat: 'Kantor Pertanahan Kab. Sleman', aktivitas: 'Akses Geoportal', total: 128 },
+                { direktorat: 'Kantor Pertanahan Kab. Bantul', aktivitas: 'Validasi Persil', total: 115 },
+                { direktorat: 'Kantor Pertanahan Kab. Gunungkidul', aktivitas: 'Input Data Tematik', total: 104 },
+                { direktorat: 'Kantor Pertanahan Kota Yogyakarta', aktivitas: 'Unduh Peta Heritage', total: 98 },
+                { direktorat: 'Kantor Pertanahan Kab. Kulon Progo', aktivitas: 'Sinkronisasi Spasial YIA', total: 86 },
+                { direktorat: 'Dinas Pertanahan & Tata Ruang (Dispertaru) DIY', aktivitas: 'Akses RDTR Perkotaan', total: 64 },
+                { direktorat: 'Bidang Penetapan Hak dan Pendaftaran Kanwil DIY', aktivitas: 'Verifikasi Hak Tanah', total: 58 },
+                { direktorat: 'Bidang Pengendalian dan Sengketa Kanwil DIY', aktivitas: 'Pengecekan Tumpang Tindih', total: 42 }
             ],
             aktivitasLog: [
-                { user: 'Operator Kanwil ' + provBersih, aktivitas: 'Sinkronisasi Data IGT Provinsi', waktu: '2026-10-23 16:10:42', tanggal: '2026-10-23 16:10:42' },
-                { user: 'Operator Kantah Kab. Semarang', aktivitas: 'Unggah Layer Derivatif Bidang', waktu: '2026-10-23 14:25:18', tanggal: '2026-10-23 14:25:18' },
-                { user: 'Verifikator Kantah Solo', aktivitas: 'Verifikasi Batas Bidang', waktu: '2026-10-22 11:05:30', tanggal: '2026-10-22 11:05:30' },
-                { user: 'Operator Kantah Banyumas', aktivitas: 'Pembaruan Atribut Spasial', waktu: '2026-10-21 08:50:12', tanggal: '2026-10-21 08:50:12' }
+                { user: 'Operator Kanwil DIY', aktivitas: 'Sinkronisasi Data IGT Provinsi', waktu: '2026-10-24 16:10:42', tanggal: '2026-10-24 16:10:42' },
+                { user: 'Verifikator Spasial Kanwil DIY', aktivitas: 'Validasi Topologi Bidang Persil Sleman', waktu: '2026-10-24 15:22:18', tanggal: '2026-10-24 15:22:18' },
+                { user: 'Operator Kantah Kab. Sleman', aktivitas: 'Unggah Layer Derivatif Bidang', waktu: '2026-10-24 14:25:18', tanggal: '2026-10-24 14:25:18' },
+                { user: 'Verifikator Kantah Kota Yogyakarta', aktivitas: 'Verifikasi Batas Bidang Heritage', waktu: '2026-10-24 13:40:05', tanggal: '2026-10-24 13:40:05' },
+                { user: 'Operator Kantah Bantul', aktivitas: 'Pembaruan Atribut Spasial LBS', waktu: '2026-10-24 11:15:30', tanggal: '2026-10-24 11:15:30' },
+                { user: 'Petugas Ukur Kantah Kulon Progo', aktivitas: 'Sinkronisasi Data Peta Bandara YIA', waktu: '2026-10-24 10:50:12', tanggal: '2026-10-24 10:50:12' },
+                { user: 'Operator Kantah Gunungkidul', aktivitas: 'Input Data Tematik Karst Wonosari', waktu: '2026-10-24 10:12:45', tanggal: '2026-10-24 10:12:45' },
+                { user: 'Kepala Seksi Survei Kanwil DIY', aktivitas: 'Approval Peta Integrasi Regional', waktu: '2026-10-24 09:30:20', tanggal: '2026-10-24 09:30:20' },
+                { user: 'Analis Tata Ruang Dispertaru DIY', aktivitas: 'Integrasi Layer RDTR Perkotaan', waktu: '2026-10-24 09:05:14', tanggal: '2026-10-24 09:05:14' },
+                { user: 'Administrator GIS Kanwil DIY', aktivitas: 'Backup Geodatabase Wilayah DIY', waktu: '2026-10-24 08:15:33', tanggal: '2026-10-24 08:15:33' }
             ]
         };
     },
@@ -996,13 +1143,97 @@ window.MOCKUP_DATA = {
             // 19. Sekretariat Direktorat Jenderal Penanganan Sengketa dan Konflik Pertanahan (1 IGT)
             { orderIndex: 43, satker: 'Sekretariat Direktorat Jenderal Penanganan Sengketa dan Konflik Pertanahan', igt: 'IGT Informasi mengenai Sengketa, Konflik, dan Perkara Pertanahan', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 25000, realisasiBase: 24000 },
 
-            // Unit Daerah (Kanwil & Kantah untuk isolasi role simulation)
-            { orderIndex: 44, satker: 'Kanwil BPN Provinsi D.I. Yogyakarta', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 60000, realisasiBase: 56400 },
-            { orderIndex: 45, satker: 'Kanwil BPN Provinsi D.I. Yogyakarta', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 40000, realisasiBase: 37600 },
-            { orderIndex: 46, satker: 'Kanwil BPN Provinsi D.I. Yogyakarta', igt: 'IGT RDTR Kabupaten/Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 5000, realisasiBase: 4450 },
+            // Unit Lingkup Ditjen SPPR (Tambahan untuk role SPPR)
+            { orderIndex: 44, satker: 'Sekretariat Direktorat Jenderal SPPR', igt: 'IGT Batas Wilayah Administrasi', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 20000, realisasiBase: 18600 },
+            { orderIndex: 45, satker: 'Sekretariat Direktorat Jenderal SPPR', igt: 'IGT Kerangka Kontrol Geodesi', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 15000, realisasiBase: 13650 },
+            { orderIndex: 46, satker: 'Balai Pemetaan dan Survei Tematik SPPR', igt: 'IGT Peta Tutupan Lahan', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 10000, realisasiBase: 8800 },
+            { orderIndex: 47, satker: 'Balai Pemetaan dan Survei Tematik SPPR', igt: 'IGT Peta Morfologi Tanah', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 8000, realisasiBase: 6880 },
 
-            { orderIndex: 47, satker: 'Kantah Kab. Gunungkidul', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 35000, realisasiBase: 32900 },
-            { orderIndex: 48, satker: 'Kantah Kab. Gunungkidul', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 25000, realisasiBase: 23500 }
+            // Kantah-Kantah se-DIY (Khusus Role Kantah Gunungkidul dapat melihat Kantah se-DIY)
+            { orderIndex: 48, satker: 'Kantah Kota Yogyakarta', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 20000, realisasiBase: 19400 },
+            { orderIndex: 49, satker: 'Kantah Kota Yogyakarta', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 18000, realisasiBase: 17100 },
+            { orderIndex: 50, satker: 'Kantah Kota Yogyakarta', igt: 'IGT Nilai Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 12000, realisasiBase: 11160 },
+
+            { orderIndex: 51, satker: 'Kantah Kab. Sleman', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 45000, realisasiBase: 43200 },
+            { orderIndex: 52, satker: 'Kantah Kab. Sleman', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 35000, realisasiBase: 33250 },
+            { orderIndex: 53, satker: 'Kantah Kab. Sleman', igt: 'IGT Pertimbangan Teknis Pertanahan', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 8000, realisasiBase: 7440 },
+            { orderIndex: 54, satker: 'Kantah Kab. Sleman', igt: 'IGT RDTR Kabupaten/Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 4000, realisasiBase: 3680 },
+
+            { orderIndex: 55, satker: 'Kantah Kab. Bantul', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 40000, realisasiBase: 37600 },
+            { orderIndex: 56, satker: 'Kantah Kab. Bantul', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 28000, realisasiBase: 25760 },
+            { orderIndex: 57, satker: 'Kantah Kab. Bantul', igt: 'IGT Lahan Baku Sawah', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 6000, realisasiBase: 5400 },
+            { orderIndex: 58, satker: 'Kantah Kab. Bantul', igt: 'IGT Zona Nilai Tanah', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 5000, realisasiBase: 4400 },
+
+            { orderIndex: 59, satker: 'Kantah Kab. Gunungkidul', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 35000, realisasiBase: 32900 },
+            { orderIndex: 60, satker: 'Kantah Kab. Gunungkidul', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 25000, realisasiBase: 23500 },
+            { orderIndex: 61, satker: 'Kantah Kab. Gunungkidul', igt: 'IGT Zona Nilai Tanah', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 4500, realisasiBase: 4050 },
+            { orderIndex: 62, satker: 'Kantah Kab. Gunungkidul', igt: 'IGT RDTR Kabupaten/Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 3500, realisasiBase: 2975 },
+
+            { orderIndex: 63, satker: 'Kantah Kab. Kulon Progo', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 30000, realisasiBase: 27600 },
+            { orderIndex: 64, satker: 'Kantah Kab. Kulon Progo', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 22000, realisasiBase: 19800 },
+            { orderIndex: 65, satker: 'Kantah Kab. Kulon Progo', igt: 'IGT Konsolidasi Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 5000, realisasiBase: 4400 },
+            { orderIndex: 66, satker: 'Kantah Kab. Kulon Progo', igt: 'IGT RDTR Kabupaten/Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 4500, realisasiBase: 3825 },
+
+            // Kanwil-Kanwil se-Indonesia (Khusus Role Kanwil DIY dapat melihat Kanwil se-Indonesia)
+            { orderIndex: 67, satker: 'Kanwil BPN Provinsi Bali', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 50000, realisasiBase: 49000 },
+            { orderIndex: 68, satker: 'Kanwil BPN Provinsi Bali', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 35000, realisasiBase: 33600 },
+            { orderIndex: 69, satker: 'Kanwil BPN Provinsi Bali', igt: 'IGT RDTR Kabupaten/Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 5000, realisasiBase: 4700 },
+
+            { orderIndex: 70, satker: 'Kanwil BPN Provinsi D.I. Yogyakarta', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 60000, realisasiBase: 56400 },
+            { orderIndex: 71, satker: 'Kanwil BPN Provinsi D.I. Yogyakarta', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 40000, realisasiBase: 37600 },
+            { orderIndex: 72, satker: 'Kanwil BPN Provinsi D.I. Yogyakarta', igt: 'IGT RDTR Kabupaten/Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 5000, realisasiBase: 4500 },
+
+            { orderIndex: 73, satker: 'Kanwil BPN Provinsi DKI Jakarta', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 55000, realisasiBase: 52250 },
+            { orderIndex: 74, satker: 'Kanwil BPN Provinsi DKI Jakarta', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 45000, realisasiBase: 42300 },
+            { orderIndex: 75, satker: 'Kanwil BPN Provinsi DKI Jakarta', igt: 'IGT Zona Nilai Tanah', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 6000, realisasiBase: 5460 },
+
+            { orderIndex: 76, satker: 'Kanwil BPN Provinsi Kalimantan Timur', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 40000, realisasiBase: 36800 },
+            { orderIndex: 77, satker: 'Kanwil BPN Provinsi Kalimantan Timur', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 30000, realisasiBase: 27000 },
+            { orderIndex: 78, satker: 'Kanwil BPN Provinsi Kalimantan Timur', igt: 'IGT RDTR Kabupaten/Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 8000, realisasiBase: 7360 },
+
+            { orderIndex: 79, satker: 'Kanwil BPN Provinsi Jawa Timur', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 90000, realisasiBase: 83700 },
+            { orderIndex: 80, satker: 'Kanwil BPN Provinsi Jawa Timur', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 65000, realisasiBase: 59150 },
+            { orderIndex: 81, satker: 'Kanwil BPN Provinsi Jawa Timur', igt: 'IGT RTRW Provinsi', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 10000, realisasiBase: 8900 },
+
+            { orderIndex: 82, satker: 'Kanwil BPN Provinsi Jawa Tengah', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 85000, realisasiBase: 78200 },
+            { orderIndex: 83, satker: 'Kanwil BPN Provinsi Jawa Tengah', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 60000, realisasiBase: 54000 },
+            { orderIndex: 84, satker: 'Kanwil BPN Provinsi Jawa Tengah', igt: 'IGT Lahan Baku Sawah', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 9000, realisasiBase: 7920 },
+
+            { orderIndex: 85, satker: 'Kanwil BPN Provinsi Jawa Barat', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 95000, realisasiBase: 86450 },
+            { orderIndex: 86, satker: 'Kanwil BPN Provinsi Jawa Barat', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 70000, realisasiBase: 62300 },
+            { orderIndex: 87, satker: 'Kanwil BPN Provinsi Jawa Barat', igt: 'IGT RDTR Kabupaten/Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 11000, realisasiBase: 9570 },
+
+            { orderIndex: 88, satker: 'Kanwil BPN Provinsi Banten', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 45000, realisasiBase: 40500 },
+            { orderIndex: 89, satker: 'Kanwil BPN Provinsi Banten', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 32000, realisasiBase: 28160 },
+            { orderIndex: 90, satker: 'Kanwil BPN Provinsi Banten', igt: 'IGT Zona Nilai Tanah', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 5000, realisasiBase: 4300 },
+
+            { orderIndex: 91, satker: 'Kanwil BPN Provinsi Sumatera Utara', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 50000, realisasiBase: 44500 },
+            { orderIndex: 92, satker: 'Kanwil BPN Provinsi Sumatera Utara', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 35000, realisasiBase: 30450 },
+            { orderIndex: 93, satker: 'Kanwil BPN Provinsi Sumatera Utara', igt: 'IGT RTRW Provinsi', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 8000, realisasiBase: 6800 },
+
+            { orderIndex: 94, satker: 'Kanwil BPN Provinsi Sulawesi Selatan', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 40000, realisasiBase: 35200 },
+            { orderIndex: 95, satker: 'Kanwil BPN Provinsi Sulawesi Selatan', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 28000, realisasiBase: 24080 },
+            { orderIndex: 96, satker: 'Kanwil BPN Provinsi Sulawesi Selatan', igt: 'IGT Pertimbangan Teknis Pertanahan', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 5000, realisasiBase: 4200 },
+
+            { orderIndex: 97, satker: 'Kanwil BPN Provinsi Sumatera Barat', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 35000, realisasiBase: 30450 },
+            { orderIndex: 98, satker: 'Kanwil BPN Provinsi Sumatera Barat', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 25000, realisasiBase: 21250 },
+            { orderIndex: 99, satker: 'Kanwil BPN Provinsi Sumatera Barat', igt: 'IGT Hak Ulayat', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 6000, realisasiBase: 5160 },
+
+            { orderIndex: 100, satker: 'Kanwil BPN Provinsi Nusa Tenggara Barat', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 30000, realisasiBase: 25800 },
+            { orderIndex: 101, satker: 'Kanwil BPN Provinsi Nusa Tenggara Barat', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 22000, realisasiBase: 18480 },
+            { orderIndex: 102, satker: 'Kanwil BPN Provinsi Nusa Tenggara Barat', igt: 'IGT RDTR Kabupaten/Kota', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 4000, realisasiBase: 3400 },
+
+            { orderIndex: 103, satker: 'Kanwil BPN Provinsi Riau', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 38000, realisasiBase: 32300 },
+            { orderIndex: 104, satker: 'Kanwil BPN Provinsi Riau', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 26000, realisasiBase: 21580 },
+            { orderIndex: 105, satker: 'Kanwil BPN Provinsi Riau', igt: 'IGT Penggunaan Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 8000, realisasiBase: 6720 },
+
+            { orderIndex: 106, satker: 'Kanwil BPN Provinsi Kalimantan Barat', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 32000, realisasiBase: 26880 },
+            { orderIndex: 107, satker: 'Kanwil BPN Provinsi Kalimantan Barat', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 22000, realisasiBase: 18040 },
+            { orderIndex: 108, satker: 'Kanwil BPN Provinsi Kalimantan Barat', igt: 'IGT RDTR Kawasan Perbatasan Negara', jenisIgt: 'Tata Ruang', satuan: 'Ha', targetBase: 3000, realisasiBase: 2490 },
+
+            { orderIndex: 109, satker: 'Kanwil BPN Provinsi Nusa Tenggara Timur', igt: 'IGT Bidang Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 30000, realisasiBase: 24900 },
+            { orderIndex: 110, satker: 'Kanwil BPN Provinsi Nusa Tenggara Timur', igt: 'IGT Hak Atas Tanah', jenisIgt: 'Pertanahan', satuan: 'Bidang', targetBase: 20000, realisasiBase: 16200 },
+            { orderIndex: 111, satker: 'Kanwil BPN Provinsi Nusa Tenggara Timur', igt: 'IGT Potensi Objek Redistribusi Tanah', jenisIgt: 'Pertanahan', satuan: 'Ha', targetBase: 5000, realisasiBase: 4100 }
         ];
 
         if (jenisIgtFilter === 'pertanahan') {
@@ -1136,30 +1367,117 @@ window.MOCKUP_DATA = {
             'Sekretariat Direktorat Jenderal Penanganan Sengketa dan Konflik Pertanahan': [
                 'IGT Informasi mengenai Sengketa, Konflik, dan Perkara Pertanahan'
             ],
+            'Sekretariat Direktorat Jenderal SPPR': [
+                'IGT Batas Wilayah Administrasi',
+                'IGT Kerangka Kontrol Geodesi'
+            ],
+            'Balai Pemetaan dan Survei Tematik SPPR': [
+                'IGT Peta Tutupan Lahan',
+                'IGT Peta Morfologi Tanah'
+            ],
+            'Kanwil BPN Provinsi Bali': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT RDTR Kabupaten/Kota'
+            ],
             'Kanwil BPN Provinsi D.I. Yogyakarta': [
                 'IGT Bidang Tanah',
                 'IGT Hak Atas Tanah',
                 'IGT RDTR Kabupaten/Kota'
             ],
-            'Kantah Kab. Gunungkidul': [
+            'Kanwil BPN Provinsi DKI Jakarta': [
                 'IGT Bidang Tanah',
-                'IGT Hak Atas Tanah'
+                'IGT Hak Atas Tanah',
+                'IGT Zona Nilai Tanah'
             ],
-            'Kantah Kab. Sleman': [
+            'Kanwil BPN Provinsi Kalimantan Timur': [
                 'IGT Bidang Tanah',
-                'IGT Hak Atas Tanah'
+                'IGT Hak Atas Tanah',
+                'IGT RDTR Kabupaten/Kota'
             ],
-            'Kantah Kab. Bantul': [
+            'Kanwil BPN Provinsi Jawa Timur': [
                 'IGT Bidang Tanah',
-                'IGT Hak Atas Tanah'
+                'IGT Hak Atas Tanah',
+                'IGT RTRW Provinsi'
+            ],
+            'Kanwil BPN Provinsi Jawa Tengah': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT Lahan Baku Sawah'
+            ],
+            'Kanwil BPN Provinsi Jawa Barat': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT RDTR Kabupaten/Kota'
+            ],
+            'Kanwil BPN Provinsi Banten': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT Zona Nilai Tanah'
+            ],
+            'Kanwil BPN Provinsi Sumatera Utara': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT RTRW Provinsi'
+            ],
+            'Kanwil BPN Provinsi Sulawesi Selatan': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT Pertimbangan Teknis Pertanahan'
+            ],
+            'Kanwil BPN Provinsi Sumatera Barat': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT Hak Ulayat'
+            ],
+            'Kanwil BPN Provinsi Nusa Tenggara Barat': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT RDTR Kabupaten/Kota'
+            ],
+            'Kanwil BPN Provinsi Riau': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT Penggunaan Tanah'
+            ],
+            'Kanwil BPN Provinsi Kalimantan Barat': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT RDTR Kawasan Perbatasan Negara'
+            ],
+            'Kanwil BPN Provinsi Nusa Tenggara Timur': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT Potensi Objek Redistribusi Tanah'
             ],
             'Kantah Kota Yogyakarta': [
                 'IGT Bidang Tanah',
-                'IGT Hak Atas Tanah'
+                'IGT Hak Atas Tanah',
+                'IGT Nilai Bidang Tanah'
+            ],
+            'Kantah Kab. Sleman': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT Pertimbangan Teknis Pertanahan',
+                'IGT RDTR Kabupaten/Kota'
+            ],
+            'Kantah Kab. Bantul': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT Lahan Baku Sawah',
+                'IGT Zona Nilai Tanah'
+            ],
+            'Kantah Kab. Gunungkidul': [
+                'IGT Bidang Tanah',
+                'IGT Hak Atas Tanah',
+                'IGT Zona Nilai Tanah',
+                'IGT RDTR Kabupaten/Kota'
             ],
             'Kantah Kab. Kulon Progo': [
                 'IGT Bidang Tanah',
-                'IGT Hak Atas Tanah'
+                'IGT Hak Atas Tanah',
+                'IGT Konsolidasi Tanah',
+                'IGT RDTR Kabupaten/Kota'
             ]
         };
 
@@ -1213,31 +1531,50 @@ window.MOCKUP_DATA = {
         } else if (kat === 'direktorat-login' || kat === 'satker-login') {
             // Kategori 3: Satker yang paling sering login (Direktorat/Pusat, Kanwil, dan Kantah)
             var baseLogin = [
-                { satker: 'Direktorat Survei Dan Pemetaan Tematik', tipe: 'Pusat', jumlahLogin: Math.round(2840 * factor) },
-                { satker: 'Direktorat Pengukuran Dan Pemetaan Kadastral', tipe: 'Pusat', jumlahLogin: Math.round(2650 * factor) },
-                { satker: 'Kanwil BPN Provinsi Jawa Barat', tipe: 'Kanwil', jumlahLogin: Math.round(2450 * factor) },
-                { satker: 'Kantah Kab. Bogor', tipe: 'Kantah', jumlahLogin: Math.round(2180 * factor) },
+                // Ditjen SPPR Units
+                { satker: 'Direktorat Survei Dan Pemetaan Tematik', tipe: 'Pusat', jumlahLogin: Math.round(3150 * factor) },
+                { satker: 'Direktorat Pengukuran dan Pemetaan Kadastral', tipe: 'Pusat', jumlahLogin: Math.round(2980 * factor) },
+                { satker: 'Direktorat Pengukuran Dan Pemetaan Dasar Pertanahan Ruang', tipe: 'Pusat', jumlahLogin: Math.round(2780 * factor) },
+                { satker: 'Direktorat Penilaian Tanah dan Ekonomi Pertanahan', tipe: 'Pusat', jumlahLogin: Math.round(2420 * factor) },
+                { satker: 'Balai Pemetaan dan Survei Tematik SPPR', tipe: 'Pusat', jumlahLogin: Math.round(2180 * factor) },
+                { satker: 'Sekretariat Direktorat Jenderal SPPR', tipe: 'Pusat', jumlahLogin: Math.round(1940 * factor) },
+
+                // Kanwil-Kanwil se-Indonesia (15 Kanwil)
+                { satker: 'Kanwil BPN Provinsi Bali', tipe: 'Kanwil', jumlahLogin: Math.round(2820 * factor) },
+                { satker: 'Kanwil BPN Provinsi D.I. Yogyakarta', tipe: 'Kanwil', jumlahLogin: Math.round(2740 * factor) },
+                { satker: 'Kanwil BPN Provinsi Jawa Barat', tipe: 'Kanwil', jumlahLogin: Math.round(2650 * factor) },
+                { satker: 'Kanwil BPN Provinsi Jawa Timur', tipe: 'Kanwil', jumlahLogin: Math.round(2520 * factor) },
+                { satker: 'Kanwil BPN Provinsi Jawa Tengah', tipe: 'Kanwil', jumlahLogin: Math.round(2410 * factor) },
+                { satker: 'Kanwil BPN Provinsi DKI Jakarta', tipe: 'Kanwil', jumlahLogin: Math.round(2330 * factor) },
+                { satker: 'Kanwil BPN Provinsi Kalimantan Timur', tipe: 'Kanwil', jumlahLogin: Math.round(2150 * factor) },
+                { satker: 'Kanwil BPN Provinsi Banten', tipe: 'Kanwil', jumlahLogin: Math.round(2010 * factor) },
+                { satker: 'Kanwil BPN Provinsi Sumatera Utara', tipe: 'Kanwil', jumlahLogin: Math.round(1890 * factor) },
+                { satker: 'Kanwil BPN Provinsi Sulawesi Selatan', tipe: 'Kanwil', jumlahLogin: Math.round(1760 * factor) },
+                { satker: 'Kanwil BPN Provinsi Sumatera Barat', tipe: 'Kanwil', jumlahLogin: Math.round(1640 * factor) },
+                { satker: 'Kanwil BPN Provinsi Nusa Tenggara Barat', tipe: 'Kanwil', jumlahLogin: Math.round(1530 * factor) },
+                { satker: 'Kanwil BPN Provinsi Riau', tipe: 'Kanwil', jumlahLogin: Math.round(1420 * factor) },
+                { satker: 'Kanwil BPN Provinsi Kalimantan Barat', tipe: 'Kanwil', jumlahLogin: Math.round(1350 * factor) },
+                { satker: 'Kanwil BPN Provinsi Nusa Tenggara Timur', tipe: 'Kanwil', jumlahLogin: Math.round(1220 * factor) },
+
+                // Kantah-Kantah se-DIY (5 Kantah)
+                { satker: 'Kantah Kab. Sleman', tipe: 'Kantah', jumlahLogin: Math.round(2480 * factor) },
+                { satker: 'Kantah Kota Yogyakarta', tipe: 'Kantah', jumlahLogin: Math.round(2290 * factor) },
+                { satker: 'Kantah Kab. Bantul', tipe: 'Kantah', jumlahLogin: Math.round(2140 * factor) },
+                { satker: 'Kantah Kab. Gunungkidul', tipe: 'Kantah', jumlahLogin: Math.round(2050 * factor) },
+                { satker: 'Kantah Kab. Kulon Progo', tipe: 'Kantah', jumlahLogin: Math.round(1930 * factor) },
+
+                // Unit Pusat & Kantah Lainnya
                 { satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah I', tipe: 'Pusat', jumlahLogin: Math.round(1950 * factor) },
-                { satker: 'Kanwil BPN Provinsi Jawa Timur', tipe: 'Kanwil', jumlahLogin: Math.round(1820 * factor) },
+                { satker: 'Kantah Kab. Bogor', tipe: 'Kantah', jumlahLogin: Math.round(1880 * factor) },
                 { satker: 'Kantah Kota Surabaya I', tipe: 'Kantah', jumlahLogin: Math.round(1680 * factor) },
                 { satker: 'Direktorat Penetapan Hak Atas Tanah dan Ruang', tipe: 'Pusat', jumlahLogin: Math.round(1540 * factor) },
-                { satker: 'Kanwil BPN Provinsi D.I. Yogyakarta', tipe: 'Kanwil', jumlahLogin: Math.round(1520 * factor) },
-                { satker: 'Kanwil BPN Provinsi Jawa Tengah', tipe: 'Kanwil', jumlahLogin: Math.round(1480 * factor) },
-                { satker: 'Kantah Kab. Sleman', tipe: 'Kantah', jumlahLogin: Math.round(1360 * factor) },
-                { satker: 'Kanwil BPN Provinsi DKI Jakarta', tipe: 'Kanwil', jumlahLogin: Math.round(1250 * factor) },
                 { satker: 'Kantah Kota Jakarta Barat', tipe: 'Kantah', jumlahLogin: Math.round(1180 * factor) },
-                { satker: 'Kantah Kab. Gunungkidul', tipe: 'Kantah', jumlahLogin: Math.round(1120 * factor) },
                 { satker: 'Kantah Kab. Badung', tipe: 'Kantah', jumlahLogin: Math.round(1050 * factor) },
-                { satker: 'Kantah Kab. Bantul', tipe: 'Kantah', jumlahLogin: Math.round(980 * factor) },
                 { satker: 'Direktorat Penatagunaan Tanah', tipe: 'Pusat', jumlahLogin: Math.round(942 * factor) },
-                { satker: 'Kantah Kota Yogyakarta', tipe: 'Kantah', jumlahLogin: Math.round(890 * factor) },
-                { satker: 'Kanwil BPN Provinsi Bali', tipe: 'Kanwil', jumlahLogin: Math.round(860 * factor) },
                 { satker: 'Kantah Kab. Bandung', tipe: 'Kantah', jumlahLogin: Math.round(790 * factor) },
-                { satker: 'Kantah Kab. Kulon Progo', tipe: 'Kantah', jumlahLogin: Math.round(750 * factor) },
                 { satker: 'Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan', tipe: 'Pusat', jumlahLogin: Math.round(735 * factor) },
                 { satker: 'Kantah Kota Semarang', tipe: 'Kantah', jumlahLogin: Math.round(660 * factor) },
                 { satker: 'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan Dan Wilayah Tertentu', tipe: 'Pusat', jumlahLogin: Math.round(590 * factor) },
-                { satker: 'Kanwil BPN Provinsi Nusa Tenggara Timur', tipe: 'Kanwil', jumlahLogin: Math.round(480 * factor) },
                 { satker: 'Direktorat Penanganan Sengketa Pertanahan', tipe: 'Pusat', jumlahLogin: Math.round(348 * factor) }
             ];
 
