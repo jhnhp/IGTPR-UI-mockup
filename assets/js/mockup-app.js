@@ -1646,10 +1646,29 @@ var leaderBoardState = {
     initialized: false
 };
 
+var DAFTAR_IGT_BIDANG = [
+    'bidang tanah',
+    'penguasaan tanah',
+    'pemilikan tanah',
+    'penggunaan tanah',
+    'pemanfaatan tanah',
+    'sebaran lokasi pemberdayaan tanah masyarakat',
+    'pertimbangan teknis pertanahan',
+    'inventarisasi tanah kritis',
+    'tanah terindikasi terlantar',
+    'indikasi pelanggaran pemanfaatan ruang',
+    'hak atas tanah',
+    'informasi mengenai sengketa, konflik, dan perkara pertanahan',
+    'potensi subjek konsolidasi tanah',
+    'nilai bidang tanah',
+    'desain konsolidasi tanah',
+    'hasil penerapan desain konsolidasi tanah'
+];
+
 function isBidangIgt(name) {
     if (!name) return false;
-    var n = name.toLowerCase();
-    return n.indexOf('bidang') !== -1 || n.indexOf('hak atas tanah') !== -1;
+    var n = String(name).trim().toLowerCase().replace(/^igt\s+/i, '');
+    return DAFTAR_IGT_BIDANG.indexOf(n) !== -1;
 }
 
 function getIgtTagClass(name) {
