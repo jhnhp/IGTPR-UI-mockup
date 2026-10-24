@@ -1646,21 +1646,17 @@ var leaderBoardState = {
     initialized: false
 };
 
+function isBidangIgt(name) {
+    if (!name) return false;
+    var n = name.toLowerCase();
+    return n.indexOf('bidang') !== -1 || n.indexOf('hak atas tanah') !== -1;
+}
+
 function getIgtTagClass(name) {
-    var kawasanList = [
-        'Inventarisasi Tanah Kritis',
-        'Kemampuan Tanah',
-        'Lahan Baku Sawah Nasional',
-        'Neraca Penatagunaan Tanah',
-        'RDTR Kabupaten/ Kota',
-        'RDTR Kawasan Perbatasan Negara',
-        'RTRW Kabupaten',
-        'RTRW Provinsi'
-    ];
-    if (kawasanList.indexOf(name) !== -1) {
-        return 'igt-tag igt-tag--kawasan';
+    if (isBidangIgt(name)) {
+        return 'igt-tag--bidang';
     }
-    return 'igt-tag';
+    return 'igt-tag--kawasan';
 }
 
 var LEADERBOARD_CONFIG = {
@@ -1958,11 +1954,11 @@ function updateLeaderBoardTable() {
                 // No
                 tbodyHtml += '<td class="igt-table__no">' + rankBadge + '</td>';
 
-                // Satker / Direktorat (with embedded mint-green chips matching user screenshot)
+                // Satker / Direktorat (with color-coded chips: Bidang blue, Kawasan mint green)
                 var chipsHtml = '';
                 if (item.daftarIgt && item.daftarIgt.length > 0) {
                     chipsHtml = '<div class="igt-chips-wrap">' + item.daftarIgt.map(function(name) {
-                        return '<span class="igt-tag--renaksi">' + name + '</span>';
+                        return '<span class="' + getIgtTagClass(name) + '">' + name + '</span>';
                     }).join(' ') + '</div>';
                 }
                 tbodyHtml += '<td>'
