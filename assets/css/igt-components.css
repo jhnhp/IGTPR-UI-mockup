@@ -3338,6 +3338,10 @@ a.igt-stat:hover {
     vertical-align: middle;
 }
 
+#leader-board-table {
+    width: 100%;
+}
+
 #leader-board-table thead th {
     padding: 14px 20px;
     font-size: 13.5px;
@@ -3346,28 +3350,60 @@ a.igt-stat:hover {
     background-color: #f8fafc;
 }
 
-#leader-board-table .igt-table__no {
-    width: 56px;
+#leader-board-table thead th:nth-child(1),
+#leader-board-table td:nth-child(1) {
+    width: 50px;
+    min-width: 50px;
+    max-width: 56px;
     text-align: center;
     white-space: nowrap !important;
 }
 
-#leader-board-table td:nth-child(3) {
-    white-space: nowrap !important;
-    min-width: 190px;
+#leader-board-table thead th:nth-child(2),
+#leader-board-table td:nth-child(2) {
+    min-width: 280px;
+    width: 32%;
 }
 
+/* Kolom Realisasi / Target diperbesar (Info Utama) */
+#leader-board-table thead th:nth-child(3),
+#leader-board-table td:nth-child(3) {
+    white-space: nowrap !important;
+    min-width: 260px;
+    width: 30%;
+}
+
+/* Kolom Persentase diperbesar (Info Utama) */
+#leader-board-table thead th:nth-child(4),
 #leader-board-table td:nth-child(4) {
     white-space: nowrap !important;
-    min-width: 220px;
+    min-width: 300px;
+    width: 34%;
 }
 
 #leader-board-table .igt-progress-cell {
-    min-width: 200px;
-    max-width: 280px;
+    min-width: 260px;
+    max-width: 380px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
+    width: 100%;
+}
+
+#leader-board-table .igt-progress-bar-wrap {
+    flex: 1;
+    min-width: 150px;
+    height: 12px;
+    background-color: #e2e8f0;
+    border-radius: 9999px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+#leader-board-table .igt-progress-bar {
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 0.4s ease;
 }
 
 .igt-progress-meta {
@@ -3375,14 +3411,23 @@ a.igt-stat:hover {
     flex-direction: column;
     align-items: flex-start;
     gap: 2px;
-    min-width: 70px;
+    min-width: 80px;
+}
+
+.igt-progress-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+    letter-spacing: -0.2px;
 }
 
 .igt-progress-bobot-sub {
-    font-size: 11px;
+    font-size: 11.5px;
     font-weight: 500;
     color: #64748b;
     white-space: nowrap;
+    margin-top: 2px;
 }
 
 /* IGT Chip Berbasis Bidang (Warna seperti Jenis IGT Pertanahan: Soft Blue) */
@@ -3438,50 +3483,279 @@ a.igt-stat:hover {
 .igt-target-cell-multi {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
 }
 
 .igt-target-item {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13.5px;
+    gap: 8px;
+    font-size: 14px;
     color: #334155;
     white-space: nowrap;
 }
 
-.igt-target-item strong {
+.igt-target-item .igt-target-num {
     font-size: 14.5px;
+    color: #475569;
+}
+
+.igt-target-item .igt-target-num strong {
+    font-size: 15.5px;
     font-weight: 700;
     color: #0f172a;
+}
+
+.igt-target-sep {
+    color: #94a3b8;
+    margin: 0 2px;
+    font-weight: 400;
 }
 
 .igt-satuan-badge--bidang {
     display: inline-flex;
     align-items: center;
-    padding: 2px 7px;
+    padding: 3px 9px;
     background-color: #eff6ff;
     border: 1px solid #bfdbfe;
     color: #1d4ed8;
-    border-radius: 4px;
-    font-size: 10.5px;
+    border-radius: 6px;
+    font-size: 11.5px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
 }
 
 .igt-satuan-badge--kawasan {
     display: inline-flex;
     align-items: center;
-    padding: 2px 7px;
+    padding: 3px 9px;
     background-color: #ecfdf5;
-    border: 1px solid #a7f3d0;
+    border: 1px solid #6ee7b7;
     color: #047857;
-    border-radius: 4px;
-    font-size: 10.5px;
+    border-radius: 6px;
+    font-size: 11.5px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
+}
+
+/* ----------------------------------------------------
+   Kartu Bidang dan Kawasan di Bawah Nama Direktorat
+---------------------------------------------------- */
+.igt-satker-cards {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.igt-basis-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 11px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.35;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    user-select: none;
+}
+
+.igt-basis-card--bidang {
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+}
+
+.igt-basis-card--bidang:hover {
+    background-color: #dbeafe;
+    border-color: #93c5fd;
+}
+
+.igt-basis-card--bidang.is-active {
+    background-color: #1d4ed8;
+    border-color: #1d4ed8;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(29, 78, 216, 0.25);
+}
+
+.igt-basis-card--kawasan {
+    background-color: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #047857;
+}
+
+.igt-basis-card--kawasan:hover {
+    background-color: #d1fae5;
+    border-color: #6ee7b7;
+}
+
+.igt-basis-card--kawasan.is-active {
+    background-color: #047857;
+    border-color: #047857;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(4, 120, 87, 0.25);
+}
+
+.igt-basis-card__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.igt-basis-card--bidang .igt-basis-card__badge {
+    background-color: #1d4ed8;
+    color: #ffffff;
+}
+
+.igt-basis-card--bidang.is-active .igt-basis-card__badge {
+    background-color: #ffffff;
+    color: #1d4ed8;
+}
+
+.igt-basis-card--kawasan .igt-basis-card__badge {
+    background-color: #047857;
+    color: #ffffff;
+}
+
+.igt-basis-card--kawasan.is-active .igt-basis-card__badge {
+    background-color: #ffffff;
+    color: #047857;
+}
+
+.igt-basis-card__label {
+    font-weight: 500;
+}
+
+.igt-basis-card__chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.igt-basis-card__chevron img {
+    width: 11px;
+    height: 11px;
+    opacity: 0.65;
+}
+
+.igt-basis-card.is-active .igt-basis-card__chevron {
+    transform: rotate(180deg);
+}
+
+.igt-basis-card.is-active .igt-basis-card__chevron img {
+    filter: brightness(0) invert(1);
+    opacity: 1;
+}
+
+/* Expansion Drawer (Muncul Nama-Nama IGT Saat Kartu Diklik) */
+.igt-basis-drawer {
+    width: 100%;
+    margin-top: 10px;
+    transition: all 0.2s ease;
+}
+
+.igt-basis-drawer__inner {
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.igt-basis-drawer--bidang .igt-basis-drawer__inner {
+    background-color: #f8fbff;
+    border-color: #bfdbfe;
+}
+
+.igt-basis-drawer--kawasan .igt-basis-drawer__inner {
+    background-color: #f8fdfa;
+    border-color: #a7f3d0;
+}
+
+.igt-basis-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 9px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.igt-basis-drawer__title {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.igt-basis-drawer__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.igt-basis-drawer__modal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2.5px 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.igt-basis-drawer__modal-btn:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+.igt-basis-drawer__modal-btn img {
+    width: 11px;
+    height: 11px;
+}
+
+.igt-basis-drawer__close {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+    padding: 1px 6px;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.igt-basis-drawer__close:hover {
+    color: #0f172a;
+    background: #e2e8f0;
+}
+
+.igt-basis-drawer__chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
 }
 
 .igt-igt-cell {
@@ -3513,11 +3787,16 @@ a.igt-stat:hover {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    gap: 4px;
+    width: 100%;
 }
 
 .igt-satker-name {
     font-size: 14.5px;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.35;
+}
     font-weight: 600;
     color: #0f172a;
     line-height: 1.35;

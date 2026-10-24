@@ -1037,13 +1037,13 @@ window.MOCKUP_DATA = {
                     targetBidang: Math.max(10, Math.round(150 * factor)),
                     realisasiBidang: Math.max(10, Math.round(145 * factor)),
                     countBidang: 5,
-                    targetKawasan: Math.max(1, Math.round(10 * factor)),
-                    realisasiKawasan: Math.max(1, Math.round(9 * factor)),
+                    targetKawasan: Math.max(1000, Math.round(10000 * factor)),
+                    realisasiKawasan: Math.max(900, Math.round(9000 * factor)),
                     countKawasan: 1
                 },
                 {
                     satker: 'Ditjen Pengadaan Tanah dan Pengembangan Pertanahan',
-                    // Dual basis: 4 Bidang + 2 Kawasan
+                    // Dual basis: 4 Bidang + 2 Kawasan (Ha)
                     daftarIgt: [
                         'Potensi Subjek Konsolidasi Tanah',
                         'Nilai Bidang Tanah',
@@ -1055,13 +1055,13 @@ window.MOCKUP_DATA = {
                     targetBidang: Math.max(10, Math.round(100 * factor)),
                     realisasiBidang: Math.max(8, Math.round(88 * factor)),
                     countBidang: 4,
-                    targetKawasan: Math.max(2, Math.round(20 * factor)),
-                    realisasiKawasan: Math.max(2, Math.round(16 * factor)),
+                    targetKawasan: Math.max(2000, Math.round(20000 * factor)),
+                    realisasiKawasan: Math.max(1600, Math.round(16000 * factor)),
                     countKawasan: 2
                 },
                 {
                     satker: 'Ditjen Penataan Agraria',
-                    // Dual basis: 3 Bidang + 9 Kawasan
+                    // Dual basis: 3 Bidang + 9 Kawasan (Ha)
                     daftarIgt: [
                         'Sebaran Lokasi Pemberdayaan Tanah Masyarakat',
                         'Pertimbangan Teknis Pertanahan',
@@ -1079,13 +1079,13 @@ window.MOCKUP_DATA = {
                     targetBidang: Math.max(5, Math.round(50 * factor)),
                     realisasiBidang: Math.max(4, Math.round(42 * factor)),
                     countBidang: 3,
-                    targetKawasan: Math.max(9, Math.round(90 * factor)),
-                    realisasiKawasan: Math.max(7, Math.round(72 * factor)),
+                    targetKawasan: Math.max(9000, Math.round(90000 * factor)),
+                    realisasiKawasan: Math.max(7200, Math.round(72000 * factor)),
                     countKawasan: 9
                 },
                 {
                     satker: 'Ditjen Pengendalian dan Penertiban Tanah dan Ruang',
-                    // Dual basis: 2 Bidang + 2 Kawasan
+                    // Dual basis: 2 Bidang + 2 Kawasan (Ha)
                     daftarIgt: [
                         'Tanah Terindikasi Terlantar',
                         'Indikasi Pelanggaran Pemanfaatan Ruang',
@@ -1095,13 +1095,13 @@ window.MOCKUP_DATA = {
                     targetBidang: Math.max(4, Math.round(40 * factor)),
                     realisasiBidang: Math.max(3, Math.round(32 * factor)),
                     countBidang: 2,
-                    targetKawasan: Math.max(3, Math.round(30 * factor)),
-                    realisasiKawasan: Math.max(2, Math.round(21 * factor)),
+                    targetKawasan: Math.max(3000, Math.round(30000 * factor)),
+                    realisasiKawasan: Math.max(2100, Math.round(21000 * factor)),
                     countKawasan: 2
                 },
                 {
                     satker: 'Ditjen Tata Ruang',
-                    // 9 Kawasan
+                    // 9 Kawasan (Ha)
                     daftarIgt: [
                         'RTRW Nasional',
                         'RTRW Provinsi',
@@ -1116,8 +1116,8 @@ window.MOCKUP_DATA = {
                     targetBidang: 0,
                     realisasiBidang: 0,
                     countBidang: 0,
-                    targetKawasan: Math.max(5, Math.round(45 * factor)),
-                    realisasiKawasan: Math.max(3, Math.round(32 * factor)),
+                    targetKawasan: Math.max(4500, Math.round(45000 * factor)),
+                    realisasiKawasan: Math.max(3200, Math.round(32000 * factor)),
                     countKawasan: 9
                 }
             ];
@@ -1150,7 +1150,7 @@ window.MOCKUP_DATA = {
 
                 var bobotNote = '';
                 if (hasBidang && hasKawasan) {
-                    bobotNote = 'Bobot: ' + item.countKawasan + ' Kawasan, ' + item.countBidang + ' Bidang';
+                    bobotNote = 'Bobot: ' + item.countKawasan + ' Ha, ' + item.countBidang + ' Bidang';
                 }
 
                 return {
