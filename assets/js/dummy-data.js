@@ -78,16 +78,16 @@ window.MOCKUP_DATA = {
         kompilasiIntegrasi: {
             totalLayer: 14,
             bulanan: [
-                { bulan: 'JAN', terkompilasi: 1, terintegrasi: 3 },
+                { bulan: 'JAN', terkompilasi: 1, terintegrasi: 2 },
                 { bulan: 'FEB', terkompilasi: 1, terintegrasi: 3 },
                 { bulan: 'MAR', terkompilasi: 1, terintegrasi: 3 },
                 { bulan: 'APR', terkompilasi: 1, terintegrasi: 3 },
-                { bulan: 'MEI', terkompilasi: 1, terintegrasi: 3 },
-                { bulan: 'JUN', terkompilasi: 1, terintegrasi: 3 },
-                { bulan: 'JUL', terkompilasi: 1, terintegrasi: 3 },
-                { bulan: 'AGT', terkompilasi: 1, terintegrasi: 4 },
-                { bulan: 'SEP', terkompilasi: 1, terintegrasi: 4 },
-                { bulan: 'OKT', terkompilasi: 1, terintegrasi: 11 },
+                { bulan: 'MEI', terkompilasi: 2, terintegrasi: 3 },
+                { bulan: 'JUN', terkompilasi: 3, terintegrasi: 3 },
+                { bulan: 'JUL', terkompilasi: 3, terintegrasi: 3 },
+                { bulan: 'AGT', terkompilasi: 3, terintegrasi: 4 },
+                { bulan: 'SEP', terkompilasi: 3, terintegrasi: 4 },
+                { bulan: 'OKT', terkompilasi: 4, terintegrasi: 10 },
                 { bulan: 'NOV', terkompilasi: 0, terintegrasi: 0 },
                 { bulan: 'DES', terkompilasi: 0, terintegrasi: 0 }
             ]
@@ -261,15 +261,15 @@ window.MOCKUP_DATA = {
                     totalLayer: totalLayerKab,
                     bulanan: [
                         { bulan: 'JAN', terkompilasi: 0, terintegrasi: 0 },
-                        { bulan: 'FEB', terkompilasi: 0, terintegrasi: 1 },
-                        { bulan: 'MAR', terkompilasi: 0, terintegrasi: 1 },
-                        { bulan: 'APR', terkompilasi: 0, terintegrasi: 1 },
-                        { bulan: 'MEI', terkompilasi: 0, terintegrasi: 1 },
-                        { bulan: 'JUN', terkompilasi: 0, terintegrasi: 1 },
-                        { bulan: 'JUL', terkompilasi: 1, terintegrasi: 1 },
-                        { bulan: 'AGT', terkompilasi: 1, terintegrasi: 1 },
-                        { bulan: 'SEP', terkompilasi: 1, terintegrasi: 1 },
-                        { bulan: 'OKT', terkompilasi: 1, terintegrasi: totalLayerKab },
+                        { bulan: 'FEB', terkompilasi: 0, terintegrasi: Math.min(1, totalLayerKab) },
+                        { bulan: 'MAR', terkompilasi: 0, terintegrasi: Math.min(1, totalLayerKab) },
+                        { bulan: 'APR', terkompilasi: 0, terintegrasi: Math.min(1, totalLayerKab) },
+                        { bulan: 'MEI', terkompilasi: 0, terintegrasi: Math.min(1, totalLayerKab) },
+                        { bulan: 'JUN', terkompilasi: 0, terintegrasi: Math.min(1, totalLayerKab) },
+                        { bulan: 'JUL', terkompilasi: totalLayerKab > 1 ? 1 : 0, terintegrasi: Math.min(1, totalLayerKab) },
+                        { bulan: 'AGT', terkompilasi: totalLayerKab > 1 ? 1 : 0, terintegrasi: Math.min(1, totalLayerKab) },
+                        { bulan: 'SEP', terkompilasi: totalLayerKab > 1 ? 1 : 0, terintegrasi: Math.min(1, totalLayerKab) },
+                        { bulan: 'OKT', terkompilasi: totalLayerKab > 1 ? 1 : 0, terintegrasi: Math.max(Math.min(1, totalLayerKab), totalLayerKab - (totalLayerKab > 1 ? 1 : 0)) },
                         { bulan: 'NOV', terkompilasi: 0, terintegrasi: 0 },
                         { bulan: 'DES', terkompilasi: 0, terintegrasi: 0 }
                     ]
@@ -370,15 +370,15 @@ window.MOCKUP_DATA = {
                 totalLayer: totalLayer,
                 bulanan: [
                     { bulan: 'JAN', terkompilasi: 0, terintegrasi: 1 },
-                    { bulan: 'FEB', terkompilasi: 1, terintegrasi: 1 },
+                    { bulan: 'FEB', terkompilasi: 0, terintegrasi: 1 },
                     { bulan: 'MAR', terkompilasi: 0, terintegrasi: 1 },
-                    { bulan: 'APR', terkompilasi: 1, terintegrasi: 1 },
-                    { bulan: 'MEI', terkompilasi: 0, terintegrasi: 1 },
+                    { bulan: 'APR', terkompilasi: 0, terintegrasi: 1 },
+                    { bulan: 'MEI', terkompilasi: 1, terintegrasi: 1 },
                     { bulan: 'JUN', terkompilasi: 1, terintegrasi: 2 },
-                    { bulan: 'JUL', terkompilasi: 0, terintegrasi: 2 },
+                    { bulan: 'JUL', terkompilasi: 1, terintegrasi: 2 },
                     { bulan: 'AGT', terkompilasi: 1, terintegrasi: 2 },
                     { bulan: 'SEP', terkompilasi: 1, terintegrasi: 2 },
-                    { bulan: 'OKT', terkompilasi: 1, terintegrasi: totalLayer },
+                    { bulan: 'OKT', terkompilasi: 1, terintegrasi: Math.max(2, totalLayer - 1) },
                     { bulan: 'NOV', terkompilasi: 0, terintegrasi: 0 },
                     { bulan: 'DES', terkompilasi: 0, terintegrasi: 0 }
                 ]
@@ -838,22 +838,38 @@ window.MOCKUP_DATA = {
         var factor = t === '2026' ? 1.0 : (t === '2025' ? 0.72 : (t === '2024' ? 0.43 : 0.22));
         var scaledTotalLayer = Math.max(1, Math.round(baseKomp.totalLayer * factor));
 
+        var activeMonths = (t === '2026') ? 10 : 12;
+        var maxKomp = 0;
+        var maxInteg = 0;
+
         var bulanan = baseKomp.bulanan.map(function(b, idx) {
-            var activeMonths = t === '2026' ? 10 : 12;
             var isMActive = idx < activeMonths;
             var tkomp = isMActive ? Math.round((b.terkompilasi || 0) * factor) : 0;
             var tinteg = isMActive ? Math.round((b.terintegrasi || 0) * factor) : 0;
-            if (t === '2026' && idx === 9) {
-                tinteg = scaledTotalLayer;
-            } else if (idx === 11 && t !== '2026') {
-                tinteg = scaledTotalLayer;
+
+            if (isMActive) {
+                if (tkomp < maxKomp) tkomp = maxKomp;
+                else maxKomp = tkomp;
+
+                if (tinteg < maxInteg) tinteg = maxInteg;
+                else maxInteg = tinteg;
             }
+
             return {
                 bulan: b.bulan,
                 terkompilasi: tkomp,
                 terintegrasi: tinteg
             };
         });
+
+        // Set the peak month to match scaledTotalLayer
+        var peakIdx = (t === '2026') ? 9 : 11;
+        var currentPeakTotal = bulanan[peakIdx].terkompilasi + bulanan[peakIdx].terintegrasi;
+        if (currentPeakTotal < scaledTotalLayer) {
+            bulanan[peakIdx].terintegrasi += (scaledTotalLayer - currentPeakTotal);
+        } else if (currentPeakTotal > scaledTotalLayer) {
+            scaledTotalLayer = currentPeakTotal;
+        }
 
         return {
             totalLayer: scaledTotalLayer,

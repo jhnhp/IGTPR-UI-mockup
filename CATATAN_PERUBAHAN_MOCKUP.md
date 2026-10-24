@@ -37,6 +37,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 27 | **Penyelarasan Opsi Dropdown Statistik IGT (Data Berdasarkan IGT)** | Dropdown pengelompokan pertama pada toolbar Statistik IGT bertuliskan *"Data Berdasarkan Direktorat"*. | Diperbarui menjadi **"Data Berdasarkan IGT"**, baik pada label pemicu (*trigger*) maupun item opsi aktif di dalam dropdown panel (`#statistik-igt-kelompok`), selaras dengan isi kolom data yang menampilkan tema-tema IGT. |
 | 28 | **Implementasi Tabel & Grafik Statistik IGT per Provinsi (Data Berdasarkan Provinsi)** | Pengelompokan data pada kartu Statistik IGT sebelumnya hanya mendukung pengelompokan berdasarkan IGT. | Diimplementasikan **tampilan tabel dan grafik batang bergugus (*clustered column bar chart*) per Provinsi** yang terintegrasi penuh ke dropdown toolbar `#statistik-igt-kelompok`: <br>• **Tampilan Tabel per Provinsi**: Menampilkan kolom nomor urut (`No`), `Provinsi`, `Jumlah IGT`, `Kabupaten`, `Bidang`, dan `Luas (Ha)` persis sesuai tangkapan layar Geoportal (Bali, DIY, DKI Jakarta, NTT, Tidak Tercatat).<br>• **Tampilan Grafik per Provinsi**: Grafik batang adaptif yang menyajikan 5 kategori provinsi pada sumbu X, legenda & bilah *Jumlah IGT* (cyan `#68b6db`) dan *Jumlah Data Kabupaten* (biru `#6793db`), grid sumbu Y 0–8, serta tooltip melayang interaktif saat hover.<br>• **Mendukung Mode Kabupaten**: Sekaligus melengkapi opsi *"Data Berdasarkan Kabupaten/Kota"* dengan kolom dan dataset lengkap (Badung, Bantul, Belu, Gunung Kidul, dll.).<br>• **Sinkronisasi Penuh**: Pencarian, pengurutan numerik natural, paginasi, pergantian metrik (Administrasi/Bidang/Luas), serta filter wilayah dan tahun renaksi terhubung 100% dinamis. |
 | 29 | **Implementasi Tabel & Grafik Statistik IGT per Kabupaten/Kota (Data Berdasarkan Kabupaten/Kota)** | Pengelompokan data pada kartu Statistik IGT sebelumnya belum memiliki visualisasi tabel dan grafik lengkap untuk tingkat Kabupaten/Kota. | Diimplementasikan **tampilan tabel dan grafik batang per Kabupaten/Kota** yang terintegrasi penuh ke dropdown toolbar `#statistik-igt-kelompok`: <br>• **Tampilan Tabel per Kabupaten/Kota**: Menyajikan kolom `No`, `Kabupaten/Kota`, `Provinsi`, `Jumlah IGT`, `Bidang`, dan `Luas (Ha)` persis sesuai tangkapan layar Geoportal (*Badung*, *Bantul*, *Belu*, *Gunung Kidul (DIY)*, *Gunung Kidul (TT)*, *Kota Jakarta Barat*, *Kota Yogyakarta*, *Kulon Progo*, *Malaka*, *Sleman*). Dilengkapi paginasi aktif 2 halaman (`< 1 2 >`).<br>• **Tampilan Grafik per Kabupaten/Kota**: Visualisasi diagram batang pada modul Grafik dengan kategori kabupaten pada sumbu X, legenda & bilah *Jumlah IGT* (cyan `#68b6db`), grid sumbu Y 0–8, serta tooltip melayang informatif saat kursor diarahkan ke setiap batang (menampilkan nama kabupaten, nama provinsi induk, Jumlah IGT, Bidang, dan Luas Ha).<br>• **Interaktivitas Menyeluruh**: Pencarian kata kunci, pengurutan kolom, tombol paginasi halaman 1 & 2, serta filter wilayah tersinkronisasi mulus. |
+| 30 | **Data Kumulatif Monotonik Kompilasi & Integrasi (Mei $\ge$ April)** | Data bulanan Kompilasi & Integrasi pada tingkat provinsi mengalami fluktuasi penurunan (misal: April 2 layer, Mei turun jadi 1 layer; Februari 2 layer, Maret 1 layer; Juni 3 layer, Juli 2 layer). | Menerapkan **aturan akumulasi kumulatif (*monotonic non-decreasing progression*)** pada seluruh data bulanan (Januari–Desember) di tingkat nasional, provinsi, maupun kabupaten/kota: <br>• Nilai `terkompilasi` dan `terintegrasi` di bulan $m$ dijamin selalu $\ge$ bulan $m-1$ ($\text{data}[m] \ge \text{data}[m-1]$), sehingga capaian bulan Mei dipastikan tidak pernah lebih sedikit dari bulan April.<br>• Alur capaian nasional selaras 100% dengan 14 Layer IGT (4 terkompilasi & 10 terintegrasi).<br>• Fungsi penskalaan tahunan (`getKompilasiIntegrasi`) diberi proteksi akumulasi otomatis sehingga pemilihan tahun berapapun tetap mempertahankan tren akumulatif non-decreasing secara matematis. |
 
 ---
 
@@ -385,6 +386,36 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
      - Sub-toolbar & legenda: **Jumlah IGT** (lingkaran titik cyan `#68b6db`).
      - Tooltip melayang interaktif (*floating tooltip*) menyajikan nama kabupaten, provinsi induk (*Daerah Istimewa Yogyakarta*, *Bali*, dll.), Jumlah IGT, Bidang, dan Luas (Ha).
      - Sinkronisasi dinamis terhadap pengalihan metrik dropdown (*Data Berdasarkan Administrasi*, *Bidang*, dan *Luas*).
+
+### 27. Penegakan Logika Data Akumulasi Kumulatif Monotonik pada Kompilasi & Integrasi (Mei $\ge$ April)
+- **Latar Belakang Permasalahan**:
+  - Pada kartu dan diagram batang *Kompilasi Integrasi*, data bulanan merepresentasikan **progres kumulatif tahun berjalan (*cumulative year-to-date achievement*)** dari bulan Januari hingga Desember.
+  - Sebelumnya, pada dummy data tingkat provinsi, nilai bulanan didefinisikan seperti capaian terpisah per bulan (*monthly delta*) sehingga timbul fluktuasi penurunan yang tidak logis:
+    - April: 2 layer (1 terkompilasi, 1 terintegrasi) $\rightarrow$ Mei: 1 layer (0 terkompilasi, 1 terintegrasi) — *turun dari 2 ke 1*.
+    - Februari: 2 layer $\rightarrow$ Maret: 1 layer — *turun dari 2 ke 1*.
+    - Juni: 3 layer $\rightarrow$ Juli: 2 layer — *turun dari 3 ke 2*.
+  - Sesuai prinsip pelaporan renaksi IGT spasial: lapisan data (*layer*) yang telah terkompilasi atau terintegrasi di bulan sebelumnya tidak akan hilang atau berkurang di bulan berikutnya, melainkan terus berakumulasi. Maka bulan Mei tidak mungkin lebih sedikit daripada bulan April:
+    $$\forall m \in [1..12]: \quad \text{terkompilasi}[m] \ge \text{terkompilasi}[m-1] \quad\land\quad \text{terintegrasi}[m] \ge \text{terintegrasi}[m-1]$$
+- **Solusi & Perubahan yang Diterapkan**:
+  1. **Tingkat Nasional (`nasional.kompilasiIntegrasi.bulanan`)**:
+     - Januari: 1 terkompilasi, 2 terintegrasi (Total = 3)
+     - Februari–April: 1 terkompilasi, 3 terintegrasi (Total = 4)
+     - **Mei**: 2 terkompilasi (+ *Lahan Baku Sawah Nasional*), 3 terintegrasi (**Total = 5**) $\rightarrow$ **Mei (5) $\ge$ April (4)**
+     - Juni–Juli: 3 terkompilasi (+ *Penggunaan Tanah*), 3 terintegrasi (Total = 6)
+     - Agustus–September: 3 terkompilasi, 4 terintegrasi (+ *Inventarisasi Tanah Kritis*) (Total = 7)
+     - Oktober: 4 terkompilasi, 10 terintegrasi (**Total = 14 layer penuh**, selaras 100% dengan metrik kartu 14 Layer IGT)
+     - November & Desember: 0 (slot abu-abu untuk bulan mendatang pada tahun berjalan 2026).
+  2. **Tingkat Wilayah Provinsi & Kabupaten (`getRawDataByWilayah`)**:
+     - Pola bulanan diatur secara terstruktur non-decreasing di setiap wilayah:
+       - Provinsi: Jan–Apr (1) $\rightarrow$ Mei (2, dengan 1 terkompilasi + 1 terintegrasi) $\rightarrow$ Jun–Sep (3) $\rightarrow$ Okt ($\text{Total Layer}$ penuh).
+       - Kabupaten: Jan (0) $\rightarrow$ Feb–Jun (1) $\rightarrow$ Jul–Sep (2) $\rightarrow$ Okt ($\text{Total Layer Kab}$).
+  3. **Proteksi Monotonik pada Penskalaan Tahun (`getKompilasiIntegrasi`)**:
+     - Ditanamkan loop validasi monotonik:
+       `if (tkomp < maxKomp) tkomp = maxKomp; else maxKomp = tkomp;`
+       `if (tinteg < maxInteg) tinteg = maxInteg; else maxInteg = tinteg;`
+     - Menjamin bahwa pemilihan filter tahun renaksi manapun (2026, 2025, 2024, 2023, atau Semua Tahun) menghasilkan grafik batang yang strictly non-decreasing dan akumulatif.
+  4. **Kesesuaian Interaksi Modal Popup Kumulatif**:
+     - Mengklik batang bulan Mei membuka modal daftar IGT kumulatif periode Januari s.d. Mei (5 layer: 3 terintegrasi + 2 terkompilasi), selaras 100% dengan angka pada diagram batang.
 
 ---
 
