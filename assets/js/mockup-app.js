@@ -1687,14 +1687,18 @@ function renderTable(ctrl) {
     var pageItems = filtered.slice(start, start + ctrl.perPage);
 
     // Render Rows
+    var hasCheck = $container.find('thead th.igt-table__check').length > 0;
+    var totalColspan = ctrl.columns.length + 1 + (hasCheck ? 1 : 0);
     var bodyHtml = '';
     if (pageItems.length === 0) {
-        bodyHtml = '<tr><td colspan="' + (ctrl.columns.length + 2) + '" class="igt-table__empty">Data Tidak Ditemukan!</td></tr>';
+        bodyHtml = '<tr><td colspan="' + totalColspan + '" class="igt-table__empty">Data Tidak Ditemukan!</td></tr>';
     } else {
         pageItems.forEach(function(row, idx) {
             bodyHtml += '<tr>'
-                + '<td class="igt-table__no text-center">' + (start + idx + 1) + '</td>'
-                + '<td class="igt-table__check"><img src="assets/img/icons/check-square.svg" alt=""></td>';
+                + '<td class="igt-table__no text-center">' + (start + idx + 1) + '</td>';
+            if (hasCheck) {
+                bodyHtml += '<td class="igt-table__check"><img src="assets/img/icons/check-square.svg" alt=""></td>';
+            }
             ctrl.columns.forEach(function(col) {
                 var val = row[col.key];
                 if (val === null || val === undefined) val = '-';

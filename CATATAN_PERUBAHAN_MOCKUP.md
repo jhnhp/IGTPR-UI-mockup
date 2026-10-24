@@ -32,6 +32,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 22 | **Interaktivitas Modal & Bar Chart Kompilasi Integrasi (Clickable Metric & Monthly Bars)** | Angka total layer (14) dan bilah grafik bulanan (JAN-DES) bersifat statis tanpa aksi interaktif. | Menjadikan angka metrik utama (**14 Layer IGT**) dan bilah grafik bulanan **sepenuhnya interaktif (*clickable*)**: <br>• **Klik Angka 14**: Membuka modal pop-up menampilkan seluruh 14 Layer IGT yang terkompilasi maupun terintegrasi.<br>• **Klik Ruas Bar Spesifik (misal: Terintegrasi bulan April)**: Membuka modal terfilter khusus menampilkan layer IGT yang sudah terintegrasi secara **kumulatif dari bulan Januari hingga April** (3 layer: *Bidang Tanah*, *Hak Atas Tanah*, *Zona Nilai Tanah*). Begitu pula untuk *Terkompilasi* (1 layer: *RDTR Kabupaten/Kota*) dan bulan-bulan lainnya.<br>• **Tampilan Accordion IGT**: Modal menyajikan daftar IGT dalam format akordion interaktif (menampilkan status target, realisasi, persentase berwarna, dan rincian tabel dataset tiap IGT saat diperluas) sesuai standar UI Geoportal IGT. |
 | 23 | **Penambahan Kolom Nomor Urut (No) di Paling Kiri Seluruh Tabel** | Seluruh tabel (dashboard, modal usulan data, dan modal kompilasi data) tidak memiliki kolom nomor urut (`No`), baris langsung diawali dengan checkbox atau nama data. | Ditambahkan **kolom nomor urut (`No`) di posisi paling kiri (`paling kiri`)** pada seluruh 7 tabel di aplikasi: <br>1. *Statistik IGT* (`#statistik-igt-tabel`)<br>2. *Capaian Renaksi / Leader Board* (`#capaian-renaksi-tabel`)<br>3. *Statistik Derivatif* (`#statistik-derivatif-tabel`)<br>4. *Statistik Akses IGT* (`#statistik-akses-tabel`)<br>5. *Log Aktivitas Terkini* (`#aktivitas-log-tabel`)<br>6. *Modal Usulan Input Data* (`#modal-usulan-table`)<br>7. *Subtabel Modal Kompilasi & Integrasi* (`#modal-kompilasi-accordion`).<br>Penomoran dihitung otomatis dan berlanjut secara presisi mengikuti paginasi per halaman (misal: halaman 1: nomor 1–10, halaman 2: nomor 11–20). |
 | 24 | **Penghapusan Ikon Info (Tanda "i") di Kanan Atas Kartu Ringkasan** | Terdapat ikon informasi lingkaran (*info icon* / tanda "i") pada pojok kanan atas header kartu *Usulan Input Data* dan *Kompilasi Integrasi*. | Ikon tanda "i" (`.igt-panel__info` / `info.svg`) **dihapus secara menyeluruh** dari header kartu *Usulan Input Data* dan *Kompilasi Integrasi*. Menghasilkan tampilan header kartu ringkasan yang jauh lebih bersih, rapi, dan minimalis. |
+| 25 | **Penghapusan Kolom Kotak-kotak (Checkbox) pada Tabel Statistik IGT** | Tabel Statistik IGT memiliki kolom centang kotak-kotak (`check-square.svg`) di antara kolom `No` dan `IGT`. | Kolom centang kotak-kotak (`.igt-table__check`) **dihapus dari tabel Statistik IGT**. Logika perenderan tabel disesuaikan dinamis mendeteksi keberadaan header centang (`hasCheck`), menghasilkan tata letak tabel yang bersih, rapi, dan persis sesuai desain referensi asli. |
 
 ---
 
@@ -314,6 +315,14 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 - **Penyelarasan Tata Letak**:
   - Diterapkan `display: none !important;` pada selector `.igt-panel__info` di `assets/css/igt-components.css` sebagai mitigasi keamanan tampilan.
   - Judul kartu ringkasan kini tampil lugas dan proporsional tanpa elemen ornamen visual yang tidak diperlukan.
+
+### 22. Penghapusan Kolom Kotak-kotak (Checkbox) pada Tabel Statistik IGT
+- **Latar Belakang**: Pada tangkapan layar referensi UI Geoportal IGT asli, tabel Statistik IGT tidak menggunakan kolom kotak centang (*checkbox*). Kolom tersebut sebelumnya muncul di antara kolom `No` dan `IGT`.
+- **Perubahan yang Diterapkan**:
+  - Menghapus `<th class="igt-table__check is-plain"><img src="assets/img/icons/check-square.svg" alt=""></th>` dari `<thead>` tabel Statistik IGT (`#statistik-igt-tabel`).
+  - Memperbarui fungsi `renderTable(ctrl)` di `assets/js/mockup-app.js` agar secara dinamis mendeteksi keberadaan elemen header `th.igt-table__check` (`var hasCheck = $container.find('thead th.igt-table__check').length > 0;`).
+  - Jika tabel tidak memiliki header centang, kolom sel `<td class="igt-table__check">` otomatis ditiadakan dan perhitungan `colspan` pesan data kosong disesuaikan secara presisi (`ctrl.columns.length + 1`).
+- **Hasil Tampilan**: Tabel Statistik IGT kini langsung menyajikan urutan kolom: **No**, **IGT**, **Provinsi**, **Kabupaten**, **Bidang**, dan **Luas (Ha)**, menghasilkan visual tabel yang bersih, lega, dan elegan.
 
 ---
 
