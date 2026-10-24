@@ -1973,7 +1973,7 @@ function updateLeaderBoardTable() {
                 // No
                 tbodyHtml += '<td class="igt-table__no">' + rankBadge + '</td>';
 
-                // Satker / Direktorat (Compact: Kartu Bidang & Kawasan, klik untuk rincian IGT)
+                // Satker / Direktorat (Preview Chip + Tombol "+X lainnya ▾")
                 var daftarBidang = (item.daftarIgt || []).filter(function(name) {
                     return isBidangIgt(name);
                 });
@@ -1981,46 +1981,63 @@ function updateLeaderBoardTable() {
                     return !isBidangIgt(name);
                 });
 
-                var bidangJson = JSON.stringify(daftarBidang).replace(/"/g, '&quot;');
-                var kawasanJson = JSON.stringify(daftarKawasan).replace(/"/g, '&quot;');
-                var satkerSafe = (item.satker || '').replace(/"/g, '&quot;');
-                var rowKey = 'renaksi-' + idx;
+                var chipsHtml = '';
+                if (item.daftarIgt && item.daftarIgt.length > 0) {
+                    var previewChips = [];
+                    var hiddenChips = [];
 
-                var cardsHtml = '<div class="igt-satker-cards">';
-                if (daftarBidang.length > 0) {
-                    cardsHtml += '<button type="button" class="igt-basis-card igt-basis-card--bidang" data-row="' + rowKey + '" data-basis="bidang" data-satker="' + satkerSafe + '" data-igt-list="' + bidangJson + '" title="Klik untuk menampilkan ' + daftarBidang.length + ' IGT Berbasis Bidang">'
-                        + '<span class="igt-basis-card__badge">' + daftarBidang.length + '</span>'
-                        + '<span class="igt-basis-card__label">IGT Berbasis Bidang</span>'
-                        + '<span class="igt-basis-card__chevron"><img src="assets/img/icons/caret-down.svg" alt=""></span>'
-                        + '</button>';
-                }
-                if (daftarKawasan.length > 0) {
-                    cardsHtml += '<button type="button" class="igt-basis-card igt-basis-card--kawasan" data-row="' + rowKey + '" data-basis="kawasan" data-satker="' + satkerSafe + '" data-igt-list="' + kawasanJson + '" title="Klik untuk menampilkan ' + daftarKawasan.length + ' IGT Berbasis Kawasan (Ha)">'
-                        + '<span class="igt-basis-card__badge">' + daftarKawasan.length + '</span>'
-                        + '<span class="igt-basis-card__label">IGT Berbasis Kawasan</span>'
-                        + '<span class="igt-basis-card__chevron"><img src="assets/img/icons/caret-down.svg" alt=""></span>'
-                        + '</button>';
-                }
-                cardsHtml += '</div>';
+                    if (item.hasBidang && item.hasKawasan) {
+                        // Dual basis: tampilkan 1 Bidang (biru) dan 1 Kawasan (hijau) sebagai preview
+                        if (daftarBidang.length > 0) {
+                            previewChips.push({ name: daftarBidang[0], isBidang: true });
+                        }
+                        if (daftarKawasan.length > 0) {
+                            previewChips.push({ name: daftarKawasan[0], isBidang: false });
+                        }
+                        for (var b = 1; b < daftarBidang.length; b++) {
+                            hiddenChips.push({ name: daftarBidang[b], isBidang: true });
+                        }
+                        for (var k = 1; k < daftarKawasan.length; k++) {
+                            hiddenChips.push({ name: daftarKawasan[k], isBidang: false });
+                        }
+                    } else {
+                        // Single basis: tampilkan 2 chip pertama sebagai preview
+                        item.daftarIgt.forEach(function(name, i) {
+                            var isB = isBidangIgt(name);
+                            if (i < 2) {
+                                previewChips.push({ name: name, isBidang: isB });
+                            } else {
+                                hiddenChips.push({ name: name, isBidang: isB });
+                            }
+                        });
+                    }
 
-                var drawerHtml = '<div class="igt-basis-drawer" id="igt-drawer-' + rowKey + '" style="display: none;">'
-                    + '<div class="igt-basis-drawer__inner">'
-                    + '  <div class="igt-basis-drawer__header">'
-                    + '    <div class="igt-basis-drawer__title" id="igt-drawer-title-' + rowKey + '"></div>'
-                    + '    <div class="igt-basis-drawer__actions">'
-                    + '      <button type="button" class="igt-basis-drawer__modal-btn" data-row="' + rowKey + '" title="Tampilkan pop-up dialog"><img src="assets/img/icons/arrows-out.svg" alt=""> Pop-up</button>'
-                    + '      <button type="button" class="igt-basis-drawer__close" data-row="' + rowKey + '" aria-label="Tutup">&times;</button>'
-                    + '    </div>'
-                    + '  </div>'
-                    + '  <div class="igt-basis-drawer__chips" id="igt-drawer-chips-' + rowKey + '"></div>'
-                    + '</div>'
-                    + '</div>';
+                    var rowKey = 'renaksi-' + idx;
+                    var previewHtml = previewChips.map(function(c) {
+                        var cls = c.isBidang ? 'igt-tag--bidang' : 'igt-tag--kawasan';
+                        return '<span class="' + cls + '">' + c.name + '</span>';
+                    }).join(' ');
+
+                    var hiddenHtml = '';
+                    var moreBtnHtml = '';
+                    if (hiddenChips.length > 0) {
+                        hiddenHtml = '<span class="igt-chips-hidden" id="igt-more-' + rowKey + '" style="display: none;">'
+                            + hiddenChips.map(function(c) {
+                                var cls = c.isBidang ? 'igt-tag--bidang' : 'igt-tag--kawasan';
+                                return '<span class="' + cls + '">' + c.name + '</span>';
+                            }).join(' ')
+                            + '</span>';
+
+                        moreBtnHtml = '<button type="button" class="igt-tag-more" data-target="igt-more-' + rowKey + '" data-count="' + hiddenChips.length + '">+' + hiddenChips.length + ' lainnya ▾</button>';
+                    }
+
+                    chipsHtml = '<div class="igt-chips-wrap">' + previewHtml + ' ' + hiddenHtml + ' ' + moreBtnHtml + '</div>';
+                }
 
                 tbodyHtml += '<td>'
                     + '<div class="igt-satker-cell-col">'
                     + '  <div class="igt-satker-name">' + item.satker + '</div>'
-                    +    cardsHtml
-                    +    drawerHtml
+                    +    chipsHtml
                     + '</div>'
                     + '</td>';
 
@@ -2072,7 +2089,7 @@ function updateLeaderBoardTable() {
         $('#leader-board-body').html(tbodyHtml);
 
     } else {
-        // Kategori 2 (igt-akses) & Kategori 3 (direktorat-login): GRAFIK BATANG KE SAMPING
+        // Kategori 2 (igt-akses) & Kategori 3 (direktorat-login): GRAFIK BATANG KE SAMPING (Tanpa Chip)
         $('#leader-board-tabel').hide();
         $('#leader-board-grafik').show();
 
@@ -2104,14 +2121,11 @@ function updateLeaderBoardTable() {
                     var pluginPercent = item.jumlahAkses > 0 ? Math.round((item.aksesPlugin / item.jumlahAkses) * 100) : 0;
                     var aplikasiPercent = Math.max(0, 100 - pluginPercent);
 
-                    var chipClass = getIgtTagClass(item.igt);
-                    var chipsHtml = '<div class="igt-chips-wrap"><span class="' + chipClass + '">' + item.igt + '</span></div>';
-
+                    // Kategori 2: Tidak perlu chip di bawah nama IGT
                     hbarHtml += '<div class="igt-hbar-row">'
                         + '  <div class="igt-hbar-rank">' + rankBadge + '</div>'
                         + '  <div class="igt-hbar-left">'
                         + '    <div class="igt-hbar-title">' + item.igt + '</div>'
-                        +      chipsHtml
                         + '  </div>'
                         + '  <div class="igt-hbar-chart">'
                         + '    <div class="igt-hbar-bar-wrap" style="width: ' + barPercent + '%;" title="' + item.igt + ': Total ' + item.jumlahAkses.toLocaleString('id-ID') + ' kali (Plugin QGIS: ' + item.aksesPlugin.toLocaleString('id-ID') + ', Geoportal: ' + item.aksesAplikasi.toLocaleString('id-ID') + ')">'
@@ -2128,54 +2142,11 @@ function updateLeaderBoardTable() {
                 } else if (leaderBoardState.kategori === 'direktorat-login') {
                     var barPercent = Math.max(6, Math.round((item.jumlahLogin / maxVal) * 68));
 
-                    var daftarBidangLogin = (item.daftarIgt || []).filter(function(name) {
-                        return isBidangIgt(name);
-                    });
-                    var daftarKawasanLogin = (item.daftarIgt || []).filter(function(name) {
-                        return !isBidangIgt(name);
-                    });
-
-                    var bidangJsonLogin = JSON.stringify(daftarBidangLogin).replace(/"/g, '&quot;');
-                    var kawasanJsonLogin = JSON.stringify(daftarKawasanLogin).replace(/"/g, '&quot;');
-                    var satkerSafeLogin = (item.satker || '').replace(/"/g, '&quot;');
-                    var rowKeyLogin = 'login-' + idx;
-
-                    var cardsLoginHtml = '<div class="igt-satker-cards">';
-                    if (daftarBidangLogin.length > 0) {
-                        cardsLoginHtml += '<button type="button" class="igt-basis-card igt-basis-card--bidang" data-row="' + rowKeyLogin + '" data-basis="bidang" data-satker="' + satkerSafeLogin + '" data-igt-list="' + bidangJsonLogin + '" title="Klik untuk menampilkan ' + daftarBidangLogin.length + ' IGT Berbasis Bidang">'
-                            + '<span class="igt-basis-card__badge">' + daftarBidangLogin.length + '</span>'
-                            + '<span class="igt-basis-card__label">IGT Berbasis Bidang</span>'
-                            + '<span class="igt-basis-card__chevron"><img src="assets/img/icons/caret-down.svg" alt=""></span>'
-                            + '</button>';
-                    }
-                    if (daftarKawasanLogin.length > 0) {
-                        cardsLoginHtml += '<button type="button" class="igt-basis-card igt-basis-card--kawasan" data-row="' + rowKeyLogin + '" data-basis="kawasan" data-satker="' + satkerSafeLogin + '" data-igt-list="' + kawasanJsonLogin + '" title="Klik untuk menampilkan ' + daftarKawasanLogin.length + ' IGT Berbasis Kawasan (Ha)">'
-                            + '<span class="igt-basis-card__badge">' + daftarKawasanLogin.length + '</span>'
-                            + '<span class="igt-basis-card__label">IGT Berbasis Kawasan</span>'
-                            + '<span class="igt-basis-card__chevron"><img src="assets/img/icons/caret-down.svg" alt=""></span>'
-                            + '</button>';
-                    }
-                    cardsLoginHtml += '</div>';
-
-                    var drawerLoginHtml = '<div class="igt-basis-drawer" id="igt-drawer-' + rowKeyLogin + '" style="display: none;">'
-                        + '<div class="igt-basis-drawer__inner">'
-                        + '  <div class="igt-basis-drawer__header">'
-                        + '    <div class="igt-basis-drawer__title" id="igt-drawer-title-' + rowKeyLogin + '"></div>'
-                        + '    <div class="igt-basis-drawer__actions">'
-                        + '      <button type="button" class="igt-basis-drawer__modal-btn" data-row="' + rowKeyLogin + '" title="Tampilkan pop-up dialog"><img src="assets/img/icons/arrows-out.svg" alt=""> Pop-up</button>'
-                        + '      <button type="button" class="igt-basis-drawer__close" data-row="' + rowKeyLogin + '" aria-label="Tutup">&times;</button>'
-                        + '    </div>'
-                        + '  </div>'
-                        + '  <div class="igt-basis-drawer__chips" id="igt-drawer-chips-' + rowKeyLogin + '"></div>'
-                        + '</div>'
-                        + '</div>';
-
+                    // Kategori 3: Tidak perlu chip di bawah nama Satker
                     hbarHtml += '<div class="igt-hbar-row">'
                         + '  <div class="igt-hbar-rank">' + rankBadge + '</div>'
                         + '  <div class="igt-hbar-left">'
                         + '    <div class="igt-hbar-title">' + item.satker + '</div>'
-                        +      cardsLoginHtml
-                        +      drawerLoginHtml
                         + '  </div>'
                         + '  <div class="igt-hbar-chart">'
                         + '    <div class="igt-hbar-bar-wrap igt-hbar-bar-wrap--login" style="width: ' + barPercent + '%;" title="' + item.satker + ': ' + item.jumlahLogin.toLocaleString('id-ID') + ' kali login">'
@@ -2191,8 +2162,8 @@ function updateLeaderBoardTable() {
         $('#leader-board-hbar-list').html(hbarHtml);
     }
 
-    // Bind Drawer & Modal Events for Kartu IGT
-    bindLeaderBoardDrawerEvents();
+    // Bind "See More" (+X lainnya / Sembunyikan) Events
+    bindLeaderBoardMoreEvents();
 
     // Render Shared Pagination
     renderPaginationHtml($('#leader-board-pagination'), totalPages, leaderBoardState.currentPage, function(newPage) {
@@ -2201,97 +2172,20 @@ function updateLeaderBoardTable() {
     });
 }
 
-function bindLeaderBoardDrawerEvents() {
-    // 1. Toggle Drawer on Card Click
-    $('#leader-board-table, #leader-board-hbar-list').off('click', '.igt-basis-card').on('click', '.igt-basis-card', function(e) {
+function bindLeaderBoardMoreEvents() {
+    $('#leader-board-table').off('click', '.igt-tag-more').on('click', '.igt-tag-more', function(e) {
         e.stopPropagation();
         var $btn = $(this);
-        var rowKey = $btn.data('row');
-        var basis = $btn.data('basis');
-        var satker = $btn.data('satker') || '';
-        var rawList = $btn.attr('data-igt-list') || '[]';
-        var list = [];
-        try {
-            list = JSON.parse(rawList);
-        } catch (err) {
-            list = [];
-        }
+        var targetId = $btn.data('target');
+        var count = $btn.data('count');
+        var $target = $('#' + targetId);
 
-        var $drawer = $('#igt-drawer-' + rowKey);
-        var $title = $('#igt-drawer-title-' + rowKey);
-        var $chipsWrap = $('#igt-drawer-chips-' + rowKey);
-        var $modalBtn = $drawer.find('.igt-basis-drawer__modal-btn');
-        var $siblings = $btn.closest('.igt-satker-cards').find('.igt-basis-card');
-
-        // Toggle close if already active
-        if ($btn.hasClass('is-active')) {
-            $btn.removeClass('is-active');
-            $drawer.slideUp(180);
-            return;
-        }
-
-        $siblings.removeClass('is-active');
-        $btn.addClass('is-active');
-
-        var isBidang = (basis === 'bidang');
-        var basisLabel = isBidang ? 'IGT Berbasis Bidang' : 'IGT Berbasis Kawasan (Ha)';
-        var icon = isBidang ? '🟦' : '🟩';
-        $title.html(icon + ' <strong>' + list.length + ' ' + basisLabel + '</strong> &bull; <span style="font-weight: 500; color: #64748b;">' + satker + '</span>');
-
-        var chipsHtml = list.map(function(name) {
-            var cls = isBidang ? 'igt-tag--bidang' : 'igt-tag--kawasan';
-            return '<span class="' + cls + '">' + name + '</span>';
-        }).join(' ');
-        $chipsWrap.html(chipsHtml);
-
-        $modalBtn.data('basis', basis)
-                 .data('satker', satker)
-                 .data('list', list);
-
-        $drawer.removeClass('igt-basis-drawer--bidang igt-basis-drawer--kawasan')
-               .addClass('igt-basis-drawer--' + basis);
-
-        $drawer.slideDown(200);
-    });
-
-    // 2. Close Drawer
-    $('#leader-board-table, #leader-board-hbar-list').off('click', '.igt-basis-drawer__close').on('click', '.igt-basis-drawer__close', function(e) {
-        e.stopPropagation();
-        var rowKey = $(this).data('row');
-        $('#igt-drawer-' + rowKey).slideUp(180);
-        $('.igt-basis-card[data-row="' + rowKey + '"]').removeClass('is-active');
-    });
-
-    // 3. Open Full Modal from Drawer
-    $('#leader-board-table, #leader-board-hbar-list').off('click', '.igt-basis-drawer__modal-btn').on('click', '.igt-basis-drawer__modal-btn', function(e) {
-        e.stopPropagation();
-        var $btn = $(this);
-        var basis = $btn.data('basis');
-        var satker = $btn.data('satker') || '';
-        var list = $btn.data('list') || [];
-        var isBidang = (basis === 'bidang');
-
-        $('#modal-leaderboard-title').text('Daftar IGT ' + (isBidang ? 'Berbasis Bidang' : 'Berbasis Kawasan (Ha)'));
-        $('#modal-leaderboard-satker').text(satker);
-        $('#modal-leaderboard-basis').text(isBidang ? 'Basis Bidang' : 'Basis Kawasan (Ha)');
-        $('#modal-leaderboard-info').text('Menampilkan total ' + list.length + ' IGT ' + (isBidang ? 'Berbasis Bidang' : 'Berbasis Kawasan'));
-
-        var chipsHtml = list.map(function(name) {
-            var cls = isBidang ? 'igt-tag--bidang' : 'igt-tag--kawasan';
-            return '<span class="' + cls + '" style="font-size: 13px; padding: 6px 14px;">' + name + '</span>';
-        }).join(' ');
-        $('#modal-leaderboard-chips').html(chipsHtml);
-
-        $('#modal-leaderboard-igt').fadeIn(200);
-    });
-
-    // 4. Close Modal Handlers
-    $('#modal-leaderboard-close, #modal-leaderboard-btn-close').off('click').on('click', function() {
-        $('#modal-leaderboard-igt').fadeOut(180);
-    });
-    $('#modal-leaderboard-igt').off('click').on('click', function(e) {
-        if ($(e.target).is('#modal-leaderboard-igt')) {
-            $(this).fadeOut(180);
+        if ($btn.hasClass('is-expanded')) {
+            $target.hide();
+            $btn.removeClass('is-expanded').text('+' + count + ' lainnya ▾');
+        } else {
+            $target.css('display', 'inline-flex');
+            $btn.addClass('is-expanded').text('Sembunyikan ▴');
         }
     });
 }

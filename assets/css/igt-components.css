@@ -3797,17 +3797,55 @@ a.igt-stat:hover {
     color: #0f172a;
     line-height: 1.35;
 }
-    font-weight: 600;
-    color: #0f172a;
-    line-height: 1.35;
-}
 
 .igt-chips-wrap {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 6px;
-    margin-top: 4px;
+    margin-top: 5px;
+}
+
+/* Tombol "See More" (+X lainnya / Sembunyikan) */
+.igt-tag-more {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.igt-tag-more:hover {
+    background-color: #e2e8f0;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+.igt-tag-more.is-expanded {
+    background-color: #fee2e2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+}
+
+.igt-tag-more.is-expanded:hover {
+    background-color: #fecaca;
+    border-color: #f87171;
+    color: #991b1b;
+}
+
+.igt-chips-hidden {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
 }
 
 .igt-chips-wrap .igt-tag {
