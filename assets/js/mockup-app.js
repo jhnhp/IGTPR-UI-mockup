@@ -1776,34 +1776,6 @@ function initLeaderBoard() {
         leaderBoardState.currentPage = 1;
         updateLeaderBoardTable();
     });
-
-    // E. Per page selector
-    $('#leader-board-perpage').off('change').on('change', function() {
-        leaderBoardState.perPage = parseInt($(this).val(), 10) || 5;
-        leaderBoardState.currentPage = 1;
-        updateLeaderBoardTable();
-    });
-
-    // F. Unduh button
-    $('#leader-board-unduh').off('click').on('click', function() {
-        exportLeaderBoardToCSV();
-    });
-
-    // I. View Full Table button
-    $('#leader-board-full').off('click').on('click', function() {
-        if (leaderBoardState.perPage === 50) {
-            leaderBoardState.perPage = 5;
-            $('#leader-board-perpage').val('5');
-            var btnText = (leaderBoardState.kategori === 'capaian-renaksi') ? 'View Full Table' : 'Lihat Semua';
-            $(this).find('span:last-child').text(btnText);
-        } else {
-            leaderBoardState.perPage = 50;
-            $('#leader-board-perpage').val('50');
-            $(this).find('span:last-child').text('Tampilan Standar');
-        }
-        leaderBoardState.currentPage = 1;
-        updateLeaderBoardTable();
-    });
 }
 
 function switchLeaderBoardKategori(kategoriKey) {
@@ -1824,12 +1796,6 @@ function switchLeaderBoardKategori(kategoriKey) {
 
     // Update Tahun Filter Title & Label
     $('#leader-board-tahun-wrap').attr('title', cfg.tahunTitle);
-
-    // Update View Full button label
-    var fullBtnLabel = (leaderBoardState.perPage === 50)
-        ? 'Tampilan Standar'
-        : (kategoriKey === 'capaian-renaksi' ? 'View Full Table' : 'Lihat Semua');
-    $('#leader-board-full span:last-child').text(fullBtnLabel);
 
     updateLeaderBoardTable();
 }
@@ -1883,15 +1849,14 @@ function updateLeaderBoardTable() {
         }
     });
 
-    // Pagination
+    // Leader Board: Selalu 5 entri teratas (Fixed Top 5)
     var totalEntries = sorted.length;
-    var perPage = leaderBoardState.perPage;
-    var totalPages = Math.max(1, Math.ceil(totalEntries / perPage));
-    if (leaderBoardState.currentPage > totalPages) leaderBoardState.currentPage = totalPages;
-    if (leaderBoardState.currentPage < 1) leaderBoardState.currentPage = 1;
-
-    var startIndex = (leaderBoardState.currentPage - 1) * perPage;
-    var pageData = sorted.slice(startIndex, startIndex + perPage);
+    var perPage = 5;
+    leaderBoardState.perPage = 5;
+    leaderBoardState.currentPage = 1;
+    var startIndex = 0;
+    var totalPages = 1;
+    var pageData = sorted.slice(0, 5);
 
     // Render based on category: Table (Capaian Renaksi) vs Horizontal Bar Chart (Akses & Login)
     if (leaderBoardState.kategori === 'capaian-renaksi') {
@@ -2140,11 +2105,15 @@ function updateLeaderBoardTable() {
     // Bind "See More" (+X lainnya / Sembunyikan) Events
     bindLeaderBoardMoreEvents();
 
-    // Render Shared Pagination
-    renderPaginationHtml($('#leader-board-pagination'), totalPages, leaderBoardState.currentPage, function(newPage) {
-        leaderBoardState.currentPage = newPage;
-        updateLeaderBoardTable();
-    });
+    // Render Shared Pagination (jika elemen pagination ada di DOM dan terdapat lebih dari 1 halaman)
+    if ($('#leader-board-pagination').length && totalPages > 1) {
+        renderPaginationHtml($('#leader-board-pagination'), totalPages, leaderBoardState.currentPage, function(newPage) {
+            leaderBoardState.currentPage = newPage;
+            updateLeaderBoardTable();
+        });
+    } else {
+        $('#leader-board-pagination').empty();
+    }
 }
 
 function bindLeaderBoardMoreEvents() {
