@@ -1940,8 +1940,13 @@ function getShortProvinsiLabel(name) {
     return name;
 }
 
-function getShortKabupatenLabel(name) {
+function getShortKabupatenLabel(name, item) {
     if (!name) return '';
+    if (name === 'Gunung Kidul') {
+        if (item && item.provinsi === 'Tidak Tercatat') return 'Gunung Kidul (TT)';
+        return 'Gunung Kidul';
+    }
+    if (name === 'Kota Jakarta Barat') return 'Kota Jakarta B...';
     if (name.length > 15) return name.substring(0, 13) + '...';
     return name;
 }
@@ -2086,7 +2091,7 @@ function renderStatistikIGTGrafik(ctrl) {
     items.forEach(function(item, idx) {
         var clusterCenter = plotLeft + (idx + 0.5) * clusterStep;
         var rawLabel = mode === 'provinsi' ? (item.provinsi || '-') : (mode === 'kabupaten' ? (item.kabupaten || '-') : (item.igt || '-'));
-        var displayLabel = mode === 'provinsi' ? getShortProvinsiLabel(rawLabel) : (mode === 'kabupaten' ? getShortKabupatenLabel(rawLabel) : getShortIgtLabel(rawLabel));
+        var displayLabel = mode === 'provinsi' ? getShortProvinsiLabel(rawLabel) : (mode === 'kabupaten' ? getShortKabupatenLabel(rawLabel, item) : getShortIgtLabel(rawLabel));
 
         svg += '<g class="igt-chart-cluster" data-idx="' + idx + '" data-mode="' + mode + '" data-label="' + rawLabel + '" data-igt="' + (item.igt || item.jumlahIgt || '-') + '" data-prov="' + (item.provinsi || '-') + '" data-kab="' + (item.kabupaten || '-') + '" data-bidang="' + (item.bidang || '-') + '" data-luas="' + (item.luas || '-') + '">';
 

@@ -114,15 +114,17 @@ window.MOCKUP_DATA = {
         ],
         statistikIGTKabupaten: [
             { kabupaten: 'Badung', provinsi: 'Bali', jumlahIgt: 2, bidang: 160, luas: '12,892' },
-            { kabupaten: 'Bantul', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 6, bidang: '15.554', luas: '2.720,909' },
-            { kabupaten: 'Belu', provinsi: 'Nusa Tenggara Timur', jumlahIgt: 1, bidang: '2.184', luas: '7.807,981' },
-            { kabupaten: 'Gunung Kidul', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: '64.003', luas: '270.423,81' },
+            { kabupaten: 'Bantul', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 6, bidang: '15.554', luas: '82.720,993' },
+            { kabupaten: 'Belu', provinsi: 'Nusa Tenggara Timur', jumlahIgt: 1, bidang: '2.154', luas: '7.517,951' },
+            { kabupaten: 'Gunung Kidul', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: '64.003', luas: '219.423,151' },
             { kabupaten: 'Gunung Kidul', provinsi: 'Tidak Tercatat', jumlahIgt: 1, bidang: '7.516', luas: '231.015,748' },
             { kabupaten: 'Kota Jakarta Barat', provinsi: 'DKI Jakarta', jumlahIgt: 1, bidang: 4, luas: '3,256' },
-            { kabupaten: 'Kota Yogyakarta', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: '5.460', luas: '705,24' },
-            { kabupaten: 'Kulon Progo', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: 384, luas: '139.608,83' },
-            { kabupaten: 'Malaka', provinsi: 'Nusa Tenggara Timur', jumlahIgt: 1, bidang: 318, luas: '545,504' },
-            { kabupaten: 'Sleman', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: '62.022', luas: '80.096,56' }
+            { kabupaten: 'Kota Yogyakarta', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: '5.460', luas: '6.766,834' },
+            { kabupaten: 'Kulon Progo', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: '17.354', luas: '139.608,183' },
+            { kabupaten: 'Malaka', provinsi: 'Nusa Tenggara Timur', jumlahIgt: 1, bidang: 319, luas: '545,594' },
+            { kabupaten: 'Sleman', provinsi: 'Daerah Istimewa Yogyakarta', jumlahIgt: 7, bidang: '62.822', luas: '110.094,516' },
+            { kabupaten: 'Sumbawa', provinsi: 'Nusa Tenggara Barat', jumlahIgt: 1, bidang: 356, luas: '812,484' },
+            { kabupaten: 'Tabanan', provinsi: 'Bali', jumlahIgt: 1, bidang: 85, luas: '8,450' }
         ],
         leaderBoard: [
             {
