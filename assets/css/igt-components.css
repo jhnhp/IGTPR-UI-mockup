@@ -3352,17 +3352,107 @@ a.igt-stat:hover {
     white-space: nowrap !important;
 }
 
-#leader-board-table td:nth-child(4) {
+#leader-board-table td:nth-child(3) {
     white-space: nowrap !important;
+    min-width: 190px;
 }
 
-#leader-board-table td:nth-child(5) {
+#leader-board-table td:nth-child(4) {
     white-space: nowrap !important;
+    min-width: 220px;
 }
 
 #leader-board-table .igt-progress-cell {
-    min-width: 180px;
-    max-width: 250px;
+    min-width: 200px;
+    max-width: 280px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.igt-progress-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    min-width: 70px;
+}
+
+.igt-progress-bobot-sub {
+    font-size: 11px;
+    font-weight: 500;
+    color: #64748b;
+    white-space: nowrap;
+}
+
+/* Mint green tags matching user screenshot media_1792824039569_fa8c15eb.png */
+.igt-tag--renaksi {
+    display: inline-flex;
+    align-items: center;
+    padding: 3.5px 10px;
+    background-color: #ecfdf5;
+    border: 1px solid #6ee7b7;
+    color: #047857;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+.igt-tag--renaksi:hover {
+    background-color: #d1fae5;
+    border-color: #34d399;
+}
+
+.igt-target-cell-multi {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.igt-target-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13.5px;
+    color: #334155;
+    white-space: nowrap;
+}
+
+.igt-target-item strong {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.igt-satuan-badge--bidang {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.igt-satuan-badge--kawasan {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    background-color: #fef3c7;
+    border: 1px solid #fde68a;
+    color: #b45309;
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
 }
 
 .igt-igt-cell {

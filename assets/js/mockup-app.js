@@ -1673,9 +1673,8 @@ var LEADERBOARD_CONFIG = {
         defaultSortCol: 'persentase',
         columns: [
             { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
-            { key: 'igt', label: 'IGT', sortable: true },
             { key: 'satker', label: 'Satker / Direktorat', sortable: true },
-            { key: 'realisasi', label: 'Realisasi / Target', sortable: true },
+            { key: 'realisasi', label: 'Realisasi / Target', sortable: false },
             { key: 'persentase', label: 'Persentase', sortable: true }
         ]
     },
@@ -1959,30 +1958,48 @@ function updateLeaderBoardTable() {
                 // No
                 tbodyHtml += '<td class="igt-table__no">' + rankBadge + '</td>';
 
-                // IGT (with chips underneath!)
+                // Satker / Direktorat (with embedded mint-green chips matching user screenshot)
                 var chipsHtml = '';
                 if (item.daftarIgt && item.daftarIgt.length > 0) {
                     chipsHtml = '<div class="igt-chips-wrap">' + item.daftarIgt.map(function(name) {
-                        return '<span class="' + getIgtTagClass(name) + '">' + name + '</span>';
+                        return '<span class="igt-tag--renaksi">' + name + '</span>';
                     }).join(' ') + '</div>';
                 }
                 tbodyHtml += '<td>'
-                    + '<div class="igt-igt-cell">'
-                    + '  <div class="igt-igt-title">' + item.igt + '</div>'
+                    + '<div class="igt-satker-cell-col">'
+                    + '  <div class="igt-satker-name">' + item.satker + '</div>'
                     +    chipsHtml
                     + '</div>'
                     + '</td>';
 
-                // Satker
-                tbodyHtml += '<td><span class="igt-satker-cell">' + item.satker + '</span></td>';
+                // Realisasi / Target (shows both Bidang and Kawasan if dual basis)
+                var targetHtml = '';
+                if (item.hasBidang && item.hasKawasan) {
+                    targetHtml = '<div class="igt-target-cell-multi">'
+                        + '  <div class="igt-target-item"><strong>' + item.realisasiBidang.toLocaleString('id-ID') + '</strong> / ' + item.targetBidang.toLocaleString('id-ID') + ' <span class="igt-satuan-badge--bidang">Bidang</span></div>'
+                        + '  <div class="igt-target-item"><strong>' + item.realisasiKawasan.toLocaleString('id-ID') + '</strong> / ' + item.targetKawasan.toLocaleString('id-ID') + ' <span class="igt-satuan-badge--kawasan">Kawasan</span></div>'
+                        + '</div>';
+                } else if (item.hasBidang) {
+                    targetHtml = '<div class="igt-target-item"><strong>' + item.realisasiBidang.toLocaleString('id-ID') + '</strong> / ' + item.targetBidang.toLocaleString('id-ID') + ' <span class="igt-satuan-badge--bidang">Bidang</span></div>';
+                } else if (item.hasKawasan) {
+                    targetHtml = '<div class="igt-target-item"><strong>' + item.realisasiKawasan.toLocaleString('id-ID') + '</strong> / ' + item.targetKawasan.toLocaleString('id-ID') + ' <span class="igt-satuan-badge--kawasan">Kawasan</span></div>';
+                } else {
+                    targetHtml = '<span class="text-muted">-</span>';
+                }
+                tbodyHtml += '<td>' + targetHtml + '</td>';
 
-                // Realisasi / Target
-                tbodyHtml += '<td><div class="igt-target-cell"><strong>' + item.realisasi.toLocaleString('id-ID') + '</strong> / ' + item.target.toLocaleString('id-ID') + ' <span class="igt-satuan-badge">' + item.satuan + '</span></div></td>';
-
-                // Persentase
+                // Persentase (weighted progress bar + breakdown note if dual basis)
+                var bobotSubHtml = '';
+                if (item.hasBidang && item.hasKawasan) {
+                    var tipText = 'Kawasan: ' + item.pctKawasan.toFixed(2) + '% (bobot ' + item.countKawasan + ') • Bidang: ' + item.pctBidang.toFixed(2) + '% (bobot ' + item.countBidang + ')';
+                    bobotSubHtml = '<span class="igt-progress-bobot-sub" title="' + tipText + '">(Bobot: ' + item.countKawasan + ' Kawasan, ' + item.countBidang + ' Bidang)</span>';
+                }
                 tbodyHtml += '<td><div class="igt-progress-cell">'
                     + '<div class="igt-progress-bar-wrap"><div class="igt-progress-bar igt-progress-bar--' + item.progressColor + '" style="width: ' + Math.min(100, item.persentase) + '%"></div></div>'
-                    + '<span class="igt-progress-text">' + item.persenStr + '</span>'
+                    + '<div class="igt-progress-meta">'
+                    + '  <span class="igt-progress-text">' + item.persenStr + '</span>'
+                    +    bobotSubHtml
+                    + '</div>'
                     + '</div></td>';
 
                 tbodyHtml += '</tr>';
@@ -2100,10 +2117,21 @@ function exportLeaderBoardToCSV() {
         var row = [];
         if (leaderBoardState.kategori === 'capaian-renaksi') {
             row.push(r);
-            row.push('"' + (item.igt || '').replace(/"/g, '""') + '"');
-            row.push('"' + (item.satker || '').replace(/"/g, '""') + '"');
-            row.push('"' + item.realisasi + ' / ' + item.target + ' ' + item.satuan + '"');
-            row.push('"' + item.persenStr + '"');
+            row.push('"' + (item.satker || '').replace(/"/g, '""') + ' [' + (item.daftarIgt || []).join(', ') + ']"');
+            var tgtText = '';
+            if (item.hasBidang && item.hasKawasan) {
+                tgtText = item.realisasiBidang + '/' + item.targetBidang + ' Bidang; ' + item.realisasiKawasan + '/' + item.targetKawasan + ' Kawasan';
+            } else if (item.hasBidang) {
+                tgtText = item.realisasiBidang + '/' + item.targetBidang + ' Bidang';
+            } else if (item.hasKawasan) {
+                tgtText = item.realisasiKawasan + '/' + item.targetKawasan + ' Kawasan';
+            }
+            row.push('"' + tgtText + '"');
+            var pctText = item.persenStr;
+            if (item.hasBidang && item.hasKawasan) {
+                pctText += ' (' + item.bobotNote + ')';
+            }
+            row.push('"' + pctText + '"');
         } else if (leaderBoardState.kategori === 'igt-akses') {
             row.push(r);
             row.push('"' + (item.igt || '').replace(/"/g, '""') + '"');

@@ -43,6 +43,7 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
 | 33 | **Penggantian Istilah Satuan "Layer" Menjadi "IGT" pada Usulan Input Data** | Kartu *Usulan Input Data* menampilkan label satuan tema geospasial sebagai "layer" (misal: "98 data / 30 layer", "26 data / 14 layer"). | Label satuan "layer" pada kartu ringkasan *Usulan Input Data* **diganti menjadi "IGT"** secara menyeluruh: <br>• Metrik utama kartu: **`98 data / 30 IGT`**.<br>• Rincian status per kategori: `26 data / 14 IGT` (Terintegrasi), `7 data / 4 IGT` (Terkompilasi), `65 data / 12 IGT` (Terupload), `0 data / 0 IGT` (Revisi Perbaikan).<br>• Tooltip bar progres dinamis juga diperbarui menggunakan satuan "IGT". |
 | 34 | **Pengaturan Tampilan Leader Board (Default Top 5, Tabel Lebih Lebar, & Chip Daftar IGT di Bawah Nama)** | Leader board menampilkan 10 baris per halaman secara default, tabel terasa agak padat/sempit, dan belum menampilkan rincian tema-tema IGT yang masuk di bawah nama IGT/Satker. | Mengoptimalkan modul Leader Board sesuai preferensi pengguna: <br>• **Default Top 5**: Jumlah data yang tampil otomatis adalah **5 entri teratas (*Top 5*)** dengan selektor per halaman default bernilai 5 (`< 1 2 >`).<br>• **Tampilan Lebih Lebar & Nyaman**: Menghapus pembatasan lebar maksimal kolom (`max-width: 200px/300px`), memperbesar padding sel menjadi `16px 20px`, serta memperlebar progress bar (hingga 250px) sehingga tabel terasa luas, lega, dan nyaman dibaca.<br>• **Chip Tag IGT di Bawah Nama**: Di bawah tulisan nama IGT/Satker, ditampilkan badge pill/chip berwarna (`.igt-tag` biru untuk Pertanahan dan `.igt-tag--kawasan` kuning/amber untuk Tata Ruang) yang merinci seluruh tema IGT yang masuk ke dalam entri tersebut (misal: *Direktorat Penatagunaan Tanah* menampilkan 4 chip: *Inventarisasi Tanah Kritis*, *Kemampuan Tanah*, *Lahan Baku Sawah Nasional*, *Neraca Penatagunaan Tanah*; dan *Bidang Tanah* menampilkan chip *Bidang Tanah*). |
 | 35 | **Visualisasi Grafik Batang Horizontal (*Horizontal Bar Chart*) dengan Angka di Ujung Bilah untuk Kategori Akses dan Login** | Kategori 2 (*IGT Paling Sering Diakses*) dan Kategori 3 (*Direktorat Sering Login*) sebelumnya masih menggunakan format tabel biasa, belum dalam bentuk diagram batang horizontal. | Mengubah visualisasi Kategori 2 dan 3 pada modul Leader Board menjadi **grafik batang ke samping (*horizontal bar chart*)** dengan angka ditulis tepat di ujung bilah grafik: <br>• **Kategori 2 (IGT Paling Sering Diakses)**: Menampilkan bilah horizontal tersegmentasi warna cerah (Plugin QGIS sky blue `#0284c7` & Aplikasi Geoportal royal blue `#1d4ed8`) dengan panjang proporsional, chip tag IGT di bawah judul, serta angka total akses dan rincian metode diletakkan tepat di ujung luar batang (`48.291 kali (Plugin: 32.140 • Aplikasi: 16.151)`). Dilengkapi legenda visual metode akses di sudut kanan atas.<br>• **Kategori 3 (Direktorat Paling Sering Login)**: Menampilkan bilah horizontal bergradien elegan (`linear-gradient(90deg, #38bdf8, #1d4ed8)`), chip daftar IGT yang dikelola di bawah nama satker, dan angka frekuensi login ditulis tepat di ujung bilah (`1.842 kali login`).<br>• **Kategori 1 (Capaian Renaksi)**: Tetap dipertahankan sebagai tabel lebar dengan progress bar capaian.<br>• **Interaktivitas Lengkap**: Kotak pencarian (*live search*), filter tahun, pemilih jumlah per page (default Top 5), paginasi halaman, dan ekspor CSV tetap berfungsi sinkron. |
+| 36 | **Tabel Capaian Renaksi Berdasarkan Satker/Direktorat dengan Chip Mint Green & Bobot Proporsional Bidang-Kawasan** | Tabel Capaian Renaksi sebelumnya mengelompokkan data berdasarkan tema IGT individual dengan kolom Satker terpisah, belum mengakomodasi direktorat yang mengelola tema berbasis bidang dan kawasan sekaligus, serta persentase capaian belum mempertimbangkan bobot jenis tema. | Menyusun ulang tabel **Capaian Renaksi Satker** menjadi **berdasarkan Satker/Direktorat** secara penuh: <br>• **Entri Utama Satker / Direktorat**: Setiap baris tabel mewakili satu Direktorat/Satker. Di bawah nama Satker, disematkan chip badge nama-nama IGT yang dikelola dengan gaya **mint green** (`.igt-tag--renaksi`: background `#ecfdf5`, border `#6ee7b7`, teks `#047857`) persis sesuai tangkapan layar pengguna.<br>• **Dukungan Dual Basis di Capaian/Target**: Untuk direktorat yang memiliki IGT berbasis bidang dan berbasis kawasan sekaligus (misal: *Direktorat Bina Pengadaan dan Pencadangan Tanah* & *Direktorat Pengendalian Hak Tanah...*), kolom *Realisasi / Target* menampilkan kedua capaian bertingkat secara terpisah (`... BIDANG` dan `... KAWASAN`) dengan badge satuan tematik.<br>• **Perhitungan Persentase Berbobot (*Weighted Average*)**: Persentase capaian dihitung berdasarkan jumlah bobot tema: $\text{Persentase} = \frac{P_{\text{kawasan}} \cdot N_{\text{kawasan}} + P_{\text{bidang}} \cdot N_{\text{bidang}}}{N_{\text{kawasan}} + N_{\text{bidang}}}$. Jika kawasan berjumlah 2 dan bidang berjumlah 1, kawasan berbobot 2 dan bidang berbobot 1. Terdapat keterangan pembobotan `(Bobot: 2 Kawasan, 1 Bidang)` di bawah nilai persentase.<br>• **4 Kolom Efisien & Lapang**: Struktur header tabel diperbarui menjadi `No` $\rightarrow$ `Satker / Direktorat` $\rightarrow$ `Realisasi / Target` $\rightarrow$ `Persentase`. Terintegrasi dengan filter Satker, live search, dan ekspor CSV. |
 
 ---
 
@@ -549,6 +550,38 @@ Dokumen ini mencatat seluruh pembaruan, perbaikan fungsional, integrasi data spa
   6. **Integrasi Toolbar & Paginasi Bersama (*Shared Footer*)**:
      - Komponen footer kartu (`#leader-board-foot`) berisi selektor *Per page* (default 5, 10, 25, 50) dan tombol paginasi (`< 1 2 3 >`) digunakan bersama (*shared*) untuk mode tabel maupun grafik.
      - Kotak pencarian (*live filtering*), filter tahun, dan tombol unduh CSV tetap bekerja secara interaktif dan serasi.
+
+### 33. Capaian Renaksi Satker Berdasarkan Satker/Direktorat dengan Chip Mint Green & Bobot Proporsional Bidang-Kawasan
+- **Latar Belakang**:
+  Pengguna menginginkan agar kategori 1 (*Capaian Renaksi Satker*) pada modul Leader Board diatur berdasarkan entitas Satker/Direktorat (bukan per IGT tunggal), dengan nama-nama tema IGT disematkan di bawah nama satker menggunakan chip badge bergaya *mint green* persis sesuai gambar referensi. Selain itu, untuk satker yang mengelola IGT berbasis bidang dan kawasan sekaligus, keduanya ditampilkan di kolom capaian/target dan persentase capaian dihitung menggunakan rata-rata terbobot (*weighted average*) proporsional jumlah tema masing-masing basis.
+- **Implementasi Komponen & Logika**:
+  1. **Pengelompokan Berdasarkan Satker/Direktorat**:
+     - Setiap baris tabel kini merepresentasikan satu Satker/Direktorat di lingkungan Kementerian ATR/BPN.
+     - Kolom tabel disederhanakan menjadi 4 kolom yang sangat lapang dan terbaca jelas:
+       $$\text{No} \longrightarrow \text{Satker / Direktorat} \longrightarrow \text{Realisasi / Target} \longrightarrow \text{Persentase}$$
+  2. **Penyematan Chip IGT Bergaya Mint Green (`.igt-tag--renaksi`)**:
+     - Tepat di bawah nama Satker/Direktorat, disematkan daftar tema IGT yang dikelola menggunakan badge pill khusus:
+       - Background: `#ecfdf5`
+       - Border: `1px solid #6ee7b7`
+       - Teks: `#047857`
+       - Radius: `6px`
+     - Entri *Direktorat Penatagunaan Tanah* menampilkan 4 chip tema (*Inventarisasi Tanah Kritis*, *Kemampuan Tanah*, *Lahan Baku Sawah Nasional*, *Neraca Penatagunaan Tanah*) persis sesuai tangkapan layar referensi pengguna.
+  3. **Penampilan Kedua Metrik (Dual Basis) pada Realisasi / Target**:
+     - Jika satker mengelola tema berbasis bidang dan berbasis kawasan secara bersamaan (misal: *Direktorat Bina Pengadaan dan Pencadangan Tanah* atau *Direktorat Pengendalian Hak Tanah...*):
+       - Muncul baris capaian bidang: `... / ... BIDANG` (badge biru `.igt-satuan-badge--bidang`).
+       - Muncul baris capaian kawasan: `... / ... KAWASAN` (badge amber `.igt-satuan-badge--kawasan`).
+  4. **Perhitungan Persentase Berbobot (*Weighted Average Calculation*)**:
+     - Persentase dihitung secara matematis menggunakan rumus:
+       $$\text{Persentase} = \frac{P_{\text{kawasan}} \times N_{\text{kawasan}} + P_{\text{bidang}} \times N_{\text{bidang}}}{N_{\text{kawasan}} + N_{\text{bidang}}}$$
+     - Contoh konkret pada *Direktorat Bina Pengadaan dan Pencadangan Tanah*:
+       - Memiliki 1 IGT Bidang (realisasi 120 / target 120 $\rightarrow$ 100%)
+       - Memiliki 2 IGT Kawasan (realisasi 14 / target 18 $\rightarrow$ 77.78%)
+       - Pembobotan: Bobot Kawasan = 2, Bobot Bidang = 1.
+       - Persentase: $\frac{77.78\% \times 2 + 100\% \times 1}{3} = \frac{155.56 + 100}{3} = 85.19\%$.
+     - Terdapat subteks keterangan bobot di bawah persentase: `(Bobot: 2 Kawasan, 1 Bidang)`.
+  5. **Filter Satker & Ekspor CSV**:
+     - Pemfilteran dropdown *Direktorat / Satker* memungkinkan fokus langsung pada satu satker tertentu.
+     - Ekspor CSV secara cerdas merangkum data target multi-basis dan bobot secara terstruktur.
 
 ---
 

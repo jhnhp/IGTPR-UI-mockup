@@ -964,143 +964,201 @@ window.MOCKUP_DATA = {
 
         } else {
             // Kategori 1: Capaian Renaksi oleh Satker/Direktorat
-            var baseCapaian = [
+            // Berdasarkan Satker / Direktorat (bukan per IGT tunggal)
+            // Mendukung IGT berbasis bidang dan kawasan sekaligus dengan pembobotan proporsional
+            var baseSatkerCapaian = [
                 {
-                    igt: 'Bidang Tanah',
                     satker: 'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal',
                     daftarIgt: ['Bidang Tanah'],
-                    target: Math.max(10, Math.round(138 * factor)),
-                    realisasi: Math.max(10, Math.round(138 * factor)),
-                    satuan: 'Bidang'
+                    targetBidang: Math.max(10, Math.round(138 * factor)),
+                    realisasiBidang: Math.max(10, Math.round(138 * factor)),
+                    countBidang: 1,
+                    targetKawasan: 0,
+                    realisasiKawasan: 0,
+                    countKawasan: 0
                 },
                 {
-                    igt: 'Hak Atas Tanah',
                     satker: 'Direktorat Penetapan Hak dan Pendaftaran Tanah',
                     daftarIgt: ['Hak Atas Tanah'],
-                    target: Math.max(2, Math.round(10 * factor)),
-                    realisasi: Math.max(2, Math.round(10 * factor)),
-                    satuan: 'Bidang'
+                    targetBidang: Math.max(2, Math.round(10 * factor)),
+                    realisasiBidang: Math.max(2, Math.round(10 * factor)),
+                    countBidang: 1,
+                    targetKawasan: 0,
+                    realisasiKawasan: 0,
+                    countKawasan: 0
                 },
                 {
-                    igt: 'Zona Nilai Tanah',
                     satker: 'Direktorat Penilaian Tanah dan Ekonomi Pertanahan',
                     daftarIgt: ['Zona Nilai Tanah'],
-                    target: Math.max(1, Math.round(5 * factor)),
-                    realisasi: Math.max(1, Math.round(5 * factor)),
-                    satuan: 'Kabupaten/Kota'
+                    targetBidang: 0,
+                    realisasiBidang: 0,
+                    countBidang: 0,
+                    targetKawasan: Math.max(1, Math.round(5 * factor)),
+                    realisasiKawasan: Math.max(1, Math.round(5 * factor)),
+                    countKawasan: 1
                 },
                 {
-                    igt: 'Pengendalian Hak & LBSN',
+                    satker: 'Direktorat Pengukuran dan Pemetaan Kadastral',
+                    daftarIgt: ['Bidang Tanah', 'Hak Atas Tanah'],
+                    targetBidang: Math.max(20, Math.round(250 * factor)),
+                    realisasiBidang: Math.max(18, Math.round(240 * factor)),
+                    countBidang: 2,
+                    targetKawasan: 0,
+                    realisasiKawasan: 0,
+                    countKawasan: 0
+                },
+                {
+                    satker: 'Direktorat Bina Pengadaan dan Pencadangan Tanah',
+                    // Dual basis: 1 Bidang + 2 Kawasan (persis seperti rumus contoh pengguna!)
+                    daftarIgt: ['Bidang Tanah', 'Inventarisasi Tanah Kritis', 'Kemampuan Tanah'],
+                    targetBidang: Math.max(10, Math.round(120 * factor)),
+                    realisasiBidang: Math.max(10, Math.round(120 * factor)),
+                    countBidang: 1,
+                    targetKawasan: Math.max(2, Math.round(18 * factor)),
+                    realisasiKawasan: Math.max(1, Math.round(14 * factor)),
+                    countKawasan: 2
+                },
+                {
                     satker: 'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu',
-                    daftarIgt: ['Lahan Sawah Dilindungi', 'Lahan Baku Sawah Nasional'],
-                    target: Math.max(2, Math.round(11 * factor)),
-                    realisasi: Math.max(1, Math.round(5 * factor)),
-                    satuan: 'Kawasan'
+                    // Dual basis: 1 Bidang + 2 Kawasan
+                    daftarIgt: ['Bidang Tanah', 'Lahan Sawah Dilindungi', 'Lahan Baku Sawah Nasional'],
+                    targetBidang: Math.max(5, Math.round(50 * factor)),
+                    realisasiBidang: Math.max(4, Math.round(45 * factor)),
+                    countBidang: 1,
+                    targetKawasan: Math.max(2, Math.round(10 * factor)),
+                    realisasiKawasan: Math.max(1, Math.round(8 * factor)),
+                    countKawasan: 2
                 },
                 {
-                    igt: 'Tata Ruang Wilayah II',
+                    satker: 'Direktorat Penatagunaan Tanah',
+                    // 4 Kawasan (persis sesuai 4 chip tangkapan layar pengguna)
+                    daftarIgt: ['Inventarisasi Tanah Kritis', 'Kemampuan Tanah', 'Lahan Baku Sawah Nasional', 'Neraca Penatagunaan Tanah'],
+                    targetBidang: 0,
+                    realisasiBidang: 0,
+                    countBidang: 0,
+                    targetKawasan: Math.max(4, Math.round(10 * factor)),
+                    realisasiKawasan: Math.max(2, Math.round(8 * factor)),
+                    countKawasan: 4
+                },
+                {
                     satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
                     daftarIgt: ['RDTR Kabupaten/ Kota', 'RTRW Kabupaten', 'RDTR Kawasan Perbatasan Negara', 'RTRW Provinsi'],
-                    target: Math.max(3, Math.round(18 * factor)),
-                    realisasi: Math.max(1, Math.round(8 * factor)),
-                    satuan: 'Lokasi'
+                    targetBidang: 0,
+                    realisasiBidang: 0,
+                    countBidang: 0,
+                    targetKawasan: Math.max(3, Math.round(10 * factor)),
+                    realisasiKawasan: Math.max(1, Math.round(7 * factor)),
+                    countKawasan: 4
                 },
                 {
-                    igt: 'Penatagunaan Tanah',
-                    satker: 'Direktorat Penatagunaan Tanah',
-                    daftarIgt: ['Inventarisasi Tanah Kritis', 'Kemampuan Tanah', 'Lahan Baku Sawah Nasional', 'Neraca Penatagunaan Tanah'],
-                    target: Math.max(4, Math.round(10 * factor)),
-                    realisasi: Math.max(2, Math.round(8 * factor)),
-                    satuan: 'Lokasi'
+                    satker: 'Direktorat Survei dan Pemetaan Tematik',
+                    // Dual basis: 1 Bidang + 1 Kawasan
+                    daftarIgt: ['Penggunaan Tanah', 'Kemampuan Tanah'],
+                    targetBidang: Math.max(5, Math.round(40 * factor)),
+                    realisasiBidang: Math.max(4, Math.round(32 * factor)),
+                    countBidang: 1,
+                    targetKawasan: Math.max(2, Math.round(10 * factor)),
+                    realisasiKawasan: Math.max(1, Math.round(6 * factor)),
+                    countKawasan: 1
                 },
                 {
-                    igt: 'Pemberdayaan Tanah Masyarakat',
                     satker: 'Direktorat Pemberdayaan Tanah Masyarakat',
                     daftarIgt: ['Sebaran Lokasi Pemberdayaan Tanah Masyarakat'],
-                    target: Math.max(2, Math.round(5 * factor)),
-                    realisasi: Math.max(1, Math.round(2 * factor)),
-                    satuan: 'Lokasi'
+                    targetBidang: 0,
+                    realisasiBidang: 0,
+                    countBidang: 0,
+                    targetKawasan: Math.max(2, Math.round(5 * factor)),
+                    realisasiKawasan: Math.max(1, Math.round(2 * factor)),
+                    countKawasan: 1
                 },
                 {
-                    igt: 'Perencanaan Tata Ruang',
                     satker: 'Direktorat Perencanaan Tata Ruang',
                     daftarIgt: ['RTRW Kabupaten', 'RDTR Kawasan Perbatasan Negara'],
-                    target: Math.max(2, Math.round(10 * factor)),
-                    realisasi: 0,
-                    satuan: 'Kabupaten/Kota'
+                    targetBidang: 0,
+                    realisasiBidang: 0,
+                    countBidang: 0,
+                    targetKawasan: Math.max(2, Math.round(10 * factor)),
+                    realisasiKawasan: 0,
+                    countKawasan: 2
+                },
+                {
+                    satker: 'Direktorat Hubungan Kelembagaan dan Pengaturan Layanan Pertanahan',
+                    daftarIgt: ['Bidang Tanah'],
+                    targetBidang: Math.max(5, Math.round(20 * factor)),
+                    realisasiBidang: 0,
+                    countBidang: 1,
+                    targetKawasan: 0,
+                    realisasiKawasan: 0,
+                    countKawasan: 0
                 }
             ];
 
-            var items = baseCapaian.map(function(item) {
-                var pct = item.target > 0 ? parseFloat(((item.realisasi / item.target) * 100).toFixed(2)) : 0;
-                var color = pct <= 30 ? 'danger' : (pct <= 75 ? 'warning' : 'success');
+            var items = baseSatkerCapaian.map(function(item) {
+                var hasBidang = item.countBidang > 0 && item.targetBidang > 0;
+                var hasKawasan = item.countKawasan > 0 && item.targetKawasan > 0;
+
+                var pctBidang = hasBidang ? (item.realisasiBidang / item.targetBidang) * 100 : 0;
+                var pctKawasan = hasKawasan ? (item.realisasiKawasan / item.targetKawasan) * 100 : 0;
+
+                var totalWeight = 0;
+                var weightedSum = 0;
+
+                if (hasBidang) {
+                    var wB = item.countBidang;
+                    weightedSum += pctBidang * wB;
+                    totalWeight += wB;
+                }
+                if (hasKawasan) {
+                    var wK = item.countKawasan;
+                    weightedSum += pctKawasan * wK;
+                    totalWeight += wK;
+                }
+
+                var finalPct = totalWeight > 0 ? parseFloat((weightedSum / totalWeight).toFixed(2)) : 0;
+                finalPct = Math.min(100, Math.max(0, finalPct));
+
+                var color = finalPct <= 30 ? 'danger' : (finalPct <= 75 ? 'warning' : 'success');
+
+                var bobotNote = '';
+                if (hasBidang && hasKawasan) {
+                    bobotNote = 'Bobot: ' + item.countKawasan + ' Kawasan, ' + item.countBidang + ' Bidang';
+                }
+
                 return {
-                    igt: item.igt,
                     satker: item.satker,
-                    daftarIgt: item.daftarIgt || [item.igt],
-                    target: item.target,
-                    realisasi: item.realisasi,
-                    satuan: item.satuan,
-                    realisasiTarget: item.realisasi.toLocaleString('id-ID') + ' / ' + item.target.toLocaleString('id-ID') + ' ' + item.satuan,
-                    persentase: pct,
-                    persenStr: pct.toFixed(2) + '%',
+                    igt: item.daftarIgt.join(', '),
+                    daftarIgt: item.daftarIgt || [],
+                    hasBidang: hasBidang,
+                    hasKawasan: hasKawasan,
+                    realisasiBidang: item.realisasiBidang,
+                    targetBidang: item.targetBidang,
+                    pctBidang: pctBidang,
+                    countBidang: item.countBidang,
+                    realisasiKawasan: item.realisasiKawasan,
+                    targetKawasan: item.targetKawasan,
+                    pctKawasan: pctKawasan,
+                    countKawasan: item.countKawasan,
+                    bobotNote: bobotNote,
+                    persentase: finalPct,
+                    persenStr: finalPct.toFixed(2) + '%',
                     progressColor: color,
                     tahun: t
                 };
             });
 
             if (direktoratFilter && direktoratFilter !== 'all' && direktoratFilter !== 'Semua Satker') {
-                var detailItems = [
-                    {
-                        satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
-                        rows: [
-                            { igt: 'RTRW Provinsi', daftarIgt: ['RTRW Provinsi'], target: Math.max(1, Math.round(2 * factor)), realisasi: Math.max(1, Math.round(2 * factor)), satuan: 'Provinsi' },
-                            { igt: 'RDTR Kawasan Perbatasan Negara', daftarIgt: ['RDTR Kawasan Perbatasan Negara'], target: Math.max(2, Math.round(5 * factor)), realisasi: Math.max(1, Math.round(3 * factor)), satuan: 'Lokasi' },
-                            { igt: 'RDTR Kabupaten/ Kota', daftarIgt: ['RDTR Kabupaten/ Kota'], target: Math.max(3, Math.round(11 * factor)), realisasi: Math.max(1, Math.round(3 * factor)), satuan: 'Kawasan' }
-                        ]
-                    },
-                    {
-                        satker: 'Direktorat Penatagunaan Tanah',
-                        rows: [
-                            { igt: 'Kemampuan Tanah', daftarIgt: ['Kemampuan Tanah'], target: Math.max(2, Math.round(5 * factor)), realisasi: Math.max(1, Math.round(4 * factor)), satuan: 'Lokasi' },
-                            { igt: 'Inventarisasi Tanah Kritis', daftarIgt: ['Inventarisasi Tanah Kritis'], target: Math.max(2, Math.round(4 * factor)), realisasi: Math.max(1, Math.round(3 * factor)), satuan: 'Lokasi' },
-                            { igt: 'Lahan Baku Sawah Nasional', daftarIgt: ['Lahan Baku Sawah Nasional'], target: Math.max(2, Math.round(5 * factor)), realisasi: Math.max(1, Math.round(1 * factor)), satuan: 'Kawasan' },
-                            { igt: 'Neraca Penatagunaan Tanah', daftarIgt: ['Neraca Penatagunaan Tanah'], target: Math.max(2, Math.round(10 * factor)), realisasi: Math.max(1, Math.round(1 * factor)), satuan: 'Lokasi' }
-                        ]
-                    }
-                ];
-
-                var matched = detailItems.find(function(d) { return d.satker === direktoratFilter; });
-                if (matched) {
-                    items = matched.rows.map(function(r) {
-                        var pct = r.target > 0 ? parseFloat(((r.realisasi / r.target) * 100).toFixed(2)) : 0;
-                        var color = pct <= 30 ? 'danger' : (pct <= 75 ? 'warning' : 'success');
-                        return {
-                            igt: r.igt,
-                            satker: matched.satker,
-                            daftarIgt: r.daftarIgt,
-                            target: r.target,
-                            realisasi: r.realisasi,
-                            satuan: r.satuan,
-                            realisasiTarget: r.realisasi.toLocaleString('id-ID') + ' / ' + r.target.toLocaleString('id-ID') + ' ' + r.satuan,
-                            persentase: pct,
-                            persenStr: pct.toFixed(2) + '%',
-                            progressColor: color,
-                            tahun: t
-                        };
-                    });
-                } else {
-                    items = items.filter(function(r) {
-                        return r.satker === direktoratFilter;
-                    });
-                }
+                items = items.filter(function(r) {
+                    return r.satker === direktoratFilter;
+                });
             }
 
             items.sort(function(a, b) {
                 if (b.persentase !== a.persentase) {
                     return b.persentase - a.persentase;
                 }
-                return b.realisasi - a.realisasi;
+                var totA = (a.realisasiBidang || 0) + (a.realisasiKawasan || 0);
+                var totB = (b.realisasiBidang || 0) + (b.realisasiKawasan || 0);
+                return totB - totA;
             });
 
             return items;
@@ -1113,11 +1171,15 @@ window.MOCKUP_DATA = {
             'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal',
             'Direktorat Penetapan Hak dan Pendaftaran Tanah',
             'Direktorat Penilaian Tanah dan Ekonomi Pertanahan',
-            'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
-            'Direktorat Penatagunaan Tanah',
+            'Direktorat Pengukuran dan Pemetaan Kadastral',
+            'Direktorat Bina Pengadaan dan Pencadangan Tanah',
             'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu',
+            'Direktorat Penatagunaan Tanah',
+            'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
+            'Direktorat Survei dan Pemetaan Tematik',
             'Direktorat Pemberdayaan Tanah Masyarakat',
-            'Direktorat Perencanaan Tata Ruang'
+            'Direktorat Perencanaan Tata Ruang',
+            'Direktorat Hubungan Kelembagaan dan Pengaturan Layanan Pertanahan'
         ];
     },
 
