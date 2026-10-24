@@ -1640,11 +1640,28 @@ var leaderBoardState = {
     satker: 'all',
     searchQuery: '',
     currentPage: 1,
-    perPage: 10,
+    perPage: 5, // Default Top 5
     sortCol: null,
     sortDir: 'desc',
     initialized: false
 };
+
+function getIgtTagClass(name) {
+    var kawasanList = [
+        'Inventarisasi Tanah Kritis',
+        'Kemampuan Tanah',
+        'Lahan Baku Sawah Nasional',
+        'Neraca Penatagunaan Tanah',
+        'RDTR Kabupaten/ Kota',
+        'RDTR Kawasan Perbatasan Negara',
+        'RTRW Kabupaten',
+        'RTRW Provinsi'
+    ];
+    if (kawasanList.indexOf(name) !== -1) {
+        return 'igt-tag igt-tag--kawasan';
+    }
+    return 'igt-tag';
+}
 
 var LEADERBOARD_CONFIG = {
     'capaian-renaksi': {
@@ -1759,7 +1776,7 @@ function initLeaderBoard() {
 
     // G. Per page selector
     $('#leader-board-perpage').off('change').on('change', function() {
-        leaderBoardState.perPage = parseInt($(this).val(), 10) || 10;
+        leaderBoardState.perPage = parseInt($(this).val(), 10) || 5;
         leaderBoardState.currentPage = 1;
         updateLeaderBoardTable();
     });
@@ -1772,8 +1789,8 @@ function initLeaderBoard() {
     // I. View Full Table button
     $('#leader-board-full').off('click').on('click', function() {
         if (leaderBoardState.perPage === 50) {
-            leaderBoardState.perPage = 10;
-            $('#leader-board-perpage').val('10');
+            leaderBoardState.perPage = 5;
+            $('#leader-board-perpage').val('5');
             $(this).find('span:last-child').text('View Full Table');
         } else {
             leaderBoardState.perPage = 50;
@@ -1843,6 +1860,11 @@ function updateLeaderBoardTable() {
             if (item.jenisIgt && item.jenisIgt.toLowerCase().indexOf(q) !== -1) return true;
             if (item.satuan && item.satuan.toLowerCase().indexOf(q) !== -1) return true;
             if (item.persenStr && item.persenStr.toLowerCase().indexOf(q) !== -1) return true;
+            if (item.daftarIgt && Array.isArray(item.daftarIgt)) {
+                for (var k = 0; k < item.daftarIgt.length; k++) {
+                    if (item.daftarIgt[k].toLowerCase().indexOf(q) !== -1) return true;
+                }
+            }
             return false;
         });
     }
@@ -1925,12 +1947,27 @@ function updateLeaderBoardTable() {
             if (leaderBoardState.kategori === 'capaian-renaksi') {
                 // No
                 tbodyHtml += '<td class="igt-table__no">' + rankBadge + '</td>';
-                // IGT
-                tbodyHtml += '<td><span class="igt-igt-cell">' + item.igt + '</span></td>';
+
+                // IGT (with chips underneath!)
+                var chipsHtml = '';
+                if (item.daftarIgt && item.daftarIgt.length > 0) {
+                    chipsHtml = '<div class="igt-chips-wrap">' + item.daftarIgt.map(function(name) {
+                        return '<span class="' + getIgtTagClass(name) + '">' + name + '</span>';
+                    }).join(' ') + '</div>';
+                }
+                tbodyHtml += '<td>'
+                    + '<div class="igt-igt-cell">'
+                    + '  <div class="igt-igt-title">' + item.igt + '</div>'
+                    +    chipsHtml
+                    + '</div>'
+                    + '</td>';
+
                 // Satker
                 tbodyHtml += '<td><span class="igt-satker-cell">' + item.satker + '</span></td>';
+
                 // Realisasi / Target
                 tbodyHtml += '<td><div class="igt-target-cell"><strong>' + item.realisasi.toLocaleString('id-ID') + '</strong> / ' + item.target.toLocaleString('id-ID') + ' <span class="igt-satuan-badge">' + item.satuan + '</span></div></td>';
+
                 // Persentase
                 tbodyHtml += '<td><div class="igt-progress-cell">'
                     + '<div class="igt-progress-bar-wrap"><div class="igt-progress-bar igt-progress-bar--' + item.progressColor + '" style="width: ' + Math.min(100, item.persentase) + '%"></div></div>'
@@ -1940,8 +1977,16 @@ function updateLeaderBoardTable() {
             } else if (leaderBoardState.kategori === 'igt-akses') {
                 // No
                 tbodyHtml += '<td class="igt-table__no">' + rankBadge + '</td>';
-                // IGT
-                tbodyHtml += '<td><span class="igt-igt-cell">' + item.igt + '</span></td>';
+
+                // IGT (with chip underneath!)
+                var chipClass = getIgtTagClass(item.igt);
+                tbodyHtml += '<td>'
+                    + '<div class="igt-igt-cell">'
+                    + '  <div class="igt-igt-title">' + item.igt + '</div>'
+                    + '  <div class="igt-chips-wrap"><span class="' + chipClass + '">' + item.igt + '</span></div>'
+                    + '</div>'
+                    + '</td>';
+
                 // Jumlah Akses
                 tbodyHtml += '<td><div class="igt-akses-cell">'
                     + '<span class="igt-akses-total">' + item.jumlahAkses.toLocaleString('id-ID') + ' kali</span> '
@@ -1951,8 +1996,21 @@ function updateLeaderBoardTable() {
             } else if (leaderBoardState.kategori === 'direktorat-login') {
                 // No
                 tbodyHtml += '<td class="igt-table__no">' + rankBadge + '</td>';
-                // Satker
-                tbodyHtml += '<td><span class="igt-satker-cell">' + item.satker + '</span></td>';
+
+                // Satker (with chips underneath!)
+                var chipsHtml = '';
+                if (item.daftarIgt && item.daftarIgt.length > 0) {
+                    chipsHtml = '<div class="igt-chips-wrap">' + item.daftarIgt.map(function(name) {
+                        return '<span class="' + getIgtTagClass(name) + '">' + name + '</span>';
+                    }).join(' ') + '</div>';
+                }
+                tbodyHtml += '<td>'
+                    + '<div class="igt-satker-cell-col">'
+                    + '  <div class="igt-satker-name">' + item.satker + '</div>'
+                    +    chipsHtml
+                    + '</div>'
+                    + '</td>';
+
                 // Jumlah Login
                 tbodyHtml += '<td><div class="igt-login-cell">'
                     + '<strong>' + item.jumlahLogin.toLocaleString('id-ID') + '</strong> '

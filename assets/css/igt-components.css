@@ -3324,29 +3324,32 @@ a.igt-stat:hover {
     color: #0f172a;
 }
 
-/* Table layout adjustments for Leader Board */
+/* Table layout adjustments for Leader Board (Wide & Top 5 Layout) */
 #leader-board-table {
+    width: 100%;
     min-width: 100%;
+    border-collapse: collapse;
 }
 
 #leader-board-table th,
 #leader-board-table td {
-    padding: 12px 14px;
+    padding: 16px 20px;
     white-space: normal !important;
+    vertical-align: middle;
+}
+
+#leader-board-table thead th {
+    padding: 14px 20px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #475569;
+    background-color: #f8fafc;
 }
 
 #leader-board-table .igt-table__no {
-    width: 44px;
+    width: 56px;
     text-align: center;
     white-space: nowrap !important;
-}
-
-#leader-board-table td:nth-child(2) {
-    max-width: 200px;
-}
-
-#leader-board-table td:nth-child(3) {
-    max-width: 300px;
 }
 
 #leader-board-table td:nth-child(4) {
@@ -3358,9 +3361,68 @@ a.igt-stat:hover {
 }
 
 #leader-board-table .igt-progress-cell {
-    min-width: 140px;
-    max-width: 180px;
+    min-width: 180px;
+    max-width: 250px;
 }
+
+.igt-igt-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    font-weight: normal;
+}
+
+.igt-igt-title {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.35;
+}
+
+.igt-satker-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #334155;
+    line-height: 1.45;
+}
+
+.igt-satker-cell-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.igt-satker-name {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.35;
+}
+
+.igt-chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.igt-chips-wrap .igt-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
 
 
 
