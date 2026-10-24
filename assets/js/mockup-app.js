@@ -1706,16 +1706,29 @@ var LEADERBOARD_CONFIG = {
             { key: 'jumlahAkses', label: 'Jumlah Akses', sortable: true }
         ]
     },
-    'direktorat-login': {
-        key: 'direktorat-login',
-        shortTitle: 'Direktorat Sering Login',
-        subbarInfo: 'Daftar Direktorat / Satker yang Paling Sering Login ke Sistem Geoportal',
+    'satker-login': {
+        key: 'satker-login',
+        shortTitle: 'Satker Sering Login',
+        subbarInfo: 'Daftar Satker (Direktorat, Kanwil, dan Kantah) yang Paling Sering Login ke Sistem Geoportal',
         tahunTitle: 'Tahun Akses',
         showSatker: false,
         defaultSortCol: 'jumlahLogin',
         columns: [
             { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
-            { key: 'satker', label: 'Satker / Direktorat', sortable: true },
+            { key: 'satker', label: 'Satker (Direktorat / Kanwil / Kantah)', sortable: true },
+            { key: 'jumlahLogin', label: 'Jumlah Login', sortable: true }
+        ]
+    },
+    'direktorat-login': {
+        key: 'satker-login',
+        shortTitle: 'Satker Sering Login',
+        subbarInfo: 'Daftar Satker (Direktorat, Kanwil, dan Kantah) yang Paling Sering Login ke Sistem Geoportal',
+        tahunTitle: 'Tahun Akses',
+        showSatker: false,
+        defaultSortCol: 'jumlahLogin',
+        columns: [
+            { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
+            { key: 'satker', label: 'Satker (Direktorat / Kanwil / Kantah)', sortable: true },
             { key: 'jumlahLogin', label: 'Jumlah Login', sortable: true }
         ]
     }
@@ -2107,7 +2120,7 @@ function updateLeaderBoardTable() {
             var maxVal = 1;
             if (leaderBoardState.kategori === 'igt-akses') {
                 maxVal = sorted[0].jumlahAkses || 1;
-            } else if (leaderBoardState.kategori === 'direktorat-login') {
+            } else if (leaderBoardState.kategori === 'direktorat-login' || leaderBoardState.kategori === 'satker-login') {
                 maxVal = sorted[0].jumlahLogin || 1;
             }
 
@@ -2139,17 +2152,23 @@ function updateLeaderBoardTable() {
                         + '  </div>'
                         + '</div>';
 
-                } else if (leaderBoardState.kategori === 'direktorat-login') {
+                } else if (leaderBoardState.kategori === 'direktorat-login' || leaderBoardState.kategori === 'satker-login') {
                     var barPercent = Math.max(6, Math.round((item.jumlahLogin / maxVal) * 68));
 
-                    // Kategori 3: Tidak perlu chip di bawah nama Satker
+                    // Kategori 3: Satker Sering Login (Ditjen, Kanwil, Kantah) dengan badge tipe
+                    var tipeBadge = '';
+                    if (item.tipe) {
+                        var cls = item.tipe.toLowerCase();
+                        tipeBadge = ' <span class="igt-tipe-badge igt-tipe-badge--' + cls + '">' + item.tipe + '</span>';
+                    }
+
                     hbarHtml += '<div class="igt-hbar-row">'
                         + '  <div class="igt-hbar-rank">' + rankBadge + '</div>'
                         + '  <div class="igt-hbar-left">'
-                        + '    <div class="igt-hbar-title">' + item.satker + '</div>'
+                        + '    <div class="igt-hbar-title">' + item.satker + tipeBadge + '</div>'
                         + '  </div>'
                         + '  <div class="igt-hbar-chart">'
-                        + '    <div class="igt-hbar-bar-wrap igt-hbar-bar-wrap--login" style="width: ' + barPercent + '%;" title="' + item.satker + ': ' + item.jumlahLogin.toLocaleString('id-ID') + ' kali login">'
+                        + '    <div class="igt-hbar-bar-wrap igt-hbar-bar-wrap--login" style="width: ' + barPercent + '%;" title="' + item.satker + (item.tipe ? ' (' + item.tipe + ')' : '') + ': ' + item.jumlahLogin.toLocaleString('id-ID') + ' kali login">'
                         + '    </div>'
                         + '    <div class="igt-hbar-tip">'
                         + '      <strong>' + item.jumlahLogin.toLocaleString('id-ID') + '</strong> <span class="igt-hbar-tip-unit">kali login</span>'
@@ -2228,9 +2247,10 @@ function exportLeaderBoardToCSV() {
             row.push(r);
             row.push('"' + (item.igt || '').replace(/"/g, '""') + '"');
             row.push('"' + item.jumlahAkses + ' (Plugin: ' + item.aksesPlugin + ', Aplikasi: ' + item.aksesAplikasi + ')"');
-        } else if (leaderBoardState.kategori === 'direktorat-login') {
+        } else if (leaderBoardState.kategori === 'direktorat-login' || leaderBoardState.kategori === 'satker-login') {
             row.push(r);
-            row.push('"' + (item.satker || '').replace(/"/g, '""') + '"');
+            var satkerLabel = (item.satker || '') + (item.tipe ? ' (' + item.tipe + ')' : '');
+            row.push('"' + satkerLabel.replace(/"/g, '""') + '"');
             row.push('"' + item.jumlahLogin + ' kali login"');
         }
         rows.push(row.join(','));

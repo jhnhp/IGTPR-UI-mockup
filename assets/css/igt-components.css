@@ -3848,6 +3848,38 @@ a.igt-stat:hover {
     gap: 6px;
 }
 
+/* Badge Tipe Satker: Pusat (Ditjen), Kanwil, Kantah */
+.igt-tipe-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1.5px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.igt-tipe-badge--pusat {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+.igt-tipe-badge--kanwil {
+    background-color: #faf5ff;
+    color: #7e22ce;
+    border: 1px solid #e9d5ff;
+}
+
+.igt-tipe-badge--kantah {
+    background-color: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+
 .igt-chips-wrap .igt-tag {
     display: inline-flex;
     align-items: center;

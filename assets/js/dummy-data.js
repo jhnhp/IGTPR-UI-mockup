@@ -975,21 +975,35 @@ window.MOCKUP_DATA = {
                 return b.jumlahAkses - a.jumlahAkses;
             });
 
-        } else if (kat === 'direktorat-login') {
-            // Kategori 3: Direktorat / Ditjen yg paling sering login
+        } else if (kat === 'direktorat-login' || kat === 'satker-login') {
+            // Kategori 3: Satker yang paling sering login (Ditjen/Pusat, Kanwil, dan Kantah)
             var baseLogin = [
-                { satker: 'Ditjen Survei dan Pemetaan Pertanahan dan Ruang', jumlahLogin: Math.round(1842 * factor) },
-                { satker: 'Ditjen Tata Ruang', jumlahLogin: Math.round(1456 * factor) },
-                { satker: 'Ditjen Penetapan Hak dan Pendaftaran Tanah', jumlahLogin: Math.round(1184 * factor) },
-                { satker: 'Ditjen Penataan Agraria', jumlahLogin: Math.round(942 * factor) },
-                { satker: 'Ditjen Pengadaan Tanah dan Pengembangan Pertanahan', jumlahLogin: Math.round(735 * factor) },
-                { satker: 'Ditjen Pengendalian dan Penertiban Tanah dan Ruang', jumlahLogin: Math.round(590 * factor) },
-                { satker: 'Ditjen Penanganan Sengketa dan Konflik Pertanahan', jumlahLogin: Math.round(348 * factor) }
+                { satker: 'Ditjen Survei dan Pemetaan Pertanahan dan Ruang', tipe: 'Pusat', jumlahLogin: Math.round(2840 * factor) },
+                { satker: 'Kanwil BPN Provinsi Jawa Barat', tipe: 'Kanwil', jumlahLogin: Math.round(2450 * factor) },
+                { satker: 'Kantah Kab. Bogor', tipe: 'Kantah', jumlahLogin: Math.round(2180 * factor) },
+                { satker: 'Ditjen Tata Ruang', tipe: 'Pusat', jumlahLogin: Math.round(1950 * factor) },
+                { satker: 'Kanwil BPN Provinsi Jawa Timur', tipe: 'Kanwil', jumlahLogin: Math.round(1820 * factor) },
+                { satker: 'Kantah Kota Surabaya I', tipe: 'Kantah', jumlahLogin: Math.round(1680 * factor) },
+                { satker: 'Ditjen Penetapan Hak dan Pendaftaran Tanah', tipe: 'Pusat', jumlahLogin: Math.round(1540 * factor) },
+                { satker: 'Kanwil BPN Provinsi Jawa Tengah', tipe: 'Kanwil', jumlahLogin: Math.round(1480 * factor) },
+                { satker: 'Kantah Kab. Sleman', tipe: 'Kantah', jumlahLogin: Math.round(1360 * factor) },
+                { satker: 'Kanwil BPN Provinsi DKI Jakarta', tipe: 'Kanwil', jumlahLogin: Math.round(1250 * factor) },
+                { satker: 'Kantah Kota Jakarta Barat', tipe: 'Kantah', jumlahLogin: Math.round(1180 * factor) },
+                { satker: 'Kantah Kab. Badung', tipe: 'Kantah', jumlahLogin: Math.round(1050 * factor) },
+                { satker: 'Ditjen Penataan Agraria', tipe: 'Pusat', jumlahLogin: Math.round(942 * factor) },
+                { satker: 'Kanwil BPN Provinsi Bali', tipe: 'Kanwil', jumlahLogin: Math.round(860 * factor) },
+                { satker: 'Kantah Kab. Bandung', tipe: 'Kantah', jumlahLogin: Math.round(790 * factor) },
+                { satker: 'Ditjen Pengadaan Tanah dan Pengembangan Pertanahan', tipe: 'Pusat', jumlahLogin: Math.round(735 * factor) },
+                { satker: 'Kantah Kota Semarang', tipe: 'Kantah', jumlahLogin: Math.round(660 * factor) },
+                { satker: 'Ditjen Pengendalian dan Penertiban Tanah dan Ruang', tipe: 'Pusat', jumlahLogin: Math.round(590 * factor) },
+                { satker: 'Kanwil BPN Provinsi Nusa Tenggara Timur', tipe: 'Kanwil', jumlahLogin: Math.round(480 * factor) },
+                { satker: 'Ditjen Penanganan Sengketa dan Konflik Pertanahan', tipe: 'Pusat', jumlahLogin: Math.round(348 * factor) }
             ];
 
             return baseLogin.map(function(item) {
                 return {
                     satker: item.satker,
+                    tipe: item.tipe,
                     daftarIgt: satkerIgtMap[item.satker] || [],
                     jumlahLogin: item.jumlahLogin,
                     jumlahLoginStr: item.jumlahLogin.toLocaleString('id-ID') + ' kali login',
@@ -1203,7 +1217,17 @@ window.MOCKUP_DATA = {
             'Ditjen Penataan Agraria',
             'Ditjen Pengadaan Tanah dan Pengembangan Pertanahan',
             'Ditjen Pengendalian dan Penertiban Tanah dan Ruang',
-            'Ditjen Tata Ruang'
+            'Ditjen Tata Ruang',
+            'Kanwil BPN Provinsi Jawa Barat',
+            'Kanwil BPN Provinsi Jawa Timur',
+            'Kanwil BPN Provinsi Jawa Tengah',
+            'Kanwil BPN Provinsi DKI Jakarta',
+            'Kanwil BPN Provinsi Bali',
+            'Kantah Kab. Bogor',
+            'Kantah Kota Surabaya I',
+            'Kantah Kab. Sleman',
+            'Kantah Kota Jakarta Barat',
+            'Kantah Kab. Badung'
         ];
     },
 
