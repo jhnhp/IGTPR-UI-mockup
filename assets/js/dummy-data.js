@@ -877,6 +877,224 @@ window.MOCKUP_DATA = {
         };
     },
 
+    getLeaderBoardData: function(kategori, tahunFilter, direktoratFilter) {
+        var kat = kategori || 'capaian-renaksi';
+        var t = (tahunFilter && tahunFilter !== 'all') ? String(tahunFilter) : 'all';
+        var factor = t === '2026' || t === 'all' ? 1.0 : (t === '2025' ? 0.78 : (t === '2024' ? 0.52 : 0.30));
+
+        if (kat === 'igt-akses') {
+            // Kategori 2: IGT yang paling sering diakses (via plugin dan aplikasi)
+            var baseAkses = [
+                { igt: 'Bidang Tanah', jenisIgt: 'Pertanahan', aksesPlugin: Math.round(32140 * factor), aksesAplikasi: Math.round(16151 * factor) },
+                { igt: 'Zona Nilai Tanah', jenisIgt: 'Pertanahan', aksesPlugin: Math.round(22400 * factor), aksesAplikasi: Math.round(14450 * factor) },
+                { igt: 'RDTR Kabupaten/ Kota', jenisIgt: 'Tata Ruang', aksesPlugin: Math.round(18250 * factor), aksesAplikasi: Math.round(11160 * factor) },
+                { igt: 'Hak Atas Tanah', jenisIgt: 'Pertanahan', aksesPlugin: Math.round(14800 * factor), aksesAplikasi: Math.round(9380 * factor) },
+                { igt: 'Lahan Sawah Dilindungi', jenisIgt: 'Pertanahan', aksesPlugin: Math.round(11200 * factor), aksesAplikasi: Math.round(8320 * factor) },
+                { igt: 'RTRW Kabupaten', jenisIgt: 'Tata Ruang', aksesPlugin: Math.round(9420 * factor), aksesAplikasi: Math.round(7420 * factor) },
+                { igt: 'Lahan Baku Sawah Nasional', jenisIgt: 'Pertanahan', aksesPlugin: Math.round(8110 * factor), aksesAplikasi: Math.round(6120 * factor) },
+                { igt: 'Penggunaan Tanah', jenisIgt: 'Pertanahan', aksesPlugin: Math.round(7300 * factor), aksesAplikasi: Math.round(5350 * factor) },
+                { igt: 'Kemampuan Tanah', jenisIgt: 'Pertanahan', aksesPlugin: Math.round(5120 * factor), aksesAplikasi: Math.round(4300 * factor) },
+                { igt: 'RDTR Kawasan Perbatasan Negara', jenisIgt: 'Tata Ruang', aksesPlugin: Math.round(4250 * factor), aksesAplikasi: Math.round(3640 * factor) },
+                { igt: 'Neraca Penatagunaan Tanah', jenisIgt: 'Pertanahan', aksesPlugin: Math.round(3400 * factor), aksesAplikasi: Math.round(2720 * factor) },
+                { igt: 'Inventarisasi Tanah Kritis', jenisIgt: 'Pertanahan', aksesPlugin: Math.round(2650 * factor), aksesAplikasi: Math.round(2300 * factor) },
+                { igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat', jenisIgt: 'Pertanahan', aksesPlugin: Math.round(1950 * factor), aksesAplikasi: Math.round(1870 * factor) },
+                { igt: 'RTRW Provinsi', jenisIgt: 'Tata Ruang', aksesPlugin: Math.round(1200 * factor), aksesAplikasi: Math.round(1250 * factor) }
+            ];
+
+            return baseAkses.map(function(item) {
+                var total = item.aksesPlugin + item.aksesAplikasi;
+                return {
+                    igt: item.igt,
+                    jenisIgt: item.jenisIgt,
+                    aksesPlugin: item.aksesPlugin,
+                    aksesAplikasi: item.aksesAplikasi,
+                    jumlahAkses: total,
+                    jumlahAksesStr: total.toLocaleString('id-ID') + ' kali',
+                    tahun: t
+                };
+            }).sort(function(a, b) {
+                return b.jumlahAkses - a.jumlahAkses;
+            });
+
+        } else if (kat === 'direktorat-login') {
+            // Kategori 3: Direktorat yg paling sering login
+            var baseLogin = [
+                { satker: 'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal', jumlahLogin: Math.round(1842 * factor) },
+                { satker: 'Direktorat Perencanaan Tata Ruang', jumlahLogin: Math.round(1256 * factor) },
+                { satker: 'Direktorat Pengukuran dan Pemetaan Kadastral', jumlahLogin: Math.round(984 * factor) },
+                { satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II', jumlahLogin: Math.round(842 * factor) },
+                { satker: 'Direktorat Penatagunaan Tanah', jumlahLogin: Math.round(735 * factor) },
+                { satker: 'Direktorat Penilaian Tanah dan Ekonomi Pertanahan', jumlahLogin: Math.round(590 * factor) },
+                { satker: 'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu', jumlahLogin: Math.round(482 * factor) },
+                { satker: 'Direktorat Survei dan Pemetaan Tematik', jumlahLogin: Math.round(412 * factor) },
+                { satker: 'Direktorat Pemberdayaan Tanah Masyarakat', jumlahLogin: Math.round(348 * factor) },
+                { satker: 'Direktorat Landreform', jumlahLogin: Math.round(286 * factor) },
+                { satker: 'Direktorat Hubungan Kelembagaan dan Pengaturan Layanan Pertanahan', jumlahLogin: Math.round(215 * factor) },
+                { satker: 'Direktorat Bina Pengadaan dan Pencadangan Tanah', jumlahLogin: Math.round(178 * factor) }
+            ];
+
+            return baseLogin.map(function(item) {
+                return {
+                    satker: item.satker,
+                    jumlahLogin: item.jumlahLogin,
+                    jumlahLoginStr: item.jumlahLogin.toLocaleString('id-ID') + ' kali login',
+                    tahun: t
+                };
+            }).sort(function(a, b) {
+                return b.jumlahLogin - a.jumlahLogin;
+            });
+
+        } else {
+            // Kategori 1: Capaian Renaksi oleh Satker/Direktorat
+            var baseCapaian = [
+                {
+                    igt: 'Bidang Tanah',
+                    satker: 'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal',
+                    target: Math.max(10, Math.round(138 * factor)),
+                    realisasi: Math.max(10, Math.round(138 * factor)),
+                    satuan: 'Bidang'
+                },
+                {
+                    igt: 'Hak Atas Tanah',
+                    satker: 'Direktorat Penetapan Hak dan Pendaftaran Tanah',
+                    target: Math.max(2, Math.round(10 * factor)),
+                    realisasi: Math.max(2, Math.round(10 * factor)),
+                    satuan: 'Bidang'
+                },
+                {
+                    igt: 'Zona Nilai Tanah',
+                    satker: 'Direktorat Penilaian Tanah dan Ekonomi Pertanahan',
+                    target: Math.max(1, Math.round(5 * factor)),
+                    realisasi: Math.max(1, Math.round(5 * factor)),
+                    satuan: 'Kabupaten/Kota'
+                },
+                {
+                    igt: 'RTRW Provinsi',
+                    satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
+                    target: Math.max(1, Math.round(2 * factor)),
+                    realisasi: Math.max(1, Math.round(2 * factor)),
+                    satuan: 'Provinsi'
+                },
+                {
+                    igt: 'Kemampuan Tanah',
+                    satker: 'Direktorat Penatagunaan Tanah',
+                    target: Math.max(2, Math.round(5 * factor)),
+                    realisasi: Math.max(1, Math.round(4 * factor)),
+                    satuan: 'Lokasi'
+                },
+                {
+                    igt: 'Inventarisasi Tanah Kritis',
+                    satker: 'Direktorat Penatagunaan Tanah',
+                    target: Math.max(2, Math.round(4 * factor)),
+                    realisasi: Math.max(1, Math.round(3 * factor)),
+                    satuan: 'Lokasi'
+                },
+                {
+                    igt: 'Lahan Sawah Dilindungi',
+                    satker: 'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu',
+                    target: Math.max(2, Math.round(6 * factor)),
+                    realisasi: Math.max(1, Math.round(4 * factor)),
+                    satuan: 'Kawasan'
+                },
+                {
+                    igt: 'RDTR Kawasan Perbatasan Negara',
+                    satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
+                    target: Math.max(2, Math.round(5 * factor)),
+                    realisasi: Math.max(1, Math.round(3 * factor)),
+                    satuan: 'Lokasi'
+                },
+                {
+                    igt: 'Sebaran Lokasi Pemberdayaan Tanah Masyarakat',
+                    satker: 'Direktorat Pemberdayaan Tanah Masyarakat',
+                    target: Math.max(2, Math.round(5 * factor)),
+                    realisasi: Math.max(1, Math.round(2 * factor)),
+                    satuan: 'Lokasi'
+                },
+                {
+                    igt: 'RDTR Kabupaten/ Kota',
+                    satker: 'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
+                    target: Math.max(3, Math.round(11 * factor)),
+                    realisasi: Math.max(1, Math.round(3 * factor)),
+                    satuan: 'Kawasan'
+                },
+                {
+                    igt: 'Lahan Baku Sawah Nasional',
+                    satker: 'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu',
+                    target: Math.max(2, Math.round(5 * factor)),
+                    realisasi: Math.max(1, Math.round(1 * factor)),
+                    satuan: 'Kawasan'
+                },
+                {
+                    igt: 'Penggunaan Tanah',
+                    satker: 'Direktorat Penatagunaan Tanah',
+                    target: Math.max(2, Math.round(7 * factor)),
+                    realisasi: Math.max(1, Math.round(1 * factor)),
+                    satuan: 'Lokasi'
+                },
+                {
+                    igt: 'Neraca Penatagunaan Tanah',
+                    satker: 'Direktorat Penatagunaan Tanah',
+                    target: Math.max(2, Math.round(10 * factor)),
+                    realisasi: Math.max(1, Math.round(1 * factor)),
+                    satuan: 'Lokasi'
+                },
+                {
+                    igt: 'RTRW Kabupaten',
+                    satker: 'Direktorat Perencanaan Tata Ruang',
+                    target: Math.max(2, Math.round(10 * factor)),
+                    realisasi: 0,
+                    satuan: 'Kabupaten/Kota'
+                }
+            ];
+
+            var items = baseCapaian.map(function(item) {
+                var pct = item.target > 0 ? parseFloat(((item.realisasi / item.target) * 100).toFixed(2)) : 0;
+                var color = pct <= 30 ? 'danger' : (pct <= 75 ? 'warning' : 'success');
+                return {
+                    igt: item.igt,
+                    satker: item.satker,
+                    target: item.target,
+                    realisasi: item.realisasi,
+                    satuan: item.satuan,
+                    realisasiTarget: item.realisasi.toLocaleString('id-ID') + ' / ' + item.target.toLocaleString('id-ID') + ' ' + item.satuan,
+                    persentase: pct,
+                    persenStr: pct.toFixed(2) + '%',
+                    progressColor: color,
+                    tahun: t
+                };
+            });
+
+            if (direktoratFilter && direktoratFilter !== 'all' && direktoratFilter !== 'Semua Satker') {
+                items = items.filter(function(r) {
+                    return r.satker === direktoratFilter;
+                });
+            }
+
+            items.sort(function(a, b) {
+                if (b.persentase !== a.persentase) {
+                    return b.persentase - a.persentase;
+                }
+                return b.realisasi - a.realisasi;
+            });
+
+            return items;
+        }
+    },
+
+    getLeaderBoardSatkerList: function() {
+        return [
+            'Semua Satker',
+            'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal',
+            'Direktorat Penetapan Hak dan Pendaftaran Tanah',
+            'Direktorat Penilaian Tanah dan Ekonomi Pertanahan',
+            'Direktorat Bina Perencanaan Tata Ruang Daerah Wilayah II',
+            'Direktorat Penatagunaan Tanah',
+            'Direktorat Pengendalian Hak Tanah, Alih Fungsi Lahan, Kepulauan dan Wilayah Tertentu',
+            'Direktorat Pemberdayaan Tanah Masyarakat',
+            'Direktorat Perencanaan Tata Ruang'
+        ];
+    },
+
     getUsulanDetailList: function(statusFilter, namaProvinsi, namaKabupaten, tahunFilter) {
         var dataScope = this.getDataByWilayah(namaProvinsi, namaKabupaten);
         var totalUsulan = dataScope ? dataScope.usulanInputData.total : 98;

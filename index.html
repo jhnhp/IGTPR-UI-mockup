@@ -1048,14 +1048,38 @@
                     <div class="igt-card__tools">
                         <div class="igt-searchbar">
                             <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt=""></span>
-                            <input type="search" id="leader-board-cari" placeholder="Cari sesuatu...">
+                            <input type="search" id="leader-board-cari" placeholder="Cari di Leader Board...">
                             <span class="igt-searchbar__shortcut">&#8984; K</span>
                         </div>
-                        <div class="igt-segment" role="group">
-                            <button type="button" class="igt-segment__item is-active" data-metrik="pemenuhan">Pemenuhan</button>
-                            <button type="button" class="igt-segment__item" data-metrik="keaktifan">Ke-Aktifan</button>
+                        <div class="igt-dropdown" id="leader-board-kategori">
+                            <button type="button" class="igt-dropdown__trigger">
+                                <span class="igt-dropdown__label" id="leader-board-kategori-label">Capaian Renaksi Satker</span>
+                                <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
+                            </button>
+                            <div class="igt-dropdown__panel">
+                                <button type="button" class="igt-dropdown__item is-active" data-kategori="capaian-renaksi">
+                                    <img src="assets/img/icons/radio-on.svg" alt=""> Capaian Renaksi oleh Satker/Direktorat
+                                </button>
+                                <button type="button" class="igt-dropdown__item" data-kategori="igt-akses">
+                                    <img src="assets/img/icons/radio-off.svg" alt=""> IGT yang Paling Sering Diakses
+                                </button>
+                                <button type="button" class="igt-dropdown__item" data-kategori="direktorat-login">
+                                    <img src="assets/img/icons/radio-off.svg" alt=""> Direktorat yg Paling Sering Login
+                                </button>
+                            </div>
                         </div>
-                        <label class="igt-btn igt-pilih">
+                        <div class="igt-dropdown" id="leader-board-direktorat-wrap">
+                            <button type="button" class="igt-dropdown__trigger">
+                                <span class="igt-dropdown__label" id="leader-board-direktorat-label">Semua Satker</span>
+                                <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
+                            </button>
+                            <div class="igt-dropdown__panel" id="leader-board-direktorat-panel">
+                                <button type="button" class="igt-dropdown__item is-active" data-satker="all">
+                                    <img src="assets/img/icons/radio-on.svg" alt=""> Semua Satker
+                                </button>
+                            </div>
+                        </div>
+                        <label class="igt-btn igt-pilih" id="leader-board-tahun-wrap" title="Tahun Renaksi">
                             <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
                             <select id="leader-board-tahun" aria-label="Tahun Leader Board">
                                 <option value="all">Semua Tahun</option>
@@ -1066,41 +1090,48 @@
                             </select>
                             <img class="igt-pilih__caret" src="assets/img/icons/caret-up-down.svg" alt="">
                         </label>
-                        <button type="button" class="igt-btn">
-                            <span class="igt-btn__icon"><img src="assets/img/icons/sliders.svg" alt=""></span>
-                            Filter
+                        <button type="button" class="igt-btn" id="leader-board-unduh">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/download-simple.svg" alt=""></span>
+                            Unduh Data
+                        </button>
+                        <button type="button" class="igt-btn" id="leader-board-full">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/arrows-out.svg" alt=""></span>
+                            View Full Table
                         </button>
                     </div>
                 </div>
 
-                <div class="igt-papan">
-                    <div class="igt-papan__kepala">
-                        <div class="igt-papan__legenda">
-                            <span>IGT Pertanahan</span>
-                            <span>IGT Tata Ruang</span>
-                        </div>
-                        <div class="igt-papan__alat">
-                            <div class="igt-dropdown" id="leader-board-dasar">
-                                <button type="button" class="igt-dropdown__trigger">
-                                    <span class="igt-dropdown__label">Data Berdasarkan Direktorat</span>
-                                    <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
-                                </button>
-                                <div class="igt-dropdown__panel">
-                                    <button type="button" class="igt-dropdown__item is-active">
-                                        <img src="assets/img/icons/radio-on.svg" alt=""> Data Berdasarkan Direktorat
-                                    </button>
-                                    <button type="button" class="igt-dropdown__item">
-                                        <img src="assets/img/icons/radio-off.svg" alt=""> Data Berdasarkan Daerah
-                                    </button>
-                                </div>
-                            </div>
-                            <button type="button" class="igt-btn" id="leader-board-full">
-                                <span class="igt-btn__icon"><img src="assets/img/icons/arrows-out.svg" alt=""></span>
-                                View Full Table
-                            </button>
-                        </div>
+                <div class="igt-papan__subbar">
+                    <div class="igt-segment" id="leader-board-segment" role="group">
+                        <button type="button" class="igt-segment__item is-active" data-kategori="capaian-renaksi">1. Capaian Renaksi Satker</button>
+                        <button type="button" class="igt-segment__item" data-kategori="igt-akses">2. IGT Sering Diakses</button>
+                        <button type="button" class="igt-segment__item" data-kategori="direktorat-login">3. Direktorat Sering Login</button>
                     </div>
-                    <div class="igt-papan__daftar" id="leader-board-daftar"></div>
+                    <div class="igt-papan__subbar-info" id="leader-board-subbar-info">
+                        Peringkat Capaian Renaksi per Satker / Direktorat
+                    </div>
+                </div>
+
+                <div id="leader-board-tabel">
+                    <div class="igt-table-wrap">
+                        <table class="igt-table" id="leader-board-table">
+                            <thead>
+                                <tr id="leader-board-thead"></tr>
+                            </thead>
+                            <tbody id="leader-board-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="igt-table-foot">
+                        <div class="igt-table-foot__perpage">
+                            Per page
+                            <select id="leader-board-perpage">
+                                <option value="10" selected>10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                        <div class="igt-pagination" id="leader-board-pagination"></div>
+                    </div>
                 </div>
             </div>
 

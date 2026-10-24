@@ -1632,61 +1632,388 @@ function renderKompilasiIntegrasi(kompilasi) {
 }
 
 /* ----------------------------------------------------
-   6. Leader Board Renderer
+   6. Leader Board (3 Kategori Pilihan) Renderer
 ---------------------------------------------------- */
-function renderLeaderBoard(leaderBoardData) {
-    var html = '';
-    leaderBoardData.forEach(function(item) {
-        var bidangChips = '-';
-        if (item.bidang && item.bidang.length > 0) {
-            bidangChips = item.bidang.map(function(b) {
-                return '<span class="igt-tag">' + b + '</span>';
-            }).join(' ');
-        } else {
-            bidangChips = '<span class="igt-peringkat__kosong">-</span>';
-        }
+var leaderBoardState = {
+    kategori: 'capaian-renaksi', // 'capaian-renaksi' | 'igt-akses' | 'direktorat-login'
+    tahun: '2026',
+    satker: 'all',
+    searchQuery: '',
+    currentPage: 1,
+    perPage: 10,
+    sortCol: null,
+    sortDir: 'desc',
+    initialized: false
+};
 
-        var kawasanChips = '-';
-        if (item.kawasan && item.kawasan.length > 0) {
-            kawasanChips = item.kawasan.map(function(k) {
-                return '<span class="igt-tag igt-tag--kawasan">' + k + '</span>';
-            }).join(' ');
-        } else {
-            kawasanChips = '<span class="igt-peringkat__kosong">-</span>';
-        }
+var LEADERBOARD_CONFIG = {
+    'capaian-renaksi': {
+        key: 'capaian-renaksi',
+        shortTitle: 'Capaian Renaksi Satker',
+        subbarInfo: 'Peringkat Capaian Rencana Aksi (Renaksi) per Satker / Direktorat',
+        tahunTitle: 'Tahun Renaksi',
+        showSatker: true,
+        defaultSortCol: 'persentase',
+        columns: [
+            { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
+            { key: 'igt', label: 'IGT', sortable: true },
+            { key: 'satker', label: 'Satker / Direktorat', sortable: true },
+            { key: 'realisasi', label: 'Realisasi / Target', sortable: true },
+            { key: 'persentase', label: 'Persentase', sortable: true }
+        ]
+    },
+    'igt-akses': {
+        key: 'igt-akses',
+        shortTitle: 'IGT Sering Diakses',
+        subbarInfo: 'Daftar IGT yang Paling Sering Diakses melalui Plugin QGIS dan Geoportal',
+        tahunTitle: 'Tahun Akses',
+        showSatker: false,
+        defaultSortCol: 'jumlahAkses',
+        columns: [
+            { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
+            { key: 'igt', label: 'Nama IGT', sortable: true },
+            { key: 'jumlahAkses', label: 'Jumlah Akses', sortable: true }
+        ]
+    },
+    'direktorat-login': {
+        key: 'direktorat-login',
+        shortTitle: 'Direktorat Sering Login',
+        subbarInfo: 'Daftar Direktorat / Satker yang Paling Sering Login ke Sistem Geoportal',
+        tahunTitle: 'Tahun Akses',
+        showSatker: false,
+        defaultSortCol: 'jumlahLogin',
+        columns: [
+            { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
+            { key: 'satker', label: 'Satker / Direktorat', sortable: true },
+            { key: 'jumlahLogin', label: 'Jumlah Login', sortable: true }
+        ]
+    }
+};
 
-        html += '<div class="igt-peringkat">'
-            + '<div class="igt-peringkat__nomor igt-peringkat__nomor--' + item.peringkat + '">' + item.peringkat + '</div>'
-            + '<div class="igt-peringkat__badan">'
-            + '  <div class="igt-peringkat__judul">'
-            + '    <div class="igt-peringkat__nama">' + item.nama + '</div>'
-            + '    <div class="igt-peringkat__nilai">' + item.tema + ' <span>tema</span></div>'
-            + '  </div>'
-            + '  <div class="igt-peringkat__basis">'
-            + '    <div class="igt-peringkat__kelompok">'
-            + '      <span class="igt-peringkat__label">IGT Pertanahan</span>'
-            + '      <div class="igt-peringkat__chips">' + bidangChips + '</div>'
-            + '    </div>'
-            + '    <div class="igt-peringkat__kelompok">'
-            + '      <span class="igt-peringkat__label">IGT Tata Ruang</span>'
-            + '      <div class="igt-peringkat__chips">' + kawasanChips + '</div>'
-            + '    </div>'
-            + '  </div>'
-            + '</div>'
-            + '<button type="button" class="igt-peringkat__fokus" title="Fokus">'
-            + '  <img src="assets/img/icons/focus.svg" alt="fokus">'
-            + '</button>'
-            + '</div>';
+function renderLeaderBoard(dashboardLeaderBoardData) {
+    if (!leaderBoardState.initialized) {
+        initLeaderBoard();
+    }
+    if (typeof currentDashboardYear !== 'undefined') {
+        leaderBoardState.tahun = $('#leader-board-tahun').val() || currentDashboardYear || 'all';
+    }
+    updateLeaderBoardTable();
+}
+
+function initLeaderBoard() {
+    leaderBoardState.initialized = true;
+
+    // A. Populate Satker filter dropdown panel
+    if (window.MOCKUP_DATA && typeof window.MOCKUP_DATA.getLeaderBoardSatkerList === 'function') {
+        var satkerList = window.MOCKUP_DATA.getLeaderBoardSatkerList();
+        var satkerHtml = '';
+        satkerList.forEach(function(s) {
+            var isAll = (s === 'Semua Satker');
+            var val = isAll ? 'all' : s;
+            var activeClass = isAll ? ' is-active' : '';
+            var radioImg = isAll ? 'radio-on.svg' : 'radio-off.svg';
+            satkerHtml += '<button type="button" class="igt-dropdown__item' + activeClass + '" data-satker="' + val + '">'
+                + '<img src="assets/img/icons/' + radioImg + '" alt=""> ' + s
+                + '</button>';
+        });
+        $('#leader-board-direktorat-panel').html(satkerHtml);
+    }
+
+    // B. Setup Kategori dropdown
+    setupDropdown('leader-board-kategori', function($item) {
+        var kat = $item.data('kategori');
+        if (kat) {
+            switchLeaderBoardKategori(kat);
+        }
     });
 
-    $('#leader-board-daftar').html(html);
-
-    $('#leader-board .igt-segment__item').off('click').on('click', function() {
-        $('#leader-board .igt-segment__item').removeClass('is-active');
-        $(this).addClass('is-active');
+    // C. Setup Satker dropdown
+    setupDropdown('leader-board-direktorat-wrap', function($item) {
+        var satker = $item.data('satker');
+        leaderBoardState.satker = satker || 'all';
+        leaderBoardState.currentPage = 1;
+        updateLeaderBoardTable();
     });
 
-    setupDropdown('leader-board-dasar');
+    // D. Segment buttons (1-click category switch)
+    $('#leader-board-segment .igt-segment__item').off('click').on('click', function() {
+        var kat = $(this).data('kategori');
+        if (kat) {
+            switchLeaderBoardKategori(kat);
+        }
+    });
+
+    // E. Search input
+    $('#leader-board-cari').off('input').on('input', function() {
+        leaderBoardState.searchQuery = $(this).val().trim().toLowerCase();
+        leaderBoardState.currentPage = 1;
+        updateLeaderBoardTable();
+    });
+
+    // F. Tahun filter
+    $('#leader-board-tahun').off('change').on('change', function() {
+        leaderBoardState.tahun = $(this).val();
+        leaderBoardState.currentPage = 1;
+        updateLeaderBoardTable();
+    });
+
+    // G. Per page selector
+    $('#leader-board-perpage').off('change').on('change', function() {
+        leaderBoardState.perPage = parseInt($(this).val(), 10) || 10;
+        leaderBoardState.currentPage = 1;
+        updateLeaderBoardTable();
+    });
+
+    // H. Unduh button
+    $('#leader-board-unduh').off('click').on('click', function() {
+        exportLeaderBoardToCSV();
+    });
+
+    // I. View Full Table button
+    $('#leader-board-full').off('click').on('click', function() {
+        if (leaderBoardState.perPage === 50) {
+            leaderBoardState.perPage = 10;
+            $('#leader-board-perpage').val('10');
+            $(this).find('span:last-child').text('View Full Table');
+        } else {
+            leaderBoardState.perPage = 50;
+            $('#leader-board-perpage').val('50');
+            $(this).find('span:last-child').text('Tampilan Standar');
+        }
+        leaderBoardState.currentPage = 1;
+        updateLeaderBoardTable();
+    });
+}
+
+function switchLeaderBoardKategori(kategoriKey) {
+    if (!LEADERBOARD_CONFIG[kategoriKey]) return;
+    leaderBoardState.kategori = kategoriKey;
+    leaderBoardState.currentPage = 1;
+    leaderBoardState.sortCol = null; // reset sorting to default
+    leaderBoardState.sortDir = 'desc';
+
+    var cfg = LEADERBOARD_CONFIG[kategoriKey];
+
+    // Synchronize Dropdown UI
+    $('#leader-board-kategori-label').text(cfg.shortTitle);
+    $('#leader-board-kategori .igt-dropdown__item').removeClass('is-active')
+        .find('img').attr('src', 'assets/img/icons/radio-off.svg');
+    var $activeDropItem = $('#leader-board-kategori .igt-dropdown__item[data-kategori="' + kategoriKey + '"]');
+    $activeDropItem.addClass('is-active').find('img').attr('src', 'assets/img/icons/radio-on.svg');
+
+    // Synchronize Segment UI
+    $('#leader-board-segment .igt-segment__item').removeClass('is-active');
+    $('#leader-board-segment .igt-segment__item[data-kategori="' + kategoriKey + '"]').addClass('is-active');
+
+    // Update Subbar Info Text
+    $('#leader-board-subbar-info').text(cfg.subbarInfo);
+
+    // Update Tahun Filter Title & Label
+    $('#leader-board-tahun-wrap').attr('title', cfg.tahunTitle);
+
+    // Toggle Satker Filter Visibility
+    if (cfg.showSatker) {
+        $('#leader-board-direktorat-wrap').show();
+    } else {
+        $('#leader-board-direktorat-wrap').hide();
+    }
+
+    updateLeaderBoardTable();
+}
+
+function updateLeaderBoardTable() {
+    var cfg = LEADERBOARD_CONFIG[leaderBoardState.kategori] || LEADERBOARD_CONFIG['capaian-renaksi'];
+    var rawData = [];
+
+    if (window.MOCKUP_DATA && typeof window.MOCKUP_DATA.getLeaderBoardData === 'function') {
+        rawData = window.MOCKUP_DATA.getLeaderBoardData(
+            leaderBoardState.kategori,
+            leaderBoardState.tahun,
+            leaderBoardState.satker
+        );
+    }
+
+    // Filter by search query
+    var filtered = rawData;
+    var q = leaderBoardState.searchQuery;
+    if (q) {
+        filtered = rawData.filter(function(item) {
+            if (item.igt && item.igt.toLowerCase().indexOf(q) !== -1) return true;
+            if (item.satker && item.satker.toLowerCase().indexOf(q) !== -1) return true;
+            if (item.jenisIgt && item.jenisIgt.toLowerCase().indexOf(q) !== -1) return true;
+            if (item.satuan && item.satuan.toLowerCase().indexOf(q) !== -1) return true;
+            if (item.persenStr && item.persenStr.toLowerCase().indexOf(q) !== -1) return true;
+            return false;
+        });
+    }
+
+    // Sorting
+    var sortCol = leaderBoardState.sortCol || cfg.defaultSortCol;
+    var sortDir = leaderBoardState.sortDir;
+
+    var sorted = filtered.slice().sort(function(a, b) {
+        var valA = a[sortCol];
+        var valB = b[sortCol];
+
+        if (typeof valA === 'string') {
+            var cmp = valA.localeCompare(valB);
+            return sortDir === 'asc' ? cmp : -cmp;
+        } else {
+            valA = Number(valA) || 0;
+            valB = Number(valB) || 0;
+            return sortDir === 'asc' ? valA - valB : valB - valA;
+        }
+    });
+
+    // Pagination
+    var totalEntries = sorted.length;
+    var perPage = leaderBoardState.perPage;
+    var totalPages = Math.max(1, Math.ceil(totalEntries / perPage));
+    if (leaderBoardState.currentPage > totalPages) leaderBoardState.currentPage = totalPages;
+    if (leaderBoardState.currentPage < 1) leaderBoardState.currentPage = 1;
+
+    var startIndex = (leaderBoardState.currentPage - 1) * perPage;
+    var pageData = sorted.slice(startIndex, startIndex + perPage);
+
+    // Render THEAD
+    var theadHtml = '';
+    cfg.columns.forEach(function(col) {
+        var thClass = col.thClass || '';
+        var isSorted = (col.key === sortCol || (col.sortKey && col.sortKey === sortCol));
+        if (isSorted) thClass += ' is-sorted';
+
+        if (col.sortable) {
+            var iconSrc = isSorted
+                ? (sortDir === 'asc' ? 'assets/img/icons/caret-up.svg' : 'assets/img/icons/caret-down.svg')
+                : 'assets/img/icons/caret-up-down.svg';
+
+            theadHtml += '<th class="' + thClass + '" data-key="' + (col.sortKey || col.key) + '">'
+                + '<span class="igt-table__sort">'
+                + col.label
+                + ' <img src="' + iconSrc + '" alt="">'
+                + '</span></th>';
+        } else {
+            theadHtml += '<th class="' + thClass + ' is-plain">' + col.label + '</th>';
+        }
+    });
+    $('#leader-board-thead').html(theadHtml);
+
+    // Bind TH sort clicks
+    $('#leader-board-thead th[data-key]').off('click').on('click', function() {
+        var clickedKey = $(this).data('key');
+        if (leaderBoardState.sortCol === clickedKey) {
+            leaderBoardState.sortDir = (leaderBoardState.sortDir === 'asc') ? 'desc' : 'asc';
+        } else {
+            leaderBoardState.sortCol = clickedKey;
+            leaderBoardState.sortDir = (clickedKey === 'igt' || clickedKey === 'satker') ? 'asc' : 'desc';
+        }
+        updateLeaderBoardTable();
+    });
+
+    // Render TBODY
+    var tbodyHtml = '';
+    if (pageData.length === 0) {
+        tbodyHtml = '<tr class="igt-table__empty"><td colspan="' + cfg.columns.length + '">Tidak ada data peringkat yang sesuai filter</td></tr>';
+    } else {
+        pageData.forEach(function(item, idx) {
+            var rank = startIndex + idx + 1;
+            var rankBadgeClass = rank === 1 ? 'igt-rank-badge--1' : (rank === 2 ? 'igt-rank-badge--2' : (rank === 3 ? 'igt-rank-badge--3' : ''));
+            var rankBadge = '<span class="igt-rank-badge ' + rankBadgeClass + '">' + rank + '</span>';
+
+            tbodyHtml += '<tr>';
+
+            if (leaderBoardState.kategori === 'capaian-renaksi') {
+                // No
+                tbodyHtml += '<td class="igt-table__no">' + rankBadge + '</td>';
+                // IGT
+                tbodyHtml += '<td><span class="igt-igt-cell">' + item.igt + '</span></td>';
+                // Satker
+                tbodyHtml += '<td><span class="igt-satker-cell">' + item.satker + '</span></td>';
+                // Realisasi / Target
+                tbodyHtml += '<td><div class="igt-target-cell"><strong>' + item.realisasi.toLocaleString('id-ID') + '</strong> / ' + item.target.toLocaleString('id-ID') + ' <span class="igt-satuan-badge">' + item.satuan + '</span></div></td>';
+                // Persentase
+                tbodyHtml += '<td><div class="igt-progress-cell">'
+                    + '<div class="igt-progress-bar-wrap"><div class="igt-progress-bar igt-progress-bar--' + item.progressColor + '" style="width: ' + Math.min(100, item.persentase) + '%"></div></div>'
+                    + '<span class="igt-progress-text">' + item.persenStr + '</span>'
+                    + '</div></td>';
+
+            } else if (leaderBoardState.kategori === 'igt-akses') {
+                // No
+                tbodyHtml += '<td class="igt-table__no">' + rankBadge + '</td>';
+                // IGT
+                tbodyHtml += '<td><span class="igt-igt-cell">' + item.igt + '</span></td>';
+                // Jumlah Akses
+                tbodyHtml += '<td><div class="igt-akses-cell">'
+                    + '<span class="igt-akses-total">' + item.jumlahAkses.toLocaleString('id-ID') + ' kali</span> '
+                    + '<span class="igt-akses-sub">(Plugin: ' + item.aksesPlugin.toLocaleString('id-ID') + ' &bull; Aplikasi: ' + item.aksesAplikasi.toLocaleString('id-ID') + ')</span>'
+                    + '</div></td>';
+
+            } else if (leaderBoardState.kategori === 'direktorat-login') {
+                // No
+                tbodyHtml += '<td class="igt-table__no">' + rankBadge + '</td>';
+                // Satker
+                tbodyHtml += '<td><span class="igt-satker-cell">' + item.satker + '</span></td>';
+                // Jumlah Login
+                tbodyHtml += '<td><div class="igt-login-cell">'
+                    + '<strong>' + item.jumlahLogin.toLocaleString('id-ID') + '</strong> '
+                    + '<span class="igt-akses-sub">kali login</span>'
+                    + '</div></td>';
+            }
+
+            tbodyHtml += '</tr>';
+        });
+    }
+    $('#leader-board-body').html(tbodyHtml);
+
+    // Render Pagination
+    renderPaginationHtml($('#leader-board-pagination'), totalPages, leaderBoardState.currentPage, function(newPage) {
+        leaderBoardState.currentPage = newPage;
+        updateLeaderBoardTable();
+    });
+}
+
+function exportLeaderBoardToCSV() {
+    var cfg = LEADERBOARD_CONFIG[leaderBoardState.kategori] || LEADERBOARD_CONFIG['capaian-renaksi'];
+    var rawData = window.MOCKUP_DATA.getLeaderBoardData(
+        leaderBoardState.kategori,
+        leaderBoardState.tahun,
+        leaderBoardState.satker
+    );
+
+    var headers = [];
+    cfg.columns.forEach(function(c) {
+        headers.push('"' + c.label.replace(/"/g, '""') + '"');
+    });
+
+    var rows = [headers.join(',')];
+    rawData.forEach(function(item, idx) {
+        var r = idx + 1;
+        var row = [];
+        if (leaderBoardState.kategori === 'capaian-renaksi') {
+            row.push(r);
+            row.push('"' + (item.igt || '').replace(/"/g, '""') + '"');
+            row.push('"' + (item.satker || '').replace(/"/g, '""') + '"');
+            row.push('"' + item.realisasi + ' / ' + item.target + ' ' + item.satuan + '"');
+            row.push('"' + item.persenStr + '"');
+        } else if (leaderBoardState.kategori === 'igt-akses') {
+            row.push(r);
+            row.push('"' + (item.igt || '').replace(/"/g, '""') + '"');
+            row.push('"' + item.jumlahAkses + ' (Plugin: ' + item.aksesPlugin + ', Aplikasi: ' + item.aksesAplikasi + ')"');
+        } else if (leaderBoardState.kategori === 'direktorat-login') {
+            row.push(r);
+            row.push('"' + (item.satker || '').replace(/"/g, '""') + '"');
+            row.push('"' + item.jumlahLogin + ' kali login"');
+        }
+        rows.push(row.join(','));
+    });
+
+    var csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(rows.join('\n'));
+    var link = document.createElement('a');
+    link.setAttribute('href', csvContent);
+    link.setAttribute('download', 'leader_board_' + leaderBoardState.kategori + '_' + (leaderBoardState.tahun || 'all') + '.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 /* ----------------------------------------------------
