@@ -321,7 +321,7 @@ window.MOCKUP_DATA = {
             { user: 'Supervisor Data SPPR', aktivitas: 'Persetujuan Integrasi IGT Unsur Dasar', waktu: '2026-10-24 10:25:12', tanggal: '2026-10-24 10:25:12' },
             { user: 'Petugas Pemetaan Tematik', aktivitas: 'Unggah Geodatabase Pemanfaatan Tanah', waktu: '2026-10-24 09:40:55', tanggal: '2026-10-24 09:40:55' },
             { user: 'Verifikator Kadastral Jabar', aktivitas: 'Koreksi Topologi Geometri Persil', waktu: '2026-10-24 09:12:08', tanggal: '2026-10-24 09:12:08' },
-            { user: 'Operator GIS Kanwil DIY', aktivitas: 'Sinkronisasi Data Spasial Daerah', waktu: '2026-10-24 08:35:19', tanggal: '2026-10-24 08:35:19' },
+            { user: 'Admin Kanwil DIY', aktivitas: 'Sinkronisasi Data Spasial Daerah', waktu: '2026-10-24 08:35:19', tanggal: '2026-10-24 08:35:19' },
             { user: 'Administrator SPPR', aktivitas: 'Audit Akses API Plugin QGIS SPPR', waktu: '2026-10-24 08:05:44', tanggal: '2026-10-24 08:05:44' }
         ]
     },
@@ -466,7 +466,7 @@ window.MOCKUP_DATA = {
                     { user: 'Analis Tata Ruang GK', aktivitas: 'Sinkronisasi Layer RDTR Perkotaan Wonosari', waktu: '2026-10-24 10:05:08', tanggal: '2026-10-24 10:05:08' },
                     { user: 'Surveyor Karangmojo', aktivitas: 'Pembaruan Koordinat Titik Batas Bidang', waktu: '2026-10-24 09:22:14', tanggal: '2026-10-24 09:22:14' },
                     { user: 'Petugas Ukur Ponjong', aktivitas: 'Input Atribut Spasial Zona Nilai Tanah Ponjong', waktu: '2026-10-24 08:45:30', tanggal: '2026-10-24 08:45:30' },
-                    { user: 'Operator Kantah GK', aktivitas: 'Ekspor Shapefile Peta Tematik Geopark', waktu: '2026-10-24 08:15:02', tanggal: '2026-10-24 08:15:02' },
+                    { user: 'Admin Kantah GK', aktivitas: 'Persetujuan Publikasi Shapefile Tematik Geopark', waktu: '2026-10-24 08:15:02', tanggal: '2026-10-24 08:15:02' },
                     { user: 'Administrator GIS GK', aktivitas: 'Sinkronisasi Harian ke Server Pusat ATR/BPN', waktu: '2026-10-23 17:30:19', tanggal: '2026-10-23 17:30:19' }
                 ]
             };
@@ -597,13 +597,13 @@ window.MOCKUP_DATA = {
                 { direktorat: 'Bidang Pengendalian dan Sengketa Kanwil DIY', aktivitas: 'Pengecekan Tumpang Tindih', total: 42 }
             ],
             aktivitasLog: [
-                { user: 'Operator Kanwil DIY', aktivitas: 'Sinkronisasi Data IGT Provinsi', waktu: '2026-10-24 16:10:42', tanggal: '2026-10-24 16:10:42' },
+                { user: 'Admin Kanwil DIY', aktivitas: 'Sinkronisasi Data IGT Provinsi', waktu: '2026-10-24 16:10:42', tanggal: '2026-10-24 16:10:42' },
                 { user: 'Verifikator Spasial Kanwil DIY', aktivitas: 'Validasi Topologi Bidang Persil Sleman', waktu: '2026-10-24 15:22:18', tanggal: '2026-10-24 15:22:18' },
                 { user: 'Operator Kantah Kab. Sleman', aktivitas: 'Unggah Layer Derivatif Bidang', waktu: '2026-10-24 14:25:18', tanggal: '2026-10-24 14:25:18' },
                 { user: 'Verifikator Kantah Kota Yogyakarta', aktivitas: 'Verifikasi Batas Bidang Heritage', waktu: '2026-10-24 13:40:05', tanggal: '2026-10-24 13:40:05' },
                 { user: 'Operator Kantah Bantul', aktivitas: 'Pembaruan Atribut Spasial LBS', waktu: '2026-10-24 11:15:30', tanggal: '2026-10-24 11:15:30' },
                 { user: 'Petugas Ukur Kantah Kulon Progo', aktivitas: 'Sinkronisasi Data Peta Bandara YIA', waktu: '2026-10-24 10:50:12', tanggal: '2026-10-24 10:50:12' },
-                { user: 'Operator Kantah Gunungkidul', aktivitas: 'Input Data Tematik Karst Wonosari', waktu: '2026-10-24 10:12:45', tanggal: '2026-10-24 10:12:45' },
+                { user: 'Admin Kantah GK', aktivitas: 'Input & Validasi Data Tematik Karst Wonosari', waktu: '2026-10-24 10:12:45', tanggal: '2026-10-24 10:12:45' },
                 { user: 'Kepala Seksi Survei Kanwil DIY', aktivitas: 'Approval Peta Integrasi Regional', waktu: '2026-10-24 09:30:20', tanggal: '2026-10-24 09:30:20' },
                 { user: 'Analis Tata Ruang Dispertaru DIY', aktivitas: 'Integrasi Layer RDTR Perkotaan', waktu: '2026-10-24 09:05:14', tanggal: '2026-10-24 09:05:14' },
                 { user: 'Administrator GIS Kanwil DIY', aktivitas: 'Backup Geodatabase Wilayah DIY', waktu: '2026-10-24 08:15:33', tanggal: '2026-10-24 08:15:33' }

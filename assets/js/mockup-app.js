@@ -80,31 +80,31 @@ var ROLE_CONFIG = {
         avatar: 'assets/img/profile.png'
     },
     'sppr': {
-        name: 'Operator Ditjen SPPR',
-        roleTitle: 'Direktorat SPPR',
-        badgeText: 'Direktorat SPPR',
+        name: 'Admin Ditjen SPPR',
+        roleTitle: 'Admin Direktorat SPPR',
+        badgeText: 'Admin Ditjen SPPR',
         badgeClass: 'bg-info text-white',
-        desc: 'Data di dashboard otomatis terfilter khusus tema dan direktorat pengampu di lingkungan Ditjen SPPR.',
+        desc: 'Akses Admin: Data di dashboard otomatis terfilter khusus tema dan direktorat pengampu di lingkungan Ditjen SPPR.',
         lockText: 'Filter SPPR Aktif',
         alertBarClass: 'is-sppr',
         avatar: 'assets/img/profile.png'
     },
     'kanwil-diy': {
-        name: 'Operator Kanwil DIY',
-        roleTitle: 'Kanwil BPN D.I. Yogyakarta',
-        badgeText: 'Kanwil BPN D.I. Yogyakarta',
+        name: 'Admin Kanwil DIY',
+        roleTitle: 'Admin Kanwil BPN D.I. Yogyakarta',
+        badgeText: 'Admin Kanwil DIY',
         badgeClass: 'bg-warning text-dark',
-        desc: 'Otomatis terfilter lokasi D.I. Yogyakarta. Terkunci dan tidak dapat melihat data wilayah provinsi lain.',
+        desc: 'Akses Admin: Otomatis terfilter lokasi D.I. Yogyakarta. Terkunci dan tidak dapat melihat data wilayah provinsi lain.',
         lockText: 'Wilayah Terkunci (DIY)',
         alertBarClass: 'is-kanwil',
         avatar: 'assets/img/profile.png'
     },
     'kantah-gunungkidul': {
-        name: 'Operator Kantah GK',
-        roleTitle: 'Kantah Kab. Gunungkidul',
-        badgeText: 'Kantah Kab. Gunungkidul',
+        name: 'Admin Kantah GK',
+        roleTitle: 'Admin Kantah Kab. Gunungkidul',
+        badgeText: 'Admin Kantah Gunungkidul',
         badgeClass: 'bg-success text-white',
-        desc: 'Otomatis terfilter lokasi Kab. Gunungkidul. Terkunci dan tidak dapat melihat data wilayah lain.',
+        desc: 'Akses Admin: Otomatis terfilter lokasi Kab. Gunungkidul. Terkunci dan tidak dapat melihat data wilayah lain.',
         lockText: 'Wilayah Terkunci (Gunungkidul)',
         alertBarClass: 'is-kantah',
         avatar: 'assets/img/profile.png'
