@@ -148,70 +148,13 @@ function updateRoleAlertBanner(role) {
 
 function applyRoleFilterToLeaderboard(rawData, kategori) {
     if (!rawData || !rawData.length) return rawData || [];
-    if (currentActiveRole === 'superadmin') {
-        if (kategori === 'capaian-renaksi') {
-            return rawData.filter(function(item) {
-                var s = item.satker || item.direktorat || '';
-                return s && s.indexOf('Kanwil') === -1 && s.indexOf('Kantah') === -1 && s.indexOf('Balai') === -1 && s.indexOf('Sekretariat Direktorat Jenderal SPPR') === -1;
-            });
-        }
-        return rawData;
-    }
 
-    if (currentActiveRole === 'sppr') {
-        // Role Direktorat SPPR: Khusus leaderboard dapat melihat data seluruh Direktorat Kementerian ATR/BPN untuk pacuan berkompetisi
-        if (kategori === 'capaian-renaksi') {
-            return rawData.filter(function(item) {
-                var s = item.satker || item.direktorat || '';
-                return s && s.indexOf('Kanwil') === -1 && s.indexOf('Kantah') === -1 && s.indexOf('Balai') === -1 && s.indexOf('Sekretariat Direktorat Jenderal SPPR') === -1;
-            });
-        } else if (kategori === 'satker-login' || kategori === 'direktorat-login') {
-            return rawData.filter(function(item) {
-                var s = item.satker || item.direktorat || '';
-                return item.tipe === 'Pusat' || (s && s.indexOf('Direktorat') !== -1);
-            });
-        } else if (kategori === 'igt-akses') {
-            return rawData;
-        }
-    } else if (currentActiveRole === 'kanwil-diy') {
-        // Role Kanwil DIY: Menampilkan data seluruh Kanwil-kanwil se-Indonesia (15 Kanwil)
-        if (kategori === 'capaian-renaksi') {
-            return rawData.filter(function(item) {
-                var s = item.satker || item.direktorat || '';
-                return s && (s.indexOf('Kanwil') !== -1 || s.indexOf('Kantor Wilayah') !== -1);
-            });
-        } else if (kategori === 'satker-login' || kategori === 'direktorat-login') {
-            return rawData.filter(function(item) {
-                var s = item.satker || item.direktorat || '';
-                return item.tipe === 'Kanwil' || (s && (s.indexOf('Kanwil') !== -1 || s.indexOf('Kantor Wilayah') !== -1));
-            });
-        } else if (kategori === 'igt-akses') {
-            return rawData;
-        }
-    } else if (currentActiveRole === 'kantah-gunungkidul') {
-        // Role Kantah Gunungkidul: Menampilkan data seluruh Kantah-kantah se-DIY (5 Kantah)
-        var diyKeywords = ['Yogyakarta', 'Sleman', 'Bantul', 'Gunungkidul', 'Gunung Kidul', 'Kulon Progo'];
-        if (kategori === 'capaian-renaksi') {
-            return rawData.filter(function(item) {
-                var s = item.satker || item.direktorat || '';
-                var isKantah = s.indexOf('Kantah') !== -1 || s.indexOf('Kantor Pertanahan') !== -1;
-                var isDiy = diyKeywords.some(function(kw) {
-                    return s.toLowerCase().indexOf(kw.toLowerCase()) !== -1;
-                });
-                return isKantah && isDiy;
-            });
-        } else if (kategori === 'satker-login' || kategori === 'direktorat-login') {
-            return rawData.filter(function(item) {
-                var s = item.satker || item.direktorat || '';
-                var isKantah = item.tipe === 'Kantah' || s.indexOf('Kantah') !== -1 || s.indexOf('Kantor Pertanahan') !== -1;
-                var isDiy = diyKeywords.some(function(kw) {
-                    return s.toLowerCase().indexOf(kw.toLowerCase()) !== -1;
-                });
-                return isKantah && isDiy;
-            });
-        } else if (kategori === 'igt-akses') {
-            return rawData;
-        }
+    // Seluruh role mengikuti tampilan Superadmin (Leaderboard & Tabel Detail Nasional)
+    if (kategori === 'capaian-renaksi') {
+        return rawData.filter(function(item) {
+            var s = item.satker || item.direktorat || '';
+            return s && s.indexOf('Kanwil') === -1 && s.indexOf('Kantah') === -1 && s.indexOf('Balai') === -1 && s.indexOf('Sekretariat Direktorat Jenderal SPPR') === -1;
+        });
     }
     return rawData;
 }
@@ -2025,22 +1968,7 @@ function getIgtTagClass(name) {
 }
 
 function getRoleSatkerBadge(satkerName) {
-    if (!satkerName) return '';
-    var s = String(satkerName).toLowerCase();
-    if (currentActiveRole === 'sppr') {
-        var isSPPR = s.indexOf('kadastral') !== -1 || s.indexOf('tematik') !== -1 || s.indexOf('dasar pertanahan') !== -1 || s.indexOf('penilaian tanah') !== -1 || s.indexOf('sppr') !== -1;
-        if (isSPPR) {
-            return ' <span class="badge" style="background-color: #2563eb; color: #ffffff; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 600; vertical-align: middle;">Unit Anda</span>';
-        }
-    } else if (currentActiveRole === 'kanwil-diy') {
-        if (s.indexOf('yogyakarta') !== -1 && (s.indexOf('kanwil') !== -1 || s.indexOf('kantor wilayah') !== -1)) {
-            return ' <span class="badge" style="background-color: #2563eb; color: #ffffff; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 600; vertical-align: middle;">Wilayah Anda</span>';
-        }
-    } else if (currentActiveRole === 'kantah-gunungkidul') {
-        if (s.indexOf('gunungkidul') !== -1 || s.indexOf('gunung kidul') !== -1) {
-            return ' <span class="badge" style="background-color: #2563eb; color: #ffffff; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 600; vertical-align: middle;">Kantah Anda</span>';
-        }
-    }
+    // Seluruh role disamakan mengikuti superadmin (tanpa badge role di leaderboard)
     return '';
 }
 
@@ -2182,9 +2110,8 @@ function switchLeaderBoardKategori(kategoriKey) {
 
     // Update Subbar Info Text
     if (kategoriKey === 'capaian-renaksi') {
-        var entityLabel = (currentActiveRole === 'kanwil-diy') ? 'Kanwil' : ((currentActiveRole === 'kantah-gunungkidul') ? 'Kantah' : 'Direktorat');
-        $('#leader-board-subbar-info').text('Peringkat Capaian Renaksi per ' + entityLabel);
-        $('.igt-segment__item[data-kategori="capaian-renaksi"]').text('1. Capaian Renaksi ' + entityLabel);
+        $('#leader-board-subbar-info').text('Peringkat Capaian Renaksi per Direktorat');
+        $('.igt-segment__item[data-kategori="capaian-renaksi"]').text('1. Capaian Renaksi Direktorat');
     } else {
         $('#leader-board-subbar-info').text(cfg.subbarInfo);
     }
@@ -2256,9 +2183,8 @@ function updateLeaderBoardTable() {
 
     // Render based on category: Table (Capaian Renaksi) vs Horizontal Bar Chart (Akses & Login)
     if (leaderBoardState.kategori === 'capaian-renaksi') {
-        var entityLabel = (currentActiveRole === 'kanwil-diy') ? 'Kanwil' : ((currentActiveRole === 'kantah-gunungkidul') ? 'Kantah' : 'Direktorat');
-        $('#leader-board-subbar-info').text('Peringkat Capaian Renaksi per ' + entityLabel);
-        $('.igt-segment__item[data-kategori="capaian-renaksi"]').text('1. Capaian Renaksi ' + entityLabel);
+        $('#leader-board-subbar-info').text('Peringkat Capaian Renaksi per Direktorat');
+        $('.igt-segment__item[data-kategori="capaian-renaksi"]').text('1. Capaian Renaksi Direktorat');
 
         $('#leader-board-tabel').show();
         $('#leader-board-grafik').hide();
@@ -2267,7 +2193,6 @@ function updateLeaderBoardTable() {
         var theadHtml = '';
         cfg.columns.forEach(function(col) {
             var colLabel = col.label;
-            if (col.key === 'satker') colLabel = entityLabel;
             var thClass = col.thClass || '';
             var isSorted = (col.key === sortCol || (col.sortKey && col.sortKey === sortCol));
             if (isSorted) thClass += ' is-sorted';
@@ -2721,11 +2646,9 @@ function updateLeaderBoardDetailTable() {
     var startIndex = (leaderBoardDetailState.currentPage - 1) * perPage;
     var pageData = sorted.slice(startIndex, startIndex + perPage);
 
-    var entityLabel = (currentActiveRole === 'kanwil-diy') ? 'Kanwil' : ((currentActiveRole === 'kantah-gunungkidul') ? 'Kantah' : 'Direktorat');
-
     // Update Header Title & Count Badge
     if (kat === 'capaian-renaksi') {
-        $('#leader-board-detail-title').text('Tabel Detail Capaian Renaksi per ' + entityLabel);
+        $('#leader-board-detail-title').text('Tabel Detail Capaian Renaksi per Direktorat');
     } else {
         $('#leader-board-detail-title').text(cfg.title);
     }
@@ -2735,9 +2658,6 @@ function updateLeaderBoardDetailTable() {
     var theadHtml = '';
     cfg.columns.forEach(function(col) {
         var colLabel = col.label;
-        if (col.key === 'satker' && kat === 'capaian-renaksi') {
-            colLabel = entityLabel;
-        }
         var thClass = col.thClass || '';
         var isSorted = (col.key === sortCol);
         if (isSorted) thClass += ' is-sorted';
