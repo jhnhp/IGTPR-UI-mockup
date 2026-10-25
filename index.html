@@ -1242,6 +1242,45 @@
                         <div class="igt-pagination" id="statistik-akses-pagination"></div>
                     </div>
                 </div>
+
+                <div id="statistik-akses-grafik" class="igt-chart-wrap" style="display: none;">
+                    <!-- Sub-toolbar: Legend & Metric Dropdown -->
+                    <div class="igt-chart-subbar">
+                        <div class="igt-chart-subbar__left">
+                            <div class="igt-chart-legend">
+                                <span class="igt-chart-legend__item">
+                                    <span class="igt-chart-legend__dot" style="background-color: #2563eb;"></span>
+                                    <span class="igt-chart-legend__label" id="statistik-akses-chart-legend-label">Total Akses Login</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="igt-chart-subbar__right">
+                            <div class="igt-dropdown" id="statistik-akses-grafik-dropdown">
+                                <button type="button" class="igt-chart-pill-btn" id="statistik-akses-grafik-metric-btn">
+                                    <span id="statistik-akses-grafik-metric-label">Data Berdasarkan Akses User</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                <div class="igt-dropdown__panel" id="statistik-akses-grafik-metric-panel">
+                                    <button type="button" class="igt-dropdown__item is-active" data-metric="user">
+                                        Data Berdasarkan Akses User
+                                    </button>
+                                    <button type="button" class="igt-dropdown__item" data-metric="plugin">
+                                        Data Berdasarkan Akses Plugin QGIS
+                                    </button>
+                                    <button type="button" class="igt-dropdown__item" data-metric="geoportal">
+                                        Data Berdasarkan Akses Geoportal
+                                    </button>
+                                    <button type="button" class="igt-dropdown__item" data-metric="total">
+                                        Data Berdasarkan Total Akses
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Canvas / Body -->
+                    <div class="igt-chart-body position-relative" id="statistik-akses-chart-canvas"></div>
+                </div>
             </div>
 
             <!-- 8. AKTIVITAS LOG TABLE -->
@@ -1310,6 +1349,23 @@
                         </div>
                         <div class="igt-pagination" id="aktivitas-log-pagination"></div>
                     </div>
+                </div>
+
+                <div id="aktivitas-log-grafik" class="igt-chart-wrap" style="display: none;">
+                    <!-- Sub-toolbar: Legend -->
+                    <div class="igt-chart-subbar">
+                        <div class="igt-chart-subbar__left">
+                            <div class="igt-chart-legend">
+                                <span class="igt-chart-legend__item">
+                                    <span class="igt-chart-legend__dot" style="background-color: #2563eb;"></span>
+                                    <span class="igt-chart-legend__label">Total Log</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Canvas / Body -->
+                    <div class="igt-chart-body position-relative" id="aktivitas-log-chart-canvas"></div>
                 </div>
             </div>
 
