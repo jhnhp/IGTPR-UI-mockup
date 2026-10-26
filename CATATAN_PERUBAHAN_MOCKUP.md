@@ -1077,3 +1077,14 @@ IGTPR-UI-mockup/
   - Penyaringan tema berdasarkan Jenis IGT (*Pertanahan* & *Tata Ruang*).
   - Penyaringan tema berdasarkan *Tahun Renaksi* (2023–2026).
 - **Integritas Spasial**: Poligon kabupaten saling menempel presisi (*edge-matched*) tanpa celah (*gap*) dan tanpa tumpang tindih (*overlap*). Batas provinsi sejalan 100% dengan batas luar kabupaten.
+
+
+### 58. Penyesuaian Nama Tab Leaderboard
+
+- **Konteks**: Penyelarasan nomenklatur tab leaderboard dengan rancangan antarmuka terbaru.
+- **Perubahan label tab**:
+  1. **Capaian Renaksi** (sebelumnya *Capaian Renaksi Direktorat*).
+  2. **Frekuensi Akses IGT** (sebelumnya *IGT Sering Diakses*).
+  3. **Frekuensi Login Pengguna** (sebelumnya *Satker Sering Login*).
+- **Konsistensi UI**: Label tab pada markup HTML dan konfigurasi JavaScript leaderboard diselaraskan. Struktur kategori, filter, dan mekanisme data yang mendasari tiap tab tetap dipertahankan.
+- **Referensi desain**: Screenshot acuan yang diberikan untuk mockup pada 26 Oktober 2026.
