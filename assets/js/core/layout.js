@@ -66,7 +66,7 @@ var ROLE_CONFIG = {
         avatar: 'assets/img/profile.png'
     },
     'operator': {
-        name: 'Direktorat ATR/BPN',
+        name: 'Operator Direktorat SPPR',
         roleTitle: 'Operator',
         badgeText: 'Operator',
         badgeClass: 'bg-secondary text-white',
@@ -94,7 +94,7 @@ var ROLE_PILIHAN = [
     ['sppr', 'ri-compass-3-line', 'Admin Direktorat SPPR', 'Admin Ditjen SPPR'],
     ['kanwil-diy', 'ri-map-pin-user-line', 'Admin Kanwil DIY', 'Admin Kanwil'],
     ['kantah-gunungkidul', 'ri-building-line', 'Admin Kantah Gunung Kidul', 'Admin Kantah'],
-    ['operator', 'ri-user-line', 'Operator', 'Operator Direktorat'],
+    ['operator', 'ri-user-line', 'Operator', 'Operator Direktorat SPPR'],
     ['umum', 'ri-team-line', 'Umum', 'Pengguna Umum']
 ];
 
@@ -112,7 +112,8 @@ function showRoleAccessToast(message) {
 
 function updateSidebarProfile(role) {
     var cfg = ROLE_CONFIG[role] || ROLE_CONFIG['superadmin'];
-    $('#sidebar-user-name, #topbar-user-name').text(cfg.name);
+    // .igt-nama-akun: elemen di halaman mana pun yang menampilkan nama akun (mis. sapaan "Hai, ...")
+    $('#sidebar-user-name, #topbar-user-name, .igt-nama-akun').text(cfg.name);
     $('#sidebar-user-role, #topbar-user-role').text(cfg.roleTitle);
     if (cfg.avatar) {
         $('#sidebar-user-avatar, #topbar-user-avatar').attr('src', cfg.avatar);

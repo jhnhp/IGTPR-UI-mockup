@@ -1254,3 +1254,14 @@ IGTPR-UI-mockup/
 - **Perubahan**: Status bernilai 0 (mis. *Ditolak* pada role Umum) kini tetap ditampilkan sebagai ruas **sangat tipis (4px)**, sama seperti perlakuan *Revisi Perbaikan* bernilai 0 di progress bar Usulan Input Data. Ruas tipis tetap dapat diklik.
 - **Warna Ditolak**: sama dengan *Revisi Perbaikan* (abu kemerahan pale `hsl(0, 10%, 80%)`; versi tipis `hsl(0, 10%, 65%)`).
 - **Cache-busting**: `?v=20261026h`.
+
+### 80. Sapaan Beranda Mengikuti Nama Akun
+
+- **Perubahan**: Sapaan *"Hai, Internal IGT 👋"* di Beranda kini mengikuti nama akun role aktif (mis. *Hai, Admin ATR/BPN*, *Hai, Direktorat ATR/BPN*, *Hai, Pengguna Umum*) dan ikut berganti saat role diganti.
+- **Teknis**: elemen dengan class `.igt-nama-akun` di halaman mana pun otomatis diisi nama akun oleh `updateSidebarProfile()` di `layout.js`.
+- **Cache-busting**: `?v=20261026i`.
+
+### 81. Nama Akun Operator
+
+- **Perubahan**: Akun role Operator diasumsikan berasal dari Direktorat SPPR. Nama akun menjadi **Operator Direktorat SPPR** (sebelumnya *Direktorat ATR/BPN*), sehingga sapaan Beranda menjadi *"Hai, Operator Direktorat SPPR 👋"*; profil sidebar, header, dan menu Ganti Role ikut menyesuaikan.
+- **Cache-busting**: `?v=20261026j`.
