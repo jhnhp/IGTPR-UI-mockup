@@ -1158,3 +1158,38 @@ IGTPR-UI-mockup/
 - **Hak akses**: Role Umum hanya dapat mengunggah dan memantau pengajuan **data derivatif**. Saat role aktif, yang tampil hanya halaman **Unggah Data Derivatif**; dashboard, Data Kompilasi, dan Integrasi Data tidak dapat dibuka (navigasi dipaksa ke halaman derivatif). Menu sidebar hanya berisi **Data Derivatif**, dan tautan *Dashboard* pada breadcrumb disembunyikan.
 - **Data dummy**: `MOCKUP_DATA.umum.derivatif` berisi 2 pengajuan milik pengguna umum (1 *Menunggu Verifikasi*, 1 *Disetujui*), terpisah dari data Operator.
 - **Teks info banner** halaman derivatif dibuat netral: *"Unggahan Anda diperiksa terlebih dahulu oleh Admin…"* sehingga berlaku untuk Operator maupun Umum.
+
+### 70. Pemindahan Ganti Role ke Tombol User & Navbar Sidebar per Role
+
+- **Ganti role**: Panel *Pilih Role Simulasi* di sidebar dihapus. Pergantian role kini melalui **tombol user (avatar) di kanan atas** → bagian *Ganti Role (Simulasi)* berisi 6 role (Superadmin, Admin Direktorat SPPR, Admin Kanwil DIY, Admin Kantah Gunung Kidul, Operator, Umum) dengan tanda centang pada role aktif.
+- **Sidebar**: Diganti menjadi **navbar biasa** yang dirender sesuai role (`renderSidebarNav()`, konfigurasi `NAV_PER_ROLE`), grup dapat dilipat:
+  - **Superadmin** (acuan `Examples/Navbar1.png` & `Navbar2.png`): *Dashboard*; *Data* (Kompilasi Data, Integrasi Data, Self Assessment, Peta IGT); *Data Derivatif* (Create Layer, Atribut Layer, SLD, Unggah, Verifikasi, List Data Derivatif); *CMS* (CMS Landing Page, Direktorat, Layer IGT, Attribut Data, SLD, Symbology, MetaData, Tumpang Susun, User Management, Role Management, Ketua Tim, Data Lainnya, Target Data IGT Master, Model Builder QGIS, Baseline, Web Service).
+  - **Admin SPPR / Kanwil / Kantah**: sama dengan Superadmin tanpa grup CMS.
+  - **Operator**: Dashboard; Data (Kompilasi, Integrasi, Sinkronisasi, Self Assessment, Peta IGT); Data Derivatif (Unggah Data Derivatif). Menu Dashboard, Kompilasi, Integrasi, dan Unggah Derivatif terhubung ke halaman Operator.
+  - **Umum**: hanya *Data Derivatif → Unggah Data Derivatif*.
+- **Catatan**: Menu admin selain Dashboard belum memiliki halaman (hanya penanda aktif).
+
+### 71. Penataan Ulang Navbar Sidebar per Role & Dashboard Role Umum
+
+- **Acuan**: `Examples/Usulan-Navbar.png` (disetujui).
+- **Superadmin (8 grup)**:
+  1. **Dashboard**
+  2. **Data IGT**: Kompilasi Data, Integrasi Data, Peta IGT, Self Assessment
+  3. **Master Data IGT**: Ketua Tim, Layer IGT, Atribut Data, Metadata, Target Data IGT Master, Baseline, Data Lainnya
+  4. **Data Derivatif**: List Data Derivatif, Unggah Data Derivatif, Verifikasi Derivatif, Layer Derivatif, Atribut Layer Derivatif
+  5. **Style Peta**: SLD, SLD Derivatif, Symbology
+  6. **Analisis & Layanan**: Tumpang Susun, Model Builder QGIS, Web Service
+  7. **Pengguna & Akses**: User Management, Role Management, Direktorat
+  8. **Konten Portal**: CMS Landing Page
+- **Admin SPPR / Kanwil / Kantah**: Dashboard; Data IGT; Data Derivatif (List, Unggah, Verifikasi) — tanpa Layer/Atribut Layer Derivatif, master data, dan administrasi sistem.
+- **Operator**: Dashboard; Data IGT (Kompilasi, Integrasi, Peta IGT, Self Assessment); Data Derivatif (Unggah). Menu *Sinkronisasi Data* dihapus.
+- **Umum**: Dashboard; Data Derivatif (Unggah).
+- **Alasan perubahan**:
+  1. Urutan dari yang paling sering dipakai: Dashboard → Data IGT → Master Data IGT → Data Derivatif di atas; konfigurasi & administrasi di bawah.
+  2. Grup "CMS" lama (16 menu campur aduk) dipecah menjadi Style Peta, Analisis & Layanan, Pengguna & Akses, dan Konten Portal; menu master data dipindah ke Master Data IGT.
+  3. Seluruh menu derivatif disatukan dalam satu grup (Create Layer Derivatif → *Layer Derivatif*).
+  4. Seluruh pengaturan style (SLD, SLD Derivatif, Symbology) disatukan dalam grup Style Peta.
+  5. Urutan dalam grup mengikuti alur kerja (Kompilasi → Integrasi → Peta IGT; List → Unggah → Verifikasi).
+  6. Penamaan diseragamkan: "Attribut Data" → *Atribut Data*, "MetaData" → *Metadata*.
+  7. Role non-superadmin hanya melihat menu yang relevan; konfigurasi & administrasi khusus Superadmin.
+- **Dashboard Role Umum (baru)**: *Selamat Datang* dengan tiga kartu ringkasan pengajuan derivatif (**Disetujui**, **Menunggu Verifikasi**, **Ditolak**) yang dapat diklik menuju halaman Unggah Data Derivatif, serta panel **Riwayat Pengajuan Derivatif** dengan tombol unggah. Saat role Umum dipilih, halaman awal kini dashboard ini.

@@ -601,6 +601,27 @@
         .igt-op-aksi-teks .is-hapus { border-color: #dc3545; color: #dc3545; }
         #op-derivatif-body td { vertical-align: middle; padding: 12px 8px; }
         .igt-op-btn { background: #1e3a6e; border-color: #1e3a6e; font-size: 12.5px; }
+        /* ===== Sidebar Navigasi per Role ===== */
+        .igt-nav__grup { border-bottom: 1px solid #eef2f7; padding: 6px 0 10px; }
+        .igt-nav__label { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: #64748b; padding: 12px 20px 6px; cursor: pointer; }
+        .igt-nav__label i { transition: transform .2s; }
+        .igt-nav__grup.is-tutup .igt-nav__label i { transform: rotate(-90deg); }
+        .igt-nav__grup.is-tutup .igt-nav__item { display: none; }
+        .igt-nav__item { display: flex; align-items: center; gap: 12px; padding: 8px 20px; font-size: 14px; color: #334155; text-decoration: none; }
+        .igt-nav__item:hover { background: #f1f5f9; color: #1e293b; }
+        .igt-nav__item i { font-size: 17px; }
+        .igt-nav__item .igt-nav__sub { margin-left: auto; font-size: 14px; color: #94a3b8; }
+        .igt-nav__item.is-active { background: #d5dde8; color: #1e3a6e; }
+        .igt-role-opsi__label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #94a3b8; margin-bottom: 6px; }
+        .igt-role-opsi { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; text-decoration: none; color: #334155; }
+        .igt-role-opsi:hover { background: #f1f5f9; }
+        .igt-role-opsi.is-active { background: #eff6ff; color: #1d4ed8; }
+        .igt-role-opsi__ikon { font-size: 17px; }
+        .igt-role-opsi span { flex: 1; line-height: 1.2; }
+        .igt-role-opsi strong { display: block; font-size: 13px; font-weight: 600; }
+        .igt-role-opsi small { font-size: 11px; color: #94a3b8; }
+        .igt-role-opsi__cek { visibility: hidden; }
+        .igt-role-opsi.is-active .igt-role-opsi__cek { visibility: visible; }
         /* ===== Dashboard Role Operator ===== */
         .igt-op__breadcrumb { font-size: 13px; color: #64748b; margin-bottom: 4px; }
         .igt-op__breadcrumb a { color: #2563eb; text-decoration: none; }
@@ -632,11 +653,6 @@
         .igt-op__riwayat-isi span { display: block; font-size: 12px; color: #64748b; }
         .igt-op__riwayat-status { font-size: 12px; color: #10b981; white-space: nowrap; }
         .igt-op__riwayat-status.is-proses { color: #f59e0b; }
-        .igt-op-menu { padding: 4px 0 12px; border-top: 1px solid #e2e8f0; margin-top: 12px; }
-        .igt-op-menu__label { font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: #64748b; padding: 12px 20px 6px; }
-        .igt-op-menu__item { display: flex; align-items: center; gap: 10px; padding: 8px 20px; font-size: 14px; color: #334155; text-decoration: none; }
-        .igt-op-menu__item i { font-size: 17px; }
-        .igt-op-menu__item.is-active { background: #dbe4f3; color: #1e3a8a; }
         .igt-role-badge--umum { background: #e2e8f0; color: #334155; }
         .igt-role-badge--operator { background: #ede9fe; color: #6d28d9; }
         @media (max-width: 991px) {
@@ -661,105 +677,8 @@
         </div>
 
         <div id="sidebarMenu" class="sidebar-body">
-            <div class="igt-role-sidebar-wrap">
-                <div class="igt-role-sidebar-header">
-                    <div class="igt-role-sidebar-title">
-                        <i class="ri-user-settings-line text-primary"></i>
-                        <span>Pilih Role Simulasi</span>
-                    </div>
-                    <p class="igt-role-sidebar-subtitle">Pilih profil pengguna untuk mensimulasikan filter otomatis dan hak akses dashboard.</p>
-                </div>
-
-                <!-- 1. Superadmin (Page Sekarang) -->
-                <div class="igt-role-card is-active" data-role="superadmin" id="role-card-superadmin" role="button" tabindex="0">
-                    <div class="igt-role-card-top">
-                        <div class="igt-role-icon"><i class="ri-shield-keyhole-line"></i></div>
-                        <div class="igt-role-card-info">
-                            <div class="igt-role-card-title">1. Superadmin</div>
-                            <span class="igt-role-badge igt-role-badge--superadmin">Pusat • Full Access</span>
-                        </div>
-                        <div class="igt-role-indicator"><i class="ri-check-line"></i></div>
-                    </div>
-                    <p class="igt-role-card-desc">Akses penuh seluruh data nasional (38 provinsi), semua modul, dan tanpa batasan filter wilayah (tampilan default).</p>
-                </div>
-
-                <!-- 2. Admin Direktorat SPPR -->
-                <div class="igt-role-card" data-role="sppr" id="role-card-sppr" role="button" tabindex="0">
-                    <div class="igt-role-card-top">
-                        <div class="igt-role-icon"><i class="ri-compass-3-line"></i></div>
-                        <div class="igt-role-card-info">
-                            <div class="igt-role-card-title">2. Admin Direktorat SPPR</div>
-                            <span class="igt-role-badge igt-role-badge--sppr">Admin Ditjen SPPR</span>
-                        </div>
-                        <div class="igt-role-indicator"><i class="ri-check-line"></i></div>
-                    </div>
-                    <p class="igt-role-card-desc">Akses Admin: Data di dashboard otomatis terfilter khusus tema dan direktorat pengampu di lingkungan Ditjen SPPR.</p>
-                </div>
-
-                <!-- 3. Admin Kanwil DIY -->
-                <div class="igt-role-card" data-role="kanwil-diy" id="role-card-kanwil-diy" role="button" tabindex="0">
-                    <div class="igt-role-card-top">
-                        <div class="igt-role-icon"><i class="ri-map-pin-user-line"></i></div>
-                        <div class="igt-role-card-info">
-                            <div class="igt-role-card-title">3. Admin Kanwil DIY</div>
-                            <span class="igt-role-badge igt-role-badge--kanwil">Admin Kanwil</span>
-                        </div>
-                        <div class="igt-role-indicator"><i class="ri-check-line"></i></div>
-                    </div>
-                    <p class="igt-role-card-desc">Akses Admin: Langsung terfilter lokasi D.I. Yogyakarta. Terkunci dan tidak dapat melihat data wilayah provinsi lain.</p>
-                </div>
-
-                <!-- 4. Admin Kantah Gunung Kidul -->
-                <div class="igt-role-card" data-role="kantah-gunungkidul" id="role-card-kantah-gunungkidul" role="button" tabindex="0">
-                    <div class="igt-role-card-top">
-                        <div class="igt-role-icon"><i class="ri-building-line"></i></div>
-                        <div class="igt-role-card-info">
-                            <div class="igt-role-card-title">4. Admin Kantah Gunung Kidul</div>
-                            <span class="igt-role-badge igt-role-badge--kantah">Admin Kantah</span>
-                        </div>
-                        <div class="igt-role-indicator"><i class="ri-check-line"></i></div>
-                    </div>
-                    <p class="igt-role-card-desc">Akses Admin: Langsung terfilter lokasi Kab. Gunungkidul. Terkunci dan tidak dapat melihat data wilayah lain.</p>
-                </div>
-
-                <!-- 5. Operator -->
-                <div class="igt-role-card" data-role="operator" id="role-card-operator" role="button" tabindex="0">
-                    <div class="igt-role-card-top">
-                        <div class="igt-role-icon"><i class="ri-user-line"></i></div>
-                        <div class="igt-role-card-info">
-                            <div class="igt-role-card-title">5. Operator</div>
-                            <span class="igt-role-badge igt-role-badge--operator">Operator Direktorat</span>
-                        </div>
-                        <div class="igt-role-indicator"><i class="ri-check-line"></i></div>
-                    </div>
-                    <p class="igt-role-card-desc">Akses Operator: Dashboard ringkas berisi status peta (kompilasi, integrasi, tema derivatif) dan riwayat aktivitas unggah data milik satker sendiri.</p>
-                </div>
-
-                <!-- 6. Umum -->
-                <div class="igt-role-card" data-role="umum" id="role-card-umum" role="button" tabindex="0">
-                    <div class="igt-role-card-top">
-                        <div class="igt-role-icon"><i class="ri-team-line"></i></div>
-                        <div class="igt-role-card-info">
-                            <div class="igt-role-card-title">6. Umum</div>
-                            <span class="igt-role-badge igt-role-badge--umum">Pengguna Umum</span>
-                        </div>
-                        <div class="igt-role-indicator"><i class="ri-check-line"></i></div>
-                    </div>
-                    <p class="igt-role-card-desc">Akses Umum: Hanya dapat mengunggah dan memantau pengajuan data derivatif. Halaman lain tidak ditampilkan.</p>
-                </div>
-            </div>
-            <!-- Menu khusus Role Operator -->
-            <div class="igt-op-menu" id="igt-op-menu" style="display: none;">
-                <div class="igt-op-menu__label">Dashboard</div>
-                <a href="#" class="igt-op-menu__item is-active" data-op-view="dashboard"><i class="ri-bar-chart-2-line"></i> Dashboard</a>
-                <div class="igt-op-menu__label">Data</div>
-                <a href="#" class="igt-op-menu__item" data-op-view="kompilasi"><i class="ri-folder-line"></i> Kompilasi Data</a>
-                <a href="#" class="igt-op-menu__item" data-op-view="integrasi"><i class="ri-building-2-line"></i> Integrasi Data</a>
-                <a href="#" class="igt-op-menu__item" data-op-view="derivatif"><i class="ri-stack-line"></i> Data Derivatif</a>
-                <a href="#" class="igt-op-menu__item"><i class="ri-refresh-line"></i> Sinkronisasi Data</a>
-                <a href="#" class="igt-op-menu__item"><i class="ri-user-line"></i> Self Assessment</a>
-                <a href="#" class="igt-op-menu__item"><i class="ri-map-2-line"></i> Peta IGT</a>
-            </div>
+            <!-- Menu navigasi sidebar (dirender sesuai role aktif) -->
+            <nav class="igt-nav" id="igt-nav"></nav>
         </div>
 
         <!-- SIDEBAR FOOTER (USER PROFILE SESUAI ROLE) -->
@@ -815,9 +734,18 @@
             <a href="#" class="dropdown-link" data-bs-toggle="dropdown" data-bs-auto-close="outside">
                 <div class="avatar online"><img id="topbar-user-avatar" src="assets/img/profile.png" alt="Avatar"></div>
             </a>
-            <div class="dropdown-menu dropdown-menu-end mt-2 p-3" style="min-width: 220px;">
+            <div class="dropdown-menu dropdown-menu-end mt-2 p-3" style="min-width: 280px;">
                 <h6 class="mb-1 text-dark fw-semibold" id="topbar-user-name">Admin ATR/BPN</h6>
                 <p class="text-muted small mb-2" id="topbar-user-role">Administrator</p>
+                <div class="border-top pt-2 pb-2">
+                    <div class="igt-role-opsi__label">Ganti Role (Simulasi)</div>
+                    <a href="#" class="igt-role-opsi is-active" data-role="superadmin"><i class="ri-shield-keyhole-line igt-role-opsi__ikon"></i><span><strong>Superadmin</strong><small>Pusat • Full Access</small></span><i class="ri-check-line igt-role-opsi__cek"></i></a>
+                    <a href="#" class="igt-role-opsi" data-role="sppr"><i class="ri-compass-3-line igt-role-opsi__ikon"></i><span><strong>Admin Direktorat SPPR</strong><small>Admin Ditjen SPPR</small></span><i class="ri-check-line igt-role-opsi__cek"></i></a>
+                    <a href="#" class="igt-role-opsi" data-role="kanwil-diy"><i class="ri-map-pin-user-line igt-role-opsi__ikon"></i><span><strong>Admin Kanwil DIY</strong><small>Admin Kanwil</small></span><i class="ri-check-line igt-role-opsi__cek"></i></a>
+                    <a href="#" class="igt-role-opsi" data-role="kantah-gunungkidul"><i class="ri-building-line igt-role-opsi__ikon"></i><span><strong>Admin Kantah Gunung Kidul</strong><small>Admin Kantah</small></span><i class="ri-check-line igt-role-opsi__cek"></i></a>
+                    <a href="#" class="igt-role-opsi" data-role="operator"><i class="ri-user-line igt-role-opsi__ikon"></i><span><strong>Operator</strong><small>Operator Direktorat</small></span><i class="ri-check-line igt-role-opsi__cek"></i></a>
+                    <a href="#" class="igt-role-opsi" data-role="umum"><i class="ri-team-line igt-role-opsi__ikon"></i><span><strong>Umum</strong><small>Pengguna Umum</small></span><i class="ri-check-line igt-role-opsi__cek"></i></a>
+                </div>
                 <div class="border-top pt-2">
                     <a href="javascript:void(0)" class="text-danger text-decoration-none small"><i class="ri-logout-box-r-line"></i> Log Out</a>
                 </div>
@@ -1475,6 +1403,33 @@
             </div>
 
             </div><!-- /dashboard view -->
+            <!-- Dashboard Role Umum: ringkasan pengajuan derivatif milik sendiri -->
+            <div class="igt-op-view" data-view="dashboard-umum" style="display: none;">
+                <nav class="igt-op__breadcrumb"><a href="#">Dashboard</a> <span>/</span> <span>UMUM</span></nav>
+                <h4 class="igt-op__judul">Selamat Datang</h4>
+                <div class="igt-op__ringkas">
+                    <div class="igt-op__kartu is-link" data-op-view="derivatif" role="button" tabindex="0">
+                        <span class="igt-op__kartu-label">Derivatif Disetujui</span>
+                        <div class="igt-op__kartu-angka"><i class="ri-checkbox-circle-line"></i> <span id="umum-disetujui">0</span></div>
+                    </div>
+                    <div class="igt-op__kartu is-link" data-op-view="derivatif" role="button" tabindex="0">
+                        <span class="igt-op__kartu-label">Menunggu Verifikasi</span>
+                        <div class="igt-op__kartu-angka"><i class="ri-time-line"></i> <span id="umum-menunggu">0</span></div>
+                    </div>
+                    <div class="igt-op__kartu is-link" data-op-view="derivatif" role="button" tabindex="0">
+                        <span class="igt-op__kartu-label">Ditolak</span>
+                        <div class="igt-op__kartu-angka"><i class="ri-close-circle-line"></i> <span id="umum-ditolak">0</span></div>
+                    </div>
+                </div>
+                <div class="igt-op__panel mb-4">
+                    <div class="igt-op__panel-head">
+                        <h6>Riwayat Pengajuan Derivatif</h6>
+                        <button type="button" class="btn btn-sm btn-primary igt-op-btn" data-op-view="derivatif"><i class="ri-upload-cloud-2-line me-1"></i> Unggah Data Derivatif</button>
+                    </div>
+                    <ul class="igt-op__riwayat" id="umum-riwayat"></ul>
+                </div>
+            </div>
+
             <!-- Sub-halaman Operator: Kompilasi / Integrasi / Derivatif -->
             <div class="igt-op-view" data-view="kompilasi" style="display: none;">
                 <nav class="igt-op__breadcrumb"><a href="#" data-op-view="dashboard">Dashboard</a> <span>/</span> <span>Data</span></nav>

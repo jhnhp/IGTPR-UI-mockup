@@ -124,8 +124,8 @@ var ROLE_CONFIG = {
         roleTitle: 'Umum',
         badgeText: 'Umum',
         badgeClass: 'bg-dark text-white',
-        desc: 'Akses Umum: Hanya dapat mengunggah dan memantau pengajuan data derivatif.',
-        lockText: 'Hanya Data Derivatif',
+        desc: 'Akses Umum: Dashboard ringkas dan unggah data derivatif milik sendiri.',
+        lockText: 'Dashboard & Derivatif',
         alertBarClass: 'is-umum',
         avatar: 'assets/img/profile.png'
     }
@@ -184,8 +184,9 @@ function switchDashboardRole(role) {
     currentActiveRole = role;
 
     // Update active class on sidebar cards
-    $('.igt-role-card').removeClass('is-active');
-    $('.igt-role-card[data-role="' + role + '"]').addClass('is-active');
+    $('.igt-role-opsi').removeClass('is-active');
+    $('.igt-role-opsi[data-role="' + role + '"]').addClass('is-active');
+    renderSidebarNav(role);
 
     // Update footer profile
     updateSidebarProfile(role);
@@ -194,14 +195,10 @@ function switchDashboardRole(role) {
     updateRoleAlertBanner(role);
 
     // Role Operator memakai tampilan dashboard tersendiri
-    // Role Umum memakai kerangka yang sama, tetapi hanya halaman Data Derivatif
+    // Role Umum memakai kerangka yang sama: dashboard ringkas + halaman Data Derivatif
     var isOperator = role === 'operator' || role === 'umum';
     $('#dashboard-admin').toggle(!isOperator);
     $('#dashboard-operator').toggle(isOperator);
-    $('#igt-op-menu').toggle(isOperator);
-    $('#igt-op-menu').children().toggle(role !== 'umum');
-    $('#igt-op-menu [data-op-view="derivatif"]').show();
-    $('.igt-op-view[data-view="derivatif"] .igt-op__breadcrumb').children('a, span:first-of-type').toggle(role !== 'umum');
     $('.header-main h4').text(isOperator ? '' : 'Dashboard');
     if (!isOperator && mapInstance) mapInstance.resize(); // peta sempat tersembunyi
 
@@ -209,7 +206,7 @@ function switchDashboardRole(role) {
         window.ROLE_LOCK_PROVINCE = null;
         window.ROLE_LOCK_KABUPATEN = null;
         window.ROLE_LOCK_DIREKTORAT = null;
-        bukaHalamanOperator('derivatif');
+        bukaHalamanOperator('dashboard-umum');
     } else if (isOperator) {
         applyRoleOperator();
         bukaHalamanOperator('dashboard');
@@ -333,13 +330,15 @@ function applyRoleOperator() {
 
 // Navigasi sub-halaman Operator (Dashboard / Kompilasi / Integrasi / Derivatif)
 function bukaHalamanOperator(view) {
-    if (currentActiveRole === 'umum') view = 'derivatif';
+    // Umum hanya punya dashboard sendiri dan halaman derivatif
+    if (currentActiveRole === 'umum') view = (view === 'derivatif') ? 'derivatif' : 'dashboard-umum';
     $('.igt-op-view').hide().filter('[data-view="' + view + '"]').show();
-    $('.igt-op-menu__item').removeClass('is-active').filter('[data-op-view="' + view + '"]').addClass('is-active');
-    var judul = { dashboard: '', kompilasi: 'Data Kompilasi', integrasi: 'Integrasi Data', derivatif: 'Unggah Data Derivatif' };
+    $('.igt-nav__item').removeClass('is-active').filter('[data-op-view="' + view + '"]').addClass('is-active');
+    var judul = { dashboard: '', 'dashboard-umum': '', kompilasi: 'Data Kompilasi', integrasi: 'Integrasi Data', derivatif: 'Unggah Data Derivatif' };
     $('.header-main h4').text(judul[view] || '');
     if (view === 'kompilasi' || view === 'integrasi') renderDaftarOperator(view, '');
     if (view === 'derivatif') renderDerivatifOperator();
+    if (view === 'dashboard-umum') renderDashboardUmum();
     window.scrollTo(0, 0);
 }
 
@@ -415,6 +414,24 @@ function renderDerivatifOperator() {
     $('#op-derivatif-info').text('Showing ' + (list.length ? 1 : 0) + ' to ' + list.length + ' of ' + list.length + ' entries');
 }
 
+function renderDashboardUmum() {
+    var list = ((window.MOCKUP_DATA && window.MOCKUP_DATA.umum) || {}).derivatif || [];
+    var hitung = function(st) { return list.filter(function(r) { return r.status === st; }).length; };
+    $('#umum-disetujui').text(hitung('Disetujui'));
+    $('#umum-menunggu').text(hitung('Menunggu Verifikasi'));
+    $('#umum-ditolak').text(hitung('Ditolak'));
+    var html = list.map(function(r) {
+        var proses = r.status !== 'Disetujui';
+        var tolak = r.status === 'Ditolak';
+        return '<li>'
+            + '<div class="igt-op__riwayat-ikon' + (proses ? ' is-proses' : '') + '"' + (tolak ? ' style="background:#dc3545"' : '') + '><i class="' + (proses ? 'ri-time-line' : 'ri-shield-check-line') + '"></i></div>'
+            + '<div class="igt-op__riwayat-isi"><strong>' + r.layer + '</strong><span>' + r.sld + ' · ' + r.fitur.toLocaleString('id-ID') + ' fitur</span><span>' + r.tanggal + '</span></div>'
+            + '<span class="igt-op__riwayat-status' + (proses ? ' is-proses' : '') + '"' + (tolak ? ' style="color:#dc3545"' : '') + '>' + r.status + '</span>'
+            + '</li>';
+    }).join('');
+    $('#umum-riwayat').html(html || '<li class="text-muted small">Belum ada pengajuan.</li>');
+}
+
 $(document).on('click', '[data-op-view]', function(e) {
     e.preventDefault();
     bukaHalamanOperator($(this).attr('data-op-view'));
@@ -466,8 +483,104 @@ function renderOperatorGrafik(data) {
     $el.html(svg);
 }
 
+/* ----------------------------------------------------
+   1d. Sidebar Navigasi per Role
+---------------------------------------------------- */
+// Susunan mengikuti Examples/Usulan-Navbar.png
+var NAV_DASHBOARD_ADMIN = { label: 'Dashboard', items: [['ri-bar-chart-2-line', 'Dashboard', 'dashboard-admin']] };
+var NAV_DATA_IGT = { label: 'Data IGT', items: [
+    ['ri-folder-line', 'Kompilasi Data'],
+    ['ri-building-2-line', 'Integrasi Data'],
+    ['ri-map-2-line', 'Peta IGT'],
+    ['ri-group-line', 'Self Assessment']
+] };
+var NAV_DERIVATIF_ADMIN = [
+    ['ri-list-check', 'List Data Derivatif'],
+    ['ri-upload-cloud-2-line', 'Unggah Data Derivatif'],
+    ['ri-checkbox-circle-line', 'Verifikasi Derivatif']
+];
+var NAV_PER_ROLE = {
+    'superadmin': [
+        NAV_DASHBOARD_ADMIN,
+        NAV_DATA_IGT,
+        { label: 'Master Data IGT', items: [
+            ['ri-user-star-line', 'Ketua Tim'],
+            ['ri-stack-line', 'Layer IGT'],
+            ['ri-database-2-line', 'Atribut Data'],
+            ['ri-file-list-3-line', 'Metadata'],
+            ['ri-focus-3-line', 'Target Data IGT Master'],
+            ['ri-map-pin-line', 'Baseline'],
+            ['ri-file-text-line', 'Data Lainnya']
+        ] },
+        { label: 'Data Derivatif', items: NAV_DERIVATIF_ADMIN.concat([
+            ['ri-stack-line', 'Layer Derivatif'],
+            ['ri-database-2-line', 'Atribut Layer Derivatif']
+        ]) },
+        { label: 'Style Peta', items: [
+            ['ri-palette-line', 'SLD'],
+            ['ri-palette-line', 'SLD Derivatif'],
+            ['ri-image-line', 'Symbology']
+        ] },
+        { label: 'Analisis & Layanan', items: [
+            ['ri-stack-fill', 'Tumpang Susun'],
+            ['ri-node-tree', 'Model Builder QGIS'],
+            ['ri-global-line', 'Web Service']
+        ] },
+        { label: 'Pengguna & Akses', items: [
+            ['ri-user-settings-line', 'User Management'],
+            ['ri-shield-keyhole-line', 'Role Management'],
+            ['ri-shield-user-line', 'Direktorat']
+        ] },
+        { label: 'Konten Portal', items: [['ri-home-gear-line', 'CMS Landing Page', null, true]] }
+    ],
+    'operator': [
+        { label: 'Dashboard', items: [['ri-bar-chart-2-line', 'Dashboard', 'dashboard']] },
+        { label: 'Data IGT', items: [
+            ['ri-folder-line', 'Kompilasi Data', 'kompilasi'],
+            ['ri-building-2-line', 'Integrasi Data', 'integrasi'],
+            ['ri-map-2-line', 'Peta IGT'],
+            ['ri-group-line', 'Self Assessment']
+        ] },
+        { label: 'Data Derivatif', items: [['ri-upload-cloud-2-line', 'Unggah Data Derivatif', 'derivatif']] }
+    ],
+    'umum': [
+        { label: 'Dashboard', items: [['ri-bar-chart-2-line', 'Dashboard', 'dashboard-umum']] },
+        { label: 'Data Derivatif', items: [['ri-upload-cloud-2-line', 'Unggah Data Derivatif', 'derivatif']] }
+    ]
+};
+NAV_PER_ROLE['sppr'] = NAV_PER_ROLE['kanwil-diy'] = NAV_PER_ROLE['kantah-gunungkidul'] = [
+    NAV_DASHBOARD_ADMIN,
+    NAV_DATA_IGT,
+    { label: 'Data Derivatif', items: NAV_DERIVATIF_ADMIN }
+];
+
+// item: [ikon, label, view (opsional), punya submenu (opsional)]
+function renderSidebarNav(role) {
+    var grup = NAV_PER_ROLE[role] || NAV_PER_ROLE['superadmin'];
+    var html = grup.map(function(g) {
+        return '<div class="igt-nav__grup"><div class="igt-nav__label">' + g.label + ' <i class="ri-arrow-down-s-line"></i></div>'
+            + g.items.map(function(it, i) {
+                var view = it[2] && it[2] !== 'dashboard-admin' ? ' data-op-view="' + it[2] + '"' : '';
+                var aktif = (it[2] === 'dashboard-admin' || it[2] === 'dashboard' || it[2] === 'dashboard-umum') ? ' is-active' : '';
+                return '<a href="#" class="igt-nav__item' + aktif + '"' + view + '><i class="' + it[0] + '"></i> ' + it[1]
+                    + (it[3] ? '<i class="ri-arrow-right-s-line igt-nav__sub"></i>' : '') + '</a>';
+            }).join('')
+            + '</div>';
+    }).join('');
+    $('#igt-nav').html(html);
+}
+
 function initRoleSwitcher() {
-    $(document).on('click', '.igt-role-card', function(e) {
+    renderSidebarNav('superadmin');
+    $(document).on('click', '.igt-nav__label', function() {
+        $(this).closest('.igt-nav__grup').toggleClass('is-tutup');
+    });
+    $(document).on('click', '.igt-nav__item:not([data-op-view])', function(e) {
+        e.preventDefault();
+        $('.igt-nav__item').removeClass('is-active');
+        $(this).addClass('is-active');
+    });
+    $(document).on('click', '.igt-role-opsi', function(e) {
         e.preventDefault();
         var role = $(this).attr('data-role');
         switchDashboardRole(role);
