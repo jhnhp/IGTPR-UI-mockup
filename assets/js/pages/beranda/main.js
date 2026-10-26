@@ -30,7 +30,16 @@ $(document).ready(function() {
     initHeroMap();
     initUsulanModalEvents();
     applyDataFilter(null, null); // start at national level
-    if (currentActiveRole !== 'superadmin') terapkanRoleBeranda(currentActiveRole);
+    // Role tersimpan (mis. setelah reload) diterapkan setelah gaya peta siap,
+    // karena penerapan role mengubah filter layer peta
+    if (currentActiveRole !== 'superadmin') {
+        terapkanTampilanRole(currentActiveRole);
+        if (mapInstance && !mapInstance.isStyleLoaded()) {
+            mapInstance.once('load', function() { terapkanRoleBeranda(currentActiveRole); });
+        } else {
+            terapkanRoleBeranda(currentActiveRole);
+        }
+    }
 });
 
 // Dipanggil layout setiap kali role diganti
@@ -49,11 +58,17 @@ function applyRoleFilterToLeaderboard(rawData, kategori) {
     return rawData;
 }
 
-function terapkanRoleBeranda(role) {
-    // Operator & Umum: tampilan sama, tetapi hanya peta dan Statistik IGT
+// Bagian tampilan (tanpa peta): kartu yang tampil per role & kartu Data Saya
+function terapkanTampilanRole(role) {
+    // Operator & Umum: tampilan sama, tetapi hanya peta, Data Saya, dan Statistik IGT
     var isTerbatas = role === 'operator' || role === 'umum';
     $('.igt-ringkas-row, #leader-board, #statistik-derivatif, #aktivitas-log').toggle(!isTerbatas);
     renderDataSaya(role);
+}
+
+function terapkanRoleBeranda(role) {
+    terapkanTampilanRole(role);
+    var isTerbatas = role === 'operator' || role === 'umum';
 
     if (isTerbatas) {
         applyRoleSuperadmin();

@@ -40,3 +40,12 @@ body {
 .igt-role-opsi small { font-size: 11px; color: #94a3b8; }
 .igt-role-opsi__cek { visibility: hidden; }
 .igt-role-opsi.is-active .igt-role-opsi__cek { visibility: visible; }
+
+/* Submenu navbar (mis. CMS Landing Page) */
+.igt-nav__anak { display: none; padding: 2px 0 4px; }
+.igt-nav__induk.is-open .igt-nav__anak { display: block; }
+.igt-nav__induk.is-open .igt-nav__sub { transform: rotate(90deg); }
+.igt-nav__sub { transition: transform .2s; }
+.igt-nav__item--anak { padding-left: 49px; font-size: 13.5px; }
+.igt-nav__item--anak::before { content: ""; width: 6px; height: 1px; background: #94a3b8; margin-right: 4px; }
+.igt-nav__item--induk.is-active { background: transparent; color: #1e3a6e; font-weight: 600; }

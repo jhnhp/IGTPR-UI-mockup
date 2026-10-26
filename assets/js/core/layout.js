@@ -142,47 +142,50 @@ var NAV_DASHBOARD_ADMIN = { label: 'Dashboard', items: [['ri-bar-chart-2-line', 
 var NAV_DATA_IGT = { label: 'Data IGT', items: [
     ['ri-folder-line', 'Kompilasi Data', 'kompilasi-data.html'],
     ['ri-building-2-line', 'Integrasi Data', 'integrasi-data.html'],
-    ['ri-map-2-line', 'Peta IGT'],
-    ['ri-group-line', 'Self Assessment']
+    ['ri-map-2-line', 'Peta IGT', 'peta-igt.html'],
+    ['ri-group-line', 'Self Assessment', 'self-assessment.html']
 ] };
 var NAV_DERIVATIF_ADMIN = [
-    ['ri-list-check', 'List Data Derivatif'],
+    ['ri-list-check', 'List Data Derivatif', 'list-data-derivatif.html'],
     ['ri-upload-cloud-2-line', 'Unggah Data Derivatif', 'unggah-derivatif.html'],
-    ['ri-checkbox-circle-line', 'Verifikasi Derivatif']
+    ['ri-checkbox-circle-line', 'Verifikasi Derivatif', 'verifikasi-derivatif.html']
 ];
 var NAV_PER_ROLE = {
     'superadmin': [
         NAV_DASHBOARD_ADMIN,
         NAV_DATA_IGT,
         { label: 'Master Data IGT', items: [
-            ['ri-user-star-line', 'Ketua Tim'],
-            ['ri-stack-line', 'Layer IGT'],
-            ['ri-database-2-line', 'Atribut Data'],
-            ['ri-file-list-3-line', 'Metadata'],
-            ['ri-focus-3-line', 'Target Data IGT Master'],
-            ['ri-map-pin-line', 'Baseline'],
-            ['ri-file-text-line', 'Data Lainnya']
+            ['ri-user-star-line', 'Ketua Tim', 'ketua-tim.html'],
+            ['ri-stack-line', 'Layer IGT', 'layer-igt.html'],
+            ['ri-database-2-line', 'Atribut Data', 'atribut-data.html'],
+            ['ri-file-list-3-line', 'Metadata', 'metadata.html'],
+            ['ri-focus-3-line', 'Target Data IGT Master', 'target-master.html'],
+            ['ri-map-pin-line', 'Baseline', 'baseline.html'],
+            ['ri-file-text-line', 'Data Lainnya', 'data-lainnya.html']
         ] },
         { label: 'Data Derivatif', items: NAV_DERIVATIF_ADMIN.concat([
-            ['ri-stack-line', 'Layer Derivatif'],
-            ['ri-database-2-line', 'Atribut Layer Derivatif']
+            ['ri-stack-line', 'Layer Derivatif', 'layer-derivatif.html'],
+            ['ri-database-2-line', 'Atribut Layer Derivatif', 'atribut-layer-derivatif.html']
         ]) },
         { label: 'Style Peta', items: [
-            ['ri-palette-line', 'SLD'],
-            ['ri-palette-line', 'SLD Derivatif'],
-            ['ri-image-line', 'Symbology']
+            ['ri-palette-line', 'SLD', 'sld.html'],
+            ['ri-palette-line', 'SLD Derivatif', 'sld-derivatif.html'],
+            ['ri-image-line', 'Symbology', 'symbology.html']
         ] },
         { label: 'Analisis & Layanan', items: [
-            ['ri-stack-fill', 'Tumpang Susun'],
-            ['ri-node-tree', 'Model Builder QGIS'],
-            ['ri-global-line', 'Web Service']
+            ['ri-stack-fill', 'Tumpang Susun', 'tumpang-susun.html'],
+            ['ri-node-tree', 'Model Builder QGIS', 'model-builder.html'],
+            ['ri-global-line', 'Web Service', 'web-service.html']
         ] },
         { label: 'Pengguna & Akses', items: [
-            ['ri-user-settings-line', 'User Management'],
-            ['ri-shield-keyhole-line', 'Role Management'],
-            ['ri-shield-user-line', 'Direktorat']
+            ['ri-user-settings-line', 'User Management', 'user-management.html'],
+            ['ri-shield-keyhole-line', 'Role Management', 'role-management.html'],
+            ['ri-shield-user-line', 'Direktorat', 'direktorat.html']
         ] },
-        { label: 'Konten Portal', items: [['ri-home-gear-line', 'CMS Landing Page', null, true]] }
+        { label: 'Konten Portal', items: [['ri-home-gear-line', 'CMS Landing Page', null, [
+            ['Kelola Berita', 'cms-berita.html'],
+            ['Kelola Poin Landing', 'cms-poin-landing.html']
+        ]]] }
     ],
     'operator': [
         NAV_DASHBOARD_ADMIN,
@@ -192,8 +195,8 @@ var NAV_PER_ROLE = {
     'umum': [
         NAV_DASHBOARD_ADMIN,
         { label: 'Data IGT', items: [
-            ['ri-map-2-line', 'Peta IGT'],
-            ['ri-group-line', 'Self Assessment']
+            ['ri-map-2-line', 'Peta IGT', 'peta-igt.html'],
+            ['ri-group-line', 'Self Assessment', 'self-assessment.html']
         ] },
         { label: 'Data Derivatif', items: [['ri-upload-cloud-2-line', 'Unggah Data Derivatif', 'unggah-derivatif.html']] }
     ]
@@ -204,18 +207,27 @@ NAV_PER_ROLE['sppr'] = NAV_PER_ROLE['kanwil-diy'] = NAV_PER_ROLE['kantah-gunungk
     { label: 'Data Derivatif', items: NAV_DERIVATIF_ADMIN }
 ];
 
-// item: [ikon, label, href halaman (opsional, default '#'), punya submenu (opsional)]
-// Menu aktif = item yang href-nya sama dengan nama file halaman saat ini.
+// item: [ikon, label, href halaman (opsional, default '#'), submenu (opsional: [[label, href], ...])]
+// Menu aktif = item (atau submenu) yang href-nya sama dengan nama file halaman saat ini.
 function renderSidebarNav(role) {
     var grup = NAV_PER_ROLE[role] || NAV_PER_ROLE['superadmin'];
     var halaman = (location.pathname.split('/').pop() || 'index.html');
     var html = grup.map(function(g) {
         return '<div class="igt-nav__grup"><div class="igt-nav__label">' + g.label + ' <i class="ri-arrow-down-s-line"></i></div>'
             + g.items.map(function(it) {
+                var sub = Array.isArray(it[3]) ? it[3] : null;
+                if (sub) {
+                    var subAktif = sub.some(function(s) { return s[1] === halaman; });
+                    return '<div class="igt-nav__induk' + (subAktif ? ' is-open' : '') + '">'
+                        + '<a href="#" class="igt-nav__item igt-nav__item--induk' + (subAktif ? ' is-active' : '') + '"><i class="' + it[0] + '"></i> ' + it[1]
+                        + '<i class="ri-arrow-right-s-line igt-nav__sub"></i></a>'
+                        + '<div class="igt-nav__anak">' + sub.map(function(s) {
+                            return '<a href="' + s[1] + '" class="igt-nav__item igt-nav__item--anak' + (s[1] === halaman ? ' is-active' : '') + '">' + s[0] + '</a>';
+                        }).join('') + '</div></div>';
+                }
                 var href = it[2] || '#';
                 var aktif = href === halaman ? ' is-active' : '';
-                return '<a href="' + href + '" class="igt-nav__item' + aktif + '"><i class="' + it[0] + '"></i> ' + it[1]
-                    + (it[3] ? '<i class="ri-arrow-right-s-line igt-nav__sub"></i>' : '') + '</a>';
+                return '<a href="' + href + '" class="igt-nav__item' + aktif + '"><i class="' + it[0] + '"></i> ' + it[1] + '</a>';
             }).join('')
             + '</div>';
     }).join('');
@@ -354,7 +366,11 @@ function initRoleSwitcher() {
         $(this).closest('.igt-nav__grup').toggleClass('is-tutup');
     });
     // Menu tanpa halaman tujuan hanya diberi penanda aktif
-    $(document).on('click', '.igt-nav__item[href="#"]', function(e) {
+    $(document).on('click', '.igt-nav__item--induk', function(e) {
+        e.preventDefault();
+        $(this).closest('.igt-nav__induk').toggleClass('is-open');
+    });
+    $(document).on('click', '.igt-nav__item[href="#"]:not(.igt-nav__item--induk)', function(e) {
         e.preventDefault();
         $('.igt-nav__item').removeClass('is-active');
         $(this).addClass('is-active');

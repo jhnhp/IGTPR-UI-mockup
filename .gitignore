@@ -3,3 +3,6 @@ Thumbs.db
 *.log
 .~*
 shp/
+
+# Tangkapan layar aplikasi asli: berisi nama, NIP, dan email pengguna asli (jangan dipublikasikan)
+Examples/live/

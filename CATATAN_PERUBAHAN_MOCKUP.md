@@ -1265,3 +1265,21 @@ IGTPR-UI-mockup/
 
 - **Perubahan**: Akun role Operator diasumsikan berasal dari Direktorat SPPR. Nama akun menjadi **Operator Direktorat SPPR** (sebelumnya *Direktorat ATR/BPN*), sehingga sapaan Beranda menjadi *"Hai, Operator Direktorat SPPR 👋"*; profil sidebar, header, dan menu Ganti Role ikut menyesuaikan.
 - **Cache-busting**: `?v=20261026j`.
+
+### 82. Mockup Seluruh Halaman Menu (Mengacu Aplikasi Asli)
+
+- **Acuan**: Seluruh 28 halaman di navbar aplikasi asli `igtpr.exium.web.id/admin` ditelusuri: tangkapan layar disimpan lokal di `Examples/live/` (masuk `.gitignore` karena memuat nama, NIP, dan email pengguna asli), struktur halaman (judul, tombol, kolom tabel, contoh data, serta form di setiap modal Tambah/Edit/Verifikasi) diambil langsung dari DOM. Tombol tidak diklik di aplikasi asli kecuali membuka satu modal (tanpa menyimpan), agar tidak ada data asli yang berubah.
+- **27 halaman baru/diperbarui** (terhubung ke navbar sesuai role, menu aktif otomatis):
+  - *Data IGT*: Kompilasi Data, Integrasi Data (akordeon per IGT: Data Belum Diproses, Target, Realisasi, Satuan, bar persentase; klik untuk tabel berkas + aksi Verifikasi, Riwayat, Berita Acara, Edit Superadmin, Hapus; tab Renaksi/Service/Monev/Khusus, filter status, cari, tahun), Peta IGT (peta provinsi + panel Pilih IGT/Provinsi + Tampilkan Peta), Self Assessment (tampilan kosong + modal Tambah Data lengkap dengan pemeriksaan data).
+  - *Master Data IGT*: Ketua Tim (form), Layer IGT, Atribut Data, Metadata, Target Data IGT Master, Baseline, Data Lainnya.
+  - *Data Derivatif*: List Data Derivatif (+ Lihat Batch), Unggah Data Derivatif, Verifikasi Derivatif (tab Pengajuan Internal / Layanan Publik + modal Periksa), Layer Derivatif, Atribut Layer Derivatif (tabel skema dapat diedit).
+  - *Style Peta*: SLD, SLD Derivatif (wajib pilih layer), Symbology.
+  - *Analisis & Layanan*: Tumpang Susun, Model Builder QGIS, Web Service (di aplikasi asli error 500 → ditampilkan sebagai halaman perbaikan).
+  - *Pengguna & Akses*: User Management, Role Management (chip hak akses Baca/Tulis/WFS/Verifikasi, role Sistem terkunci), Direktorat.
+  - *Konten Portal*: CMS Landing Page sebagai submenu → Kelola Berita (+ preview, editor), Kelola Poin Landing.
+- **Interaksi** (semua simulasi, ditandai toast *"Mockup: tidak tersimpan ke server"*): Show entries, Search, sort kolom, paginasi, filter, tab, modal Tambah/Edit (form terisi data baris), konfirmasi Hapus, tombol Cek pemeriksaan, Pilih/Hapus Semua.
+- **Konsistensi data**: Kompilasi/Integrasi memakai data unggahan yang sama dengan kartu *Data Saya* (Operator hanya melihat datanya sendiri, admin melihat seluruh satker) dan target dari *Target Data IGT Master*. Link status di kartu Data Saya membuka halaman yang langsung terfilter.
+- **Teknis**: mesin halaman tabel berbasis konfigurasi (`assets/js/core/crud.js` + `assets/js/data/halaman.js`), CSS `assets/css/halaman.css`, generator kerangka `tools/buat-halaman.py`, submenu navbar di `layout.js`. `assets/js/pages/data/data.js` dihapus (digantikan).
+- **Perbaikan bug**: reload Beranda saat role tersimpan Operator/Umum/Admin wilayah memunculkan error *"Style is not done loading"*; penerapan role pada peta kini menunggu peta siap, sedangkan kartu Data Saya tampil seketika.
+- **Privasi**: nama pejabat, NIP, email, dan nama pengunggah pada data dummy diganti nilai fiktif (domain `contoh.go.id`); hanya nama unit kerja dan nama IGT yang mengikuti aplikasi asli.
+- **Cache-busting**: `?v=20261026k`.

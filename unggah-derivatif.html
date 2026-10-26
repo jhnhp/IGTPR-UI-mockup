@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/x-icon" href="assets/img/geoportalLogo.ico">
     <title>Geoportal IGT-PR - Unggah Data Derivatif</title>
+    <!-- Dibuat oleh tools/buat-halaman.py; ubah generator lalu jalankan ulang -->
 
     <!-- Vendor CSS -->
     <link rel="stylesheet" href="assets/lib/remixicon/fonts/remixicon.css">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/style.css?v=20261026j">
-    <link rel="stylesheet" href="assets/css/igt-components.css?v=20261026j">
-    <link rel="stylesheet" href="assets/css/layout.css?v=20261026j">
-    <link rel="stylesheet" href="assets/css/data-saya.css?v=20261026j">
+    <link rel="stylesheet" href="assets/css/style.css?v=20261026k">
+    <link rel="stylesheet" href="assets/css/igt-components.css?v=20261026k">
+    <link rel="stylesheet" href="assets/css/layout.css?v=20261026k">
+    <link rel="stylesheet" href="assets/css/data-saya.css?v=20261026k">
+    <link rel="stylesheet" href="assets/css/halaman.css?v=20261026k">
 </head>
 
-<body data-title="Unggah Data Derivatif" data-halaman="derivatif">
+<body data-title="Unggah Data Derivatif" data-halaman="unggah-derivatif">
     <!-- Layout bersama dirender oleh assets/js/core/layout.js -->
     <div id="app-sidebar"></div>
     <div id="app-header"></div>
@@ -23,37 +25,17 @@
     <div class="main main-app p-3 p-lg-4">
         <div id="app-role-banner"></div>
 
-        <div class="igt-card mb-4 igt-ds">
-            <div class="igt-card__head">
-                <div>
-                    <h6 class="igt-card__title">Unggah Data Derivatif</h6>
-                    <span class="igt-data-ringkas" id="data-ringkas"></span>
-                </div>
-                <div class="igt-card__tools">
-                    <div class="igt-searchbar">
-                        <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt=""></span>
-                        <input type="search" id="data-cari" placeholder="Cari sesuatu...">
-                    </div>
-                    <div class="igt-segment" role="group" id="data-tab"><button type="button" class="igt-segment__item is-active" data-status="semua">Semua</button><button type="button" class="igt-segment__item" data-status="disetujui">Disetujui</button><button type="button" class="igt-segment__item" data-status="menunggu-verifikasi">Menunggu Verifikasi</button><button type="button" class="igt-segment__item" data-status="ditolak">Ditolak</button></div>
-                    <button type="button" class="igt-btn igt-btn--primary"><i class="ri-upload-cloud-2-line"></i> Unggah Data Derivatif</button>
-                </div>
-            </div>
-            <div class="igt-table-wrap">
-                <table class="igt-table">
-                    <thead><tr><th class="igt-table__no is-plain">No</th><th>Layer Derivatif</th><th>SLD Style</th><th>Fitur</th><th>Tanggal</th><th>Status</th><th>Catatan</th></tr></thead>
-                    <tbody id="data-body"></tbody>
-                </table>
-            </div>
-        </div>
+        <div id="crud-halaman"></div>
 
         <div id="app-footer"></div>
     </div>
 
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/dummy-data.js?v=20261026j"></script>
-    <script src="assets/js/core/layout.js?v=20261026j"></script>
-    <script src="assets/js/core/data-saya.js?v=20261026j"></script>
-    <script src="assets/js/pages/data/data.js?v=20261026j"></script>
+    <script src="assets/js/dummy-data.js?v=20261026k"></script>
+    <script src="assets/js/core/layout.js?v=20261026k"></script>
+    <script src="assets/js/core/data-saya.js?v=20261026k"></script>
+    <script src="assets/js/data/halaman.js?v=20261026k"></script>
+    <script src="assets/js/core/crud.js?v=20261026k"></script>
 </body>
 </html>

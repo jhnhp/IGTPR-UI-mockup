@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/x-icon" href="assets/img/geoportalLogo.ico">
     <title>Geoportal IGT-PR - Kompilasi Data</title>
+    <!-- Dibuat oleh tools/buat-halaman.py; ubah generator lalu jalankan ulang -->
 
     <!-- Vendor CSS -->
     <link rel="stylesheet" href="assets/lib/remixicon/fonts/remixicon.css">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/style.css?v=20261026j">
-    <link rel="stylesheet" href="assets/css/igt-components.css?v=20261026j">
-    <link rel="stylesheet" href="assets/css/layout.css?v=20261026j">
-    <link rel="stylesheet" href="assets/css/data-saya.css?v=20261026j">
+    <link rel="stylesheet" href="assets/css/style.css?v=20261026k">
+    <link rel="stylesheet" href="assets/css/igt-components.css?v=20261026k">
+    <link rel="stylesheet" href="assets/css/layout.css?v=20261026k">
+    <link rel="stylesheet" href="assets/css/data-saya.css?v=20261026k">
+    <link rel="stylesheet" href="assets/css/halaman.css?v=20261026k">
 </head>
 
 <body data-title="Kompilasi Data" data-halaman="kompilasi">
@@ -23,26 +25,23 @@
     <div class="main main-app p-3 p-lg-4">
         <div id="app-role-banner"></div>
 
-        <div class="igt-card mb-4 igt-ds">
-            <div class="igt-card__head">
-                <div>
-                    <h6 class="igt-card__title">Kompilasi Data</h6>
-                    <span class="igt-data-ringkas" id="data-ringkas"></span>
+        <div class="igt-halaman-kepala"><div>
+            <nav class="igt-breadcrumb"><a href="index.html">Dashboard</a><span>/</span><span>Data</span></nav>
+            <h4 class="igt-halaman-judul">Data Kompilasi</h4>
+        </div></div>
+        <div class="igt-card igt-crud-kartu">
+            <div class="igt-komp-alat">
+                <div class="igt-segment" role="group" id="komp-tab">
+                    <button type="button" class="igt-segment__item is-active">Renaksi</button>
+                    <button type="button" class="igt-segment__item">Service</button>
+                    <button type="button" class="igt-segment__item">Monev</button>
+                    <button type="button" class="igt-segment__item">Khusus</button>
                 </div>
-                <div class="igt-card__tools">
-                    <div class="igt-searchbar">
-                        <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt=""></span>
-                        <input type="search" id="data-cari" placeholder="Cari sesuatu...">
-                    </div>
-                    <div class="igt-segment" role="group" id="data-tab"><button type="button" class="igt-segment__item is-active" data-status="semua">Semua</button><button type="button" class="igt-segment__item" data-status="terkompilasi">Terkompilasi</button><button type="button" class="igt-segment__item" data-status="terupload">Terupload</button><button type="button" class="igt-segment__item" data-status="revisi-perbaikan">Revisi Perbaikan</button></div>
-                </div>
+                <select id="komp-status" aria-label="Filter status"></select>
+                <div class="igt-komp-alat__cari"><input type="search" id="komp-cari" placeholder="Cari IGT..."><button type="button"><i class="ri-search-line"></i></button></div>
+                <select id="komp-tahun" aria-label="Tahun renaksi"><option>2026</option><option>2024</option><option>2023</option><option>Tanpa Tahun Renaksi</option></select>
             </div>
-            <div class="igt-table-wrap">
-                <table class="igt-table">
-                    <thead><tr><th class="igt-table__no is-plain">No</th><th>Nama IGT</th><th>Jenis Data</th><th>Tanggal Upload</th><th>Status</th><th>Keterangan / Catatan</th></tr></thead>
-                    <tbody id="data-body"></tbody>
-                </table>
-            </div>
+            <div id="komp-daftar"></div>
         </div>
 
         <div id="app-footer"></div>
@@ -50,9 +49,10 @@
 
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/dummy-data.js?v=20261026j"></script>
-    <script src="assets/js/core/layout.js?v=20261026j"></script>
-    <script src="assets/js/core/data-saya.js?v=20261026j"></script>
-    <script src="assets/js/pages/data/data.js?v=20261026j"></script>
+    <script src="assets/js/dummy-data.js?v=20261026k"></script>
+    <script src="assets/js/core/layout.js?v=20261026k"></script>
+    <script src="assets/js/core/data-saya.js?v=20261026k"></script>
+    <script src="assets/js/core/crud.js?v=20261026k"></script>
+    <script src="assets/js/pages/data/kompilasi.js?v=20261026k"></script>
 </body>
 </html>
