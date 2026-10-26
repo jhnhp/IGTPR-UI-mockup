@@ -1,0 +1,42 @@
+/* IGTPR Mockup UI - CSS layout bersama (sidebar, header, ganti role) */
+
+/* Dasar tampilan semua halaman */
+body {
+    background-color: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1e293b;
+}
+.sidebar { z-index: 1040; }
+
+.igt-logo { font-size: 19px; display: flex; align-items: center; gap: 10px; font-weight: 700; color: #1e293b; text-decoration: none; }
+.igt-header-judul { font-size: 1.25rem; letter-spacing: -0.02em; }
+.igt-header-ikon { font-size: 1.25rem; }
+.igt-header-badge { top: -4px; right: -8px; font-size: 0.65rem; padding: 0.2em 0.45em; min-width: 18px; }
+.igt-profile-menu { min-width: 280px; }
+.igt-role-alert-ikon { font-size: 20px; }
+.igt-role-alert-judul { font-size: 13.5px; }
+#igt-role-alert-badge { font-size: 11.5px; padding: 4px 8px; }
+#igt-role-alert-desc { font-size: 12.5px; }
+.igt-role-alert-reset { font-size: 12px; font-weight: 600; }
+
+/* ===== Sidebar Navigasi per Role ===== */
+.igt-nav__grup { border-bottom: 1px solid #eef2f7; padding: 6px 0 10px; }
+.igt-nav__label { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: #64748b; padding: 12px 20px 6px; cursor: pointer; }
+.igt-nav__label i { transition: transform .2s; }
+.igt-nav__grup.is-tutup .igt-nav__label i { transform: rotate(-90deg); }
+.igt-nav__grup.is-tutup .igt-nav__item { display: none; }
+.igt-nav__item { display: flex; align-items: center; gap: 12px; padding: 8px 20px; font-size: 14px; color: #334155; text-decoration: none; }
+.igt-nav__item:hover { background: #f1f5f9; color: #1e293b; }
+.igt-nav__item i { font-size: 17px; }
+.igt-nav__item .igt-nav__sub { margin-left: auto; font-size: 14px; color: #94a3b8; }
+.igt-nav__item.is-active { background: #d5dde8; color: #1e3a6e; }
+.igt-role-opsi__label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #94a3b8; margin-bottom: 6px; }
+.igt-role-opsi { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; text-decoration: none; color: #334155; }
+.igt-role-opsi:hover { background: #f1f5f9; }
+.igt-role-opsi.is-active { background: #eff6ff; color: #1d4ed8; }
+.igt-role-opsi__ikon { font-size: 17px; }
+.igt-role-opsi span { flex: 1; line-height: 1.2; }
+.igt-role-opsi strong { display: block; font-size: 13px; font-weight: 600; }
+.igt-role-opsi small { font-size: 11px; color: #94a3b8; }
+.igt-role-opsi__cek { visibility: hidden; }
+.igt-role-opsi.is-active .igt-role-opsi__cek { visibility: visible; }

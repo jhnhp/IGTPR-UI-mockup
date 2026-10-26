@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/x-icon" href="assets/img/geoportalLogo.ico">
+    <!-- 1. Ganti judul tab -->
+    <title>Geoportal IGT-PR - Nama Halaman</title>
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="assets/lib/remixicon/fonts/remixicon.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=20261026e">
+    <link rel="stylesheet" href="assets/css/igt-components.css?v=20261026e">
+    <link rel="stylesheet" href="assets/css/layout.css?v=20261026e">
+
+    <!-- CSS halaman (opsional): assets/css/pages/nama-halaman.css -->
+</head>
+
+<!-- 2. data-title = judul di header -->
+<body data-title="Nama Halaman">
+    <!-- Layout bersama dirender oleh assets/js/core/layout.js -->
+    <div id="app-sidebar"></div>
+    <div id="app-header"></div>
+
+    <div class="main main-app p-3 p-lg-4">
+        <div id="app-role-banner"></div>
+
+        <!-- 3. Isi halaman -->
+        <div class="igt-card mb-4">
+            <div class="igt-card__head">
+                <h6 class="igt-card__title">Nama Halaman</h6>
+            </div>
+            <p class="text-muted mb-0">Konten halaman di sini.</p>
+        </div>
+
+        <div id="app-footer"></div>
+    </div>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <!-- Data dummy (opsional) -->
+    <script src="assets/js/dummy-data.js?v=20261026e"></script>
+    <!-- Layout bersama (wajib, sebelum JS halaman) -->
+    <script src="assets/js/core/layout.js?v=20261026e"></script>
+    <!-- JS halaman (opsional): assets/js/pages/nama-halaman/*.js
+         Untuk bereaksi saat role diganti:
+         IGT.onRoleChange = function(role) { ... };  (role awal: currentActiveRole) -->
+</body>
+</html>

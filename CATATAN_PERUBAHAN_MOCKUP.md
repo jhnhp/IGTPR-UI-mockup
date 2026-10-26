@@ -1198,3 +1198,41 @@ IGTPR-UI-mockup/
 
 - **Masalah**: Di GitHub Pages navbar sidebar tidak muncul karena browser masih memakai `mockup-app.js` versi lama dari cache (GitHub Pages menyimpan cache aset ±10 menit), sementara `index.html` sudah versi baru.
 - **Perbaikan**: Link `style.css`, `igt-components.css`, `dummy-data.js`, dan `mockup-app.js` di `index.html` diberi parameter versi (`?v=20261026`). Ganti nilai versi ini setiap kali file JS/CSS diubah agar browser selalu memuat versi terbaru.
+
+### 73. Menu Peta IGT & Self Assessment untuk Role Umum
+
+- **Perubahan**: Navbar role **Umum** ditambah grup **Data IGT** berisi **Peta IGT** dan **Self Assessment**, di antara Dashboard dan Data Derivatif. `Examples/Usulan-Navbar.png` ikut diperbarui.
+- **Cache-busting**: versi aset dinaikkan ke `?v=20261026b`.
+
+### 74. Penyamaan Tampilan Role Operator & Umum (Hanya Peta dan Statistik IGT)
+
+- **Perubahan**: Role **Operator** dan **Umum** kini memakai tampilan dashboard yang sama dengan role lain, tetapi hanya menampilkan **peta (hero + Detail Informasi)** dan **Statistik IGT**. Kartu Usulan Input Data & Kompilasi Integrasi, Leader Board, Statistik Derivatif, dan Aktivitas Log disembunyikan untuk kedua role ini. Data peta mengikuti tingkat nasional.
+- **Dihapus**: dashboard khusus Operator (kartu Terkompilasi/Terintegrasi/Tema Derivatif, grafik & riwayat aktivitas), sub-halaman Data Kompilasi, Integrasi Data, Unggah Data Derivatif, dan dashboard khusus Umum (catatan no. 63–69 & 71 terkait tampilan tersebut tidak berlaku lagi), beserta CSS, JS, dan data dummy (`MOCKUP_DATA.operator`, `MOCKUP_DATA.umum`).
+- **Navbar**: susunan menu Operator & Umum tetap sesuai `Examples/Usulan-Navbar.png`; menu kini berperilaku sama seperti role lain (Dashboard membuka dashboard utama, menu lain hanya penanda aktif).
+- **Cache-busting**: versi aset dinaikkan ke `?v=20261026c`.
+
+### 75. Restrukturisasi File untuk Persiapan Multi-Halaman
+
+- **Tujuan**: `index.html` tidak lagi menumpuk semua kode, sehingga mudah dikembangkan ke halaman lain.
+- **Layout bersama** (`assets/js/core/layout.js` + `assets/css/layout.css`): sidebar navbar, header (notifikasi & ganti role), banner role aktif, dan footer kini dirender otomatis ke placeholder `#app-sidebar`, `#app-header`, `#app-role-banner`, `#app-footer`. Konfigurasi role (`ROLE_CONFIG`, `ROLE_PILIHAN`) dan menu (`NAV_PER_ROLE`) berada di file ini. Judul header diambil dari `<body data-title>`.
+- **Role lintas halaman**: role aktif disimpan di `localStorage`; halaman bereaksi lewat `IGT.onRoleChange`.
+- **Menu**: kolom ke-3 item navbar kini berupa `href` halaman; menu aktif ditentukan otomatis dari nama file halaman.
+- **Beranda**: CSS inline (±550 baris) dipindah ke `assets/css/pages/beranda.css`; `mockup-app.js` (±4.000 baris) dipecah menjadi `assets/js/pages/beranda/` (`main`, `peta`, `filter`, `ringkasan`, `leaderboard`, `tabel`, `grafik`). `index.html` berkurang dari ±1.460 menjadi ±820 baris.
+- **Template**: `_template.html` sebagai kerangka halaman baru; panduan ada di `README.md` (bagian *Struktur Proyek*).
+- **Cache-busting**: versi aset dinaikkan ke `?v=20261026d`.
+
+### 76. Kartu "Data Saya" (Operator & Umum) & Halaman Kompilasi, Integrasi, Unggah Derivatif
+
+- **Kartu Data Saya** (dashboard Operator & Umum, di antara peta dan Statistik IGT): grafik batang bersegmen status data milik pengguna, tanpa tabel.
+  - **Operator**: *Data IGT* (Terintegrasi 7, Terkompilasi 1, Terupload 2, Revisi Perbaikan 1) dan *Data Derivatif* (Disetujui 2, Menunggu Verifikasi 1, Ditolak 1).
+  - **Umum**: hanya *Data Derivatif* (Disetujui 1, Menunggu Verifikasi 1).
+  - Setiap ruas grafik dan angka status dapat diklik, menuju halaman terkait yang langsung terfilter status tersebut (mis. `kompilasi-data.html?status=revisi-perbaikan`).
+  - Penanda merah **"1 data perlu revisi"** / **"1 data ditolak, perlu diunggah ulang"** muncul bila ada data yang butuh tindakan.
+- **Halaman baru** (dibuat dari `_template.html`):
+  - `kompilasi-data.html` — Data IGT berstatus Terkompilasi, Terupload, Revisi Perbaikan.
+  - `integrasi-data.html` — Data IGT berstatus Terintegrasi.
+  - `unggah-derivatif.html` — Data derivatif (Disetujui, Menunggu Verifikasi, Ditolak) + tombol Unggah Data Derivatif.
+  - Tiap halaman: tab filter status, pencarian, dan tabel (Nama/Layer, jenis/SLD, tanggal, pil status berwarna, catatan). Operator & Umum melihat data miliknya; role admin melihat seluruh unggahan.
+- **Navbar**: menu *Kompilasi Data*, *Integrasi Data*, dan *Unggah Data Derivatif* kini terhubung ke halaman tersebut (menu aktif otomatis).
+- **File**: `assets/js/core/data-saya.js` (status & tujuan link), `assets/css/data-saya.css`, `assets/js/pages/beranda/data-saya.js`, `assets/js/pages/data/data.js`; data dummy di `MOCKUP_DATA.dataSaya`.
+- **Lain-lain**: aturan font & latar dasar dipindah ke `layout.css` agar seluruh halaman seragam. Cache-busting `?v=20261026e`.

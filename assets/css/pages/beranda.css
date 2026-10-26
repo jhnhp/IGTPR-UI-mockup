@@ -1,0 +1,532 @@
+/* IGTPR Mockup UI - CSS khusus halaman Beranda (index.html) */
+
+/* Standalone mockup customizations */
+body {
+    background-color: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1e293b;
+}
+
+.sidebar {
+    z-index: 1040;
+}
+
+.main-app {
+    background-color: #f8fafc;
+    min-height: 100vh;
+}
+
+/* Responsive sidebar collapse behavior */
+@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s ease-in-out;
+    }
+    body.sidebar-show .sidebar {
+        transform: translateX(0);
+    }
+    body.sidebar-show::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.4);
+        z-index: 1030;
+    }
+}
+
+/* Hero Section & Maplibre container */
+.igt-hero {
+    position: relative;
+    height: 520px;
+    margin-bottom: 24px;
+}
+
+.igt-hero__peta {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: hidden;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+    z-index: 1;
+}
+
+.igt-hero__kepala {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+/* Prevent cards from overlapping the southern islands */
+.igt-beranda-isi {
+    position: relative;
+    margin-top: 0 !important;
+    z-index: 10;
+}
+
+/* Detail Informasi Popup Card */
+.igt-detail {
+    position: absolute;
+    top: 92px;
+    left: clamp(20px, 4%, 56px);
+    z-index: 25;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: min(610px, calc(100% - 320px));
+    min-width: 440px;
+    max-height: calc(100% - 108px);
+    padding: 18px 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.05);
+    border: 1px solid #e2e8f0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+    pointer-events: none;
+}
+
+.igt-detail.is-buka {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s;
+}
+
+.igt-detail__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.igt-detail__judul {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: #0f172a;
+}
+
+.igt-detail__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    padding: 12px;
+    background-color: #f8fafc;
+    border: 1px solid #edf2f7;
+    border-radius: 10px;
+}
+
+.igt-detail__baris {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    white-space: nowrap;
+}
+
+.igt-detail__wilayah {
+    overflow: hidden;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+    color: #0f172a;
+    text-overflow: ellipsis;
+}
+
+.igt-detail__tema {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    font-size: 12px;
+    line-height: 1.2;
+    color: #64748b;
+}
+
+.igt-detail__tema strong {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.igt-detail__alat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
+
+.igt-detail__alat .igt-searchbar {
+    flex: 1 1 115px !important;
+    min-width: 90px !important;
+    max-width: 145px !important;
+    height: 34px;
+    padding: 2px 6px;
+}
+
+.igt-detail__alat .igt-searchbar input {
+    font-size: 11px;
+    min-width: 0;
+    width: 100%;
+}
+
+.igt-detail__alat .igt-searchbar__icon {
+    width: 22px;
+    height: 22px;
+}
+
+.igt-detail__alat .igt-searchbar__icon img {
+    width: 14px;
+    height: 14px;
+}
+
+.igt-detail__alat .igt-pilih {
+    flex: 0 0 120px !important;
+    width: 120px !important;
+    max-width: 120px !important;
+    height: 34px;
+    padding: 0 6px !important;
+    overflow: hidden;
+}
+
+.igt-detail__alat .igt-detail__pilih--wilayah {
+    flex: 0 0 120px !important;
+    width: 120px !important;
+    max-width: 120px !important;
+}
+
+.igt-detail__alat .igt-pilih select {
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 11px;
+    height: 34px;
+    padding: 0 14px 0 0 !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.igt-detail__alat .igt-pilih__caret {
+    right: 4px;
+    width: 9px;
+    height: 9px;
+}
+
+.igt-detail__alat .igt-detail__pilih--tahun {
+    flex: 0 0 128px !important;
+    width: 128px !important;
+    max-width: 128px !important;
+    padding-left: 6px !important;
+}
+
+.igt-detail__alat .igt-detail__pilih--tahun .igt-btn__icon {
+    width: 16px !important;
+    height: 16px !important;
+    padding: 0 !important;
+    margin-right: 2px !important;
+}
+
+.igt-detail__alat .igt-detail__pilih--tahun .igt-btn__icon img {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+.igt-detail__alat .igt-detail__pilih--tahun select {
+    padding-left: 2px !important;
+}
+
+.igt-detail__daftar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+    max-height: 200px;
+    padding: 14px 16px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.igt-detail__legenda {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 2px;
+}
+
+.igt-detail__legenda-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.igt-detail__legenda-titik {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.igt-detail__legenda-titik--pertanahan,
+.igt-detail__legenda-titik--bidang {
+    background-color: #2563eb;
+    border: none;
+}
+
+.igt-detail__legenda-titik--tataruang,
+.igt-detail__legenda-titik--kawasan {
+    background-color: #059669;
+    border: none;
+}
+
+.igt-detail__chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.igt-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #1d4ed8;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+.igt-tag:hover {
+    background-color: #dbeafe;
+    border-color: #93c5fd;
+}
+
+.igt-tag--pertanahan {
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+}
+
+.igt-tag--pertanahan:hover {
+    background-color: #dbeafe;
+    border-color: #93c5fd;
+}
+
+.igt-tag--tataruang,
+.igt-tag--kawasan {
+    background-color: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #047857;
+}
+
+.igt-tag--tataruang:hover,
+.igt-tag--kawasan:hover {
+    background-color: #d1fae5;
+    border-color: #6ee7b7;
+}
+
+@media (max-width: 991.98px) {
+    .igt-detail {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: 100%;
+        min-width: 0;
+        max-height: none;
+        margin-top: 16px;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        display: none;
+    }
+    .igt-detail.is-buka {
+        display: flex;
+    }
+    .igt-detail__alat {
+        flex-wrap: wrap;
+    }
+}
+
+.map-wilayah-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    padding: 6px 16px;
+    border-radius: 30px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+    border: 1px solid #e2e8f0;
+    z-index: 20;
+}
+
+/* Fix Maplibre controls position */
+.maplibregl-ctrl-top-right {
+    top: 14px;
+    right: 14px;
+}
+
+/* Table check plain styling */
+.igt-table__check img {
+    width: 16px;
+    height: 16px;
+}
+
+/* Summary Cards (Usulan Input Data & Kompilasi Integrasi) */
+.igt-panel {
+    min-height: auto;
+}
+
+.igt-panel__atas {
+    justify-content: flex-start !important;
+    gap: 14px !important;
+    min-height: auto !important;
+    padding: 20px 20px 16px !important;
+}
+
+.igt-panel__nilai strong {
+    font-size: 58px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    letter-spacing: -1.5px !important;
+}
+
+.igt-panel__nilai span {
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    margin-bottom: 6px !important;
+}
+
+.igt-panel__pemisah {
+    font-size: 32px !important;
+    font-weight: 300 !important;
+    color: #cbd5e1 !important;
+    margin: 0 10px 4px 10px !important;
+    line-height: 1 !important;
+    align-self: center !important;
+}
+
+.igt-rincian__pemisah {
+    color: #cbd5e1 !important;
+    font-weight: 300 !important;
+    margin: 0 4px !important;
+    align-self: flex-end !important;
+    margin-bottom: 2px !important;
+}
+
+.igt-panel__nilai--kecil span {
+    font-size: 16px !important;
+    margin-bottom: 6px !important;
+}
+
+/* Usulan Input Data status colors matched with Kompilasi Integrasi (Order: Terintegrasi, Terkompilasi, Terupload, Revisi) */
+.igt-progres__ruas:nth-child(1),
+.igt-progres__ruas--1,
+.igt-progres__ruas.is-terintegrasi {
+    background-color: #1d4ed8 !important;
+    background-image: repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.1) 0 5px, transparent 5px 15px),
+                      linear-gradient(180deg, #2563eb 0%, #1e40af 100%) !important;
+}
+.igt-progres__ruas:nth-child(2),
+.igt-progres__ruas--2,
+.igt-progres__ruas.is-terkompilasi {
+    background-color: #93c5fd !important;
+    background-image: repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.15) 0 4px, transparent 4px 10px) !important;
+}
+.igt-progres__ruas:nth-child(3),
+.igt-progres__ruas--3,
+.igt-progres__ruas.is-terupload {
+    background-color: hsl(217, 30%, 75%) !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
+.igt-progres__ruas:nth-child(4),
+.igt-progres__ruas--4,
+.igt-progres__ruas.is-perbaikan {
+    background-color: hsl(0, 10%, 80%) !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
+.igt-progres__ruas.is-nol {
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+    width: 4px !important;
+    min-width: 4px !important;
+    border-radius: 2px !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
+.igt-progres__ruas.is-nol.is-perbaikan {
+    background-color: hsl(0, 10%, 65%) !important;
+}
+.igt-rincian__item:nth-child(1) .igt-rincian__titik,
+.igt-rincian__item.is-terintegrasi .igt-rincian__titik {
+    background-color: #1d4ed8 !important;
+}
+.igt-rincian__item:nth-child(2) .igt-rincian__titik,
+.igt-rincian__item.is-terkompilasi .igt-rincian__titik {
+    background-color: #93c5fd !important;
+}
+.igt-rincian__item:nth-child(3) .igt-rincian__titik,
+.igt-rincian__item.is-terupload .igt-rincian__titik {
+    background-color: hsl(217, 30%, 60%) !important;
+}
+.igt-rincian__item:nth-child(4) .igt-rincian__titik,
+.igt-rincian__item.is-perbaikan .igt-rincian__titik {
+    background-color: hsl(0, 10%, 60%) !important;
+}
+
+/* Dropdown panel absolute z-index */
+.igt-dropdown {
+    position: relative;
+}
+.igt-dropdown__panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    z-index: 99;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+    min-width: 200px;
+    display: none;
+}
+.igt-dropdown__panel.is-open {
+    display: block;
+}
+
+.main-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 0 16px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 13px;
+    color: #64748b;
+}
+.main-footer a {
+    color: #1e40af;
+    font-weight: 500;
+    text-decoration: none;
+}

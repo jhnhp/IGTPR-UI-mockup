@@ -31,6 +31,46 @@ Mockup antarmuka pengguna (UI) statis berbasis **Pure HTML, CSS, dan JavaScript*
    - **Statistik Akses IGT**: Log aktivitas akses per direktorat.
    - **Aktivitas Log**: Riwayat aksi user dan tanggal.
 
+## 🗂️ Struktur Proyek
+
+```text
+index.html                      # Halaman Beranda (Dashboard)
+kompilasi-data.html             # Data IGT: Terkompilasi, Terupload, Revisi Perbaikan
+integrasi-data.html             # Data IGT: Terintegrasi
+unggah-derivatif.html           # Data derivatif: Disetujui, Menunggu Verifikasi, Ditolak
+_template.html                  # Kerangka untuk membuat halaman baru
+assets/
+├── css/
+│   ├── style.css, igt-components.css   # Tema & komponen bersama
+│   ├── layout.css                      # Sidebar navbar, header, ganti role
+│   ├── data-saya.css                   # Warna status & kartu Data Saya
+│   └── pages/beranda.css               # CSS khusus Beranda
+├── js/
+│   ├── core/layout.js                  # Layout bersama: sidebar, header, banner role, footer,
+│   │                                   #   konfigurasi role (ROLE_CONFIG) & menu (NAV_PER_ROLE)
+│   ├── core/data-saya.js               # Status data unggahan & tujuan link per status
+│   ├── pages/data/data.js              # Tabel halaman Kompilasi / Integrasi / Derivatif
+│   ├── pages/beranda/                  # JS khusus Beranda
+│   │   ├── main.js         # state, inisialisasi & penerapan role
+│   │   ├── peta.js         # peta multi-level & Detail Informasi
+│   │   ├── filter.js       # filter data seluruh komponen
+│   │   ├── ringkasan.js    # Usulan Input Data, Kompilasi Integrasi & modal
+│   │   ├── leaderboard.js  # Leader Board
+│   │   ├── tabel.js        # tabel Statistik IGT, Derivatif, Aktivitas Log
+│   │   ├── grafik.js       # grafik spline
+│   │   └── data-saya.js    # kartu Data Saya (Operator & Umum)
+│   └── dummy-data.js                   # Data dummy
+└── data/                               # GeoJSON provinsi & kabupaten
+```
+
+### Menambah Halaman Baru
+1. Salin `_template.html` menjadi mis. `kompilasi-data.html`, ganti `<title>` dan `data-title` pada `<body>`.
+2. Isi konten di dalam `<div class="main ...">`. Sidebar, header, banner role, dan footer otomatis dirender oleh `layout.js`.
+3. Hubungkan menu sidebar: isi kolom ke-3 item di `NAV_PER_ROLE` (`assets/js/core/layout.js`) dengan nama file, mis. `['ri-folder-line', 'Kompilasi Data', 'kompilasi-data.html']`. Menu otomatis aktif di halaman tersebut.
+4. CSS/JS khusus halaman diletakkan di `assets/css/pages/` dan `assets/js/pages/<nama-halaman>/`. Untuk bereaksi saat role diganti, daftarkan `IGT.onRoleChange = function(role) { ... }`.
+5. Role aktif tersimpan di `localStorage`, jadi tetap sama saat berpindah halaman.
+6. Setiap mengubah file CSS/JS, naikkan parameter `?v=` di tag `<link>`/`<script>` agar GitHub Pages tidak memakai cache lama.
+
 ## 🚀 Cara Menjalankan
 
 Anda dapat membuka file `index.html` secara langsung di browser mana saja:

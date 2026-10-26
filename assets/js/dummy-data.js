@@ -7,66 +7,38 @@
  */
 
 window.MOCKUP_DATA = {
-    // 0a. DATA ROLE UMUM (hanya pengajuan derivatif)
-    umum: {
-        derivatif: [
-            { layer: 'Jalur Evakuasi Tsunami Pesisir Selatan', tipe: 'Kawasan', sld: 'SLD KAWASAN', fitur: 128, status: 'Menunggu Verifikasi', berlaku: '-', tanggal: '24 Okt 2026, 16.20', ket: 'Hasil survei komunitas desa', catatan: 'Sedang diperiksa Admin.' },
-            { layer: 'Sebaran Lahan Pertanian Organik', tipe: 'Bidang', sld: 'SLD BIDANG', fitur: 540, status: 'Disetujui', berlaku: '30 Jun 2027', tanggal: '09 Sep 2026, 08.45', ket: 'Data kelompok tani', catatan: 'Disetujui verifikator.' }
-        ]
-    },
-
-    // 0. DATA DASHBOARD ROLE OPERATOR
-    operator: {
-        grafik: [
-            { periode: '3-2024', upload: 2, revisi: 0 }, { periode: '6-2024', upload: 1, revisi: 0 },
-            { periode: '7-2024', upload: 6, revisi: 0 }, { periode: '8-2024', upload: 5, revisi: 0 },
-            { periode: '9-2024', upload: 5, revisi: 0 }, { periode: '10-2024', upload: 1, revisi: 0 },
-            { periode: '12-2024', upload: 1, revisi: 0 }, { periode: '1-2025', upload: 2, revisi: 0 },
-            { periode: '6-2025', upload: 6, revisi: 1 }, { periode: '1-2026', upload: 2, revisi: 0 },
-            { periode: '2-2026', upload: 3, revisi: 0 }, { periode: '3-2026', upload: 1, revisi: 0 },
-            { periode: '4-2026', upload: 6, revisi: 0 }, { periode: '5-2026', upload: 1, revisi: 0 },
-            { periode: '7-2026', upload: 3, revisi: 0 }, { periode: '10-2026', upload: 1, revisi: 0 }
-        ],
-        // Daftar IGT Renaksi satker Operator (halaman Data Kompilasi & Integrasi Data)
-        // belum = berkas yang masih menunggu proses pada tahap tersebut
-        renaksi: [
-            { igt: 'Bidang Tanah', satuan: 'Bidang', target: 2, belumKompilasi: 0, belumIntegrasi: 1 },
-            { igt: 'Hak Atas Tanah', satuan: 'Bidang', target: 1, belumKompilasi: 0, belumIntegrasi: 0 },
-            { igt: 'Lahan Baku Sawah Nasional', satuan: 'Kawasan', target: 2, belumKompilasi: 0, belumIntegrasi: 0 },
-            { igt: 'Lahan Sawah Dilindungi', satuan: 'Kawasan', target: 2, belumKompilasi: 0, belumIntegrasi: 0 },
-            { igt: 'Pertimbangan Teknis Pertanahan', satuan: 'Lokasi', target: 2, belumKompilasi: 1, belumIntegrasi: 0 },
-            { igt: 'Zona Nilai Tanah', satuan: 'Kabupaten/Kota', target: 2, belumKompilasi: 1, belumIntegrasi: 0 }
-        ],
-        // Berkas yang sudah terkompilasi (8). Yang berstatus Terintegrasi (7) tampil juga di Integrasi Data.
-        berkas: [
-            { igt: 'Bidang Tanah', upload: '21/04/2026', integrasi: '-', ket: 'BIDANG_TANAH_2026_TAHAP1.zip', status: 'Terkompilasi' },
-            { igt: 'Bidang Tanah', upload: '18/08/2026', integrasi: '20/08/2026', ket: 'REVISI 1908', status: 'Terintegrasi' },
-            { igt: 'Hak Atas Tanah', upload: '11/10/2026', integrasi: '15/10/2026', ket: 'HAT_SEMESTER_2.zip', status: 'Terintegrasi' },
-            { igt: 'Lahan Baku Sawah Nasional', upload: '07/07/2026', integrasi: '27/08/2026', ket: 'LBS tahap 1', status: 'Terintegrasi' },
-            { igt: 'Lahan Baku Sawah Nasional', upload: '07/07/2026', integrasi: '27/08/2026', ket: 'LBS tahap 2', status: 'Terintegrasi' },
-            { igt: 'Lahan Sawah Dilindungi', upload: '18/06/2026', integrasi: '18/06/2026', ket: '-', status: 'Terintegrasi' },
-            { igt: 'Pertimbangan Teknis Pertanahan', upload: '12/10/2026', integrasi: '12/10/2026', ket: 'contoh teknis', status: 'Terintegrasi' },
-            { igt: 'Zona Nilai Tanah', upload: '04/05/2026', integrasi: '10/05/2026', ket: 'ZNT_2026.zip', status: 'Terintegrasi' }
-        ],
-        // Pengajuan data derivatif milik Operator (4)
-        derivatif: [
-            { layer: 'Kawasan Rawan Bencana Longsor', tipe: 'Kawasan', sld: 'SLD KAWASAN', fitur: 4610, status: 'Disetujui', berlaku: '31 Des 2026', tanggal: '26 Okt 2026, 03.30', ket: 'Turunan RTRW Kabupaten', catatan: 'Sesuai standar, disetujui verifikator.' },
-            { layer: 'Sebaran Bidang Tanah Terdaftar', tipe: 'Bidang', sld: 'SLD BIDANG', fitur: 12840, status: 'Disetujui', berlaku: '-', tanggal: '14 Okt 2026, 10.12', ket: 'Agregasi bidang per desa', catatan: 'Disetujui.' },
-            { layer: 'Zona Nilai Tanah Kelas Tinggi', tipe: 'Kawasan', sld: 'SLD ZNT', fitur: 862, status: 'Menunggu Verifikasi', berlaku: '-', tanggal: '20 Okt 2026, 14.05', ket: 'Filter ZNT > Rp5 jt/m²', catatan: 'Sedang diperiksa Admin.' },
-            { layer: 'Lahan Sawah Dilindungi Terkonversi', tipe: 'Kawasan', sld: 'SLD LSD', fitur: 317, status: 'Ditolak', berlaku: '-', tanggal: '02 Okt 2026, 09.48', ket: 'Overlay LSD x Penggunaan Tanah', catatan: 'Geometri tidak valid, mohon unggah ulang.' }
-        ],
-        riwayat: [
-
-            { igt: 'Pertimbangan Teknis Pertanahan', user: 'Administrator IGT', waktu: '2026-10-12 14:58:01', status: 'Terintegrasi' },
-            { igt: 'Pertimbangan Teknis Pertanahan', user: 'Administrator IGT', waktu: '2026-10-12 14:48:59', status: 'Terkompilasi' },
-            { igt: 'Pertimbangan Teknis Pertanahan', user: 'Testing User', waktu: '2026-10-12 00:00:00', status: 'Proses Pengajuan Kompilasi' },
-            { igt: 'Lahan Baku Sawah Nasional', user: 'Administrator IGT', waktu: '2026-08-27 15:17:26', status: 'Terintegrasi' },
-            { igt: 'Lahan Baku Sawah Nasional', user: 'Administrator IGT', waktu: '2026-07-07 15:11:26', status: 'Terkompilasi' },
-            { igt: 'Lahan Baku Sawah Nasional', user: 'Administrator IGT', waktu: '2026-07-07 15:06:21', status: 'Terkompilasi' },
-            { igt: 'Lahan Sawah Dilindungi', user: 'Administrator IGT', waktu: '2026-06-18 10:22:40', status: 'Terintegrasi' },
-            { igt: 'Zona Nilai Tanah', user: 'Testing User', waktu: '2026-05-04 09:13:55', status: 'Proses Pengajuan Kompilasi' },
-            { igt: 'Bidang Tanah', user: 'Administrator IGT', waktu: '2026-04-21 16:40:12', status: 'Terkompilasi' }
-        ]
+    // 0. DATA YANG DIUNGGAH PENGGUNA (kartu "Data Saya" & halaman Kompilasi/Integrasi/Derivatif)
+    // status IGT: Terupload, Terkompilasi, Terintegrasi, Revisi Perbaikan
+    // status derivatif: Menunggu Verifikasi, Disetujui, Ditolak
+    dataSaya: {
+        operator: {
+            igt: [
+                { igt: 'Bidang Tanah', jenis: 'SHP', tanggal: '18/08/2026', status: 'Terintegrasi', catatan: 'REVISI 1908' },
+                { igt: 'Hak Atas Tanah', jenis: 'SHP', tanggal: '11/10/2026', status: 'Terintegrasi', catatan: 'HAT_SEMESTER_2.zip' },
+                { igt: 'Lahan Baku Sawah Nasional', jenis: 'SHP', tanggal: '07/07/2026', status: 'Terintegrasi', catatan: 'LBS tahap 1' },
+                { igt: 'Lahan Baku Sawah Nasional', jenis: 'SHP', tanggal: '07/07/2026', status: 'Terintegrasi', catatan: 'LBS tahap 2' },
+                { igt: 'Lahan Sawah Dilindungi', jenis: 'SHP', tanggal: '18/06/2026', status: 'Terintegrasi', catatan: '-' },
+                { igt: 'Pertimbangan Teknis Pertanahan', jenis: 'SHP', tanggal: '12/10/2026', status: 'Terintegrasi', catatan: 'contoh teknis' },
+                { igt: 'Zona Nilai Tanah', jenis: 'SHP', tanggal: '04/05/2026', status: 'Terintegrasi', catatan: 'ZNT_2026.zip' },
+                { igt: 'Bidang Tanah', jenis: 'SHP', tanggal: '21/04/2026', status: 'Terkompilasi', catatan: 'Menunggu proses integrasi' },
+                { igt: 'Pertimbangan Teknis Pertanahan', jenis: 'GDB', tanggal: '20/10/2026', status: 'Terupload', catatan: 'Menunggu proses kompilasi' },
+                { igt: 'Zona Nilai Tanah', jenis: 'SHP', tanggal: '22/10/2026', status: 'Terupload', catatan: 'Menunggu proses kompilasi' },
+                { igt: 'Penggunaan Tanah', jenis: 'SHP', tanggal: '15/10/2026', status: 'Revisi Perbaikan', catatan: 'Atribut KODE_DESA kosong, mohon dilengkapi.' }
+            ],
+            derivatif: [
+                { layer: 'Kawasan Rawan Bencana Longsor', sld: 'SLD KAWASAN', fitur: 4610, tanggal: '26/10/2026', status: 'Disetujui', catatan: 'Sesuai standar, disetujui verifikator.' },
+                { layer: 'Sebaran Bidang Tanah Terdaftar', sld: 'SLD BIDANG', fitur: 12840, tanggal: '14/10/2026', status: 'Disetujui', catatan: 'Disetujui.' },
+                { layer: 'Zona Nilai Tanah Kelas Tinggi', sld: 'SLD ZNT', fitur: 862, tanggal: '20/10/2026', status: 'Menunggu Verifikasi', catatan: 'Sedang diperiksa Admin.' },
+                { layer: 'Lahan Sawah Dilindungi Terkonversi', sld: 'SLD LSD', fitur: 317, tanggal: '02/10/2026', status: 'Ditolak', catatan: 'Geometri tidak valid, mohon unggah ulang.' }
+            ]
+        },
+        umum: {
+            igt: [],
+            derivatif: [
+                { layer: 'Jalur Evakuasi Tsunami Pesisir Selatan', sld: 'SLD KAWASAN', fitur: 128, tanggal: '24/10/2026', status: 'Menunggu Verifikasi', catatan: 'Sedang diperiksa Admin.' },
+                { layer: 'Sebaran Lahan Pertanian Organik', sld: 'SLD BIDANG', fitur: 540, tanggal: '09/09/2026', status: 'Disetujui', catatan: 'Disetujui verifikator.' }
+            ]
+        }
     },
 
     // 1. DATA TINGKAT NASIONAL (Default)
