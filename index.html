@@ -1007,6 +1007,25 @@
                                 </button>
                             </div>
                         </div>
+                        <label class="igt-btn igt-pilih" id="leader-board-bulan-wrap" title="Periode Bulan">
+                            <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
+                            <select id="leader-board-bulan" aria-label="Bulan Leader Board">
+                                <option value="all" selected>Semua Bulan</option>
+                                <option value="1">Januari</option>
+                                <option value="2">s.d. Februari</option>
+                                <option value="3">s.d. Maret</option>
+                                <option value="4">s.d. April</option>
+                                <option value="5">s.d. Mei</option>
+                                <option value="6">s.d. Juni</option>
+                                <option value="7">s.d. Juli</option>
+                                <option value="8">s.d. Agustus</option>
+                                <option value="9">s.d. September</option>
+                                <option value="10">s.d. Oktober</option>
+                                <option value="11">s.d. November</option>
+                                <option value="12">s.d. Desember</option>
+                            </select>
+                            <img class="igt-pilih__caret" src="assets/img/icons/caret-up-down.svg" alt="">
+                        </label>
                         <label class="igt-btn igt-pilih" id="leader-board-tahun-wrap" title="Tahun Renaksi">
                             <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
                             <select id="leader-board-tahun" aria-label="Tahun Leader Board">
@@ -1169,117 +1188,6 @@
                         </div>
                         <div class="igt-pagination" id="statistik-derivatif-pagination"></div>
                     </div>
-                </div>
-            </div>
-
-            <!-- 7. STATISTIK AKSES IGT TABLE -->
-            <div class="igt-card mb-4" id="statistik-akses">
-                <div class="igt-card__head">
-                    <h6 class="igt-card__title">Statistik Akses IGT</h6>
-                    <div class="igt-card__tools">
-                        <div class="igt-searchbar">
-                            <span class="igt-searchbar__icon"><img src="assets/img/icons/magnifying-glass.svg" alt=""></span>
-                            <input type="search" id="statistik-akses-cari" placeholder="Cari sesuatu...">
-                            <span class="igt-searchbar__shortcut">&#8984; K</span>
-                        </div>
-                        <div class="igt-segment" role="group">
-                            <button type="button" class="igt-segment__item is-active" data-tampilan="tabel">Tabel</button>
-                            <button type="button" class="igt-segment__item" data-tampilan="grafik">Grafik</button>
-                        </div>
-                        <label class="igt-btn igt-pilih">
-                            <span class="igt-btn__icon"><img src="assets/img/icons/calendar-blank.svg" alt=""></span>
-                            <select aria-label="Tanggal">
-                                <option value="all">Tanggal</option>
-                            </select>
-                            <img class="igt-pilih__caret" src="assets/img/icons/caret-down.svg" alt="">
-                        </label>
-                        <div class="igt-dropdown" id="statistik-akses-kelompok">
-                            <button type="button" class="igt-dropdown__trigger">
-                                <span class="igt-dropdown__label">Data Berdasarkan Direktorat</span>
-                                <span class="igt-dropdown__caret"><img src="assets/img/icons/caret-down.svg" alt=""></span>
-                            </button>
-                            <div class="igt-dropdown__panel">
-                                <button type="button" class="igt-dropdown__item is-active">
-                                    <img src="assets/img/icons/radio-on.svg" alt=""> Data Berdasarkan Direktorat
-                                </button>
-                                <button type="button" class="igt-dropdown__item">
-                                    <img src="assets/img/icons/radio-off.svg" alt=""> Data Berdasarkan Aktivitas
-                                </button>
-                            </div>
-                        </div>
-                        <button type="button" class="igt-btn">
-                            <span class="igt-btn__icon"><img src="assets/img/icons/download-simple.svg" alt=""></span>
-                            Unduh Data
-                        </button>
-                        <button type="button" class="igt-btn">
-                            <span class="igt-btn__icon"><img src="assets/img/icons/arrows-out.svg" alt=""></span>
-                            View Full Table
-                        </button>
-                    </div>
-                </div>
-
-                <div id="statistik-akses-tabel">
-                    <div class="igt-table-wrap">
-                        <table class="igt-table">
-                            <thead>
-                                <tr>
-                                    <th class="igt-table__no is-plain">No</th>
-                                    <th data-kolom="direktorat"><span class="igt-table__sort">Direktorat <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
-                                    <th data-kolom="aktivitas"><span class="igt-table__sort">Aktivitas <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
-                                    <th data-kolom="total"><span class="igt-table__sort">Total <img src="assets/img/icons/caret-up-down.svg" alt=""></span></th>
-                                </tr>
-                            </thead>
-                            <tbody id="statistik-akses-body"></tbody>
-                        </table>
-                    </div>
-                    <div class="igt-table-foot">
-                        <div class="igt-table-foot__perpage">
-                            Per page
-                            <select id="statistik-akses-perpage">
-                                <option value="10" selected>10</option>
-                            </select>
-                        </div>
-                        <div class="igt-pagination" id="statistik-akses-pagination"></div>
-                    </div>
-                </div>
-
-                <div id="statistik-akses-grafik" class="igt-chart-wrap" style="display: none;">
-                    <!-- Sub-toolbar: Legend & Metric Dropdown -->
-                    <div class="igt-chart-subbar">
-                        <div class="igt-chart-subbar__left">
-                            <div class="igt-chart-legend">
-                                <span class="igt-chart-legend__item">
-                                    <span class="igt-chart-legend__dot" style="background-color: #2563eb;"></span>
-                                    <span class="igt-chart-legend__label" id="statistik-akses-chart-legend-label">Total Akses Login</span>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="igt-chart-subbar__right">
-                            <div class="igt-dropdown" id="statistik-akses-grafik-dropdown">
-                                <button type="button" class="igt-chart-pill-btn" id="statistik-akses-grafik-metric-btn">
-                                    <span id="statistik-akses-grafik-metric-label">Data Berdasarkan Akses User</span>
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                </button>
-                                <div class="igt-dropdown__panel" id="statistik-akses-grafik-metric-panel">
-                                    <button type="button" class="igt-dropdown__item is-active" data-metric="user">
-                                        Data Berdasarkan Akses User
-                                    </button>
-                                    <button type="button" class="igt-dropdown__item" data-metric="plugin">
-                                        Data Berdasarkan Akses Plugin QGIS
-                                    </button>
-                                    <button type="button" class="igt-dropdown__item" data-metric="geoportal">
-                                        Data Berdasarkan Akses Geoportal
-                                    </button>
-                                    <button type="button" class="igt-dropdown__item" data-metric="total">
-                                        Data Berdasarkan Total Akses
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Chart Canvas / Body -->
-                    <div class="igt-chart-body position-relative" id="statistik-akses-chart-canvas"></div>
                 </div>
             </div>
 

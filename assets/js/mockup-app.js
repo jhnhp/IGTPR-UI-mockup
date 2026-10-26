@@ -357,7 +357,32 @@ function formatNamaKabupaten(nama) {
 /* ----------------------------------------------------
    3. Indonesia Multi-Level Map (MapLibre GL)
 ---------------------------------------------------- */
+// Gradasi choropleth kabupaten berdasarkan jumlah data IGT yang terunggah (statistikIGTKabupaten)
+var KAB_GRADASI_OPACITY = ['interpolate', ['linear'], ['get', 'jumlahData'], 0, 0.04, 1, 0.16, 3, 0.32, 5, 0.5, 7, 0.68];
+function siapkanJumlahDataKabupaten() {
+    var gj = window.INDONESIA_KABUPATEN_GEOJSON;
+    if (!gj || !gj.features) return;
+    var exact = {}, norm = {};
+    (function kumpulkan(obj) {
+        if (!obj || typeof obj !== 'object') return;
+        Object.keys(obj).forEach(function (k) {
+            if (k === 'statistikIGTKabupaten' && Array.isArray(obj[k])) {
+                obj[k].forEach(function (r) {
+                    var n = String(r.kabupaten || '').trim().toLowerCase(), j = r.jumlahIgt || 0;
+                    exact[n] = Math.max(exact[n] || 0, j);
+                    norm[normKabupaten(n)] = Math.max(norm[normKabupaten(n)] || 0, j);
+                });
+            } else kumpulkan(obj[k]);
+        });
+    })(window.MOCKUP_DATA);
+    gj.features.forEach(function (f) {
+        var n = String(f.properties.kabupaten || '').trim().toLowerCase();
+        f.properties.jumlahData = exact[n] != null ? exact[n] : (norm[normKabupaten(n)] || 0);
+    });
+}
+
 function initHeroMap() {
+    siapkanJumlahDataKabupaten();
     var container = document.getElementById('beranda-peta');
     if (!container) return;
 
@@ -439,8 +464,8 @@ function initHeroMap() {
                             type: 'fill',
                             source: 'kabupaten',
                             paint: {
-                                'fill-color': '#e0f2fe',
-                                'fill-opacity': 0.55
+                                'fill-color': '#1d4ed8',
+                                'fill-opacity': KAB_GRADASI_OPACITY
                             },
                             filter: ['==', 'provinsi', ''] // initially hidden
                         },
@@ -1029,8 +1054,8 @@ function zoomKeProvinsi(feature, namaProvinsi) {
         mapInstance.setFilter('kabupaten-garis', kabFilter);
 
         // Reset kabupaten styling to default province level
-        mapInstance.setPaintProperty('kabupaten-isi', 'fill-color', '#e0f2fe');
-        mapInstance.setPaintProperty('kabupaten-isi', 'fill-opacity', 0.55);
+        mapInstance.setPaintProperty('kabupaten-isi', 'fill-color', '#1d4ed8');
+        mapInstance.setPaintProperty('kabupaten-isi', 'fill-opacity', KAB_GRADASI_OPACITY);
         mapInstance.setPaintProperty('kabupaten-garis', 'line-color', '#3b82f6');
         mapInstance.setPaintProperty('kabupaten-garis', 'line-width', 1.0);
         mapInstance.setPaintProperty('kabupaten-garis', 'line-opacity', 0.85);
@@ -1116,8 +1141,8 @@ function kembaliKeProvinsi() {
             });
 
             // Restore all kabupaten in this province
-            mapInstance.setPaintProperty('kabupaten-isi', 'fill-color', '#e0f2fe');
-            mapInstance.setPaintProperty('kabupaten-isi', 'fill-opacity', 0.55);
+            mapInstance.setPaintProperty('kabupaten-isi', 'fill-color', '#1d4ed8');
+            mapInstance.setPaintProperty('kabupaten-isi', 'fill-opacity', KAB_GRADASI_OPACITY);
             mapInstance.setPaintProperty('kabupaten-garis', 'line-color', '#3b82f6');
             mapInstance.setPaintProperty('kabupaten-garis', 'line-width', 1.0);
             mapInstance.setPaintProperty('kabupaten-garis', 'line-opacity', 0.85);
@@ -1288,12 +1313,6 @@ function applyDataFilter(namaProvinsi, namaKabupaten, tahun) {
         { key: 'bidang', label: 'Bidang' },
         { key: 'luas', label: 'Luas (Ha)' }
     ], 'layer');
-
-    renderTableSection('statistik-akses', data.statistikAksesIGT, [
-        { key: 'direktorat', label: 'Unit / Wilayah' },
-        { key: 'aktivitas', label: 'Aktivitas' },
-        { key: 'total', label: 'Total' }
-    ], 'direktorat');
 
     renderTableSection('aktivitas-log', data.aktivitasLog, [
         { key: 'user', label: 'Nama User' },
@@ -2075,6 +2094,15 @@ function initLeaderBoard() {
         updateLeaderBoardDetailTable();
     });
 
+    // D2. Bulan filter (berlaku untuk grafik leaderboard & tabel detail)
+    $('#leader-board-bulan').off('change').on('change', function() {
+        if (window.MOCKUP_DATA) window.MOCKUP_DATA.leaderBoardBulan = $(this).val() || 'all';
+        leaderBoardState.currentPage = 1;
+        leaderBoardDetailState.currentPage = 1;
+        updateLeaderBoardTable();
+        updateLeaderBoardDetailTable();
+    });
+
     // E. Search input for detailed table
     $('#leader-board-detail-cari').off('input').on('input', function() {
         leaderBoardDetailState.searchQuery = $(this).val().trim().toLowerCase();
@@ -2505,7 +2533,6 @@ var LEADERBOARD_DETAIL_CONFIG = {
             { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
             { key: 'satker', label: 'Nama Satuan Kerja', sortable: true },
             { key: 'tipe', label: 'Tipe Administrasi', sortable: true },
-            { key: 'daftarIgt', label: 'Tema IGT Pengampu', sortable: false },
             { key: 'jumlahLogin', label: 'Frekuensi Login', sortable: true },
             { key: 'status', label: 'Status Keaktifan', sortable: false }
         ]
@@ -2517,7 +2544,6 @@ var LEADERBOARD_DETAIL_CONFIG = {
             { key: 'no', label: 'No', thClass: 'igt-table__no', sortable: false },
             { key: 'satker', label: 'Nama Satuan Kerja', sortable: true },
             { key: 'tipe', label: 'Tipe Administrasi', sortable: true },
-            { key: 'daftarIgt', label: 'Tema IGT Pengampu', sortable: false },
             { key: 'jumlahLogin', label: 'Frekuensi Login', sortable: true },
             { key: 'status', label: 'Status Keaktifan', sortable: false }
         ]
@@ -2792,11 +2818,6 @@ function updateLeaderBoardDetailTable() {
 
                 // Tipe Administrasi (Teks biasa, tanpa badge/chip)
                 tbodyHtml += '<td>' + (item.tipe || 'Pusat') + '</td>';
-
-                // Tema IGT Pengampu
-                var igtCount = item.daftarIgt ? item.daftarIgt.length : 0;
-                var igtLabel = igtCount > 0 ? (igtCount + ' Tema') : '-';
-                tbodyHtml += '<td>' + igtLabel + '</td>';
 
                 // Frekuensi Login (Satuannya ditulis biasa)
                 tbodyHtml += '<td><strong>' + (item.jumlahLogin || 0).toLocaleString('id-ID') + ' kali login</strong></td>';

@@ -1088,3 +1088,27 @@ IGTPR-UI-mockup/
   3. **Frekuensi Login Pengguna** (sebelumnya *Satker Sering Login*).
 - **Konsistensi UI**: Label tab pada markup HTML dan konfigurasi JavaScript leaderboard diselaraskan. Struktur kategori, filter, dan mekanisme data yang mendasari tiap tab tetap dipertahankan.
 - **Referensi desain**: Screenshot acuan yang diberikan untuk mockup pada 26 Oktober 2026.
+
+
+### 59. Gradasi Choropleth Peta Tingkat Kabupaten/Kota
+
+- **Konteks**: Peta tingkat kabupaten sebelumnya berwarna seragam (`#e0f2fe`, opacity 0.55), tidak seperti tingkat provinsi yang sudah bergradasi.
+- **Perubahan**: Isi poligon kabupaten (`kabupaten-isi`) kini memakai warna `#1d4ed8` dengan opacity bergradasi berdasarkan **jumlah data IGT yang terunggah** per kabupaten (0 → 0.04, 1 → 0.16, 3 → 0.32, 5 → 0.50, ≥7 → 0.68).
+- **Sumber data**: Fungsi `siapkanJumlahDataKabupaten()` membaca seluruh `statistikIGTKabupaten` (`jumlahIgt`) pada `MOCKUP_DATA` dan menyimpannya sebagai properti `jumlahData` pada GeoJSON kabupaten. Kabupaten tanpa data bernilai 0.
+- **Konsistensi**: Gradasi diterapkan pada style awal, saat masuk ke provinsi, dan saat kembali dari kabupaten ke provinsi. Sorotan kabupaten terpilih tidak berubah.
+
+### 60. Filter Bulan pada Leaderboard
+
+- **Perubahan**: Ditambahkan dropdown **Periode Bulan** (`#leader-board-bulan`) di samping filter tahun Leaderboard: *Semua Bulan*, *Januari*, *s.d. Februari* … *s.d. Desember* (kumulatif).
+- **Cakupan**: Filter berlaku untuk **grafik leaderboard dan Tabel Detail Data** sekaligus, pada ketiga tab (Capaian Renaksi, Frekuensi Akses IGT, Frekuensi Login Pengguna).
+- **Logika data dummy**: `MOCKUP_DATA.leaderBoardBulan` + `getLeaderBoardBulanFactor()` (faktor 0.25 + 0.75 × bulan/12). Pada Capaian Renaksi faktor hanya mengurangi realisasi (target tetap) sehingga persentase capaian ikut turun; pada akses & login faktor mengurangi frekuensi.
+
+### 61. Penghapusan Kolom "Tema IGT Pengampu" pada Tabel Frekuensi Login
+
+- **Perubahan**: Kolom **Tema IGT Pengampu** dihapus dari Tabel Detail tab *Frekuensi Login Pengguna* (konfigurasi `satker-login` & `direktorat-login` serta render baris di `updateLeaderBoardDetailTable()`).
+- **Kolom tersisa**: No, Nama Satuan Kerja, Tipe Administrasi, Frekuensi Login, Status Keaktifan.
+
+### 62. Penghapusan Card Statistik Akses IGT
+
+- **Perubahan**: Card **Statistik Akses IGT** (`#statistik-akses`, tabel + grafik area spline) dihapus dari halaman dashboard, beserta pemanggilan `renderTableSection('statistik-akses', ...)` di `applyDataFilter()`.
+- **Catatan**: Data akses IGT tetap tersedia melalui tab *Frekuensi Akses IGT* pada Leaderboard.

@@ -1056,9 +1056,18 @@ window.MOCKUP_DATA = {
         return isKaw ? 'kawasan' : 'bidang';
     },
 
+    // Filter bulan Leader Board (kumulatif s.d. bulan terpilih), diset dari UI
+    leaderBoardBulan: 'all',
+    getLeaderBoardBulanFactor: function() {
+        var b = parseInt(this.leaderBoardBulan, 10);
+        if (!b || b >= 12) return 1.0;
+        return Math.round((0.25 + 0.75 * (b / 12)) * 100) / 100;
+    },
+
     getRenaksiDetailIgtData: function(tahunFilter, jenisIgtFilter) {
         var t = (tahunFilter && tahunFilter !== 'all') ? String(tahunFilter) : 'all';
         var factor = t === '2026' || t === 'all' ? 1.0 : (t === '2025' ? 0.78 : (t === '2024' ? 0.52 : 0.30));
+        var bulanFactor = this.getLeaderBoardBulanFactor();
 
         // 43 Official IGT from Examples/IGT.xlsx mapped to 19 Direktorat + Regional Satkers
         var rawIgtList = [
@@ -1244,7 +1253,7 @@ window.MOCKUP_DATA = {
 
         return rawIgtList.map(function(item) {
             var tgt = Math.max(1, Math.round(item.targetBase * factor));
-            var real = Math.max(1, Math.round(item.realisasiBase * factor));
+            var real = Math.max(1, Math.round(item.realisasiBase * factor * bulanFactor));
             var pct = Math.min(100, Math.round((real / tgt) * 10000) / 100);
             return {
                 orderIndex: item.orderIndex,
@@ -1268,6 +1277,7 @@ window.MOCKUP_DATA = {
         var kat = kategori || 'capaian-renaksi';
         var t = (tahunFilter && tahunFilter !== 'all') ? String(tahunFilter) : 'all';
         var factor = t === '2026' || t === 'all' ? 1.0 : (t === '2025' ? 0.78 : (t === '2024' ? 0.52 : 0.30));
+        factor *= this.getLeaderBoardBulanFactor();
 
         var jenisIgtFilter = 'all';
         var direktoratFilter = 'all';
