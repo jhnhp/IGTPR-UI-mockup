@@ -545,6 +545,106 @@
             font-weight: 500;
             text-decoration: none;
         }
+
+        .igt-op__kartu.is-link { cursor: pointer; transition: box-shadow .15s, transform .15s; }
+        .igt-op__kartu.is-link:hover { box-shadow: 0 4px 14px rgba(37, 99, 235, .14); transform: translateY(-1px); }
+        .igt-op-daftar { padding: 16px; }
+        .igt-op-daftar__alat { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+        .igt-op-tab { display: flex; gap: 4px; margin-right: auto; }
+        .igt-op-tab button { border: 0; background: none; padding: 5px 14px; border-radius: 4px; font-size: 13px; color: #64748b; }
+        .igt-op-tab button.is-active { background: #e2e8f0; color: #334155; }
+        .igt-op-cari { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569; }
+        .igt-op-cari input { border: 1px solid #cbd5e1; border-radius: 4px; height: 34px; width: 170px; padding: 0 8px; }
+        .igt-op-cari button { border: 0; background: #1e3a6e; color: #fff; width: 38px; height: 34px; border-radius: 4px; }
+        .igt-op-tahun { border: 1px solid #cbd5e1; border-radius: 4px; height: 34px; min-width: 200px; padding: 0 10px; font-size: 14px; background: #fff; }
+        .igt-op-akordeon { border: 1px solid #e2e8f0; border-radius: 4px; }
+        .igt-op-item + .igt-op-item { border-top: 1px solid #e2e8f0; }
+        .igt-op-item__kepala { display: flex; align-items: center; gap: 16px; padding: 12px 20px; cursor: pointer; }
+        .igt-op-item.is-open .igt-op-item__kepala { background: #f8fafc; }
+        .igt-op-item__judul { flex: 1; min-width: 0; }
+        .igt-op-item__judul strong { display: block; font-size: 14.5px; font-weight: 600; color: #1e293b; }
+        .igt-op-item.is-open .igt-op-item__judul strong { color: #2563eb; }
+        .igt-op-item__meta { font-size: 11px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .igt-op-item__meta span + span { border-left: 1px solid #94a3b8; padding-left: 6px; }
+        .igt-op-item__persen { flex: 0 0 180px; font-size: 12.5px; color: #334155; }
+        .igt-op-bar { height: 10px; background: #f1f5f9; border-radius: 2px; overflow: hidden; margin-top: 2px; }
+        .igt-op-bar > div { height: 100%; font-size: 8px; line-height: 10px; color: #fff; text-align: center; white-space: nowrap; overflow: hidden; }
+        .igt-op-item__panah { color: #94a3b8; transition: transform .2s; }
+        .igt-op-item.is-open .igt-op-item__panah { transform: rotate(180deg); }
+        .igt-op-item__isi { display: none; padding: 8px 16px 16px; }
+        .igt-op-item.is-open .igt-op-item__isi { display: block; }
+        .igt-op-tabel { width: 100%; font-size: 12.5px; border-collapse: collapse; }
+        .igt-op-tabel th { font-weight: 600; color: #334155; padding: 10px 8px; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
+        .igt-op-tabel td { padding: 9px 8px; color: #334155; vertical-align: top; }
+        .igt-op-tabel tbody tr:nth-child(odd) td { background: #f5f5f5; }
+        .igt-op-tabel .is-kosong td { text-align: center; padding: 36px 8px; color: #334155; }
+        .igt-op-tabel .is-kosong img { width: 22px; display: block; margin: 0 auto 10px; }
+        .igt-op-status { font-size: 10.5px; color: #fff; padding: 2px 6px; border-radius: 2px; white-space: nowrap; }
+        .igt-op-status.is-integrasi { background: #10b981; }
+        .igt-op-status.is-kompilasi { background: #22c3e6; }
+        .igt-op-status.is-proses { background: #fbbf24; color: #1e293b; }
+        .igt-op-aksi { display: flex; gap: 4px; }
+        .igt-op-aksi i { display: inline-flex; width: 24px; height: 24px; align-items: center; justify-content: center; border: 1px solid; border-radius: 3px; font-size: 12px; }
+        .igt-op-tabel-alat, .igt-op-tabel-kaki { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; color: #475569; margin: 6px 0 10px; }
+        .igt-op-tabel-alat select, .igt-op-tabel-alat input { border: 1px solid #cbd5e1; border-radius: 3px; height: 28px; font-size: 12px; }
+        .igt-op-pager button { border: 1px solid #e2e8f0; background: #fff; font-size: 12px; padding: 4px 10px; color: #64748b; }
+        .igt-op-info { background: #cff4fc; border: 1px solid #b6effb; color: #055160; font-size: 12.5px; padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; }
+        .igt-op-pager button.is-active { background: #1e3a6e; border-color: #1e3a6e; color: #fff; }
+        .igt-op-layer { display: block; font-weight: 700; color: #334155; }
+        .igt-op-tipe { display: inline-block; background: #64748b; color: #fff; font-size: 10.5px; padding: 1px 6px; border-radius: 2px; margin-top: 4px; }
+        .igt-op-catatan { font-size: 11.5px; color: #64748b; margin-top: 4px; }
+        .igt-op-catatan b { color: #475569; }
+        .igt-op-status.is-tolak { background: #dc3545; }
+        .igt-op-aksi-teks { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+        .igt-op-aksi-teks button { background: #fff; border: 1px solid; border-radius: 3px; font-size: 12.5px; padding: 3px 9px; }
+        .igt-op-aksi-teks .is-pratinjau { border-color: #1e3a6e; color: #1e3a6e; }
+        .igt-op-aksi-teks .is-hapus { border-color: #dc3545; color: #dc3545; }
+        #op-derivatif-body td { vertical-align: middle; padding: 12px 8px; }
+        .igt-op-btn { background: #1e3a6e; border-color: #1e3a6e; font-size: 12.5px; }
+        /* ===== Dashboard Role Operator ===== */
+        .igt-op__breadcrumb { font-size: 13px; color: #64748b; margin-bottom: 4px; }
+        .igt-op__breadcrumb a { color: #2563eb; text-decoration: none; }
+        .igt-op__breadcrumb span { margin: 0 4px; }
+        .igt-op__judul { font-size: 22px; font-weight: 500; color: #1e293b; margin-bottom: 20px; }
+        .igt-op__ringkas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+        .igt-op__kartu, .igt-op__panel { background: #fff; border-radius: 6px; box-shadow: 0 1px 3px rgba(15, 23, 42, .06); }
+        .igt-op__kartu { padding: 18px 16px; }
+        .igt-op__kartu-label { font-size: 13px; color: #334155; }
+        .igt-op__kartu-angka { display: flex; align-items: center; gap: 8px; font-size: 26px; font-weight: 500; color: #1e293b; margin-top: 4px; }
+        .igt-op__kartu-angka i { font-size: 22px; color: #1e3a8a; }
+        .igt-op__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+        .igt-op__panel-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #f1f5f9; }
+        .igt-op__panel-head h6 { margin: 0; font-size: 14.5px; font-weight: 600; color: #1e293b; }
+        .igt-op__panel-head i { color: #94a3b8; }
+        .igt-op__panel-body { padding: 16px; }
+        .igt-op__chart svg { width: 100%; height: auto; display: block; }
+        .igt-op__legend { display: flex; justify-content: center; gap: 14px; font-size: 12px; color: #334155; margin: 6px 0 18px; }
+        .igt-op__legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
+        .igt-op__total { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #e2e8f0; padding: 22px 8px 4px; }
+        .igt-op__total strong { display: block; font-size: 26px; font-weight: 500; color: #1e293b; }
+        .igt-op__total span { font-size: 14px; font-weight: 600; color: #334155; }
+        .igt-op__riwayat { list-style: none; margin: 0; padding: 0; max-height: 452px; overflow-y: auto; }
+        .igt-op__riwayat li { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
+        .igt-op__riwayat-ikon { flex: 0 0 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; background: #10b981; }
+        .igt-op__riwayat-ikon.is-proses { background: #fbbf24; }
+        .igt-op__riwayat-isi { flex: 1; min-width: 0; }
+        .igt-op__riwayat-isi strong { display: block; font-size: 14px; font-weight: 600; color: #1e293b; }
+        .igt-op__riwayat-isi span { display: block; font-size: 12px; color: #64748b; }
+        .igt-op__riwayat-status { font-size: 12px; color: #10b981; white-space: nowrap; }
+        .igt-op__riwayat-status.is-proses { color: #f59e0b; }
+        .igt-op-menu { padding: 4px 0 12px; border-top: 1px solid #e2e8f0; margin-top: 12px; }
+        .igt-op-menu__label { font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: #64748b; padding: 12px 20px 6px; }
+        .igt-op-menu__item { display: flex; align-items: center; gap: 10px; padding: 8px 20px; font-size: 14px; color: #334155; text-decoration: none; }
+        .igt-op-menu__item i { font-size: 17px; }
+        .igt-op-menu__item.is-active { background: #dbe4f3; color: #1e3a8a; }
+        .igt-role-badge--umum { background: #e2e8f0; color: #334155; }
+        .igt-role-badge--operator { background: #ede9fe; color: #6d28d9; }
+        @media (max-width: 991px) {
+            .igt-op__grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 575px) {
+            .igt-op__ringkas { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 
@@ -621,6 +721,44 @@
                     </div>
                     <p class="igt-role-card-desc">Akses Admin: Langsung terfilter lokasi Kab. Gunungkidul. Terkunci dan tidak dapat melihat data wilayah lain.</p>
                 </div>
+
+                <!-- 5. Operator -->
+                <div class="igt-role-card" data-role="operator" id="role-card-operator" role="button" tabindex="0">
+                    <div class="igt-role-card-top">
+                        <div class="igt-role-icon"><i class="ri-user-line"></i></div>
+                        <div class="igt-role-card-info">
+                            <div class="igt-role-card-title">5. Operator</div>
+                            <span class="igt-role-badge igt-role-badge--operator">Operator Direktorat</span>
+                        </div>
+                        <div class="igt-role-indicator"><i class="ri-check-line"></i></div>
+                    </div>
+                    <p class="igt-role-card-desc">Akses Operator: Dashboard ringkas berisi status peta (kompilasi, integrasi, tema derivatif) dan riwayat aktivitas unggah data milik satker sendiri.</p>
+                </div>
+
+                <!-- 6. Umum -->
+                <div class="igt-role-card" data-role="umum" id="role-card-umum" role="button" tabindex="0">
+                    <div class="igt-role-card-top">
+                        <div class="igt-role-icon"><i class="ri-team-line"></i></div>
+                        <div class="igt-role-card-info">
+                            <div class="igt-role-card-title">6. Umum</div>
+                            <span class="igt-role-badge igt-role-badge--umum">Pengguna Umum</span>
+                        </div>
+                        <div class="igt-role-indicator"><i class="ri-check-line"></i></div>
+                    </div>
+                    <p class="igt-role-card-desc">Akses Umum: Hanya dapat mengunggah dan memantau pengajuan data derivatif. Halaman lain tidak ditampilkan.</p>
+                </div>
+            </div>
+            <!-- Menu khusus Role Operator -->
+            <div class="igt-op-menu" id="igt-op-menu" style="display: none;">
+                <div class="igt-op-menu__label">Dashboard</div>
+                <a href="#" class="igt-op-menu__item is-active" data-op-view="dashboard"><i class="ri-bar-chart-2-line"></i> Dashboard</a>
+                <div class="igt-op-menu__label">Data</div>
+                <a href="#" class="igt-op-menu__item" data-op-view="kompilasi"><i class="ri-folder-line"></i> Kompilasi Data</a>
+                <a href="#" class="igt-op-menu__item" data-op-view="integrasi"><i class="ri-building-2-line"></i> Integrasi Data</a>
+                <a href="#" class="igt-op-menu__item" data-op-view="derivatif"><i class="ri-stack-line"></i> Data Derivatif</a>
+                <a href="#" class="igt-op-menu__item"><i class="ri-refresh-line"></i> Sinkronisasi Data</a>
+                <a href="#" class="igt-op-menu__item"><i class="ri-user-line"></i> Self Assessment</a>
+                <a href="#" class="igt-op-menu__item"><i class="ri-map-2-line"></i> Peta IGT</a>
             </div>
         </div>
 
@@ -710,6 +848,7 @@
             </div>
         </div>
 
+        <div id="dashboard-admin">
         <!-- 1. HERO SECTION: GREETING & INDONESIA MAP -->
         <div class="igt-hero mb-4" id="beranda">
             <div class="igt-hero__kepala">
@@ -1278,6 +1417,118 @@
             </div>
 
             <!-- FOOTER -->
+            <div class="main-footer">
+                <span>&copy; 2023 All Rights Reserved.</span>
+                <span>Created by: <a href="#">IGT ATR/BPN</a></span>
+            </div>
+        </div>
+        </div><!-- /#dashboard-admin -->
+
+        <!-- ==============================================
+             DASHBOARD OPERATOR (Role Operator)
+        =============================================== -->
+        <div id="dashboard-operator" class="igt-op" style="display: none;">
+            <div class="igt-op-view" data-view="dashboard">
+            <nav class="igt-op__breadcrumb"><a href="#">Dashboard</a> <span>/</span> <span>DIREKTORAT</span></nav>
+            <h4 class="igt-op__judul">Selamat Datang</h4>
+
+            <div class="igt-op__ringkas">
+                <div class="igt-op__kartu is-link" data-op-view="kompilasi" role="button" tabindex="0" title="Buka halaman">
+                    <span class="igt-op__kartu-label">Peta Terkompilasi</span>
+                    <div class="igt-op__kartu-angka"><i class="ri-briefcase-4-line"></i> <span id="op-terkompilasi">8</span></div>
+                </div>
+                <div class="igt-op__kartu is-link" data-op-view="integrasi" role="button" tabindex="0" title="Buka halaman">
+                    <span class="igt-op__kartu-label">Peta Terintegrasi</span>
+                    <div class="igt-op__kartu-angka"><i class="ri-inbox-line"></i> <span id="op-terintegrasi">7</span></div>
+                </div>
+                <div class="igt-op__kartu is-link" data-op-view="derivatif" role="button" tabindex="0" title="Buka halaman">
+                    <span class="igt-op__kartu-label">Tema Derivatif</span>
+                    <div class="igt-op__kartu-angka"><i class="ri-stack-line"></i> <span id="op-derivatif">4</span></div>
+                </div>
+            </div>
+
+            <div class="igt-op__grid">
+                <div class="igt-op__panel">
+                    <div class="igt-op__panel-head">
+                        <h6>Grafik Riwayat Aktivitas</h6>
+                        <i class="ri-more-2-fill"></i>
+                    </div>
+                    <div class="igt-op__panel-body">
+                        <div class="igt-op__chart" id="op-chart"></div>
+                        <div class="igt-op__legend">
+                            <span><i style="background:#4f6bed"></i> Upload Data</span>
+                            <span><i style="background:#93b4fb"></i> Revisi Data</span>
+                        </div>
+                        <div class="igt-op__total">
+                            <div><strong id="op-total-upload">46 Activity</strong><span>Upload Data</span></div>
+                            <div><strong id="op-total-revisi">1 Activity</strong><span>Revisi</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="igt-op__panel">
+                    <div class="igt-op__panel-head">
+                        <h6>Riwayat Aktivitas</h6>
+                        <i class="ri-more-2-fill"></i>
+                    </div>
+                    <ul class="igt-op__riwayat" id="op-riwayat"></ul>
+                </div>
+            </div>
+
+            </div><!-- /dashboard view -->
+            <!-- Sub-halaman Operator: Kompilasi / Integrasi / Derivatif -->
+            <div class="igt-op-view" data-view="kompilasi" style="display: none;">
+                <nav class="igt-op__breadcrumb"><a href="#" data-op-view="dashboard">Dashboard</a> <span>/</span> <span>Data</span></nav>
+                <h4 class="igt-op__judul">Data Kompilasi</h4>
+                <div class="igt-op__panel igt-op-daftar" data-jenis="kompilasi">
+                    <div class="igt-op-daftar__alat">
+                        <div class="igt-op-tab"><button class="is-active">Renaksi</button><button>Service</button><button>Monev</button><button>Khusus</button></div>
+                        <div class="igt-op-cari"><label>Search</label><input type="search" class="igt-op-cari__input"><button type="button"><i class="ri-search-line"></i></button></div>
+                        <select class="igt-op-tahun"><option>2026</option><option>2025</option><option>2024</option><option>2023</option></select>
+                    </div>
+                    <div class="igt-op-akordeon"></div>
+                </div>
+            </div>
+
+            <div class="igt-op-view" data-view="integrasi" style="display: none;">
+                <nav class="igt-op__breadcrumb"><a href="#" data-op-view="dashboard">Dashboard</a> <span>/</span> <span>Data</span></nav>
+                <h4 class="igt-op__judul">Integrasi Data</h4>
+                <div class="igt-op__panel igt-op-daftar" data-jenis="integrasi">
+                    <div class="igt-op-daftar__alat">
+                        <div class="igt-op-tab"><button class="is-active">Renaksi</button><button>Service</button><button>Monev</button><button>Khusus</button></div>
+                        <div class="igt-op-cari"><label>Search</label><input type="search" class="igt-op-cari__input"><button type="button"><i class="ri-search-line"></i></button></div>
+                        <select class="igt-op-tahun"><option>2026</option><option>2025</option><option>2024</option><option>2023</option></select>
+                    </div>
+                    <div class="igt-op-akordeon"></div>
+                </div>
+            </div>
+
+            <div class="igt-op-view" data-view="derivatif" style="display: none;">
+                <nav class="igt-op__breadcrumb"><a href="#" data-op-view="dashboard">Dashboard</a> <span>/</span> <span>Data Derivatif</span></nav>
+                <h4 class="igt-op__judul">Unggah Data Derivatif</h4>
+                <div class="igt-op-info">Unggahan Anda diperiksa terlebih dahulu oleh Admin sebelum disetujui dan tayang di peta. Status pengajuan dapat dipantau pada daftar di bawah.</div>
+                <div class="igt-op__panel">
+                    <div class="igt-op__panel-head">
+                        <h6>Daftar Unggahan Saya</h6>
+                        <button type="button" class="btn btn-sm btn-primary igt-op-btn"><i class="ri-upload-cloud-2-line me-1"></i> Unggah Data Derivatif</button>
+                    </div>
+                    <div class="igt-op__panel-body">
+                        <div class="igt-op-tabel-alat">
+                            <span>Show <select><option>10</option></select> entries</span>
+                            <span>Search: <input type="search"></span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="igt-op-tabel">
+                                <thead><tr><th>Layer Derivatif</th><th>SLD Style</th><th>Fitur</th><th>Status</th><th>Masa Berlaku</th><th>Tanggal</th><th>Keterangan / Catatan</th><th>Aksi</th></tr></thead>
+                                <tbody id="op-derivatif-body"></tbody>
+                            </table>
+                        </div>
+                        <div class="igt-op-tabel-kaki">
+                            <span id="op-derivatif-info">Showing 0 to 0 of 0 entries</span>
+                            <span class="igt-op-pager"><button>Previous</button><button class="is-active">1</button><button>Next</button></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="main-footer">
                 <span>&copy; 2023 All Rights Reserved.</span>
                 <span>Created by: <a href="#">IGT ATR/BPN</a></span>

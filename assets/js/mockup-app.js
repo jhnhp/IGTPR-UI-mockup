@@ -108,6 +108,26 @@ var ROLE_CONFIG = {
         lockText: 'Wilayah Terkunci (Gunungkidul)',
         alertBarClass: 'is-kantah',
         avatar: 'assets/img/profile.png'
+    },
+    'operator': {
+        name: 'Direktorat ATR/BPN',
+        roleTitle: 'Operator',
+        badgeText: 'Operator',
+        badgeClass: 'bg-secondary text-white',
+        desc: 'Akses Operator: Dashboard ringkas status peta dan riwayat aktivitas unggah data satker sendiri.',
+        lockText: 'Tampilan Operator',
+        alertBarClass: 'is-operator',
+        avatar: 'assets/img/profile.png'
+    },
+    'umum': {
+        name: 'Pengguna Umum',
+        roleTitle: 'Umum',
+        badgeText: 'Umum',
+        badgeClass: 'bg-dark text-white',
+        desc: 'Akses Umum: Hanya dapat mengunggah dan memantau pengajuan data derivatif.',
+        lockText: 'Hanya Data Derivatif',
+        alertBarClass: 'is-umum',
+        avatar: 'assets/img/profile.png'
     }
 };
 
@@ -139,7 +159,7 @@ function updateRoleAlertBanner(role) {
         return;
     }
     var cfg = ROLE_CONFIG[role] || ROLE_CONFIG['superadmin'];
-    $bar.removeClass('is-sppr is-kanwil is-kantah').addClass(cfg.alertBarClass);
+    $bar.removeClass('is-sppr is-kanwil is-kantah is-operator is-umum').addClass(cfg.alertBarClass);
     $('#igt-role-alert-badge').text(cfg.badgeText).attr('class', 'badge ' + cfg.badgeClass);
     $('#igt-role-alert-desc').text(cfg.desc);
     $('#igt-role-alert-lock-text').text(cfg.lockText);
@@ -173,7 +193,27 @@ function switchDashboardRole(role) {
     // Update top alert banner
     updateRoleAlertBanner(role);
 
-    if (role === 'superadmin') {
+    // Role Operator memakai tampilan dashboard tersendiri
+    // Role Umum memakai kerangka yang sama, tetapi hanya halaman Data Derivatif
+    var isOperator = role === 'operator' || role === 'umum';
+    $('#dashboard-admin').toggle(!isOperator);
+    $('#dashboard-operator').toggle(isOperator);
+    $('#igt-op-menu').toggle(isOperator);
+    $('#igt-op-menu').children().toggle(role !== 'umum');
+    $('#igt-op-menu [data-op-view="derivatif"]').show();
+    $('.igt-op-view[data-view="derivatif"] .igt-op__breadcrumb').children('a, span:first-of-type').toggle(role !== 'umum');
+    $('.header-main h4').text(isOperator ? '' : 'Dashboard');
+    if (!isOperator && mapInstance) mapInstance.resize(); // peta sempat tersembunyi
+
+    if (role === 'umum') {
+        window.ROLE_LOCK_PROVINCE = null;
+        window.ROLE_LOCK_KABUPATEN = null;
+        window.ROLE_LOCK_DIREKTORAT = null;
+        bukaHalamanOperator('derivatif');
+    } else if (isOperator) {
+        applyRoleOperator();
+        bukaHalamanOperator('dashboard');
+    } else if (role === 'superadmin') {
         applyRoleSuperadmin();
     } else if (role === 'sppr') {
         applyRoleSPPR();
@@ -256,6 +296,174 @@ function applyRoleKantahGunungKidul() {
     updateLeaderBoardTable();
     updateLeaderBoardDetailTable();
     updateStatistikIgtView();
+}
+
+/* ----------------------------------------------------
+   1c. Dashboard Role Operator
+---------------------------------------------------- */
+function applyRoleOperator() {
+    window.ROLE_LOCK_PROVINCE = null;
+    window.ROLE_LOCK_KABUPATEN = null;
+    window.ROLE_LOCK_DIREKTORAT = null;
+
+    var d = (window.MOCKUP_DATA && window.MOCKUP_DATA.operator) || {};
+    var berkas = d.berkas || [];
+    $('#op-terkompilasi').text(berkas.length);
+    $('#op-terintegrasi').text(berkas.filter(function(b) { return b.status === 'Terintegrasi'; }).length);
+    $('#op-derivatif').text((d.derivatif || []).length);
+
+    var grafik = d.grafik || [];
+    var totalUpload = 0, totalRevisi = 0;
+    grafik.forEach(function(g) { totalUpload += g.upload; totalRevisi += g.revisi; });
+    $('#op-total-upload').text(totalUpload + ' Activity');
+    $('#op-total-revisi').text(totalRevisi + ' Activity');
+    renderOperatorGrafik(grafik);
+
+    var html = '';
+    (d.riwayat || []).forEach(function(it) {
+        var proses = it.status.indexOf('Proses') === 0;
+        html += '<li>'
+            + '<div class="igt-op__riwayat-ikon' + (proses ? ' is-proses' : '') + '"><i class="' + (proses ? 'ri-clipboard-line' : 'ri-shield-check-line') + '"></i></div>'
+            + '<div class="igt-op__riwayat-isi"><strong>' + it.igt + '</strong><span>' + it.user + '</span><span>' + it.waktu + '</span></div>'
+            + '<span class="igt-op__riwayat-status' + (proses ? ' is-proses' : '') + '">' + it.status + '</span>'
+            + '</li>';
+    });
+    $('#op-riwayat').html(html);
+}
+
+// Navigasi sub-halaman Operator (Dashboard / Kompilasi / Integrasi / Derivatif)
+function bukaHalamanOperator(view) {
+    if (currentActiveRole === 'umum') view = 'derivatif';
+    $('.igt-op-view').hide().filter('[data-view="' + view + '"]').show();
+    $('.igt-op-menu__item').removeClass('is-active').filter('[data-op-view="' + view + '"]').addClass('is-active');
+    var judul = { dashboard: '', kompilasi: 'Data Kompilasi', integrasi: 'Integrasi Data', derivatif: 'Unggah Data Derivatif' };
+    $('.header-main h4').text(judul[view] || '');
+    if (view === 'kompilasi' || view === 'integrasi') renderDaftarOperator(view, '');
+    if (view === 'derivatif') renderDerivatifOperator();
+    window.scrollTo(0, 0);
+}
+
+function renderDaftarOperator(jenis, q) {
+    var d = (window.MOCKUP_DATA && window.MOCKUP_DATA.operator) || {};
+    var satker = (ROLE_CONFIG.operator || {}).name || '-';
+    var $wrap = $('.igt-op-daftar[data-jenis="' + jenis + '"] .igt-op-akordeon');
+    var html = '';
+    var no = 0;
+    (d.renaksi || []).forEach(function(it) {
+        if (q && it.igt.toLowerCase().indexOf(q) === -1) return;
+        // Kompilasi: seluruh berkas terkompilasi; Integrasi: hanya yang sudah terintegrasi
+        var baris = (d.berkas || []).filter(function(r) {
+            return r.igt === it.igt && (jenis === 'kompilasi' || r.status === 'Terintegrasi');
+        });
+        no++;
+        var belum = jenis === 'kompilasi' ? it.belumKompilasi : it.belumIntegrasi;
+        var pct = it.target ? (baris.length / it.target) * 100 : 0;
+        var warna = pct >= 100 ? '#10b981' : (pct >= 50 ? '#fbbf24' : '#dc3545');
+        var lebar = Math.min(100, pct);
+
+        var rows = baris.map(function(r) {
+            var cls = r.status === 'Terintegrasi' ? 'is-integrasi' : 'is-kompilasi';
+            var unduh = r.status === 'Terintegrasi'
+                ? '<div class="igt-op-aksi"><i class="ri-file-line" style="color:#10b981"></i><i class="ri-link" style="color:#10b981"></i></div>' : '-';
+            return '<tr><td><strong>' + satker + '</strong></td><td>' + it.igt + '</td><td>SHP</td><td>' + r.upload + '</td>'
+                + (jenis === 'integrasi' ? '<td>' + r.integrasi + '</td>' : '')
+                + '<td>' + r.ket + '</td><td><span class="igt-op-status ' + cls + '">' + r.status + '</span></td>'
+                + '<td><div class="igt-op-aksi"><i class="ri-eye-line" style="color:#f59e0b"></i><i class="ri-history-line" style="color:#06b6d4"></i><i class="ri-delete-bin-line" style="color:#dc3545"></i><i class="ri-upload-cloud-line" style="color:#10b981"></i><i class="ri-edit-line" style="color:#1e3a6e"></i></div></td>'
+                + '<td>' + unduh + '</td></tr>';
+        }).join('');
+        var kolom = jenis === 'integrasi' ? 9 : 8;
+        if (!rows) rows = '<tr class="is-kosong"><td colspan="' + kolom + '">Belum ada berkas</td></tr>';
+
+        html += '<div class="igt-op-item">'
+            + '<div class="igt-op-item__kepala">'
+            + '<div class="igt-op-item__judul"><strong>' + no + '. ' + it.igt + '</strong>'
+            + '<div class="igt-op-item__meta"><span class="text-danger">Data Belum Diproses: <b>' + belum + '</b></span>'
+            + '<span class="text-primary">Target: <b>' + it.target + '</b></span>'
+            + '<span class="text-success">Realisasi: <b>' + baris.length + '</b></span>'
+            + '<span class="text-dark">Satuan: <b>' + it.satuan + '</b></span></div></div>'
+            + '<div class="igt-op-item__persen">Persentase: ' + pct.toFixed(2) + '%'
+            + '<div class="igt-op-bar"><div style="width:' + lebar + '%;background:' + warna + '">' + pct.toFixed(2) + '%</div></div></div>'
+            + '<i class="ri-arrow-down-s-line igt-op-item__panah"></i>'
+            + '</div>'
+            + '<div class="igt-op-item__isi"><div class="table-responsive"><table class="igt-op-tabel"><thead><tr>'
+            + '<th>Nama Direktorat</th><th>Nama IGT</th><th>Jenis Data</th><th>Tanggal Upload</th>'
+            + (jenis === 'integrasi' ? '<th>Tanggal Terintegrasi</th>' : '')
+            + '<th>Keterangan</th><th>Status</th><th>Aksi</th><th>Download</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+            + '<div class="igt-op-tabel-kaki"><span>Showing ' + (baris.length ? 1 : 0) + ' to ' + baris.length + ' of ' + baris.length + ' entries</span><span class="igt-op-pager"><button>Previous</button><button>Next</button></span></div>'
+            + '</div></div>';
+    });
+    $wrap.html(html || '<div class="p-4 text-center text-muted small">Data tidak ditemukan.</div>');
+}
+
+function renderDerivatifOperator() {
+    var sumber = currentActiveRole === 'umum' ? 'umum' : 'operator';
+    var list = ((window.MOCKUP_DATA && window.MOCKUP_DATA[sumber]) || {}).derivatif || [];
+    var kelas = { 'Disetujui': 'is-integrasi', 'Menunggu Verifikasi': 'is-proses', 'Ditolak': 'is-tolak' };
+    var html = list.map(function(r) {
+        return '<tr>'
+            + '<td><strong class="igt-op-layer">' + r.layer.toUpperCase() + '</strong><span class="igt-op-tipe">' + r.tipe + '</span></td>'
+            + '<td>' + r.sld + '</td>'
+            + '<td>' + r.fitur.toLocaleString('id-ID') + ' fitur</td>'
+            + '<td><span class="igt-op-status ' + (kelas[r.status] || 'is-proses') + '">' + r.status + '</span></td>'
+            + '<td>' + r.berlaku + '</td>'
+            + '<td>' + r.tanggal + '</td>'
+            + '<td>' + r.ket + '<div class="igt-op-catatan"><b>Catatan:</b> ' + r.catatan + '</div></td>'
+            + '<td><div class="igt-op-aksi-teks"><button type="button" class="is-pratinjau"><i class="ri-map-2-line"></i> Pratinjau</button><button type="button" class="is-hapus"><i class="ri-delete-bin-line"></i> Hapus</button></div></td>'
+            + '</tr>';
+    }).join('');
+    $('#op-derivatif-body').html(html || '<tr class="is-kosong"><td colspan="8"><img src="assets/img/geoportalLogo.png" alt="">Belum ada data pengajuan</td></tr>');
+    $('#op-derivatif-info').text('Showing ' + (list.length ? 1 : 0) + ' to ' + list.length + ' of ' + list.length + ' entries');
+}
+
+$(document).on('click', '[data-op-view]', function(e) {
+    e.preventDefault();
+    bukaHalamanOperator($(this).attr('data-op-view'));
+});
+$(document).on('click', '.igt-op-item__kepala', function() {
+    $(this).closest('.igt-op-item').toggleClass('is-open');
+});
+$(document).on('input', '.igt-op-cari__input', function() {
+    renderDaftarOperator($(this).closest('.igt-op-daftar').attr('data-jenis'), $(this).val().trim().toLowerCase());
+});
+$(document).on('click', '.igt-op-tab button', function() {
+    $(this).addClass('is-active').siblings().removeClass('is-active');
+});
+
+function renderOperatorGrafik(data) {
+    var $el = $('#op-chart');
+    if (!data.length) { $el.empty(); return; }
+    var W = 860, H = 300, left = 36, right = 16, top = 16, bottom = 40;
+    var maxY = Math.max(1, Math.max.apply(null, data.map(function(d) { return Math.max(d.upload, d.revisi); })));
+    var stepX = data.length > 1 ? (W - left - right) / (data.length - 1) : 0;
+    var x = function(i) { return left + i * stepX; };
+    var y = function(v) { return top + (1 - v / maxY) * (H - top - bottom); };
+
+    // Kurva halus (Catmull-Rom -> Bezier)
+    function jalur(key) {
+        var p = data.map(function(d, i) { return [x(i), y(d[key])]; });
+        var dStr = 'M' + p[0][0] + ',' + p[0][1];
+        for (var i = 0; i < p.length - 1; i++) {
+            var p0 = p[i - 1] || p[i], p1 = p[i], p2 = p[i + 1], p3 = p[i + 2] || p2;
+            dStr += ' C' + (p1[0] + (p2[0] - p0[0]) / 6) + ',' + (p1[1] + (p2[1] - p0[1]) / 6)
+                + ' ' + (p2[0] - (p3[0] - p1[0]) / 6) + ',' + (p2[1] - (p3[1] - p1[1]) / 6)
+                + ' ' + p2[0] + ',' + p2[1];
+        }
+        return dStr;
+    }
+
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" font-family="inherit">';
+    for (var v = 0; v <= maxY; v++) {
+        svg += '<line x1="' + left + '" x2="' + (W - right) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="#eef2f7" />';
+        svg += '<text x="' + (left - 12) + '" y="' + (y(v) + 4) + '" font-size="11" fill="#475569" text-anchor="end">' + v + '</text>';
+    }
+    data.forEach(function(d, i) {
+        svg += '<line x1="' + x(i) + '" x2="' + x(i) + '" y1="' + top + '" y2="' + (H - bottom) + '" stroke="#eef2f7" />';
+        svg += '<text x="' + x(i) + '" y="' + (H - bottom + 20) + '" font-size="11" fill="#475569" text-anchor="middle">' + d.periode + '</text>';
+    });
+    svg += '<path d="' + jalur('revisi') + '" fill="none" stroke="#93b4fb" stroke-width="2" />';
+    svg += '<path d="' + jalur('upload') + '" fill="none" stroke="#4f6bed" stroke-width="2.5" />';
+    svg += '</svg>';
+    $el.html(svg);
 }
 
 function initRoleSwitcher() {

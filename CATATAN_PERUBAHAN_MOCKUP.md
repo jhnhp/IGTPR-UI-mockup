@@ -1112,3 +1112,49 @@ IGTPR-UI-mockup/
 
 - **Perubahan**: Card **Statistik Akses IGT** (`#statistik-akses`, tabel + grafik area spline) dihapus dari halaman dashboard, beserta pemanggilan `renderTableSection('statistik-akses', ...)` di `applyDataFilter()`.
 - **Catatan**: Data akses IGT tetap tersedia melalui tab *Frekuensi Akses IGT* pada Leaderboard.
+
+### 63. Penambahan Role Operator (Tampilan Dashboard Tersendiri)
+
+- **Konteks**: Role Operator memiliki tampilan dashboard yang jauh berbeda dari role admin, mengacu pada screenshot `Examples/Operator`.
+- **Role card baru**: *5. Operator* (badge ungu "Operator Direktorat") pada panel Pilih Role Simulasi. Profil sidebar/topbar menjadi **Direktorat ATR/BPN — Operator**.
+- **Tampilan Operator** (`#dashboard-operator`), menggantikan seluruh dashboard admin (`#dashboard-admin`) saat role aktif:
+  1. Breadcrumb *Dashboard / DIREKTORAT* dan judul **Selamat Datang**.
+  2. Tiga kartu ringkasan: **Peta Terkompilasi**, **Peta Terintegrasi**, **Peta Tersinkronisasi**.
+  3. **Grafik Riwayat Aktivitas**: kurva spline (SVG) *Upload Data* & *Revisi Data* per bulan, dengan total *Activity* di bawahnya.
+  4. **Riwayat Aktivitas**: daftar scroll berisi nama IGT, user, waktu, dan status (Terintegrasi/Terkompilasi hijau, Proses Pengajuan Kompilasi kuning).
+- **Menu sidebar Operator**: Dashboard, Kompilasi Data, Integrasi Data, Sinkronisasi Data, Self Assessment, Peta IGT (hanya tampil saat role Operator).
+- **Data dummy**: `MOCKUP_DATA.operator` (ringkasan, grafik, riwayat). Render via `applyRoleOperator()` & `renderOperatorGrafik()`.
+- **Kembali ke role lain**: tampilan admin dipulihkan dan peta di-`resize()` agar tidak rusak setelah disembunyikan.
+
+### 64. Kartu Tema Derivatif pada Dashboard Operator
+
+- **Perubahan**: Ditambahkan kartu ringkasan **Tema Derivatif** (nilai **4**) bersanding dengan Peta Terkompilasi dan Peta Terintegrasi pada dashboard role Operator. Grid kartu ringkasan menjadi 4 kolom (2 kolom di tablet, 1 kolom di mobile).
+- **Data dummy**: `MOCKUP_DATA.operator.ringkasan.derivatif = 4`.
+
+### 65. Posisi Panel Pilih Role Simulasi
+
+- **Perubahan**: Panel **Pilih Role Simulasi** dikembalikan ke posisi paling atas sidebar. Menu khusus Operator (Dashboard, Kompilasi Data, dst.) kini ditampilkan di bawah panel role simulasi.
+
+### 66. Penghapusan Kartu Peta Tersinkronisasi (Dashboard Operator)
+
+- **Perubahan**: Kartu **Peta Tersinkronisasi** dihapus dari dashboard role Operator. Kartu ringkasan kini tiga: **Peta Terkompilasi**, **Peta Terintegrasi**, dan **Tema Derivatif** (grid 3 kolom, 1 kolom di mobile).
+
+### 67. Sub-halaman Operator: Data Kompilasi, Integrasi Data, Unggah Data Derivatif
+
+- **Navigasi**: Kartu ringkasan pada dashboard Operator kini dapat diklik — **Peta Terkompilasi** → *Data Kompilasi*, **Peta Terintegrasi** → *Integrasi Data*, **Tema Derivatif** → *Unggah Data Derivatif*. Menu sidebar Operator (ditambah item **Data Derivatif**) dan breadcrumb *Dashboard* ikut terhubung. Judul topbar menyesuaikan halaman aktif.
+- **Data Kompilasi & Integrasi Data** (acuan `Examples/Terkompilasi`, `Examples/Terintegrasi`): tab Renaksi/Service/Monev/Khusus, pencarian IGT, pilihan tahun, serta daftar akordeon IGT Renaksi berisi *Data Belum Diproses*, *Target*, *Realisasi*, *Satuan*, dan bar persentase (hijau ≥100%, kuning ≥50%, merah <50%). Klik item membuka tabel rincian berkas (Nama Direktorat, Nama IGT, Jenis Data, Tanggal Upload, Tanggal Terintegrasi [khusus integrasi], Keterangan, Status, Aksi, Download).
+- **Unggah Data Derivatif** (acuan `Examples/Derivatif`): info banner, panel *Daftar Unggahan Saya* dengan tombol **Unggah Data Derivatif**, dan tabel (Layer Derivatif, SLD Style, Fitur, Status, Masa Berlaku, Tanggal, Keterangan/Catatan, Aksi) dengan kondisi kosong *Belum ada data pengajuan*.
+- **Data dummy**: `MOCKUP_DATA.operator.renaksi`, `.rincian`, `.derivatif`. Render via `bukaHalamanOperator()`, `renderDaftarOperator()`, `renderDerivatifOperator()`.
+
+### 68. Penyesuaian Halaman Derivatif & Sinkronisasi Data Operator dengan Dashboard
+
+- **Unggah Data Derivatif** (acuan `Examples/Derivatiff`): tabel kini berisi **4 pengajuan** sesuai angka *Tema Derivatif* di dashboard. Tiap baris menampilkan nama layer (huruf kapital + label tipe *Kawasan/Bidang*), SLD Style, jumlah fitur, status (*Disetujui* hijau, *Menunggu Verifikasi* kuning, *Ditolak* merah), masa berlaku, tanggal, keterangan + **Catatan**, serta tombol **Pratinjau** dan **Hapus**. Paginasi menampilkan halaman aktif.
+- **Data Kompilasi & Integrasi Data**: daftar IGT disesuaikan dengan IGT pada Riwayat Aktivitas dashboard (Bidang Tanah, Hak Atas Tanah, LBS Nasional, LSD, Pertimbangan Teknis Pertanahan, ZNT). Total berkas **8 terkompilasi** dan **7 terintegrasi**, sama dengan kartu dashboard. Realisasi per IGT dihitung dari jumlah berkas, dan Nama Direktorat mengikuti satker Operator.
+- **Konsistensi angka**: kartu dashboard Operator kini dihitung langsung dari data (`berkas` & `derivatif`), sehingga selalu sinkron dengan isi halaman tujuan.
+
+### 69. Penambahan Role Umum (Hanya Data Derivatif)
+
+- **Role card baru**: *6. Umum* (badge abu "Pengguna Umum"). Profil sidebar/topbar menjadi **Pengguna Umum — Umum**.
+- **Hak akses**: Role Umum hanya dapat mengunggah dan memantau pengajuan **data derivatif**. Saat role aktif, yang tampil hanya halaman **Unggah Data Derivatif**; dashboard, Data Kompilasi, dan Integrasi Data tidak dapat dibuka (navigasi dipaksa ke halaman derivatif). Menu sidebar hanya berisi **Data Derivatif**, dan tautan *Dashboard* pada breadcrumb disembunyikan.
+- **Data dummy**: `MOCKUP_DATA.umum.derivatif` berisi 2 pengajuan milik pengguna umum (1 *Menunggu Verifikasi*, 1 *Disetujui*), terpisah dari data Operator.
+- **Teks info banner** halaman derivatif dibuat netral: *"Unggahan Anda diperiksa terlebih dahulu oleh Admin…"* sehingga berlaku untuk Operator maupun Umum.
