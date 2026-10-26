@@ -1243,3 +1243,14 @@ IGTPR-UI-mockup/
 - **Derivatif** mengikuti palet yang sama: Disetujui = biru tua bergaris, Menunggu Verifikasi = biru muda bergaris, Ditolak = abu kemerahan.
 - **Halaman data**: warna pil status di tabel Kompilasi/Integrasi/Derivatif diselaraskan dengan palet tersebut.
 - **Cache-busting**: `?v=20261026f`.
+
+### 78. Lebar Grafik Data Saya Role Umum
+
+- **Perubahan**: Grid kartu **Data Saya** kini selalu 2 kolom, sehingga grafik *Data Derivatif* pada role **Umum** hanya selebar setengah kartu (sebelumnya memanjang sampai ujung). Di layar mobile (<768px) tetap 1 kolom penuh.
+- **Cache-busting**: `?v=20261026g`.
+
+### 79. Ruas Bernilai 0 pada Grafik Data Saya
+
+- **Perubahan**: Status bernilai 0 (mis. *Ditolak* pada role Umum) kini tetap ditampilkan sebagai ruas **sangat tipis (4px)**, sama seperti perlakuan *Revisi Perbaikan* bernilai 0 di progress bar Usulan Input Data. Ruas tipis tetap dapat diklik.
+- **Warna Ditolak**: sama dengan *Revisi Perbaikan* (abu kemerahan pale `hsl(0, 10%, 80%)`; versi tipis `hsl(0, 10%, 65%)`).
+- **Cache-busting**: `?v=20261026h`.

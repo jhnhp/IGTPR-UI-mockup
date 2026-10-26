@@ -12,7 +12,9 @@ function blokDataSaya(judul, data, daftarStatus) {
     daftarStatus.forEach(function(st) {
         var n = data.filter(function(d) { return d.status === st.label; }).length;
         var link = linkStatus(st);
-        if (n) bar += '<a href="' + link + '" class="igt-ds__ruas ' + st.kelas + '" style="flex-grow:' + n + '" title="' + st.label + ': ' + n + ' data (klik untuk rincian)"></a>';
+        // Status bernilai 0 tetap ditampilkan sebagai ruas sangat tipis (seperti Usulan Input Data)
+        bar += '<a href="' + link + '" class="igt-ds__ruas ' + st.kelas + (n ? '' : ' is-nol') + '"' + (n ? ' style="flex-grow:' + n + '"' : '')
+            + ' title="' + st.label + ': ' + n + ' data (klik untuk rincian)"></a>';
         rincian += '<a href="' + link + '" class="igt-ds__item"><span class="igt-ds__titik igt-ds__ruas ' + st.kelas + '"></span><strong>' + n + '</strong>' + st.label + '</a>';
         if (st.perluTindakan && n) perlu = { n: n, link: link, label: st.label };
     });

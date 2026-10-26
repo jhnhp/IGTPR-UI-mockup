@@ -15,7 +15,9 @@
 .igt-status.is-revisi, .igt-status.is-ditolak { background: hsl(0, 10%, 93%); color: hsl(0, 25%, 42%); }
 
 /* Kartu Data Saya (Beranda) */
-.igt-ds__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 28px; }
+/* Selalu 2 kolom: bila hanya 1 grafik (role Umum) lebarnya setengah kartu */
+.igt-ds__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 767px) { .igt-ds__grid { grid-template-columns: 1fr; } }
 .igt-ds__blok-kepala { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
 .igt-ds__blok-judul { font-size: 14px; font-weight: 600; color: #334155; }
 .igt-ds__total { font-size: 13px; color: #64748b; }
@@ -34,6 +36,8 @@
 }
 .igt-ds__ruas.is-terupload { background-color: hsl(217, 30%, 75%); }
 .igt-ds__ruas.is-revisi, .igt-ds__ruas.is-ditolak { background-color: hsl(0, 10%, 80%); }
+.igt-ds__ruas.is-nol { flex: 0 0 4px; width: 4px; min-width: 4px; border-radius: 2px; background-image: none; }
+.igt-ds__ruas.is-nol.is-revisi, .igt-ds__ruas.is-nol.is-ditolak { background-color: hsl(0, 10%, 65%); }
 .igt-ds__rincian { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 12px; }
 .igt-ds__item { display: flex; align-items: center; gap: 8px; padding: 4px 6px; margin-left: -6px; border-radius: 6px; text-decoration: none; color: #475569; font-size: 13px; }
 .igt-ds__item:hover { background: #f1f5f9; color: #1e293b; }
