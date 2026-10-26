@@ -1,17 +1,18 @@
 /* IGTPR Mockup UI - Warna status data unggahan (kartu Data Saya & halaman data) */
 
-.igt-ds { --st-terintegrasi: #1d4ed8; --st-terkompilasi: #93c5fd; --st-terupload: #86efac; --st-revisi: #f87171;
-          --st-disetujui: #10b981; --st-menunggu: #fbbf24; --st-ditolak: #f87171; }
+/* Warna mengikuti progress bar Usulan Input Data (role lain):
+   Terintegrasi / Disetujui      = biru tua bergaris
+   Terkompilasi / Menunggu       = biru muda bergaris
+   Terupload                     = abu kebiruan
+   Revisi Perbaikan / Ditolak    = abu kemerahan */
 
 /* Pil status (tabel) */
 .igt-status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: #f1f5f9; color: #334155; white-space: nowrap; }
 .igt-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-.igt-status.is-terintegrasi { background: #dbeafe; color: #1d4ed8; }
-.igt-status.is-terkompilasi { background: #eff6ff; color: #3b82f6; }
-.igt-status.is-terupload { background: #dcfce7; color: #15803d; }
-.igt-status.is-revisi, .igt-status.is-ditolak { background: #fee2e2; color: #dc2626; }
-.igt-status.is-disetujui { background: #d1fae5; color: #047857; }
-.igt-status.is-menunggu { background: #fef3c7; color: #b45309; }
+.igt-status.is-terintegrasi, .igt-status.is-disetujui { background: #dbeafe; color: #1d4ed8; }
+.igt-status.is-terkompilasi, .igt-status.is-menunggu { background: #eff6ff; color: #3b82f6; }
+.igt-status.is-terupload { background: hsl(217, 30%, 93%); color: hsl(217, 30%, 40%); }
+.igt-status.is-revisi, .igt-status.is-ditolak { background: hsl(0, 10%, 93%); color: hsl(0, 25%, 42%); }
 
 /* Kartu Data Saya (Beranda) */
 .igt-ds__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 28px; }
@@ -19,21 +20,29 @@
 .igt-ds__blok-judul { font-size: 14px; font-weight: 600; color: #334155; }
 .igt-ds__total { font-size: 13px; color: #64748b; }
 .igt-ds__total strong { font-size: 22px; color: #1e293b; margin-right: 4px; }
-.igt-ds__bar { display: flex; gap: 4px; height: 30px; border-radius: 8px; overflow: hidden; }
-.igt-ds__ruas { min-width: 6px; cursor: pointer; transition: filter .15s, transform .15s; text-decoration: none; }
+.igt-ds__bar { display: flex; gap: 4px; height: 26px; }
+.igt-ds__ruas { min-width: 24px; border-radius: 4px; cursor: pointer; transition: filter .15s; text-decoration: none; }
 .igt-ds__ruas:hover { filter: brightness(.92); }
-.igt-ds__ruas.is-terintegrasi { background: var(--st-terintegrasi); }
-.igt-ds__ruas.is-terkompilasi { background: var(--st-terkompilasi); }
-.igt-ds__ruas.is-terupload { background: var(--st-terupload); }
-.igt-ds__ruas.is-revisi { background: var(--st-revisi); }
-.igt-ds__ruas.is-disetujui { background: var(--st-disetujui); }
-.igt-ds__ruas.is-menunggu { background: var(--st-menunggu); }
-.igt-ds__ruas.is-ditolak { background: var(--st-ditolak); }
+.igt-ds__ruas.is-terintegrasi, .igt-ds__ruas.is-disetujui {
+    background-color: #1d4ed8;
+    background-image: repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.1) 0 5px, transparent 5px 15px),
+                      linear-gradient(180deg, #2563eb 0%, #1e40af 100%);
+}
+.igt-ds__ruas.is-terkompilasi, .igt-ds__ruas.is-menunggu {
+    background-color: #93c5fd;
+    background-image: repeating-linear-gradient(110deg, rgba(255, 255, 255, 0.15) 0 4px, transparent 4px 10px);
+}
+.igt-ds__ruas.is-terupload { background-color: hsl(217, 30%, 75%); }
+.igt-ds__ruas.is-revisi, .igt-ds__ruas.is-ditolak { background-color: hsl(0, 10%, 80%); }
 .igt-ds__rincian { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 12px; }
 .igt-ds__item { display: flex; align-items: center; gap: 8px; padding: 4px 6px; margin-left: -6px; border-radius: 6px; text-decoration: none; color: #475569; font-size: 13px; }
 .igt-ds__item:hover { background: #f1f5f9; color: #1e293b; }
 .igt-ds__item strong { color: #1e293b; font-size: 15px; }
-.igt-ds__titik { width: 9px; height: 9px; border-radius: 50%; }
+.igt-ds__titik { width: 9px; height: 9px; min-width: 0; border-radius: 50%; background-image: none !important; }
+.igt-ds__titik.is-terintegrasi, .igt-ds__titik.is-disetujui { background-color: #1d4ed8; }
+.igt-ds__titik.is-terkompilasi, .igt-ds__titik.is-menunggu { background-color: #93c5fd; }
+.igt-ds__titik.is-terupload { background-color: hsl(217, 30%, 60%); }
+.igt-ds__titik.is-revisi, .igt-ds__titik.is-ditolak { background-color: hsl(0, 10%, 60%); }
 .igt-ds__peringatan { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12.5px; color: #dc2626; text-decoration: none; background: #fef2f2; padding: 5px 10px; border-radius: 6px; }
 .igt-ds__peringatan:hover { background: #fee2e2; color: #b91c1c; }
 .igt-ds__kosong { font-size: 13px; color: #94a3b8; }

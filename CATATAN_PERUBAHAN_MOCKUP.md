@@ -1236,3 +1236,10 @@ IGTPR-UI-mockup/
 - **Navbar**: menu *Kompilasi Data*, *Integrasi Data*, dan *Unggah Data Derivatif* kini terhubung ke halaman tersebut (menu aktif otomatis).
 - **File**: `assets/js/core/data-saya.js` (status & tujuan link), `assets/css/data-saya.css`, `assets/js/pages/beranda/data-saya.js`, `assets/js/pages/data/data.js`; data dummy di `MOCKUP_DATA.dataSaya`.
 - **Lain-lain**: aturan font & latar dasar dipindah ke `layout.css` agar seluruh halaman seragam. Cache-busting `?v=20261026e`.
+
+### 77. Warna Grafik Data Saya Disamakan dengan Progress Bar Role Lain
+
+- **Perubahan**: Grafik dan titik legenda kartu **Data Saya** kini memakai warna & gaya progress bar *Usulan Input Data*: Terintegrasi = biru tua bergaris, Terkompilasi = biru muda bergaris, Terupload = abu kebiruan, Revisi Perbaikan = abu kemerahan (ruas terpisah, tinggi 26px, sudut 4px).
+- **Derivatif** mengikuti palet yang sama: Disetujui = biru tua bergaris, Menunggu Verifikasi = biru muda bergaris, Ditolak = abu kemerahan.
+- **Halaman data**: warna pil status di tabel Kompilasi/Integrasi/Derivatif diselaraskan dengan palet tersebut.
+- **Cache-busting**: `?v=20261026f`.
