@@ -1283,3 +1283,9 @@ IGTPR-UI-mockup/
 - **Perbaikan bug**: reload Beranda saat role tersimpan Operator/Umum/Admin wilayah memunculkan error *"Style is not done loading"*; penerapan role pada peta kini menunggu peta siap, sedangkan kartu Data Saya tampil seketika.
 - **Privasi**: nama pejabat, NIP, email, dan nama pengunggah pada data dummy diganti nilai fiktif (domain `contoh.go.id`); hanya nama unit kerja dan nama IGT yang mengikuti aplikasi asli.
 - **Cache-busting**: `?v=20261026k`.
+
+### 83. Menu Peta IGT Diarahkan ke Layanan Peta Asli
+
+- **Perubahan**: Menu **Peta IGT** di navbar (semua role) kini langsung membuka `https://igtpr.atrbpn.go.id/layanan/` di tab baru (ditandai ikon tautan eksternal), menggantikan halaman mockup peta.
+- **Dihapus**: `peta-igt.html`, `assets/js/pages/peta/peta.js`, dan CSS peta di `halaman.css`. Opsi peta di `tools/buat-halaman.py` tetap tersedia untuk halaman lain yang membutuhkan peta.
+- **Cache-busting**: `?v=20261026l`.

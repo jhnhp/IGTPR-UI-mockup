@@ -35,7 +35,7 @@ Mockup antarmuka pengguna (UI) statis berbasis **Pure HTML, CSS, dan JavaScript*
 
 ```text
 index.html                      # Beranda (Dashboard)
-*.html                          # 27 halaman menu (Kompilasi, Integrasi, Peta IGT, Layer IGT, User, CMS, dst.)
+*.html                          # 26 halaman menu (Kompilasi, Integrasi, Peta IGT, Layer IGT, User, CMS, dst.)
 _template.html                  # Kerangka halaman kosong
 tools/buat-halaman.py           # Generator kerangka HTML seluruh halaman menu
 Examples/live/                  # Tangkapan layar aplikasi asli (acuan mockup)
@@ -44,7 +44,7 @@ assets/
 │   ├── style.css, igt-components.css   # Tema & komponen bersama
 │   ├── layout.css                      # Sidebar navbar, header, ganti role
 │   ├── data-saya.css                   # Warna status & kartu Data Saya
-│   ├── halaman.css                     # Halaman tabel/CMS, modal form, akordeon, peta IGT
+│   ├── halaman.css                     # Halaman tabel/CMS, modal form, akordeon
 │   └── pages/beranda.css               # CSS khusus Beranda
 ├── js/
 │   ├── core/layout.js                  # Layout bersama + konfigurasi role (ROLE_CONFIG) & menu (NAV_PER_ROLE)
@@ -52,7 +52,6 @@ assets/
 │   ├── core/crud.js                    # Mesin halaman tabel: filter, tab, cari, paginasi, aksi, modal form
 │   ├── data/halaman.js                 # Konfigurasi tiap halaman tabel/CMS (kolom, data, tombol, form)
 │   ├── pages/data/kompilasi.js         # Kompilasi Data & Integrasi Data (akordeon per IGT)
-│   ├── pages/peta/peta.js              # Peta IGT
 │   ├── pages/derivatif/atribut-layer.js# Atribut Layer Derivatif (tabel skema dapat diedit)
 │   ├── pages/beranda/                  # JS khusus Beranda (main, peta, filter, ringkasan,
 │   │                                   #   leaderboard, tabel, grafik, data-saya)
@@ -64,7 +63,7 @@ assets/
 1. **Halaman tabel/CMS biasa**: tambahkan konfigurasi di `assets/js/data/halaman.js` (judul, kolom, data, aksi, form). Lihat komentar di awal `assets/js/core/crud.js` untuk daftar tipe kolom, field, dan aksi.
 2. Daftarkan file-nya di `HALAMAN` pada `tools/buat-halaman.py`, lalu jalankan `python3 tools/buat-halaman.py` untuk membuat kerangka HTML.
 3. Hubungkan menu sidebar: isi kolom ke-3 item di `NAV_PER_ROLE` (`assets/js/core/layout.js`) dengan nama file. Submenu memakai kolom ke-4: `[['Label', 'file.html'], ...]`.
-4. Halaman dengan tampilan khusus (mis. peta, akordeon) memakai isi HTML sendiri di generator dan JS di `assets/js/pages/<nama>/`. Untuk bereaksi saat role diganti, daftarkan `IGT.onRoleChange = function(role) { ... }`.
+4. Halaman dengan tampilan khusus (mis. akordeon) memakai isi HTML sendiri di generator dan JS di `assets/js/pages/<nama>/`. Untuk bereaksi saat role diganti, daftarkan `IGT.onRoleChange = function(role) { ... }`.
 5. Semua tombol simpan/hapus hanya simulasi dan memunculkan toast "Mockup: tidak tersimpan ke server".
 6. Role aktif tersimpan di `localStorage`, jadi tetap sama saat berpindah halaman.
 7. Setiap mengubah file CSS/JS, naikkan parameter `?v=` di `index.html`, lalu jalankan ulang generator agar seluruh halaman ikut.

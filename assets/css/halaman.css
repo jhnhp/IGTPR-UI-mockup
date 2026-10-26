@@ -160,28 +160,7 @@
 .igt-komp-item__isi { display: none; padding: 6px 20px 16px; }
 .igt-komp-item.is-open .igt-komp-item__isi { display: block; }
 
-/* Peta IGT */
-.igt-peta-halaman { position: relative; height: calc(100vh - 150px); min-height: 520px; border-radius: 12px; overflow: hidden; background: #bfe3f2; }
-#peta-igt-kanvas { position: absolute; inset: 0; }
-.igt-peta-panel { position: absolute; z-index: 2; top: 16px; left: 16px; width: 300px; background: #fff; border-radius: 12px; box-shadow: 0 6px 24px rgba(15, 23, 42, .15); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-.igt-peta-panel__logo { display: flex; align-items: center; gap: 8px; font-weight: 700; color: #1e3a6e; }
-.igt-peta-panel__logo img { width: 26px; }
-.igt-peta-tabs, .igt-peta-subtabs { display: flex; border-bottom: 1px solid #e2e8f0; }
-.igt-peta-tab, .igt-peta-subtab { flex: 1; border: 0; background: none; padding: 6px 4px; font-size: 12px; white-space: nowrap; color: #64748b; border-bottom: 2px solid transparent; margin-bottom: -1px; }
-.igt-peta-tab.is-active, .igt-peta-subtab.is-active { color: #1e3a6e; border-color: #1e3a6e; font-weight: 600; }
-.igt-peta-panel label { font-size: 12.5px; color: #64748b; display: flex; flex-direction: column; gap: 4px; }
-.igt-peta-panel select { height: 36px; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0 8px; font-size: 13px; background: #fff; color: #1e293b; }
-.igt-peta-panel .igt-btn { justify-content: center; border-radius: 999px; }
-.igt-peta-atas { position: absolute; z-index: 2; top: 16px; right: 60px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
-.igt-peta-atas input, .igt-peta-atas select { height: 34px; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0 10px; font-size: 13px; background: #fff; box-shadow: 0 2px 8px rgba(15, 23, 42, .1); }
-.igt-peta-atas input { width: 200px; }
-.igt-peta-atas__basemap { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; background: #fff; border-radius: 6px; font-size: 13px; box-shadow: 0 2px 8px rgba(15, 23, 42, .1); }
-.igt-peta-legenda { position: absolute; z-index: 2; right: 16px; bottom: 16px; background: #fff; border-radius: 8px; padding: 10px 14px; font-size: 12.5px; box-shadow: 0 2px 8px rgba(15, 23, 42, .15); display: flex; flex-direction: column; gap: 4px; }
-.igt-peta-legenda i { display: inline-block; width: 14px; height: 10px; border-radius: 2px; margin-right: 6px; opacity: .6; }
-
 @media (max-width: 767px) {
-    .igt-peta-panel { width: auto; right: 16px; }
-    .igt-peta-atas { top: auto; bottom: 16px; left: 16px; right: 16px; justify-content: flex-start; }
     .igt-komp-item__kepala { flex-wrap: wrap; }
     .igt-komp-item__persen { flex-basis: 100%; }
 }

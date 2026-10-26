@@ -49,3 +49,4 @@ body {
 .igt-nav__item--anak { padding-left: 49px; font-size: 13.5px; }
 .igt-nav__item--anak::before { content: ""; width: 6px; height: 1px; background: #94a3b8; margin-right: 4px; }
 .igt-nav__item--induk.is-active { background: transparent; color: #1e3a6e; font-weight: 600; }
+.igt-nav__luar { margin-left: auto; font-size: 13px !important; color: #94a3b8; }

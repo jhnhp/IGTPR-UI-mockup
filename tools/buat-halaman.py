@@ -40,32 +40,6 @@ ISI_KOMPILASI = '''        <div class="igt-halaman-kepala"><div>
         </div>
 '''
 
-ISI_PETA = '''        <div class="igt-peta-halaman">
-            <div id="peta-igt-kanvas"></div>
-            <div class="igt-peta-panel" id="peta-panel">
-                <div class="igt-peta-panel__logo"><img src="assets/img/geoportalLogo.png" alt="">GEOPORTAL IGT-PR</div>
-                <div class="igt-peta-tabs">
-                    <button type="button" class="igt-peta-tab is-active"><i class="ri-stack-line"></i> Pertanahan</button>
-                    <button type="button" class="igt-peta-tab"><i class="ri-layout-masonry-line"></i> Tata Ruang</button>
-                    <button type="button" class="igt-peta-tab"><i class="ri-stack-fill"></i> Derivatif</button>
-                </div>
-                <div class="igt-peta-subtabs">
-                    <button type="button" class="igt-peta-subtab is-active">Sebarluaskan</button>
-                    <button type="button" class="igt-peta-subtab">Terbatas</button>
-                </div>
-                <label>Pilih IGT<select id="peta-igt"></select></label>
-                <label>Pilih Provinsi<select id="peta-provinsi"></select></label>
-                <button type="button" class="igt-btn igt-btn--primary" id="peta-tampilkan"><i class="ri-eye-line"></i> Tampilkan Peta</button>
-            </div>
-            <div class="igt-peta-atas">
-                <input type="search" id="peta-cari" placeholder="Search Places ...">
-                <select aria-label="Tahun"><option>Tahun 2026</option><option>Tahun 2025</option><option>Tahun 2024</option></select>
-                <span class="igt-peta-atas__basemap"><i class="ri-map-2-line"></i> Peta Dasar Pertanahan</span>
-            </div>
-            <div class="igt-peta-legenda" id="peta-legenda" style="display: none;"></div>
-        </div>
-'''
-
 ISI_ATRIBUT = '''        <div class="igt-halaman-kepala"><div>
             <nav class="igt-breadcrumb"><a href="index.html">Dashboard</a><span>/</span><span>Data Derivatif</span></nav>
             <h4 class="igt-halaman-judul">Atribut Layer Derivatif</h4>
@@ -94,7 +68,6 @@ CRUD_JS = ['assets/js/data/halaman.js', 'assets/js/core/crud.js']
 HALAMAN = [
     ('kompilasi-data.html', 'Kompilasi Data', 'kompilasi', ISI_KOMPILASI.format(judul='Data Kompilasi'), ['assets/js/core/crud.js', 'assets/js/pages/data/kompilasi.js'], False),
     ('integrasi-data.html', 'Integrasi Data', 'integrasi', ISI_KOMPILASI.format(judul='Integrasi Data'), ['assets/js/core/crud.js', 'assets/js/pages/data/kompilasi.js'], False),
-    ('peta-igt.html', 'Peta IGT', 'peta', ISI_PETA, ['assets/js/data/halaman.js', 'assets/js/core/crud.js', 'assets/js/pages/peta/peta.js'], True),
     ('self-assessment.html', 'Self Assessment', 'self-assessment', ISI_CRUD, CRUD_JS, False),
     ('ketua-tim.html', 'Ketua Tim', 'ketua-tim', ISI_CRUD, CRUD_JS, False),
     ('layer-igt.html', 'Layer IGT', 'layer-igt', ISI_CRUD, CRUD_JS, False),

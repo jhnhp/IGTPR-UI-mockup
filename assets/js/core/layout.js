@@ -138,11 +138,13 @@ function updateRoleAlertBanner(role) {
    1c. Sidebar Navigasi per Role
 ---------------------------------------------------- */
 // Susunan mengikuti Examples/Usulan-Navbar.png
+// Peta IGT memakai Layanan Peta aplikasi asli (dibuka di tab baru)
+var URL_PETA_IGT = 'https://igtpr.atrbpn.go.id/layanan/';
 var NAV_DASHBOARD_ADMIN = { label: 'Dashboard', items: [['ri-bar-chart-2-line', 'Dashboard', 'index.html']] };
 var NAV_DATA_IGT = { label: 'Data IGT', items: [
     ['ri-folder-line', 'Kompilasi Data', 'kompilasi-data.html'],
     ['ri-building-2-line', 'Integrasi Data', 'integrasi-data.html'],
-    ['ri-map-2-line', 'Peta IGT', 'peta-igt.html'],
+    ['ri-map-2-line', 'Peta IGT', URL_PETA_IGT],
     ['ri-group-line', 'Self Assessment', 'self-assessment.html']
 ] };
 var NAV_DERIVATIF_ADMIN = [
@@ -195,7 +197,7 @@ var NAV_PER_ROLE = {
     'umum': [
         NAV_DASHBOARD_ADMIN,
         { label: 'Data IGT', items: [
-            ['ri-map-2-line', 'Peta IGT', 'peta-igt.html'],
+            ['ri-map-2-line', 'Peta IGT', URL_PETA_IGT],
             ['ri-group-line', 'Self Assessment', 'self-assessment.html']
         ] },
         { label: 'Data Derivatif', items: [['ri-upload-cloud-2-line', 'Unggah Data Derivatif', 'unggah-derivatif.html']] }
@@ -227,7 +229,9 @@ function renderSidebarNav(role) {
                 }
                 var href = it[2] || '#';
                 var aktif = href === halaman ? ' is-active' : '';
-                return '<a href="' + href + '" class="igt-nav__item' + aktif + '"><i class="' + it[0] + '"></i> ' + it[1] + '</a>';
+                var luar = /^https?:/.test(href);
+                return '<a href="' + href + '" class="igt-nav__item' + aktif + '"' + (luar ? ' target="_blank" rel="noopener"' : '') + '><i class="' + it[0] + '"></i> ' + it[1]
+                    + (luar ? '<i class="ri-external-link-line igt-nav__luar"></i>' : '') + '</a>';
             }).join('')
             + '</div>';
     }).join('');
