@@ -1193,3 +1193,8 @@ IGTPR-UI-mockup/
   6. Penamaan diseragamkan: "Attribut Data" → *Atribut Data*, "MetaData" → *Metadata*.
   7. Role non-superadmin hanya melihat menu yang relevan; konfigurasi & administrasi khusus Superadmin.
 - **Dashboard Role Umum (baru)**: *Selamat Datang* dengan tiga kartu ringkasan pengajuan derivatif (**Disetujui**, **Menunggu Verifikasi**, **Ditolak**) yang dapat diklik menuju halaman Unggah Data Derivatif, serta panel **Riwayat Pengajuan Derivatif** dengan tombol unggah. Saat role Umum dipilih, halaman awal kini dashboard ini.
+
+### 72. Cache-busting Aset untuk GitHub Pages
+
+- **Masalah**: Di GitHub Pages navbar sidebar tidak muncul karena browser masih memakai `mockup-app.js` versi lama dari cache (GitHub Pages menyimpan cache aset ±10 menit), sementara `index.html` sudah versi baru.
+- **Perbaikan**: Link `style.css`, `igt-components.css`, `dummy-data.js`, dan `mockup-app.js` di `index.html` diberi parameter versi (`?v=20261026`). Ganti nilai versi ini setiap kali file JS/CSS diubah agar browser selalu memuat versi terbaru.
