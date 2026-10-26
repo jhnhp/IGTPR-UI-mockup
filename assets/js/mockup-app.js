@@ -1975,8 +1975,8 @@ function getRoleSatkerBadge(satkerName) {
 var LEADERBOARD_CONFIG = {
     'capaian-renaksi': {
         key: 'capaian-renaksi',
-        shortTitle: 'Capaian Renaksi Direktorat',
-        subbarInfo: 'Peringkat Capaian Renaksi per Direktorat',
+        shortTitle: 'Capaian Renaksi',
+        subbarInfo: 'Peringkat Capaian Renaksi',
         tahunTitle: 'Tahun Renaksi',
         showSatker: true,
         defaultSortCol: 'persentase',
@@ -1989,8 +1989,8 @@ var LEADERBOARD_CONFIG = {
     },
     'igt-akses': {
         key: 'igt-akses',
-        shortTitle: 'IGT Sering Diakses',
-        subbarInfo: 'Daftar IGT yang Paling Sering Diakses melalui Plugin QGIS dan Geoportal',
+        shortTitle: 'Frekuensi Akses IGT',
+        subbarInfo: 'Frekuensi Akses IGT melalui Plugin QGIS dan Geoportal',
         tahunTitle: 'Tahun Akses',
         showSatker: false,
         defaultSortCol: 'jumlahAkses',
@@ -2002,8 +2002,8 @@ var LEADERBOARD_CONFIG = {
     },
     'satker-login': {
         key: 'satker-login',
-        shortTitle: 'Satker Sering Login',
-        subbarInfo: 'Daftar Satker (Direktorat, Kanwil, dan Kantah) yang Paling Sering Login ke Sistem Geoportal',
+        shortTitle: 'Frekuensi Login Pengguna',
+        subbarInfo: 'Frekuensi Login Pengguna ke Sistem Geoportal',
         tahunTitle: 'Tahun Akses',
         showSatker: false,
         defaultSortCol: 'jumlahLogin',
@@ -2015,8 +2015,8 @@ var LEADERBOARD_CONFIG = {
     },
     'direktorat-login': {
         key: 'satker-login',
-        shortTitle: 'Satker Sering Login',
-        subbarInfo: 'Daftar Satker (Direktorat, Kanwil, dan Kantah) yang Paling Sering Login ke Sistem Geoportal',
+        shortTitle: 'Frekuensi Login Pengguna',
+        subbarInfo: 'Frekuensi Login Pengguna ke Sistem Geoportal',
         tahunTitle: 'Tahun Akses',
         showSatker: false,
         defaultSortCol: 'jumlahLogin',
@@ -2110,8 +2110,8 @@ function switchLeaderBoardKategori(kategoriKey) {
 
     // Update Subbar Info Text
     if (kategoriKey === 'capaian-renaksi') {
-        $('#leader-board-subbar-info').text('Peringkat Capaian Renaksi per Direktorat');
-        $('.igt-segment__item[data-kategori="capaian-renaksi"]').text('1. Capaian Renaksi Direktorat');
+        $('#leader-board-subbar-info').text('Peringkat Capaian Renaksi');
+        $('.igt-segment__item[data-kategori="capaian-renaksi"]').text('1. Capaian Renaksi');
     } else {
         $('#leader-board-subbar-info').text(cfg.subbarInfo);
     }
@@ -2183,8 +2183,8 @@ function updateLeaderBoardTable() {
 
     // Render based on category: Table (Capaian Renaksi) vs Horizontal Bar Chart (Akses & Login)
     if (leaderBoardState.kategori === 'capaian-renaksi') {
-        $('#leader-board-subbar-info').text('Peringkat Capaian Renaksi per Direktorat');
-        $('.igt-segment__item[data-kategori="capaian-renaksi"]').text('1. Capaian Renaksi Direktorat');
+        $('#leader-board-subbar-info').text('Peringkat Capaian Renaksi');
+        $('.igt-segment__item[data-kategori="capaian-renaksi"]').text('1. Capaian Renaksi');
 
         $('#leader-board-tabel').show();
         $('#leader-board-grafik').hide();
