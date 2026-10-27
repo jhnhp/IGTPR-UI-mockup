@@ -164,3 +164,39 @@
     .igt-komp-item__kepala { flex-wrap: wrap; }
     .igt-komp-item__persen { flex-basis: 100%; }
 }
+
+/* Field sub layer / multi skema */
+.igt-sub__kotak { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; }
+.igt-sub__kotak .form-switch { margin-bottom: 2px; }
+.igt-sub__isi { display: none; margin-top: 12px; }
+.igt-sub__isi > .igt-crud-form__label, .igt-sub__isi > .igt-crud-form__bantuan { display: block; }
+.igt-sub.is-aktif .igt-sub__isi { display: block; }
+.igt-sub__kepala { display: flex; justify-content: space-between; align-items: baseline; }
+.igt-sub__kepala a { font-size: 13px; font-weight: 500; text-decoration: none; }
+.igt-sub__daftar { display: flex; flex-direction: column; gap: 6px; }
+.igt-sub__baris { display: flex; gap: 8px; align-items: center; }
+.igt-sub__baris .igt-aksi__ikon { flex-shrink: 0; }
+.igt-sub__catatan { margin-top: 8px; font-size: 12.5px; border-radius: 6px; padding: 8px 12px; background: #eff6ff; color: #1e40af; }
+.igt-sub__catatan--tidak, .igt-sub.is-terpisah .igt-sub__catatan--ya { display: none; }
+.igt-sub.is-terpisah .igt-sub__catatan--tidak { display: block; }
+
+/* Preview / Edit Metadata */
+.igt-meta-info { background: #e0f7fa; border: 1px solid #b2ebf2; color: #0e7490; border-radius: 6px; padding: 10px 14px; font-size: 13px; margin-bottom: 12px; }
+.igt-meta-tabel { min-width: 760px; }
+.igt-meta-tabel td { font-size: 12.5px; vertical-align: middle; overflow-wrap: anywhere; }
+.igt-meta-tabel td:first-child { width: 36%; }
+.igt-meta-tabel td:last-child { width: 110px; }
+.igt-xml-mentah { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; }
+
+/* Baris tabel yang bisa dibuka (rincian, mis. sub layer) */
+.igt-crud-bisa-buka { cursor: pointer; }
+.igt-crud-bisa-buka:hover > td, .igt-crud-bisa-buka.is-open > td { background: #f8fafc; }
+.igt-crud-bisa-buka.is-open strong { color: #1d4ed8; }
+.igt-crud-rincian__sel { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.igt-crud-rincian__panah { color: #94a3b8; font-size: 20px; transition: transform .2s; }
+.igt-crud-bisa-buka.is-open .igt-crud-rincian__panah { transform: rotate(180deg); }
+.igt-crud-rincian { display: none; }
+.igt-crud-rincian.is-open { display: table-row; }
+.igt-crud-rincian > td { background: #f8fafc; padding: 4px 20px 16px 56px !important; }
+.igt-crud-rincian__isi .igt-table { min-width: 0; background: #fff; }
+.igt-crud-rincian__judul { font-size: 13px; font-weight: 600; color: #334155; margin: 6px 0 8px; display: flex; gap: 8px; align-items: center; }

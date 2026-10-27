@@ -29,11 +29,53 @@ var DAFTAR_IGT = [
     'RTRW Kabupaten', 'RTRW Kota', 'RTRW Provinsi', 'Zona Nilai Tanah'
 ];
 
+// IGT + sub layer yang Atribut & SLD-nya terpisah (lihat Layer IGT), mis. "Zona Nilai Tanah › 2026"
+var SUBLAYER_TERPISAH = { 'Zona Nilai Tanah': ['2025', '2026'], 'Inventarisasi Tanah Kritis': ['1:10.000', '1:50.000'] };
+var DAFTAR_IGT_SUBLAYER = DAFTAR_IGT.reduce(function(hasil, igt) {
+    return hasil.concat([igt], (SUBLAYER_TERPISAH[igt] || []).map(function(sub) { return igt + ' › ' + sub; }));
+}, []);
 var DAFTAR_LAYER_DERIVATIF = ['Coba Derivatif Bidang', 'Dialog Kinerja Bidang Tanah Valid Beratribut Tematik', 'TES LAYER DERIVATIF BIDANG', 'TES LAYER DERIVATIF KAWASAN'];
 var DAFTAR_BASELINE = ['Test Baseline Yogjakarta', 'Baseline Hak Atas Tanah 1', 'TEST ZNT BADUNG dari wfs staging volatil', 'Baseline bidang tanah berdasarkan wfs', 'BASELINE BIDANG TANAH'];
 var WARNA_BASIS = { Bidang: 'biru', Kawasan: 'abu' };
 var WARNA_STATUS_DERIVATIF = { 'Disetujui': 'hijau', 'Menunggu Verifikasi': 'kuning', 'Menunggu': 'kuning', 'Ditolak': 'merah', 'Kedaluwarsa': 'abu', 'Dihapus': 'abu' };
 var CEK_DATA = ['Sistem Proyeksi', 'Konsistensi Attribut', 'Kesesuaian Unsur IGD', 'Konsistensi Topologi', 'Cakupan Wilayah'];
+
+// Pasangan atribut-nilai dummy dari berkas metadata XML (ISO 19115)
+function atributMetadata(b) {
+    var id = (b.file || '').replace(/_metadata\.xml$/i, '').toUpperCase();
+    return [
+        ['MD_Metadata / fileIdentifier / CharacterString', id],
+        ['MD_Metadata / language / LanguageCode / @codeList', 'http://www.loc.gov/standards/iso639-2/php/code_list.php'],
+        ['MD_Metadata / language / LanguageCode / @codeListValue', 'ind'],
+        ['MD_Metadata / language / LanguageCode / @codeSpace', 'ISO639-2'],
+        ['MD_Metadata / language / LanguageCode', 'ind'],
+        ['MD_Metadata / characterSet / MD_CharacterSetCode / @codeList', 'http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode'],
+        ['MD_Metadata / characterSet / MD_CharacterSetCode / @codeListValue', 'utf8'],
+        ['MD_Metadata / characterSet / MD_CharacterSetCode / @codeSpace', 'ISOTC211/19115'],
+        ['MD_Metadata / characterSet / MD_CharacterSetCode', 'utf8'],
+        ['MD_Metadata / hierarchyLevel / MD_ScopeCode / @codeList', 'http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode'],
+        ['MD_Metadata / hierarchyLevel / MD_ScopeCode / @codeListValue', 'dataset'],
+        ['MD_Metadata / contact / CI_ResponsibleParty / organisationName / CharacterString', 'Kementerian ATR/BPN'],
+        ['MD_Metadata / contact / CI_ResponsibleParty / contactInfo / CI_Contact / address / CI_Address / electronicMailAddress / CharacterString', 'metadata@contoh.go.id'],
+        ['MD_Metadata / dateStamp / Date', '2026-03-12'],
+        ['MD_Metadata / metadataStandardName / CharacterString', 'ISO 19115:2003/19139'],
+        ['MD_Metadata / metadataStandardVersion / CharacterString', '1.0'],
+        ['MD_Metadata / referenceSystemInfo / MD_ReferenceSystem / referenceSystemIdentifier / RS_Identifier / code / CharacterString', 'EPSG:4326'],
+        ['MD_Metadata / identificationInfo / MD_DataIdentification / citation / CI_Citation / title / CharacterString', b.nama || '-'],
+        ['MD_Metadata / identificationInfo / MD_DataIdentification / abstract / CharacterString', 'Data ' + (b.igt || '') + ' hasil kompilasi IGT-PR.'],
+        ['MD_Metadata / identificationInfo / MD_DataIdentification / spatialRepresentationType / MD_SpatialRepresentationTypeCode', 'vector'],
+        ['MD_Metadata / identificationInfo / MD_DataIdentification / topicCategory / MD_TopicCategoryCode', 'planningCadastre'],
+        ['MD_Metadata / distributionInfo / MD_Distribution / distributionFormat / MD_Format / name / CharacterString', 'ESRI Shapefile']
+    ];
+}
+
+function xmlMetadata(pasangan) {
+    return '<?xml version="1.0" encoding="UTF-8"?>\n<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco">\n'
+        + pasangan.filter(function(p) { return p[0].indexOf('@') === -1; }).map(function(p) {
+            var jalur = p[0].split(' / ').slice(1);
+            return '  <!-- ' + jalur.join('/') + ' -->\n  <gmd:' + jalur[0] + '>' + p[1] + '</gmd:' + jalur[0] + '>';
+        }).join('\n') + '\n</gmd:MD_Metadata>';
+}
 
 var AKSI_EDIT = { ikon: 'ri-edit-line', warna: 'kuning', judul: 'Edit Data', aksi: 'edit' };
 var AKSI_HAPUS = { ikon: 'ri-delete-bin-line', warna: 'merah', judul: 'Hapus Data', aksi: 'hapus' };
@@ -275,24 +317,44 @@ var HALAMAN = {
         tombol: [{ label: 'Tambah Data', aksi: 'tambah' }],
         filter: [{ key: 'direktorat', label: 'Filter Unit Kerja / Direktorat', semua: 'Semua Unit Kerja', opsi: DAFTAR_DIREKTORAT }],
         kolom: [
+            { label: 'No', tipe: 'no', lebar: '56px' },
             { key: 'nama', label: 'Nama IGT', tipe: 'judul', sub: 'direktorat' },
-            { key: 'tahun', label: 'Tahun', tipe: 'badge', warna: function(v) { return v === 'Non Multi-Year' ? 'abu' : 'biru'; } },
+            { label: 'Sub Layer', tipe: 'html', render: function(b) {
+                var n = (b.sublayer && b.sublayer.nama) || [];
+                return n.length ? '<span class="igt-pil igt-pil--biru">' + n.length + ' sublayer</span>' : '<span class="text-muted">Layer tunggal</span>';
+            } },
             { key: 'basis', label: 'Basis', tipe: 'badge', warna: { Bidang: 'hijau', Kawasan: 'tosca' } }
         ],
         data: [
-            { nama: 'Analisis Tanah Objek Reforma Agraria', direktorat: 'Direktorat Landreform', tahun: 'Non Multi-Year', basis: 'Kawasan' },
-            { nama: 'Bidang Tanah', direktorat: 'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal', tahun: '2026', basis: 'Bidang' },
-            { nama: 'Data Potensi WP3WT', direktorat: 'Direktorat Penatagunaan Tanah', tahun: 'Non Multi-Year', basis: 'Kawasan' },
-            { nama: 'Desain Konsolidasi Tanah', direktorat: 'Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan', tahun: 'Non Multi-Year', basis: 'Bidang' },
-            { nama: 'Dialog Kinerja Tematik Derivatif', direktorat: 'Direktorat Survei dan Pemetaan Tematik', tahun: 'Non Multi-Year', basis: 'Bidang' },
-            { nama: 'Hak Atas Tanah', direktorat: 'Direktorat Penetapan Hak Atas Tanah dan Ruang', tahun: 'Non Multi-Year', basis: 'Bidang' },
-            { nama: 'Hak Ulayat', direktorat: 'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal', tahun: 'Non Multi-Year', basis: 'Bidang' },
-            { nama: 'Indikasi Pelanggaran Pemanfaatan Ruang', direktorat: 'Direktorat Penanganan Perkara Pertanahan', tahun: 'Non Multi-Year', basis: 'Kawasan' },
-            { nama: 'Inventarisasi Tanah Kritis', direktorat: 'Direktorat Penatagunaan Tanah', tahun: '2025', basis: 'Kawasan' },
-            { nama: 'Lahan Baku Sawah Nasional', direktorat: 'Direktorat Penatagunaan Tanah', tahun: '2026', basis: 'Kawasan' },
-            { nama: 'Lahan Sawah Dilindungi', direktorat: 'Direktorat Penatagunaan Tanah', tahun: '2026', basis: 'Kawasan' },
-            { nama: 'Zona Nilai Tanah', direktorat: 'Direktorat Survei dan Pemetaan Tematik', tahun: '2026', basis: 'Bidang' }
+            { nama: 'Analisis Tanah Objek Reforma Agraria', direktorat: 'Direktorat Landreform', basis: 'Kawasan' },
+            { nama: 'Bidang Tanah', direktorat: 'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal', basis: 'Bidang', sublayer: { nama: ['1:1.000', '1:2.500', '1:10.000'], samaInduk: true } },
+            { nama: 'Data Potensi WP3WT', direktorat: 'Direktorat Penatagunaan Tanah', basis: 'Kawasan' },
+            { nama: 'Desain Konsolidasi Tanah', direktorat: 'Direktorat Konsolidasi Tanah Dan Pengembangan Pertanahan', basis: 'Bidang' },
+            { nama: 'Dialog Kinerja Tematik Derivatif', direktorat: 'Direktorat Survei dan Pemetaan Tematik', basis: 'Bidang' },
+            { nama: 'Hak Atas Tanah', direktorat: 'Direktorat Penetapan Hak Atas Tanah dan Ruang', basis: 'Bidang' },
+            { nama: 'Hak Ulayat', direktorat: 'Direktorat Pengaturan Tanah Pemerintah, Tanah Ulayat, dan Tanah Komunal', basis: 'Bidang' },
+            { nama: 'Indikasi Pelanggaran Pemanfaatan Ruang', direktorat: 'Direktorat Penanganan Perkara Pertanahan', basis: 'Kawasan' },
+            { nama: 'Inventarisasi Tanah Kritis', direktorat: 'Direktorat Penatagunaan Tanah', basis: 'Kawasan', sublayer: { nama: ['1:10.000', '1:50.000'], samaInduk: false } },
+            { nama: 'Lahan Baku Sawah Nasional', direktorat: 'Direktorat Penatagunaan Tanah', basis: 'Kawasan', sublayer: { nama: ['2025', '2026'], samaInduk: true } },
+            { nama: 'Lahan Sawah Dilindungi', direktorat: 'Direktorat Penatagunaan Tanah', basis: 'Kawasan' },
+            { nama: 'Zona Nilai Tanah', direktorat: 'Direktorat Survei dan Pemetaan Tematik', basis: 'Bidang', sublayer: { nama: ['2025', '2026'], samaInduk: false } }
         ],
+        rincian: function(b) {
+            var sub = b.sublayer;
+            if (!sub || !sub.nama.length) return null;
+            var sama = sub.samaInduk;
+            var tautan = function(href, teks) { return '<a href="' + href + '" class="igt-aksi__teks igt-aksi--biru">' + teks + '</a>'; };
+            return '<div class="igt-crud-rincian__isi"><div class="igt-crud-rincian__judul">Rincian Sub Layer <span class="igt-pil igt-pil--' + (sama ? 'abu">Atribut & SLD sama dengan induk' : 'tosca">Atribut & SLD terpisah per sublayer') + '</span></div>'
+                + '<table class="igt-table"><thead><tr><th class="igt-table__no">No</th><th>Nama Sublayer</th><th>Atribut</th><th>SLD</th><th>Aksi</th></tr></thead><tbody>'
+                + sub.nama.map(function(n, i) {
+                    return '<tr><td class="igt-table__no">' + (i + 1) + '</td><td><strong>' + esc(b.nama) + ' › ' + esc(n) + '</strong></td>'
+                        + '<td>' + (sama ? '<span class="text-muted">Mengikuti induk</span>' : '<span class="igt-pil igt-pil--hijau">Atribut sendiri</span>') + '</td>'
+                        + '<td>' + (sama ? '<span class="text-muted">Mengikuti induk</span>' : '<span class="igt-pil igt-pil--hijau">SLD sendiri</span>') + '</td>'
+                        + '<td><div class="igt-aksi">' + (sama ? '' : tautan('atribut-data.html', 'Kelola Atribut') + tautan('sld.html', 'Kelola SLD'))
+                        + '<button type="button" class="igt-aksi__ikon igt-aksi--kuning" title="Edit Sublayer" data-sub-edit="' + i + '"><i class="ri-edit-line"></i></button>'
+                        + '<button type="button" class="igt-aksi__ikon igt-aksi--merah" title="Hapus Sublayer" data-sub-hapus-baris="' + i + '"><i class="ri-delete-bin-line"></i></button></div></td></tr>';
+                }).join('') + '</tbody></table></div>';
+        },
         aksi: [AKSI_EDIT, AKSI_HAPUS],
         form: {
             tambah: 'Tambah Data IGT', edit: 'Ubah Data IGT', lebar: 'modal-lg',
@@ -301,7 +363,7 @@ var HALAMAN = {
                 { key: 'nama', label: 'Nama IGT', tipe: 'teks', wajib: true, placeholder: 'Masukan Nama IGT' },
                 { label: 'Kategori IGT', tipe: 'pilih', opsi: ['IGT Pertanahan', 'IGT Tata Ruang'], wajib: true, lebar: 'setengah' },
                 { label: 'Tipe IGT', tipe: 'pilih', opsi: ['IGT Dasar', 'IGT Tematik'], wajib: true, lebar: 'setengah' },
-                { label: 'Layer Bersifat Multi-Year / Memiliki Dimensi Tahun', tipe: 'toggle', bantuan: 'Aktifkan jika layer IGT berbasis tahunan. Jika non tahunan, pembaruan langsung menggantikan data lama.' },
+                { key: 'sublayer', tipe: 'sublayer' },
                 { key: 'basis', label: 'Basis IGT', tipe: 'pilih', opsi: ['Bidang', 'Kawasan'], wajib: true, lebar: 'setengah' },
                 { label: 'Baseline Referensi (Wajib jika basis Bidang)', tipe: 'pilih', opsi: DAFTAR_BASELINE, placeholder: 'Tidak menggunakan Baseline', lebar: 'setengah' },
                 { label: 'Kewenangan Akses Layer IGT', tipe: 'pilih-banyak', opsi: DAFTAR_DIREKTORAT, bantuan: 'Kanwil dan Kantah bisa dicari lewat nama provinsi atau kabupaten/kota.' },
@@ -315,7 +377,7 @@ var HALAMAN = {
     'atribut-data': {
         judul: 'Atribut Data', breadcrumb: 'Master Data IGT', kartu: 'Data Atribut',
         tombol: [{ label: 'Tambah Data', aksi: 'tambah' }],
-        filter: [{ key: 'igt', label: 'Filter IGT', semua: 'Semua IGT', opsi: DAFTAR_IGT }],
+        filter: [{ key: 'igt', label: 'Filter IGT', semua: 'Semua IGT', opsi: DAFTAR_IGT_SUBLAYER }],
         kolom: [
             { key: 'kolom', label: 'Column', tipe: 'judul', sub: 'igt' },
             { key: 'keterangan', label: 'Keterangan' },
@@ -334,13 +396,15 @@ var HALAMAN = {
             { kolom: 'LUASTERTUL', igt: 'Bidang Tanah', keterangan: 'Luas bidang tertulis (m²)', tipe: 'Double', panjang: '-', nullable: 'Ya' },
             { kolom: 'TIPEHAK', igt: 'Hak Atas Tanah', keterangan: 'Jenis hak atas tanah', tipe: 'Text/String', panjang: 30, nullable: 'Tidak' },
             { kolom: 'KELASZNT', igt: 'Zona Nilai Tanah', keterangan: 'Kelas nilai tanah per m²', tipe: 'Integer', panjang: '-', nullable: 'Tidak' },
-            { kolom: 'NILAIZNT', igt: 'Zona Nilai Tanah', keterangan: 'Nilai tanah rata-rata (Rp/m²)', tipe: 'Double', panjang: '-', nullable: 'Ya' }
+            { kolom: 'NILAIZNT', igt: 'Zona Nilai Tanah', keterangan: 'Nilai tanah rata-rata (Rp/m²)', tipe: 'Double', panjang: '-', nullable: 'Ya' },
+            { kolom: 'KELASZNT', igt: 'Zona Nilai Tanah › 2026', keterangan: 'Kelas nilai tanah per m² (skema 2026)', tipe: 'Integer', panjang: '-', nullable: 'Tidak' },
+            { kolom: 'NIRZNT', igt: 'Zona Nilai Tanah › 2026', keterangan: 'Nilai indikasi rata-rata (Rp/m²), atribut baru 2026', tipe: 'Double', panjang: '-', nullable: 'Ya' }
         ],
         aksi: [AKSI_EDIT, AKSI_HAPUS],
         form: {
             tambah: 'Tambah Atribut', edit: 'Ubah Atribut', lebar: 'modal-lg',
             fields: [
-                { key: 'igt', label: 'Nama IGT', tipe: 'pilih', opsi: DAFTAR_IGT, wajib: true },
+                { key: 'igt', label: 'Nama IGT', tipe: 'pilih', opsi: DAFTAR_IGT_SUBLAYER, wajib: true },
                 { key: 'kolom', label: 'Column', tipe: 'teks', wajib: true, lebar: 'setengah' },
                 { key: 'keterangan', label: 'Keterangan Column', tipe: 'teks', wajib: true, lebar: 'setengah' },
                 { key: 'tipe', label: 'Type Data', tipe: 'pilih', opsi: ['Text/String', 'Integer', 'Double', 'Date'], wajib: true, lebar: 'setengah' },
@@ -366,9 +430,30 @@ var HALAMAN = {
             { nama: 'Zona Nilai Tanah D.I. Yogyakarta', igt: 'Zona Nilai Tanah', keterangan: 'Metadata ZNT 2026', file: 'znt_diy_2026_metadata.xml' },
             { nama: 'Lahan Sawah Dilindungi Nasional', igt: 'Lahan Sawah Dilindungi', keterangan: '-', file: 'lsd_nasional_metadata.xml' }
         ],
-        aksi: [{ ikon: 'ri-download-2-line', warna: 'biru', judul: 'Unduh Berkas', aksi: 'toast:Berkas metadata diunduh' }, AKSI_EDIT, AKSI_HAPUS],
+        aksi: [
+            { ikon: 'ri-download-2-line', warna: 'biru', judul: 'Unduh Berkas', aksi: 'toast:Berkas metadata diunduh' },
+            { ikon: 'ri-upload-2-line', warna: 'hijau', judul: 'Upload Metadata Baru', aksi: 'edit' },
+            { ikon: 'ri-edit-line', warna: 'kuning', judul: 'Edit Metadata', aksi: 'modal:editMetadata' },
+            AKSI_HAPUS
+        ],
+        modal: {
+            editMetadata: {
+                judul: 'Preview Metadata', lebar: 'modal-xl', simpan: 'Simpan Perubahan', batal: 'Close', pesanSimpan: 'Perubahan metadata disimpan',
+                tombolLain: '<button type="button" class="btn btn-outline-secondary me-auto" data-xml-mentah>Edit XML Mentah</button>',
+                isi: function(b) {
+                    var pasangan = atributMetadata(b);
+                    return '<div class="igt-meta-info">' + pasangan.length + ' pasangan atribut dan nilai dari ' + esc(b.file) + '. Tekan Edit pada baris untuk memperbaiki nilainya.</div>'
+                        + '<div class="igt-xml-tabel igt-table-wrap"><table class="igt-table igt-meta-tabel"><thead><tr><th>Atribut</th><th>Nilai</th><th class="text-center">Aksi</th></tr></thead><tbody>'
+                        + pasangan.map(function(p) {
+                            return '<tr><td><strong>' + esc(p[0]) + '</strong></td><td data-nilai>' + esc(p[1]) + '</td>'
+                                + '<td class="text-center"><button type="button" class="igt-aksi__teks igt-aksi--kuning" data-nilai-edit><i class="ri-edit-line"></i> Edit</button></td></tr>';
+                        }).join('') + '</tbody></table></div>'
+                        + '<textarea class="form-control igt-xml-mentah d-none" rows="18" spellcheck="false">' + esc(xmlMetadata(pasangan)) + '</textarea>';
+                }
+            }
+        },
         form: {
-            tambah: 'Tambah Data Metadata', edit: 'Ubah Data Metadata',
+            tambah: 'Tambah Data Metadata', edit: 'Upload Metadata Baru', simpanEdit: 'Upload & Ganti Berkas',
             fields: [
                 { key: 'nama', label: 'Nama Metadata', tipe: 'teks', wajib: true },
                 { key: 'igt', label: 'IGT Terkait', tipe: 'pilih', opsi: DAFTAR_IGT, wajib: true },
@@ -382,7 +467,9 @@ var HALAMAN = {
         judul: 'Target Data IGT Master', breadcrumb: 'Master Data IGT', kartu: 'Target Data IGT Master',
         tombol: [{ label: 'Tambah Data', aksi: 'tambah' }],
         sumber: function() { return (window.MOCKUP_DATA && window.MOCKUP_DATA.targetIgt) || []; },
+        filter: [{ key: 'tahun', label: 'Filter Tahun', semua: 'Semua Tahun', opsi: ['2026', '2025', '2024', '2023'] }],
         kolom: [
+            { label: 'No', tipe: 'no', lebar: '56px' },
             { key: 'igt', label: 'Nama IGT', tipe: 'judul' },
             { key: 'target', label: 'Jumlah Target' },
             { key: 'satuan', label: 'Satuan' },
@@ -494,7 +581,8 @@ var HALAMAN = {
             { nama: 'Lokasi Pengembangan Pertanahan', igt: 'Lokasi Pengembangan Pertanahan', keterangan: 'Lokasi Pengembangan Pertanahan', file: 'simbologi_lokasipp' },
             { nama: 'Nilai Bidang Tanah', igt: 'Nilai Bidang Tanah', keterangan: 'Nilai Bidang Tanah', file: '_1K_AR_DJPTPP_NILAIBIDANGTANAH_2021' },
             { nama: 'NPGT', igt: 'Neraca Penatagunaan Tanah', keterangan: '-', file: '_25K_AR_DJPA_NPGT_2023' },
-            { nama: 'Zona Nilai Tanah', igt: 'Zona Nilai Tanah', keterangan: 'SLD ZNT', file: 'sld_znt_2026' }
+            { nama: 'Zona Nilai Tanah 2025', igt: 'Zona Nilai Tanah › 2025', keterangan: 'SLD ZNT sublayer 2025', file: 'sld_znt_2025' },
+            { nama: 'Zona Nilai Tanah 2026', igt: 'Zona Nilai Tanah › 2026', keterangan: 'SLD ZNT sublayer 2026', file: 'sld_znt_2026' }
         ],
         aksi: [{ ikon: 'ri-eye-line', warna: 'tosca', judul: 'Preview SLD', aksi: 'modal:pratinjau' }, AKSI_EDIT, AKSI_HAPUS],
         modal: {
@@ -505,7 +593,7 @@ var HALAMAN = {
             tambah: 'Tambah Data SLD', edit: 'Ubah Data SLD',
             fields: [
                 { key: 'nama', label: 'Nama SLD', tipe: 'teks', wajib: true },
-                { key: 'igt', label: 'IGT Terkait', tipe: 'pilih', opsi: DAFTAR_IGT },
+                { key: 'igt', label: 'IGT Terkait', tipe: 'pilih', opsi: DAFTAR_IGT_SUBLAYER },
                 { key: 'keterangan', label: 'Keterangan', tipe: 'textarea' },
                 { key: 'file', label: 'File SLD', tipe: 'file', accept: '.sld,.xml', wajib: true }
             ]
@@ -776,3 +864,29 @@ var HALAMAN = {
         }
     }
 };
+
+// Layer IGT: edit / hapus sublayer dari tabel rincian
+$(document).on('click', '[data-sub-edit], [data-sub-hapus-baris]', function() {
+    var b = crudState.data[parseInt($(this).closest('.igt-crud-rincian').prev().attr('data-buka'), 10)];
+    var i = parseInt($(this).attr('data-sub-edit') || $(this).attr('data-sub-hapus-baris'), 10);
+    var nama = b.sublayer.nama[i];
+    if ($(this).is('[data-sub-edit]')) {
+        bukaModal({
+            judul: 'Ubah Sublayer', lebar: 'modal-md', simpan: 'Simpan Perubahan', pesanSimpan: 'Sublayer diperbarui',
+            nilai: { induk: b.nama, nama: nama },
+            fields: [
+                { key: 'induk', label: 'Layer IGT Induk', tipe: 'info' },
+                { key: 'nama', label: 'Nama Sublayer', tipe: 'teks', wajib: true, placeholder: 'mis. 2026 atau 1:25.000' }
+            ],
+            onSimpan: function($m) {
+                var baru = $m.find('[data-key="nama"]').val().trim();
+                if (baru) { b.sublayer.nama[i] = baru; renderBaris(); }
+            }
+        });
+    } else {
+        konfirmasiHapus({ _label: b.nama + ' › ' + nama }, function() {
+            b.sublayer.nama.splice(i, 1);
+            renderBaris();
+        });
+    }
+});

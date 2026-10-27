@@ -37,6 +37,7 @@ var crudState = {
     halaman: 1,
     perHalaman: 10,
     filter: {},
+    terbuka: {},
     sort: null
 };
 
@@ -258,9 +259,14 @@ function renderBaris() {
 
     $body.html(tampil.length ? tampil.map(function(b, i) {
         var idx = crudState.data.indexOf(b);
-        return '<tr>' + cfg.kolom.map(function(k) {
-            return '<td' + (k.tipe === 'no' ? ' class="igt-table__no"' : '') + '>' + renderSel(k, b, mulai + i + 1) + '</td>';
-        }).join('') + ((cfg.aksi && cfg.aksi.length) || cfg.terkunci ? '<td>' + renderAksi(cfg, b, idx) + '</td>' : '') + '</tr>';
+        // cfg.rincian(baris): html baris rincian yang bisa dibuka-tutup (null = tidak ada)
+        var rincian = cfg.rincian ? cfg.rincian(b) : null;
+        var terbuka = rincian && crudState.terbuka[idx];
+        var panah = rincian ? '<i class="ri-arrow-down-s-line igt-crud-rincian__panah"></i>' : '';
+        return '<tr' + (rincian ? ' class="igt-crud-bisa-buka' + (terbuka ? ' is-open' : '') + '" data-buka="' + idx + '"' : '') + '>' + cfg.kolom.map(function(k, j) {
+            return '<td' + (k.tipe === 'no' ? ' class="igt-table__no"' : '') + '>' + (j === cfg.kolom.length - 1 ? '<div class="igt-crud-rincian__sel">' + renderSel(k, b, mulai + i + 1) + panah + '</div>' : renderSel(k, b, mulai + i + 1)) + '</td>';
+        }).join('') + ((cfg.aksi && cfg.aksi.length) || cfg.terkunci ? '<td>' + renderAksi(cfg, b, idx) + '</td>' : '') + '</tr>'
+            + (rincian ? '<tr class="igt-crud-rincian' + (terbuka ? ' is-open' : '') + '"><td colspan="' + jumlahKolom + '">' + rincian + '</td></tr>' : '');
     }).join('') : '<tr><td colspan="' + jumlahKolom + '" class="igt-table__empty">' + esc(cfg.kosong || 'Belum ada data.') + '</td></tr>');
 
     $('#crud-halaman [data-info]').text('Showing ' + (total ? mulai + 1 : 0) + ' to ' + (mulai + tampil.length) + ' of ' + total + ' entries');
@@ -372,6 +378,27 @@ function renderFields(fields, nilai) {
                         + (String(o) === String(v) ? ' checked' : '') + '> ' + esc(o) + '</label>';
                 }).join('') + '</div>';
                 break;
+            case 'sublayer':
+                // v: { nama: ['2025', '2026'], samaInduk: true }; kosong = layer tunggal
+                var sub = v && v.nama && v.nama.length ? v : { nama: [], samaInduk: true };
+                var adaSub = sub.nama.length > 0;
+                var namaGrup = 'sub-' + id;
+                return '<div class="igt-crud-form__baris igt-sub' + (adaSub ? ' is-aktif' : '') + (sub.samaInduk ? '' : ' is-terpisah') + '">'
+                    + '<div class="igt-sub__kotak"><label class="form-check form-switch"><input class="form-check-input" type="checkbox" data-sub-aktif' + (adaSub ? ' checked' : '') + '> '
+                    + '<strong>Layer memiliki Sub Layer / Multi Skema</strong></label>'
+                    + '<small class="igt-crud-form__bantuan">Aktifkan jika layer IGT terbagi menjadi beberapa sub layer, mis. per tahun (2025, 2026) atau per skala (1:5.000, 1:25.000). Jika tidak, layer berlaku seperti Layer IGT pada umumnya.</small></div>'
+                    + '<div class="igt-sub__isi">'
+                    + '<div class="igt-sub__kepala"><span class="igt-crud-form__label">Nama Sublayer <span class="igt-wajib">*</span></span>'
+                    + '<a href="#" data-sub-tambah><i class="ri-add-line"></i> Tambah Sublayer</a></div>'
+                    + '<div class="igt-sub__daftar">' + (adaSub ? sub.nama : ['']).map(barisSublayer).join('') + '</div>'
+                    + '<small class="igt-crud-form__bantuan">Isian bebas: tulis nama sub layer sesuai kebutuhan (tahun, skala, wilayah, dll.).</small>'
+                    + '<span class="igt-crud-form__label mt-3">Gunakan Atribut dan SLD yang sudah ada? <span class="igt-wajib">*</span></span>'
+                    + '<div class="igt-crud-form__radio">'
+                    + '<label class="form-check form-check-inline"><input class="form-check-input" type="radio" name="' + namaGrup + '" value="ya" data-sub-sama' + (sub.samaInduk ? ' checked' : '') + '> Ya</label>'
+                    + '<label class="form-check form-check-inline"><input class="form-check-input" type="radio" name="' + namaGrup + '" value="tidak" data-sub-sama' + (sub.samaInduk ? '' : ' checked') + '> Tidak</label></div>'
+                    + '<div class="igt-sub__catatan igt-sub__catatan--ya"><i class="ri-information-line"></i> Semua sub layer memakai Atribut dan SLD layer induk. Tidak perlu pengaturan tambahan.</div>'
+                    + '<div class="igt-sub__catatan igt-sub__catatan--tidak"><i class="ri-information-line"></i> Setelah disimpan, tiap sub layer muncul di pilihan <a href="atribut-data.html">Atribut Data</a> dan <a href="sld.html">SLD</a> untuk dibuat atribut dan diunggah SLD-nya sendiri.</div>'
+                    + '</div></div>';
             case 'warna':
                 isi = '<input id="' + id + '" type="color" class="form-control form-control-color" value="' + esc(v || '#1d4ed8') + '">';
                 break;
@@ -389,14 +416,19 @@ function renderFields(fields, nilai) {
     }).join('');
 }
 
+function barisSublayer(n) {
+    return '<div class="igt-sub__baris"><input type="text" class="form-control" value="' + esc(n) + '" placeholder="mis. 2026 atau 1:25.000">'
+        + '<button type="button" class="igt-aksi__ikon igt-aksi--merah" data-sub-hapus title="Hapus sublayer"><i class="ri-delete-bin-line"></i></button></div>';
+}
+
 function bukaModal(opsi) {
-    // opsi: { judul, fields, nilai, simpan, batal, lebar, isi (html), pesanSimpan, onSimpan }
+    // opsi: { judul, fields, nilai, simpan, batal, lebar, isi (html), tombolLain (html footer), pesanSimpan, onSimpan }
     $('#crud-modal').remove();
     var tombolSimpan = opsi.simpan === false ? '' : '<button type="button" class="btn btn-primary igt-crud-modal__simpan" data-simpan>' + esc(opsi.simpan || 'Submit Data') + '</button>';
     var html = '<div class="modal fade" id="crud-modal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable ' + (opsi.lebar || 'modal-lg') + '"><div class="modal-content">'
         + '<div class="modal-header"><h5 class="modal-title">' + esc(opsi.judul) + '</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>'
         + '<div class="modal-body">' + (opsi.isi || '') + (opsi.fields ? '<form class="igt-crud-form">' + renderFields(opsi.fields, opsi.nilai || {}) + '</form>' : '') + '</div>'
-        + '<div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">' + esc(opsi.batal || 'Close') + '</button>' + tombolSimpan + '</div>'
+        + '<div class="modal-footer">' + (opsi.tombolLain || '') + '<button type="button" class="btn btn-light" data-bs-dismiss="modal">' + esc(opsi.batal || 'Close') + '</button>' + tombolSimpan + '</div>'
         + '</div></div></div>';
     $('body').append(html);
     var el = document.getElementById('crud-modal');
@@ -446,7 +478,7 @@ function jalankanAksi(aksi, baris) {
             judul: typeof m.judul === 'function' ? m.judul(baris) : m.judul,
             fields: typeof m.fields === 'function' ? m.fields(baris) : m.fields,
             isi: typeof m.isi === 'function' ? m.isi(baris) : m.isi,
-            nilai: baris || {}, simpan: m.simpan, batal: m.batal, lebar: m.lebar, pesanSimpan: m.pesanSimpan
+            nilai: baris || {}, simpan: m.simpan, batal: m.batal, lebar: m.lebar, pesanSimpan: m.pesanSimpan, tombolLain: m.tombolLain
         });
     } else if (aksi.indexOf('toast:') === 0) {
         toastMockup(aksi.slice(6), 'info');
@@ -511,6 +543,12 @@ function initHalamanCrud() {
         muatDataCrud();
         renderHalamanCrud();
     });
+    $h.on('click', '[data-buka]', function(e) {
+        if ($(e.target).closest('button, a, input').length) return;
+        var idx = $(this).attr('data-buka');
+        crudState.terbuka[idx] = !crudState.terbuka[idx];
+        $(this).toggleClass('is-open', crudState.terbuka[idx]).next('.igt-crud-rincian').toggleClass('is-open', crudState.terbuka[idx]);
+    });
     $h.on('click', '[data-aksi-index]', function() {
         var a = cfg.aksi[parseInt($(this).attr('data-aksi-index'), 10)];
         jalankanAksi(a.aksi, crudState.data[parseInt($(this).attr('data-baris'), 10)]);
@@ -526,6 +564,22 @@ function initHalamanCrud() {
     $(document).on('click', '[data-pilih-semua], [data-hapus-semua]', function(e) {
         e.preventDefault();
         $(this).closest('.igt-crud-form__multi').find('input[type=checkbox]').prop('checked', $(this).is('[data-pilih-semua]'));
+    });
+    // Sub layer / multi skema
+    $(document).on('change', '[data-sub-aktif]', function() {
+        $(this).closest('.igt-sub').toggleClass('is-aktif', this.checked);
+    });
+    $(document).on('change', '[data-sub-sama]', function() {
+        $(this).closest('.igt-sub').toggleClass('is-terpisah', this.value === 'tidak');
+    });
+    $(document).on('click', '[data-sub-tambah]', function(e) {
+        e.preventDefault();
+        $(this).closest('.igt-sub').find('.igt-sub__daftar').append(barisSublayer('')).find('input').last().focus();
+    });
+    $(document).on('click', '[data-sub-hapus]', function() {
+        var $d = $(this).closest('.igt-sub__daftar');
+        if ($d.children().length > 1) $(this).closest('.igt-sub__baris').remove();
+        else $d.find('input').val('');
     });
     $(document).on('click', '[data-cek]', function() {
         $(this).replaceWith('<span class="igt-pil igt-pil--hijau"><i class="ri-check-line"></i> Sesuai</span>');

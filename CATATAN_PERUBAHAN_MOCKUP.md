@@ -1289,3 +1289,56 @@ IGTPR-UI-mockup/
 - **Perubahan**: Menu **Peta IGT** di navbar (semua role) kini langsung membuka `https://igtpr.atrbpn.go.id/layanan/` di tab baru (ditandai ikon tautan eksternal), menggantikan halaman mockup peta.
 - **Dihapus**: `peta-igt.html`, `assets/js/pages/peta/peta.js`, dan CSS peta di `halaman.css`. Opsi peta di `tools/buat-halaman.py` tetap tersedia untuk halaman lain yang membutuhkan peta.
 - **Cache-busting**: `?v=20261026l`.
+
+### 84. Kolom Nomor pada Daftar IGT
+
+- **Perubahan**: Tabel berkas di setiap IGT pada halaman **Kompilasi Data** dan **Integrasi Data** kini diawali kolom **No** (penomoran ulang dari 1 per IGT, mengikuti filter status). Tabel **Layer IGT** juga diberi kolom **No** (mengikuti paginasi).
+- **Cache-busting**: `?v=20261027a`.
+
+### 85. Pilihan Multi-Skala pada Tambah/Ubah Data IGT
+
+- **Perubahan**: Form **Tambah/Ubah Data IGT** (halaman Layer IGT) mendapat field **Skala** dengan sakelar **Data Multi-Skala**.
+  - Nonaktif: cukup satu skala (input `1 : …`).
+  - Aktif: muncul tombol **Tambah skala** untuk menambah skala sebanyak yang diperlukan, dan ikon hapus per skala (minimal 2 skala; mematikan sakelar menyisakan skala pertama).
+- **Contoh data**: Bidang Tanah (1:1.000, 1:2.500, 1:10.000) dan Lahan Baku Sawah Nasional (1:5.000, 1:10.000) multi-skala; Zona Nilai Tanah dan Hak Ulayat satu skala.
+- **Teknis**: tipe field baru `skala` di `assets/js/core/crud.js` (nilai berupa daftar penyebut skala), gaya di `halaman.css`.
+- **Cache-busting**: `?v=20261027b`.
+
+### 86. Target Data IGT Master: Filter Tahun & Kolom Nomor
+
+- **Perubahan**: Halaman **Target Data IGT Master** mendapat filter **Tahun** (Semua Tahun / 2026 / 2025 / 2024 / 2023) dan kolom **No** di awal tabel (mengikuti paginasi dan filter).
+- **Cache-busting**: `?v=20261027c`.
+
+### 87. Metadata: Aksi Upload Metadata Baru & Edit Metadata
+
+- **Perubahan**: Kolom Aksi di halaman **Metadata** kini memisahkan dua pilihan (selain Unduh dan Hapus):
+  - **Upload Metadata Baru** (ikon unggah, hijau): membuka popup form seperti Edit sebelumnya (Nama, IGT Terkait, Keterangan, File XML) dengan tombol *Upload & Ganti Berkas*.
+  - **Edit Metadata** (ikon pensil, kuning): membuka popup **Preview Metadata** mengikuti `Examples/edit metadata.png`, berisi info jumlah pasangan atribut, tabel Atribut, Nilai, Aksi (jalur ISO 19115, mis. `MD_Metadata / language / LanguageCode`). Tombol **Edit** per baris mengubah nilai menjadi input (lalu *Simpan*). Tombol **Edit XML Mentah** menampilkan isi XML untuk diedit langsung (dan kembali ke tabel).
+- **Teknis**: `bukaModal` mendukung `tombolLain` (tombol tambahan di footer); handler `[data-nilai-edit]` dan `[data-xml-mentah]` di `crud.js`; atribut dummy dibuat oleh `atributMetadata()` di `halaman.js`.
+- **Cache-busting**: `?v=20261027d`.
+
+### 88. Layer IGT: Sub Layer / Multi Skema (mengacu `Examples/sub-IGT.docx`)
+
+- **Acuan**: dokumen *sub-IGT.docx* (konsep IGT Multi Year dan Multi Skala): Pilih Jenis IGT → Multi Sub? → Isi Sub → Multi Atribut & SLD? → gunakan yang ada / buat Atribut dan SLD baru.
+- **Form Tambah/Ubah Data IGT**:
+  - Sakelar *"Layer Bersifat Multi-Year / Memiliki Dimensi Tahun"* diganti **"Layer memiliki Sub Layer / Multi Skema"**. Nonaktif berarti layer tunggal seperti biasa.
+  - Saat aktif: isian **Nama Sublayer** (pengganti *Tahun Tersedia*) berupa isian bebas, bisa ditambah lewat **+ Tambah Sublayer** dan dihapus per baris (mis. 2025, 2026, atau 1:5.000, 1:25.000).
+  - Pertanyaan **"Gunakan Atribut dan SLD yang sudah ada?"** Ya/Tidak. *Ya*: semua sublayer memakai Atribut & SLD induk (selesai). *Tidak*: muncul info bahwa tiap sublayer akan tersedia di menu Atribut Data dan SLD untuk dibuat atribut & diunggah SLD-nya sendiri.
+  - Field **Skala/Multi-Skala** dari catatan #85 dihapus karena sudah tercakup oleh Sub Layer.
+- **Tabel Layer IGT**: kolom *Tahun* diganti **Sub Layer** (daftar sublayer atau "Layer tunggal") dan **Atribut & SLD** (*Sama dengan induk* / *Terpisah per sublayer*). Contoh: Bidang Tanah (skala, sama), Lahan Baku Sawah Nasional (tahun, sama), Zona Nilai Tanah (2025/2026, terpisah), Inventarisasi Tanah Kritis (skala, terpisah).
+- **Atribut Data & SLD**: pilihan *Nama IGT / IGT Terkait* (form dan filter) kini memuat sublayer yang terpisah, mis. `Zona Nilai Tanah › 2026`, beserta contoh atribut dan SLD per sublayer ZNT.
+- **Teknis**: tipe field `skala` diganti `sublayer` di `crud.js` (nilai `{ nama: [...], samaInduk }`); `SUBLAYER_TERPISAH` / `DAFTAR_IGT_SUBLAYER` di `halaman.js`.
+- **Cache-busting**: `?v=20261027e`.
+
+### 89. Layer IGT: Rincian Sub Layer Dapat Dibuka-Tutup
+
+- **Perubahan**: Kolom **Atribut & SLD** dihapus dari tabel Layer IGT. Kolom *Sub Layer* kini cukup menampilkan jumlah (mis. "3 sublayer") atau "Layer tunggal".
+- **Collapsible** (seperti Kompilasi & Integrasi Data): baris IGT yang memiliki sub layer diberi ikon panah. Klik baris untuk membuka **Rincian Sub Layer**, yaitu tabel No, Nama Sublayer (mis. *Bidang Tanah › 1:1.000*), Atribut, SLD, Aksi, dengan label *Atribut & SLD sama dengan induk / terpisah per sublayer*. Bila terpisah, tersedia tautan **Kelola Atribut** dan **Kelola SLD**. Klik lagi untuk menutup.
+- **Teknis**: opsi `rincian(baris)` baru di mesin tabel `crud.js` (dapat dipakai halaman lain), gaya `.igt-crud-rincian` di `halaman.css`.
+- **Cache-busting**: `?v=20261027f`.
+
+### 90. Rincian Sub Layer: Aksi Edit & Hapus
+
+- **Perubahan**: Kolom Aksi pada tabel **Rincian Sub Layer** (Layer IGT) kini memiliki tombol **Edit** (popup *Ubah Sublayer*: Layer IGT Induk + Nama Sublayer) dan **Hapus** (konfirmasi hapus). Tautan *Kelola Atribut / Kelola SLD* tetap muncul untuk sublayer yang atribut & SLD-nya terpisah.
+- Perubahan langsung terlihat di tabel (nama sublayer berganti, jumlah "n sublayer" berkurang saat dihapus) selama halaman belum dimuat ulang (simulasi).
+- **Cache-busting**: `?v=20261027g`.

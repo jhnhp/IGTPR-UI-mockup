@@ -64,12 +64,12 @@ function renderKompilasi() {
         var warna = pct >= 100 ? '#10b981' : (pct >= 50 ? '#fbbf24' : '#dc3545');
         var terbuka = kompState.terbuka[t.igt] || (kompState.status && baris.length);
 
-        var kolom = '<th>Nama Direktorat</th><th>Nama IGT</th><th>Jenis Data</th><th>Tanggal Upload</th>'
+        var kolom = '<th class="igt-table__no">No</th><th>Nama Direktorat</th><th>Nama IGT</th><th>Jenis Data</th><th>Tanggal Upload</th>'
             + (cfg.kolomTambahan ? '<th>Tanggal Terintegrasi</th>' : '') + '<th>Keterangan</th><th>Status</th><th>Aksi</th>'
             + (cfg.kolomTambahan ? '<th>Download</th>' : '');
-        var isi = baris.map(function(b) {
+        var isi = baris.map(function(b, i) {
             var idx = semua.indexOf(b);
-            return '<tr><td><strong>' + esc(b.direktorat || '-') + '</strong></td><td>' + esc(b.igt) + '</td><td>' + esc(b.jenis) + '</td><td>' + esc(b.tanggal) + '</td>'
+            return '<tr><td class="igt-table__no">' + (i + 1) + '</td><td><strong>' + esc(b.direktorat || '-') + '</strong></td><td>' + esc(b.igt) + '</td><td>' + esc(b.jenis) + '</td><td>' + esc(b.tanggal) + '</td>'
                 + (cfg.kolomTambahan ? '<td>' + (b.status === 'Terintegrasi' ? esc(b.tanggal) : '-') + '</td>' : '')
                 + '<td><small class="text-muted">' + esc(b.catatan) + '</small></td>'
                 + '<td><span class="igt-pil igt-pil--' + WARNA_STATUS_IGT[b.status] + ' igt-pil--status">' + esc(b.status) + '</span></td>'
@@ -84,7 +84,7 @@ function renderKompilasi() {
                     ? '<div class="igt-aksi"><button type="button" class="igt-aksi__ikon igt-aksi--hijau" title="Unduh SHP" data-komp-aksi="unduh"><i class="ri-file-download-line"></i></button><button type="button" class="igt-aksi__ikon igt-aksi--hijau" title="Salin Link" data-komp-aksi="link"><i class="ri-link"></i></button></div>' : '-') + '</td>' : '')
                 + '</tr>';
         }).join('');
-        var jumlahKolom = cfg.kolomTambahan ? 9 : 7;
+        var jumlahKolom = cfg.kolomTambahan ? 10 : 8;
 
         return '<div class="igt-komp-item' + (terbuka ? ' is-open' : '') + '" data-igt="' + esc(t.igt) + '">'
             + '<div class="igt-komp-item__kepala">'
