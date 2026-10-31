@@ -329,9 +329,11 @@ function initUsulanModalEvents() {
     // Event Handlers for Kompilasi Integrasi Clickable Elements
     // ----------------------------------------------------
     // A. Click on metric number (e.g. 14 / Layer IGT)
-    $(document).on('click', '#integrasi-kompilasi-klik-angka, #integrasi-kompilasi-terkompilasi', function(e) {
+    $(document).on('click', '#integrasi-kompilasi-klik-angka', function(e) {
         e.preventDefault();
-        openKompilasiModal('all', 'all');
+        // Angka Terintegrasi langsung membuka tab Terintegrasi
+        var status = $(e.target).closest('#integrasi-kompilasi-terintegrasi').length ? 'terintegrasi' : 'all';
+        openKompilasiModal(status, 'all');
     });
 
     // B. Click on bar segments (Terkompilasi / Terintegrasi)
@@ -583,6 +585,10 @@ function renderKompilasiModalContent() {
 
 function renderKompilasiIntegrasi(kompilasi) {
     $('#integrasi-kompilasi-terkompilasi').text(kompilasi.totalLayer);
+    var detailKomp = window.MOCKUP_DATA.getKompilasiDetailList
+        ? window.MOCKUP_DATA.getKompilasiDetailList('all', 'all', currentProvince, currentKabupaten, currentDashboardYear)
+        : null;
+    $('#integrasi-kompilasi-terintegrasi').text(detailKomp ? detailKomp.counts.terintegrasi : 0);
 
     var bulanLabels = ['JAN', 'FEB', 'MAR', 'APR', 'MEI', 'JUN', 'JUL', 'AGT', 'SEP', 'OKT', 'NOV', 'DES'];
     $('#integrasi-kompilasi-bulan').html(bulanLabels.map(function(m, idx) {

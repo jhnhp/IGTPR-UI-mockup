@@ -89,7 +89,10 @@ function formatNamaKabupaten(nama) {
    3. Indonesia Multi-Level Map (MapLibre GL)
 ---------------------------------------------------- */
 // Gradasi choropleth kabupaten berdasarkan jumlah data IGT yang terunggah (statistikIGTKabupaten)
-var KAB_GRADASI_OPACITY = ['interpolate', ['linear'], ['get', 'jumlahData'], 0, 0.04, 1, 0.16, 3, 0.32, 5, 0.5, 7, 0.68];
+// Ujung paling pekat = #1d4ed8, sama dengan ruas Terintegrasi di progress bar
+var GRADASI_OPACITY = 1;
+var PROV_GRADASI_WARNA = ['interpolate', ['linear'], ['get', 'tema'], 0, '#eff6ff', 1, '#bfdbfe', 2, '#93c5fd', 3, '#3b82f6', 4, '#1d4ed8'];
+var KAB_GRADASI_WARNA = ['interpolate', ['linear'], ['get', 'jumlahData'], 0, '#eff6ff', 1, '#bfdbfe', 3, '#93c5fd', 5, '#3b82f6', 7, '#1d4ed8'];
 function siapkanJumlahDataKabupaten() {
     var gj = window.INDONESIA_KABUPATEN_GEOJSON;
     if (!gj || !gj.features) return;
@@ -145,17 +148,8 @@ function initHeroMap() {
                             type: 'fill',
                             source: 'indonesia',
                             paint: {
-                                'fill-color': '#1d4ed8',
-                                'fill-opacity': [
-                                    'interpolate',
-                                    ['linear'],
-                                    ['get', 'tema'],
-                                    0, 0.04,
-                                    1, 0.16,
-                                    2, 0.30,
-                                    3, 0.48,
-                                    4, 0.65
-                                ]
+                                'fill-color': PROV_GRADASI_WARNA,
+                                'fill-opacity': GRADASI_OPACITY
                             }
                         },
                         {
@@ -195,8 +189,8 @@ function initHeroMap() {
                             type: 'fill',
                             source: 'kabupaten',
                             paint: {
-                                'fill-color': '#1d4ed8',
-                                'fill-opacity': KAB_GRADASI_OPACITY
+                                'fill-color': KAB_GRADASI_WARNA,
+                                'fill-opacity': GRADASI_OPACITY
                             },
                             filter: ['==', 'provinsi', ''] // initially hidden
                         },
@@ -785,8 +779,8 @@ function zoomKeProvinsi(feature, namaProvinsi) {
         mapInstance.setFilter('kabupaten-garis', kabFilter);
 
         // Reset kabupaten styling to default province level
-        mapInstance.setPaintProperty('kabupaten-isi', 'fill-color', '#1d4ed8');
-        mapInstance.setPaintProperty('kabupaten-isi', 'fill-opacity', KAB_GRADASI_OPACITY);
+        mapInstance.setPaintProperty('kabupaten-isi', 'fill-color', KAB_GRADASI_WARNA);
+        mapInstance.setPaintProperty('kabupaten-isi', 'fill-opacity', GRADASI_OPACITY);
         mapInstance.setPaintProperty('kabupaten-garis', 'line-color', '#3b82f6');
         mapInstance.setPaintProperty('kabupaten-garis', 'line-width', 1.0);
         mapInstance.setPaintProperty('kabupaten-garis', 'line-opacity', 0.85);
@@ -872,8 +866,8 @@ function kembaliKeProvinsi() {
             });
 
             // Restore all kabupaten in this province
-            mapInstance.setPaintProperty('kabupaten-isi', 'fill-color', '#1d4ed8');
-            mapInstance.setPaintProperty('kabupaten-isi', 'fill-opacity', KAB_GRADASI_OPACITY);
+            mapInstance.setPaintProperty('kabupaten-isi', 'fill-color', KAB_GRADASI_WARNA);
+            mapInstance.setPaintProperty('kabupaten-isi', 'fill-opacity', GRADASI_OPACITY);
             mapInstance.setPaintProperty('kabupaten-garis', 'line-color', '#3b82f6');
             mapInstance.setPaintProperty('kabupaten-garis', 'line-width', 1.0);
             mapInstance.setPaintProperty('kabupaten-garis', 'line-opacity', 0.85);
@@ -924,17 +918,8 @@ function resetKeSeluruhIndonesia() {
         mapInstance.setFilter('provinsi-sorot', ['==', 'nama', '']);
 
         // Restore province theme styling
-        mapInstance.setPaintProperty('provinsi-isi', 'fill-color', '#1d4ed8');
-        mapInstance.setPaintProperty('provinsi-isi', 'fill-opacity', [
-            'interpolate',
-            ['linear'],
-            ['get', 'tema'],
-            0, 0.04,
-            1, 0.16,
-            2, 0.30,
-            3, 0.48,
-            4, 0.65
-        ]);
+        mapInstance.setPaintProperty('provinsi-isi', 'fill-color', PROV_GRADASI_WARNA);
+        mapInstance.setPaintProperty('provinsi-isi', 'fill-opacity', GRADASI_OPACITY);
         mapInstance.setPaintProperty('provinsi-garis', 'line-color', '#3b82f6');
         mapInstance.setPaintProperty('provinsi-garis', 'line-opacity', 0.85);
         mapInstance.setPaintProperty('provinsi-garis', 'line-width', 1.0);
